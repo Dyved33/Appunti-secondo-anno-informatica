@@ -1,0 +1,16 @@
+﻿02/16/2026 11:04:43 Central European Standard Time : Information : Local timezone is (UTC+01:00) Central European Time (Rome)
+02/16/2026 11:04:43 Central European Standard Time: Information : 3 :Listening started.
+02/16/2026 11:04:43 Central European Standard Time: Information : 7 :{"id":2,"method":"handshake"}
+02/16/2026 11:04:43 Central European Standard Time: Information : 6 :Received request "2" for method "handshake".
+02/16/2026 11:04:43 Central European Standard Time: Information : 9 :Invoking Microsoft.ServiceHub.Framework.IRemoteServiceBroker.HandshakeAsync(ServiceBrokerClientMetadata, CancellationToken)
+02/16/2026 11:04:43 Central European Standard Time : Start : handshake
+02/16/2026 11:04:43 Central European Standard Time : Stop : handshake
+02/16/2026 11:04:43 Central European Standard Time: Information : 8 :{"id":2}
+02/16/2026 11:04:44 Central European Standard Time: Information : 7 :{"id":3,"method":"requestServiceChannel"}
+02/16/2026 11:04:44 Central European Standard Time: Information : 6 :Received request "3" for method "requestServiceChannel".
+02/16/2026 11:04:44 Central European Standard Time: Information : 9 :Invoking Microsoft.ServiceHub.Framework.IRemoteServiceBroker.RequestServiceChannelAsync(ServiceMoniker, ServiceActivationOptions, CancellationToken)
+02/16/2026 11:04:44 Central European Standard Time : Transfer : Transfer, relatedActivityId=e8e3e363-99ae-413c-bd52-f7809d09874e
+02/16/2026 11:04:44 Central European Standard Time : Start : requestServiceChannel
+02/16/2026 11:04:44 Central European Standard Time : Stop : requestServiceChannel
+02/16/2026 11:04:44 Central European Standard Time : Transfer : Transfer, relatedActivityId=8eb73428-930a-496d-9076-96112d2571f6
+02/16/2026 11:04:44 Central European Standard Time: Information : 8 :{"id":3}

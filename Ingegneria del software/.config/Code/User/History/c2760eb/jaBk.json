@@ -1,0 +1,6 @@
+{
+    "workbench.colorTheme": "Night Owl",
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+}

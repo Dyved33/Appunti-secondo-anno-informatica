@@ -1,0 +1,10 @@
+{
+    "context_id": "9D1A259D",
+    "error_handler_type": "break",
+    "document_outline_width": 353,
+    "theme": {
+        "name": "Dracula",
+        "url": "theme/default/dracula.rstheme",
+        "isDark": true
+    }
+}

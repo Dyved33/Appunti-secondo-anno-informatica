@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "BjIj/gEmUTE=",
+  "success": true,
+  "projectFilePath": "/tmp/roslyn-canonical-misc/662235db-2621-4dd6-8bd0-db5c2d7e99cb/Canonical.csproj",
+  "expectedPackageFiles": [
+    "/home/david/.nuget/packages/microsoft.dotnet.ilcompiler/10.0.3/microsoft.dotnet.ilcompiler.10.0.3.nupkg.sha512",
+    "/home/david/.nuget/packages/microsoft.net.illink.tasks/10.0.3/microsoft.net.illink.tasks.10.0.3.nupkg.sha512",
+    "/home/david/.nuget/packages/runtime.linux-x64.microsoft.dotnet.ilcompiler/10.0.3/runtime.linux-x64.microsoft.dotnet.ilcompiler.10.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

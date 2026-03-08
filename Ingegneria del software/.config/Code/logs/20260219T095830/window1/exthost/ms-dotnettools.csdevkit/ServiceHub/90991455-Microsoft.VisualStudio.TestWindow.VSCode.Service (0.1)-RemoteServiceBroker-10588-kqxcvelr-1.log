@@ -1,0 +1,9 @@
+﻿02/19/2026 10:17:34 Central European Standard Time : Information : Local timezone is (UTC+01:00) Central European Time (Rome)
+02/19/2026 10:17:34 Central European Standard Time: Information : 3 :Listening started.
+02/19/2026 10:17:34 Central European Standard Time: Information : 7 :{"id":2,"method":"handshake"}
+02/19/2026 10:17:34 Central European Standard Time: Information : 6 :Received request "2" for method "handshake".
+02/19/2026 10:17:34 Central European Standard Time: Information : 9 :Invoking Microsoft.ServiceHub.Framework.IRemoteServiceBroker.HandshakeAsync(ServiceBrokerClientMetadata, CancellationToken)
+02/19/2026 10:17:34 Central European Standard Time : Start : handshake
+02/19/2026 10:17:34 Central European Standard Time : Stop : handshake
+02/19/2026 10:17:34 Central European Standard Time: Information : 8 :{"id":2}
+02/19/2026 10:19:02 Central European Standard Time: Information : 13 :Connection closing (RemotePartyTerminated: Reached end of stream.). 

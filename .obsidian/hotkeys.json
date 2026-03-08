@@ -1,0 +1,18 @@
+{
+  "editor:insert-table": [
+    {
+      "modifiers": [
+        "Alt"
+      ],
+      "key": "T"
+    }
+  ],
+  "outline:open-for-current": [
+    {
+      "modifiers": [
+        "Alt"
+      ],
+      "key": "O"
+    }
+  ]
+}

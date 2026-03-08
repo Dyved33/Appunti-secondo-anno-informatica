@@ -1,0 +1,15 @@
+{
+  "pdfExportSettings": {
+    "pageSize": "A4",
+    "landscape": false,
+    "margin": "0",
+    "downscalePercent": 100
+  },
+  "promptDelete": true,
+  "strictLineBreaks": true,
+  "alwaysUpdateLinks": true,
+  "showUnsupportedFiles": true,
+  "showLineNumber": true,
+  "tabSize": 4,
+  "vimMode": false
+}

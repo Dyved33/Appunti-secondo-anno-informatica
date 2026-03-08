@@ -1,0 +1,5 @@
+# This directory is a Syncthing folder marker.
+# Do not delete.
+
+folderID: qvx5w-pezdh
+created: 2026-03-02T15:49:50+01:00

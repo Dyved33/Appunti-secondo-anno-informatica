@@ -1,0 +1,10 @@
+2026-02-16 08:42:07.934 [info] --------------------------------------------------------------------------------
+2026-02-16 08:42:07.934 [info] Razor.VSCode version 10.0.0-preview.26075.11
+2026-02-16 08:42:07.934 [info] --------------------------------------------------------------------------------
+2026-02-16 08:42:07.934 [info] Razor's log level is currently set to 'Info'
+2026-02-16 08:42:07.934 [info]  - To change Razor's log level use the gear icon on the output window
+2026-02-16 08:42:07.934 [info]  - To report issues invoke the 'Report a Razor issue' command via the command palette.
+2026-02-16 08:42:07.934 [info] -----------------------------------------------------------------------------------------------------------------------------
+2026-02-16 08:42:07.934 [info] 
+2026-02-16 08:42:18.086 [info] [Razor.LanguageClient.Cohost.RazorCohostDynamicRegistrationService] Requesting 24 Razor cohost registrations.
+2026-02-16 08:42:18.145 [info] [Razor.LanguageClient.Cohost.CohostStartupService] Razor extension startup finished.
