@@ -183,23 +183,26 @@ I punti chiave (rif. della prof):
 ### 26-03-02 lz.7
 ***Clusit:***
 Ente analizza le tendenze in ambito di sicurezza informatica nel mondo. In base a questi rapporti i rischi informatici sono in continuo e netto aumento. 
+
 ***Triade CIA:***
-La **triade CIA** (Confidentiality, Integrity, Availability) è un modello fondamentale di cybersicurezza composto da tre pilastri: Riservatezza, Integrità e Disponibilità. Serve a proteggere i dati e le risorse informatiche da accessi, modifiche o interruzioni non autorizzate, garantendo che le informazioni siano segrete, accurate e accessibili. I reati informatici incidono quasi sempre su almeno uno dei 3 elementi (della triade CIA):
+<u>La  <b>triade CIA</b>  (Confidentiality, Integrity, Availability) è un modello fondamentale di cybersicurezza composto da tre pilastri: Riservatezza, Integrità e Disponibilità</u>. Serve a proteggere i dati e le risorse informatiche da accessi, modifiche o interruzioni non autorizzate, garantendo che le informazioni siano segrete, accurate e accessibili. I reati informatici incidono quasi sempre su almeno uno dei 3 elementi (della triade CIA):
 - Confidenzialità => Assicura che i dati siano accessibili solo alle persone autorizzate. Metodi comuni includono crittografia, autenticazione a due fattori (2FA) e controllo degli accessi
 - Integrità => Garantisce che le informazioni siano accurate, affidabili e non alterate da soggetti non autorizzati. Viene mantenuta tramite checksum, hashing e firme digitali
 - Disponibilità => Assicura che i sistemi e i dati siano accessibili agli utenti autorizzati quando necessario. Include manutenzione, ridondanza e piani di ripristino in caso di attacchi (es. DDoS).
 
 ***Cyber-security nel diritto:***
-Il rischio è una parola chiave in questo ambito e si definisce come un qualcosa che si frappone tra me e l'ottenimento di un obiettivo futuro (Ricorda: $R = P*D$). Per questo motivo vanno considerati i rischi, la probabilità che tale fatto si possa avverare e la gravità di quanto accade. Non potendo prevedere il futuro quindi devo fare affidamento sull'esperienza (qualcosa che è già successo). In ambito informatico non ci sono computer sicuri. 
+<u>Il rischio è una parola chiave in questo ambito e si definisce come un qualcosa che si frappone tra me e l'ottenimento di un obiettivo futuro </u>(Ricorda: $R = P*D$). Per questo motivo vanno considerati i rischi, la probabilità che tale fatto si possa avverare e la gravità di quanto accade. Non potendo prevedere il futuro quindi devo fare affidamento sull'esperienza (qualcosa che è già successo). In ambito informatico non ci sono computer sicuri. 
+
 >[!quote] I rischi per i diritti e le libertà delle persone fisiche, aventi probabilità e gravità diverse, possono derivare da trattamenti di dati personali suscettibili di cagionare un danno fisico,materiale o immateriale
 
 Ci possono essere molte combinazioni di situazioni: 
 - alta probabilità dell'evento ma basso impatto
-- alta probabilità dell'evento ma alto impatto
+- alta probabilità dell'evento e alto impatto
 - basso probabilità dell'evento ma alto impatto
-- basso probabilità dell'evento ma basso impatto
+- basso probabilità dell'evento e basso impatto
 
-Un altro dei problemi di cui bisogna occuparsi (di cui si occupano gli hacker) è il fattore umano (pebkc = problem exists between keyboard and chair). Si sfrutta questo aspetto per poter portare a compimento gli attacchi informatici.
+Un altro dei problemi di cui bisogna occuparsi (di cui si occupano gli hacker) è il fattore umano (**pebkc** = problem exists between keyboard and chair). Si sfrutta questo aspetto per poter portare a compimento gli attacchi informatici.
+
 ***Origine delle violazioni:***
 Una violazione di sicurezza è ciò che comporta accidentalmente o in modo illecito la distruzione, la perdita, la modifica, la divulgazione non autorizzata o l'accesso ai dati personali trasmessi, conservati o comunque trattati. 
 - *social engineering* = è la pratica che sfrutta maggiormente la debolezza umana per violare i sistemi facendo leva sugli stati d'animo che possono essere generati nelle persone 
@@ -211,16 +214,14 @@ Una violazione di sicurezza è ciò che comporta accidentalmente o in modo illec
 ---
 ### 26-03-04 lz. 8
 ***Libro 2 del codice civile (riguarda la successione mortis causa):***
-È un argomento di cui tutti gli ordinamenti si sono sempre occupati. Questa disciplina si incentra sull'esigenza necessaria per la quale un diritto di qualcuno diventi un diritto di nessuno. La cosa di nessuno non è persa, ma è abbandonata dal proprietario => è suscettibile di apprensione da chiunque
-
-> [!info] La rappresentanza politica non è sempre spettata a tutti, ma dipendeva dal livello del censo (es asino di Garibaldi)
+È un argomento di cui tutti gli ordinamenti si sono sempre occupati. Questa disciplina si incentra sull'esigenza necessaria per la quale un diritto di qualcuno diventi un diritto di nessuno. La cosa di nessuno non è persa, ma è abbandonata dal proprietario $\implies$ è suscettibile di apprensione da chiunque
 
 ***Definizione di proprietà:***
-(prima della rivoluzione francese) Il proprietario è sovrano del suo bene => può farne ciò che vuole (es. distruggerlo). Per questo motivo il proprietario deve occuparsi della successione dei suoi bene in autonomia. Dopo la rivoluzione francese si fa in modo che tutti gli eredi (**legittimari**) del proprietario abbiano una parte di eredità. La quota in questione si chiama **quota di riserva**. Se il proprietario dei beni, o tramite il testamento o come donazione, fa in modo di non rispettare questa attribuzione => si può intentare una causa di nullità (nei confronti delle volontà del testatore). Normalmente un proprietario ha una quota di beni detta **lesiva**, cioè della quale può decidere autonomamente gli eredi.
+(prima della rivoluzione francese) Il proprietario è sovrano del suo bene $\implies$ può farne ciò che vuole (es. distruggerlo). Per questo motivo il proprietario deve occuparsi della successione dei suoi bene in autonomia. Dopo la rivoluzione francese si fa in modo che tutti gli eredi (**legittimari**) del proprietario abbiano una parte di eredità. La quota in questione si chiama **quota di riserva**. Se il proprietario dei beni, o tramite il testamento o come donazione, fa in modo di non rispettare questa attribuzione $\implies$ si può intentare una causa di nullità (nei confronti delle volontà del testatore). Normalmente un proprietario ha una quota di beni detta **lesiva**, cioè della quale può decidere autonomamente gli eredi (parte che esula dalla quota di riserva).
 
 ***Forme di testamento (hanno la stessa efficacia):***
 Queste forme servono per evitare che venga distrutto il contenuto delle volontà del testatore. È possibile modificare il contenuto di un testamento depositato consegnandone uno nuovo e facendo in modo che le volontà dei due non siano attuabili contemporaneamente (prevale il più recente sugli argomenti in questione).
-1. *Testamento olografo (scritto di proprio pugno)* = redatto autonomamente dal testatore (su questo testamento viene eseguita una perizia grafologica). Può succedere che due periti dicano 2 cose diverse -> il giudice tende a dar ragione al perito d'ufficio (non pagato da chi richiede la perizia). Non è possibile scriverlo a macchina e va consegnato al notaio. Si potrebbe usare la firma digitale o forma simili, ma il codice civile ancora non lo ammette
+1. *Testamento olografo (scritto di proprio pugno)* = redatto autonomamente dal testatore (su questo testamento viene eseguita una perizia grafologica). Può succedere che due periti dicano 2 cose diverse $\rightarrow$ il giudice tende a dar ragione al perito d'ufficio (non pagato da chi richiede la perizia). Non è possibile scriverlo a macchina e va consegnato al notaio. Si potrebbe usare la firma digitale o forma simili, ma il codice civile ancora non lo ammette
 
 > [!info] Se testatore e notaio sono in due luoghi diversi (o testatore è paralizzato per es) ci sono delle soluzioni, ma non è possibile scrivere mai un testamento in forma digitale. Questo avviene non solo per il fatto che le norme non sono aggiornate, ma anche perché la morte fisica non implica la morte digitale. Es. Do le credenziali dei miei account (che devono essere funzionanti nell'atto della consegna e bisogna assicurarsi che non vengano usate prima della morte) a qualcun'altro oppure faccio in modo che l'IA creino video di me che parlo
 > > [!example] Genitori che richiedono degli avatar dei figli morti creati con l'IA per alleviare il dolore della perdita
@@ -229,7 +230,7 @@ Queste forme servono per evitare che venga distrutto il contenuto delle volontà
 3. *Testamento segreto* = può essere scritto anche a macchina e va sempre consegnato al notaio (il quale firma un documento di ricezione). Anche in questo caso, dopo la morte, si convocano gli eredi e si scopre il contenuto del testamento.
 
 > [!info] Nel testamento è possibile
-> - riconoscere un debito che i miei eredi devono pagare. Non posso avere più debiti che proprietà
+> - riconoscere un debito che i miei eredi devono pagare (non posso avere più debiti che proprietà)
 > - riconoscere un figlio. Questo riconoscimento non può essere revocato
 > - posso dire che nulla vada a parenti (lontani) della mia eredità = **diseredazione**
 >> [!example] Caso in cui è stato scritto **solo** che non si voleva che una persona ricevesse nulla (per come si è comportata verso il testatore **e i suoi fratelli**). Si è arrivati in Cassazione per riconoscere i fratelli eredi effettivi e rendere il testamento valido
@@ -241,6 +242,7 @@ Se viene lesa l'identità di un defunto si può agire contro chi produce tale of
 Di tutto ciò non si occupa il GDPR (si occupa del rapporto tra chi da i propri dati personali e chi ne trae vantaggio). 
 - Cons. 27: gli stati possono disciplinare il trattamento dei dati personali di persone decedute
 - Art. 6, co. 1, lett. f: trattamento legittimo per il "perseguimento del legittimo interesse" del titolare o di terzi (es. Cartella clinica, dati pensionistici, dati bancari)
+
 In Italia, per adattarci al GDPR (che è del 2016 ma è entrato in vigore nel 2018), abbiamo modificato l'art. 2 (in vigore precedentemente)che afferma:
 1. I diritti di cui agli articoli da 15 a 22 del regolamento riferiti ai dati personali concernenti persone decedute possono essere esercitati da chi ha un interesse proprio, o agisce a tutela dell'interessato, in qualità di suo mandatario, o per ragioni familiari meritevoli di protezione
 2. L'esercizio dei diritti di cui al comma 1 non è ammesso nei casi previsti dalla legge o quanto, limitatamente all'offerta diretta di servizi della società dell'informazione, l'interessato lo ha espressamente vietato con dichiarazione scritta presentata al titolare del trattamento o a quest'ultimo comunicata (lascio scritto che vieto ai miei eredi di poter accedere ai miei contenuti online oppure che i suddetti contenuti siano oscurati/cancellati)
@@ -262,3 +264,5 @@ In Italia, per adattarci al GDPR (che è del 2016 ma è entrato in vigore nel 20
 | Italia                                                                                            | Germania                                                                 |
 | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | Approccio personalistico: persistenza di interessi giuridicamente tutelabili in capo a chi agisce | Approccio patrimonialistico: principio di universalità della successione |
+
+---

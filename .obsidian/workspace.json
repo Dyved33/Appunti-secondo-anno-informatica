@@ -8,12 +8,36 @@
         "type": "tabs",
         "children": [
           {
-            "id": "2a0e6154f56c72b4",
+            "id": "bc6f46bf3ab0b326",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Diritto privato dell'informatica/Appunti lezione.md",
+                "file": "Sistemi operativi e laboratorio/Laboratorio.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "Laboratorio"
+            }
+          },
+          {
+            "id": "4846ac4b720f72cc",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Linguaggi formali e compilatori/Appunti lezione.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -166,13 +190,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Diritto privato dell'informatica/Appunti lezione.md",
+                "file": "Sistemi operativi e laboratorio/Laboratorio.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Appunti lezione"
+              "title": "Outline of Laboratorio"
             }
           },
           {
@@ -207,13 +231,13 @@
       "workspaces:Manage workspace layouts": false
     }
   },
-  "active": "2a0e6154f56c72b4",
+  "active": "bc6f46bf3ab0b326",
   "lastOpenFiles": [
-    "Ingegneria del software/Appunti lezione.md",
-    "Algoritmi e strutture dati modulo 2/Appunti lezione.md",
     "Diritto privato dell'informatica/Appunti lezione.md",
     "Sistemi operativi e laboratorio/Laboratorio.md",
     "Linguaggi formali e compilatori/Appunti lezione.md",
+    "Ingegneria del software/Appunti lezione.md",
+    "Algoritmi e strutture dati modulo 2/Appunti lezione.md",
     "Sistemi operativi e laboratorio/pippo.txt",
     "Sistemi operativi e laboratorio/scfile",
     "Sistemi operativi e laboratorio/scfile.c",
