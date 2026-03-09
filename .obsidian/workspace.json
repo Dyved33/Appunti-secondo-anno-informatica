@@ -8,12 +8,12 @@
         "type": "tabs",
         "children": [
           {
-            "id": "bc6f46bf3ab0b326",
+            "id": "d4f2420329c5e1a0",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Sistemi operativi e laboratorio/Laboratorio.md",
+                "file": "Diritto privato dell'informatica/Appunti lezione.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -23,31 +23,7 @@
                   "sortOrder": "alphabetical",
                   "showSearch": false,
                   "searchQuery": "",
-                  "backlinkCollapsed": false,
-                  "unlinkedCollapsed": true
-                }
-              },
-              "icon": "lucide-file",
-              "title": "Laboratorio"
-            }
-          },
-          {
-            "id": "4846ac4b720f72cc",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Linguaggi formali e compilatori/Appunti lezione.md",
-                "mode": "source",
-                "source": false,
-                "backlinks": true,
-                "backlinkOpts": {
-                  "collapseAll": false,
-                  "extraContext": false,
-                  "sortOrder": "alphabetical",
-                  "showSearch": false,
-                  "searchQuery": "",
-                  "backlinkCollapsed": false,
+                  "backlinkCollapsed": true,
                   "unlinkedCollapsed": true
                 }
               },
@@ -190,13 +166,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Sistemi operativi e laboratorio/Laboratorio.md",
+                "file": "Linguaggi formali e compilatori/Appunti lezione.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Laboratorio"
+              "title": "Outline of Appunti lezione"
             }
           },
           {
@@ -231,11 +207,16 @@
       "workspaces:Manage workspace layouts": false
     }
   },
-  "active": "bc6f46bf3ab0b326",
+  "active": "d4f2420329c5e1a0",
   "lastOpenFiles": [
     "Diritto privato dell'informatica/Appunti lezione.md",
-    "Sistemi operativi e laboratorio/Laboratorio.md",
     "Linguaggi formali e compilatori/Appunti lezione.md",
+    "Sistemi operativi e laboratorio/Laboratorio.md",
+    "Linguaggi formali e compilatori/images/Pasted image 20260308174311.png",
+    "Linguaggi formali e compilatori/Pasted image 20260308174311.png",
+    "Sistemi operativi e laboratorio/Teoria.md",
+    "Pasted image 20260308174311.png",
+    "Untitled.md",
     "Ingegneria del software/Appunti lezione.md",
     "Algoritmi e strutture dati modulo 2/Appunti lezione.md",
     "Sistemi operativi e laboratorio/pippo.txt",
@@ -251,10 +232,6 @@
     "Linguaggi formali e compilatori/images/Screenshot From 2026-03-06 11-03-35.png",
     "Linguaggi formali e compilatori/images/Screenshot From 2026-03-06 11-03-22.png",
     "Linguaggi formali e compilatori/images/Pasted image 20260306110859.png",
-    "Linguaggi formali e compilatori/images/Pasted image 20260306110549.png",
-    "Screenshot From 2026-03-06 11-33-08.png",
-    "Screenshot From 2026-03-06 11-32-32.png",
-    "Sistemi operativi e laboratorio/Teoria.md",
     "Linguaggi formali e compilatori/images",
     "Sistemi operativi e laboratorio/images",
     "Recording 20260304152810.m4a",
@@ -262,7 +239,6 @@
     "Sistemi operativi e laboratorio/ Attributi dei file.pdf",
     "Untitled 2.md",
     "Untitled 1.md",
-    "Untitled.md",
     "valido.md",
     "Diritto privato dell'informatica/06_Trattamento_dati_Normative_Contrattuali.md",
     "02_Introduzione_Bash.md",

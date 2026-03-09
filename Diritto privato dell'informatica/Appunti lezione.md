@@ -266,3 +266,31 @@ In Italia, per adattarci al GDPR (che è del 2016 ma è entrato in vigore nel 20
 | Approccio personalistico: persistenza di interessi giuridicamente tutelabili in capo a chi agisce | Approccio patrimonialistico: principio di universalità della successione |
 
 ---
+### 26-03-09 LZ. 9
+Nell'ordinamento italiano, il danno risarcibile si divide principalmente in **patrimoniale** (lesione del patrimonio) e **non patrimoniale** (lesione di interessi costituzionalmente garantiti non economici). Le voci chiave includono il danno emergente e lucro cessante (patrimoniale), mentre il non patrimoniale racchiude il danno biologico (salute), morale (sofferenza) ed esistenziale (vita relazionale).
+1. Danno Patrimoniale (Art. 2043 c.c.) = Consiste nella perdita economica subita dal danneggiato. Si compone di due elementi: 
+ - **Danno Emergente:** La perdita economica diretta e immediata (es. spese mediche, riparazione auto).
+ - **Lucro Cessante:** Il mancato guadagno, ovvero la ricchezza che il danneggiato avrebbe prodotto e che non ha realizzato a causa dell'illecito
+2. Danno Non Patrimoniale (Art. 2059 c.c.) = Riguarda il pregiudizio alle emozioni, alla salute o alla vita quotidiana, risarcibile nei casi previsti dalla legge (es. fatto reato) o per lesione di diritti inviolabili. È un "danno alla persona" e si articola in: 
+ - *Danno Biologico:* Lesione temporanea o permanente dell'integrità psico-fisica, accertabile medico-legalmente, a prescindere dalla capacità di produrre reddito.
+ - *Danno Morale:* Sofferenza interiore, turbamento dell'animo, dolore e vergogna patiti (patema d'animo).
+ - *Danno Esistenziale:* (o Dinamico-Relazionale):** Peggioramento oggettivo delle condizioni di vita, alterazione delle abitudini e della vita di relazione. Sebbene a volte contestato come categoria autonoma, la giurisprudenza lo riconosce come parte del danno non patrimoniale
+ - 
+Altre tipologie di danno
+- *Danno all'Onore/Reputazione: Lesione della dignità personale o professionale.
+- *Danno da Ritardo: Interessi e rivalutazione monetaria per il tempo trascorso prima del risarcimento.
+- *Danni Punitivi: Sebbene tradizionalmente estranei, vengono talvolta riconosciuti in casi limitati di comportamenti particolarmente gravi. 
+Per la quantificazione del danno biologico e non patrimoniale, si utilizzano le *Tabelle del Tribunale di Milano (o di Roma)*, ampiamente riconosciute come parametro nazionale per garantire l'uniformità.
+
+La legislazione europea (art. 16, comma, direttiva del 2003) stabilisce che le piattaforme sono responsabili (insieme all'autore) dell'illecito $\iff$ è venuta a conoscenza dell'illecito e non si è adoperata tempestivamente per oscurarlo o per rimuoverlo (*notice and take down*). Secondo la cassazione l'illiceità deve essere manifesta (deve essere facilmente distinguibile, sentenza del 2019). Altrimenti se il prestatore del servizio ritiene che l'illiceità non sia manifesta, deve segnalarlo alle autorità competenti. art 16-17, decreto legislativo del 2016. Questo decreto è stato abrogato e sostituito da un regolamento del 2022 (*digital services act*) di armonizzazione: le piattaforme sono responsabili se non si mobilitano a limitare l'accesso ad un contenuto illecito.
+
+> [!example] Amazon prende una percentuale della vendite. Se viene venduto un articolo contraffatto (*violazione del marchio*), amazon stesso ne deve rispondere (oltre al venditore) dato che ha avuto un guadagno dalla vendita 
+
+Responsabilità contrattuale ed extra-contrattuale: 
+- La responsabilità contrattuale (art. 1218 c.c.) deriva dall'inadempimento di un'obbligazione preesistente tra le parti. 
+- La responsabilità extracontrattuale o "aquiliana" (art. 2043 c.c.) sorge dal mancato rispetto del dovere generale di non danneggiare altri (_neminem laedere_), anche in assenza di un contratto. 
+
+Le differenze principali riguardano l'onere della prova, i termini di prescrizione (10 vs 5 anni) e l'entità del risarcimento.
+
+Perché spesso si da la colpa alla piattaforma? Perché magari l'utente ha fatto un danno e ha usufruito di strumenti come le VPN per non farsi trovare. Servendo un responsabile di un atto illecito si sanziona la piattaforma. Per quanto riguardo il risarcimento del danno c'è la possibilità di avere tutto il pagamento o dalla piattaforma o da chi ha perpetrato l'illecito. Nello specifico la piattaforma può pagare i danni provocati dall'illecito (successivi a questo) e poi si avvale del diritto di recesso (deindicizzazione ???)
+

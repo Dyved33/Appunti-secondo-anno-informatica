@@ -228,29 +228,123 @@ Per cambiare proprietario e permessi:
 
 ---
 ### 26-03-06
-Le system calls sono l'interfaccia per il programmatore ai servizi del sistema operativo. Vi si accede generalmente attraverso un API/linguaggi che supportino che la supportino. Ce ne sono vari tipi (di chiamate di sistema) e richiedono due tipi di accesso: *kernel mode* e *user mode*
-- Kernel mode = accesso senza limitazioni alle risorse HW/SW del sistema (memorreia, dispositivi i/O, registri, codeice del SO,...). Un errore in kernel mode può provocare un arresto del sistema
+Le system calls sono l'interfaccia per il programmatore ai servizi del sistema operativo (chiamata diretta al sistema). Vi si accede generalmente attraverso un API/linguaggi che supportino che la supportino. Ce ne sono vari tipi (accesso ai file, gestione di processi, IPC, semafori,...) e richiedono un "cambio di contesto": da *kernel mode* a *user mode* e viceversa.
+- Kernel mode = accesso senza limitazioni alle risorse HW/SW del sistema (memoria, dispositivi I/O, registri, codice del SO,...). Un errore in kernel mode può provocare un arresto del sistema
 - User mode = accesso limitato alle risorse di sistema (es. Memoria). Un errore in user mode può provocare il blocco del solo processo utente
 
 Quando si passa da un mode ad un altro il SO cambia il contesto di esecuzione del processore. Ciò implica un certo consumo di risorse di sistema (tempo di CPU, salvataggio e ripristino del processo e del contesto precedente,...)
 
 **Funzioni wrappers: Glibc**
-Le system calls sono invocate non direttamente ma tramite funzioni *wrappers* della glibc
+> [!info] Glibc = "GNU C library" è la libreria C standard che di solito si usa in Linux (contiene le funzioni standard richiamabili da C)
 
-PENSO MANCHI UN PEZZO
+Le system calls sono invocate non direttamente ma tramite funzioni *wrappers* della glibc:
+- Le *wrappers* hanno di solito lo stesso nome della corrispondente *system call* sottostante
+- Ove possibile è  preferibile chiamare le funzioni *wrappers* piuttosto che direttamente la *system call*. Questo perché spesso si limitano a fare poco altro in più rispetto alle *system call*, ma in altri casi compiono anche altre operazioni come controllo degli argomenti inseriti dal programmatore,... 
 
-Una pagina del comando man è syscall
-- Open = è un'interfaccia per una system call
-- Errno = è una libreria di C (errno.h) che mi dice precisamente quale sia l'errore in corso 
+***Accesso ai files:***
+Per l'accesso ai  file ci sono due possibilità:
+- System calls come open, write,... (o meglio i corrispondenti wrappers)
+- Standard I/O library come fopen, fwrite,... 
 
-> [!tip] se si guarda la lista di system call presenti nel dispositivo si vedono accanto dei numeri che mi dicono dove si trovano ?????????
+**System calls per i file:** 
 
-***System calls***
+| Nome                | Cosa fa                                                                        |
+| ------------------- | ------------------------------------------------------------------------------ |
+| open                | Apre un file in lettura e/o scrittura o crea un nuovo file                     |
+| close               | Chiude un file precedentemente aperto                                          |
+| read                | Legge da un file                                                               |
+| write               | Scrive su un file                                                              |
+| Iseek               | Sposta il puntatore di lettura/scrittura ad una determinata posizione nel file |
+| unlink              | Rimuove una entry di un file nel filesystem                                    |
+| stat (fstat, Istat) | Fornisce informazioni sugli attributi di un file                               |
+| dup, dup 2, dup 3   | Duplicano un file descriptor                                                   |
+**System calls per le directory:**
+
+| Nome  | Cosa fa                           |
+| ----- | --------------------------------- |
+| mkdir | Crea una directory                |
+| rmdir | Cancella una directory (se vuota) |
+| chdir | Cambia la directory corrente      |
 **Open**
+` #include int open(const char *pathname, int flags, mode_t mode)`
+- Apre il file specificato da *pathname*
+- *flags* deve includere uno tra `O_RDONLY, O_WRONLY o O_RDWR`
+- *mode* specifica i permessi da applicare al file in caso di creazione (permessi che vengono stabiliti anche in base a `UMASK`). La creazione può essere richiesta specificando `O_CREAT` tra i flags, altrimenti mode viene ignorato e può essere omesso
 
-GUARDA BENE COME FUNZIONA IL BUFFERING
-La bufferizzazione può farla il kernel dentro di se 
+| Altri flags (separati da \|) | Funzionamento                                                                              |
+| ---------------------------- | ------------------------------------------------------------------------------------------ |
+| O_CREAT                      | Se il file no esiste lo crea                                                               |
+| O_APPEND                     | Il file è aperto in accodo per la scrittura                                                |
+| O_TRUNC                      | Se il file esiste il contenuto viene azzerato                                              |
+| O_EXCL                       | Se usato insieme a O_CREAT e il file esiste, open () fallisce ed errno è settata ad EEXIST |
+Questa system call ha due valori di ritorno possibili:
+- Un intero positivo che è il *file descriptor* da usare per le operazioni successive
+- -1 in caso di errore che viene settato da errno
+
 > [!info] 
-> 1 = comando bash
-> 
-> 2 = system call
+> - di default il puntatore (file offset) nel file è posizionato all'inizio (a meno che non si specifichi O_APPEND)
+> - i file aperti andrebbero chiusi prima di terminare il programma con `#include int close(int fd)`, dove fd è il file descriptor ritornato da open () 
+> - l'apertura di un file crea una nuova entry nella tabella di sistema dei file aperti. Quando un file descriptor viene duplicato (con dup 2 o simili), questo si riferisce alla stessa *open file description* del descrittore del file originale $\implies$  i due file descriptors condividono lo stesso *file offset* e le stesse *file status flags*
+> - su Linux si può usare l'operazione kcmp (2) KCMP_FILE per testare se due file descriptors si riferiscono alla stessa open file description
+ 
+> [!tip] 
+> - Errno = è una libreria di C (errno.h) che mi dice precisamente quale sia l'errore in corso 
+> - con `strace -c ls` posso vedere le system call attive e alcuni dati che le riguardano: percentuale del tempo totale con cui il kernel è stato dentro alla syscall, tempo totale speso in quel tipo di syscall, media per ogni call, numero di volte che la syscall è stata eseguita, quante syscall hanno ritornato un errore, nome della syscall
+> - **buffering** = in generale il buffer è una certa quantità di memoria che deve essere riempita prima che accada una qualche chiamata o azione specifica (ad esempio se scrivo una stringa questa potrebbe non essere visualizzata subito perché la memoria buffer non è ancora piena). Esistono 3 tipi di buffer: interattivo (buffer si svuota quando appare `\n`), di pipe o di file (buffer si svuota solo quando la memoria predisposta è piena) e l'assenza di buffer (ogni carattere fa si che la memoria buffer si svuoti subito)
+
+``` C
+#include <fcntl.h> //serve per le costanti che usa open() come O_CREAT, O_RDWR
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>  //syscalls come write() e close()
+
+int main()
+{
+	int iRet = EXIT_SUCCESS, fd; //iRet è il valore che ritorna il programma e fd è il file descriptor
+	char sBuf[] = "Ciao!\n"; //buffer che verrà scritto nel file
+	
+	fd = open("pippo.txt", O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR); //chiamata al kernel con la syscall open()
+	//S_IRUSR = read permission for user
+	//S_IWUSR = write permission for users
+	if (fd >= 0)
+	{
+		if (write(fd, sBuf, strlen(sBuf)) == strlen(sBuf)) //chiamata al kernel con la syscall write()
+		//write prende come argomenti il file descriptor, il memory buffer e numero di bytes
+		{
+			printf("Ho scritto nel file pippo.txt, fd = %d\n", fd);
+			close(fd); //chiiamata al kernel con la syscall close() che rilascia il fd e flusha il kernel buffer
+		}
+		else //write error handling
+		{
+			printf("errno = %d\n", errno);
+			perror("Errore in write()"); // stampa un messaggio leggibile
+			iRet = EXIT_FAILURE;
+		}
+	}
+	else //open error handling
+	{
+		printf("errno = %d\n", errno); 
+		perror("Errore in open()"); /* stampa la stringa a video: descrizione errore*/
+		iRet = EXIT_FAILURE;
+	}
+	return iRet; //valori che possono essere ritornati: 0 per il successo e -1 per il fallimento
+}
+//se eseguo il programma con strace ./nomeProgramma vedo tutto il percorso delle varie syscalls
+```
+
+> [!info] fd =
+> - 0 = stdin
+> - 1 = stdout
+> - 2 = stderr
+> - 3 = riguarda l'apertura del file
+
+| Comando      | Contenuto                                              |
+| ------------ | ------------------------------------------------------ |
+| Man syscalls | Linux system calls                                     |
+| Man 7 libc   | Overview of standard C libraries on Linux              |
+| Strace -c ls | Summary dell'uso delle syscalls                        |
+| Man 2 open   | Mostra la pagina del manuale per la system call *open* |
+
+---

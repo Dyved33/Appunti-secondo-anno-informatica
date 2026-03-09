@@ -316,30 +316,38 @@ A ogni automa $A = (Q, \Sigma, \delta, q_0, F)$ associamo un grafo diretto con f
 > [!example] ![[Screenshot From 2026-03-05 21-54-11.png]]
 
 ---
-### 26-03-06
+### 26-03-06 lz. 4
 > [!example] 
 > - ![[Screenshot From 2026-03-06 10-06-15.png]]
 > - ![[Screenshot From 2026-03-06 10-06-27.png]]
 > - ![[Screenshot From 2026-03-06 10-06-39.png]]
 
 ***Automi a stati finiti non deterministici:***
+Abbiamo detto che un automa è rappresentato da un grafo e che per ogni stato $q$ e ogni lettera $a$ esiste esattamente un arco uscente da $q$ con etichetta $a$. Le parole accettate da $A$ sono le etichette dei cammini dallo stato iniziale a uno stato finale.
+Se da questa definizione togliessi l'aspetto degli archi otterrei: una maggiore libertà nella progettazione ma avrei più difficoltà a verificare se una parola è accettata o meno. La soluzione a ciò è un modello non-deterministico che mi permette di fare una conversione automatica al modello deterministico.  Il modello non-deterministico:
+- A ogni passo il dispositivo esegue una fra le transizioni possibili (purché esista)
+- L'input è accettato se almeno una delle possibili computazioni ha successo (termina in uno stato finale)
+- L'input è rifiutato se tutte le possibili computazioni falliscono (terminano in uno stato non finale o prima che il nastro sia esaurito)
 
-MANCA IL PROBLEMA DAL QUALE NASCE IL MODELLO NON DETERMINISTICO
-
-Possiamo definire Automi a Stati finiti non Deterministici, dei meccanismi che non hanno la restrizione dei modelli deterministici: un meccanismo che può assumere un numero predefinito di configurazioni interne, che ha un nastro di input, ma che ad ogni passo non esegue più una sola transizione ben determinata ma dispone di un ventaglio di possibilità e può quindi eseguire varie transizioni (o nessuna). L’input viene accettato se tra le tante computazioni possibili c’è n’è almeno una che termina in uno stato finale. Quindi una parola viene rifiutata se tutte le computazioni terminano in uno stato non finale o terminano prima che il nastro sia esaurito. 
+**Sintesi** = Possiamo definire Automi a Stati finiti non Deterministici, dei meccanismi che non hanno la restrizione dei modelli deterministici: un meccanismo che può assumere un numero predefinito di configurazioni interne, che ha un nastro di input, ma che ad ogni passo non esegue più una sola transizione ben determinata ma dispone di un ventaglio di possibilità e può quindi eseguire varie transizioni (o nessuna). L’input viene accettato se tra le tante computazioni possibili c’è n’è almeno una che termina in uno stato finale. Quindi una parola viene rifiutata se tutte le computazioni terminano in uno stato non finale o terminano prima che il nastro sia esaurito. 
 
 **Def:** un automa a stati finiti non deterministico è una quintupla $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ dove:
 - Q è l'insieme degli stati
 - $\Sigma$ è l'alfabeto di input
-- $\delta: Q \times \Sigma \to \wp(Q)$
+- $\delta: Q \times \Sigma \to \wp(Q)$ è la funzione di transizione
 - $q_0 \in Q$ è lo stato iniziale
 - $F \subseteq Q$ è l'insieme degli stati finali
 
-In sostanza vuol dire che nel grafo dove non c’è più il limite al numero di frecce che escono da uno stato, c’è un cammino che ha come etichetta w, che parte da uno stato iniziale e arriva in uno stato finale.
+In sostanza vuol dire che nel grafo, nel quale non c’è più il limite al numero di frecce che escono da uno stato, c’è un cammino che ha come etichetta $w$, che parte da uno stato iniziale e arriva in uno stato finale.
+Una parola $w = a_1, a_2,...,a_n, (a_1,...a_n \in \Sigma, n \geq 0)$ è *accettata* da $A$ se esistono stati $q_1, q_2,...,q_n \in Q$ tali che $q_i \in \delta(q_{i-1}, a_i), 1 \leq i \leq n, q_n \in F$. L'insieme delle parole accettate da $A$ si dice *linguaggio accettato (o riconosciuto)* da $A$ e si denota con $L(A)$.
 
-MANCA QUALCOSA
+A ogni automa non-deterministico $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ associamo un grafo diretto con frecce etichettate:
+- I vertici sono gli stati
+- Le frecce sono le triple $(q,a,p)$ con $q \in Q$, $a \in \Sigma$, $p \in \delta(q,a)$
+- Lo stato iniziale è denotato da una freccia entrante
+- Gli stati finali sono identificati dal doppio bordo
 
-Una parola $w = a_1, a_2,...,a_n, (a_1,...a_n \in \Sigma, n \geq 0)$ è *accettata* da $A$ se esistono stati $q_1, q_2,...,q_n \in Q$ tali che $q_i \in \delta(q_{i-1}, a_i), 1 \leq i \leq n, q_n \in F$
+Ci si convince facilmente a questo punto che:
 - Una parola *w* può essere etichetta di molti cammini uscenti dallo stato iniziale, o anche nessuno
 - La parola *w* è accettata $\iff$ c'è un cammino dallo stato iniziale a uno stato finale con etichetta *w*
 - Questo non esclude però che vi possano essere altri cammini con etichetta *w* che partono dallo stato iniziale e terminano in uno stato non finale
@@ -347,28 +355,33 @@ Una parola $w = a_1, a_2,...,a_n, (a_1,...a_n \in \Sigma, n \geq 0)$ è *accetta
 > [!example] 
 > ![[Screenshot From 2026-03-06 11-03-22.png]]
 > ![[Screenshot From 2026-03-06 11-03-35.png]]
-
-SISTEMA STA PARTE
-
-> [!info] ![[Pasted image 20260306110549.png]]
+  >![[Pasted image 20260306110549.png]]
+  > 
 > Questa computazione non è accettata perché non finisce in uno stato finale, ma questo non significa che la parola non sia accettata perché possono esserci altre computazioni (come la verde) che terminano in uno stato finale
 
-Apparentemente questo tipo di progettazione non ci da nessun vantaggio, perché le computazioni da fare diventerebbero troppe. Supponiamo infatti di avere 2 cammini possibili per ogni scelta, e dovessimo leggere una parola di lunghezza 10, questo vorrebbe dire che dovremmo fare 210 computazioni. Proviamo però a ragionare come segue: se mi trovo in q0 e il mio input è a, posso andare o in q0 o in q1, ecc… Se mi trovo in q1 e l’input è b, andrò in q2,… Quindi ad ogni passo, in base alla colonnina che avevo al passo precedente, e alla lettera di input, produco una colonnina nuova. Questo procedimento è praticamente uguale a quello di un automa a stati deterministico, perché in base alla configurazione del mio dispositivo e alla lettera di input, determina la configurazione successiva. In questo caso la differenza è che abbiamo delle colonnine di stati.
+Apparentemente questo tipo di progettazione non ci da nessun vantaggio, perché le computazioni da fare diventerebbero troppe. Supponiamo infatti di avere 2 cammini possibili per ogni scelta, e dovessimo leggere una parola di lunghezza 10, questo vorrebbe dire che dovremmo fare 210 computazioni. Proviamo però a ragionare come segue: se mi trovo in q0 e il mio input è a, posso andare o in q0 o in q1, ecc… Se mi trovo in q1 e l’input è b, andrò in q2,… Quindi ad ogni passo, in base alla colonna che avevo al passo precedente, e alla lettera di input, produco una colonna nuova. Questo procedimento è praticamente uguale a quello di un automa a stati deterministico, perché in base alla configurazione del mio dispositivo e alla lettera di input, determina la configurazione successiva. In questo caso la differenza è che abbiamo delle colonnine di stati.
 
 > [!info] ![[Pasted image 20260306110859.png]]
 
-**Teorema**: Sia $A$ un automa a stati finiti non deterministico, esiste effettivamente un equivalente automa a stati finiti deterministico A’ tale che L (A) = L (A’), cioè esiste l’automa deterministico e l’algoritmo per costruire questo automa a partire dall'automa non deterministico. Quindi, prima andremo a disegnare l’automa a stati non deterministico (prima immagine con più percorsi in verde e rosso), cosa che risulta molto più facile rispetto al crearne uno deterministico, e poi sapremo che esiste l’algoritmo in grado di trasformare quel grafo nel grafo di un automa a stati deterministico (seconda immagine con colonnine). CONTROLLA QUI 
+**Teorema**: Sia $A$ un automa a stati finiti non deterministico, esiste effettivamente un equivalente automa a stati finiti deterministico $A’$ tale che $L (A) = L (A’)$, cioè esiste l’automa deterministico e l’algoritmo per costruire questo automa a partire dall'automa non deterministico. Quindi, prima andremo a disegnare l’automa a stati non deterministico (prima immagine con più percorsi in verde e rosso), cosa che risulta molto più facile rispetto al crearne uno deterministico, e poi sapremo che esiste l’algoritmo in grado di trasformare quel grafo nel grafo di un automa a stati deterministico (seconda immagine con colonne). 
+**Dimostrazione:** Gli stati dell’automa deterministico registreranno l’insieme gli stati raggiungibili dalle computazioni dell’automa non deterministico sul medesimo input $\rightarrow$ Accetto se fra questi ce n’è uno finale
 
 **Costruzione:**
 Sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ l'automa non deterministico. Definisco l'automa deterministico $A' = \langle Q', \Sigma, \delta', s_0, F' \rangle$ come segue: 
 - L'insieme degli stati è l'insieme $Q' = \wp(Q)$ costituito dai sottoinsiemi di $Q$ (uno stato dell' $A$ deterministico è in realtà un'insieme di stati dell' $A$ non deterministico)
 - Lo stato iniziale è $s_0 = \{q_0\}$ (singleton costituito dallo stato iniziale dell' $A$ non deterministico)
 - Gli stati finali sono tutti i sottoinsiemi di $Q$ che contengono almeno un elemento di $F$ (quindi almeno uno stato finale dell' $A$ di partenza), cioè: $F' = \{s \in p(Q) | s \cap F \neq \emptyset\}$ 
-- La funzione di transizione $\delta'(s,a) = \displaystyle\bigcup_{q \in s} \delta(q,a), s \in \wp(Q), a \in \Sigma$ (prende in input uno stato dell' $A$, cioè un insieme degli stati dell'automa non deterministico, e una lettera a)
+- La funzione di transizione $\delta'(s,a) = \displaystyle\bigcup_{q \in s} \delta(q,a), s \in \wp(Q), a \in \Sigma$ (prende in input uno stato dell' $A$, cioè un insieme degli stati dell'automa non-deterministico, e una lettera $a$)
+**Dimostrazione:** per ogni $w \in \Sigma^*$ risulta che $\hat{\delta'}(s_0,w) = \{q \in Q | \text{nel grafo di A c'è un cammino da}\ q_0 \ \text{a} \ q \ \text{con etichetta} \ w\}$ (dimostrazione per induzione sulla lunghezza di $w$). Pertanto sono equivalenti: 
+- $w\ \text{è accettata da} \ A$
+- $\hat{\delta'}(s_0,w) \ \text{contiene uno stato di} \ F$
+- $\hat{\delta'}(s_0,w) \in F'$
+- $w \ \text{è accettata da} \ A'$
+$\implies L(A) = L(A')$ 
 
-Come abbiamo accennato precedentemente, però, sarebbero presenti troppi stati da controllare (se Q=n, allora Q’=2n). Per fortuna non tutti questi stati sono necessari: possiamo definire uno stato necessario/accessibile come un cammino nel grafo dell’automa che, dallo stato iniziale, mi porta a q. Tutti gli altri stati si dicono inaccessibili.
+Come abbiamo accennato precedentemente, però, sarebbero presenti troppi stati da controllare (se $Q=n$, allora $Q’=2^n$). Per fortuna non tutti questi stati sono necessari: possiamo definire uno stato necessario/accessibile come un cammino nel grafo dell’automa che, dallo stato iniziale, mi porta a $q$. Tutti gli altri stati si dicono inaccessibili.
 
-**Def:** sia $A = \langle Q, \Sigma, \delta, q_0, F$ un automa a stati finiti deterministico. Uno stato $q \in Q$ si dice *accessibile* se $q = \hat{\delta}(q_0,w)$ per qualche $w \in \Sigma^*$
+**Def:** sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ un automa a stati finiti deterministico. Uno stato $q \in Q$ si dice *accessibile* se $q = \hat{\delta}(q_0,w)$ per qualche $w \in \Sigma^*$
 
 Se io elimino tutti questi stati inaccessibili e restringo la funzione di transizione (delta cappello) solo agli stati accessibili, ottengo un automa con un numero di stati più piccolo, equivalente a quello di partenza, che accetta lo stesso linguaggio di quello di partenza.
 
@@ -378,17 +391,18 @@ Se io elimino tutti questi stati inaccessibili e restringo la funzione di transi
 Attraverso un Algoritmo di Determinizzazione andremo a progettare un automa che prevede solo gli stati accessibili, e di conseguenza avrà un numero di stati molto inferiore di 2 n.
 
 **Algoritmo di determinizzazione:**
-1. Prima di tutto inserisco nella lista degli stati, lo stato iniziale dell’automa deterministico, che come abbiamo visto prima corrisponde all'insieme costituito dal solo stato iniziale dell’automa non deterministico di partenza: $s_0={q_0}$ 
-2. Per ogni stato r della lista (che per ora contiene il solo elemento q0, singleton) e ogni lettera $a \in \Sigma$ 
-   - Calcolo il valore della funzione di transizione sulla coppia stato-lettera: $s= \delta'(r, a)$; Una volta calcolato ho due possibilità: o lo stato è già nella lista degli stati, oppure no. 
-   - Se $s$ non è nella lista degli stati allora lo appendo alla lista degli stati. 
-   - Se $s$ contiene uno stato finale di A, aggiungo s alla lista degli stati finali. 
+1. Prima di tutto inserisco nella lista degli stati, lo stato iniziale dell’automa deterministico, che come abbiamo visto prima corrisponde all'insieme costituito dal solo stato iniziale dell’automa non deterministico di partenza: $s_0=\{q_0\}$ 
+2. Per ogni stato $r$ della lista (che per ora contiene il solo elemento $q0$, singleton) e ogni lettera $a \in \Sigma$ 
+3. Calcolo il valore della funzione di transizione sulla coppia stato-lettera: $s= \delta'(r, a)$; Una volta calcolato ho due possibilità: o lo stato è già nella lista degli stati, oppure no.   
+4. Se $s$ non è nella lista degli stati allora lo appendo alla lista degli stati. 
+5. Se $s$ contiene uno stato finale di $A$, aggiungo $s$ alla lista degli stati finali. 
 
 > [!example] ![[Screenshot From 2026-03-06 11-32-20.png]]
 > ![[Screenshot From 2026-03-06 11-32-32.png]]
 > ![[Screenshot From 2026-03-06 11-33-08.png]]
 > Come possiamo notare, l’automa deterministico ha più stati rispetto a quelli che avevamo trovato noi manualmente nel primo esempio abac (pag.11), successivamente vedremo infatti un altro algoritmo in grado di trovare partendo da un automa non deterministico, un automa deterministico con il minimo numero di stati possibile (automa minimo).
 
+> [!info] Caso difficile:
+> ![[Pasted image 20260308174311.png]]
 
-
-CONTROLLA CHE SICURO MANCA QUALCOSA
+---

@@ -31,12 +31,5 @@ int main()
         perror("Errore in open()"); /* stampa la stringa a video: descrizione errore*/
         iRet = EXIT_FAILURE;
     }
-    /*
-    fd = file descriptor
-    primo parametro = pathname
-    secondo parametro = flags
-    terzo parametro = mode (file mode bits)
-
-    */
     return iRet;
 }
