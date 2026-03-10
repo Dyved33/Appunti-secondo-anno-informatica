@@ -4,16 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "cf950b24d857769b",
+        "id": "97b5820ee912a144",
         "type": "tabs",
         "children": [
           {
-            "id": "d4f2420329c5e1a0",
+            "id": "7cd04c99558fa8ee",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Diritto privato dell'informatica/Appunti lezione.md",
+                "file": "Linguaggi formali e compilatori/Appunti lezione.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -23,15 +23,64 @@
                   "sortOrder": "alphabetical",
                   "showSearch": false,
                   "searchQuery": "",
-                  "backlinkCollapsed": true,
+                  "backlinkCollapsed": false,
                   "unlinkedCollapsed": true
                 }
               },
               "icon": "lucide-file",
               "title": "Appunti lezione"
             }
+          },
+          {
+            "id": "b7c5e3dd0ad759d1",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Sistemi operativi e laboratorio/Laboratorio.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "Laboratorio"
+            }
+          },
+          {
+            "id": "b202a513050654f5",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Sistemi operativi e laboratorio/Teoria.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "Teoria"
+            }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -88,7 +137,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 256.5004348754883,
+    "width": 428.5004348754883,
     "collapsed": true
   },
   "right": {
@@ -207,18 +256,20 @@
       "workspaces:Manage workspace layouts": false
     }
   },
-  "active": "d4f2420329c5e1a0",
+  "active": "b202a513050654f5",
   "lastOpenFiles": [
-    "Diritto privato dell'informatica/Appunti lezione.md",
-    "Linguaggi formali e compilatori/Appunti lezione.md",
     "Sistemi operativi e laboratorio/Laboratorio.md",
+    "Linguaggi formali e compilatori/Appunti lezione.md",
+    "Algoritmi e strutture dati modulo 2/Appunti lezione.md",
+    "Algoritmi e strutture dati modulo 2/lezione 3-4.md",
+    "Pasted image 20260310084050.png",
+    "Diritto privato dell'informatica/Appunti lezione.md",
     "Linguaggi formali e compilatori/images/Pasted image 20260308174311.png",
     "Linguaggi formali e compilatori/Pasted image 20260308174311.png",
     "Sistemi operativi e laboratorio/Teoria.md",
     "Pasted image 20260308174311.png",
     "Untitled.md",
     "Ingegneria del software/Appunti lezione.md",
-    "Algoritmi e strutture dati modulo 2/Appunti lezione.md",
     "Sistemi operativi e laboratorio/pippo.txt",
     "Sistemi operativi e laboratorio/scfile",
     "Sistemi operativi e laboratorio/scfile.c",
@@ -231,7 +282,6 @@
     "Linguaggi formali e compilatori/images/Screenshot From 2026-03-06 11-26-56.png",
     "Linguaggi formali e compilatori/images/Screenshot From 2026-03-06 11-03-35.png",
     "Linguaggi formali e compilatori/images/Screenshot From 2026-03-06 11-03-22.png",
-    "Linguaggi formali e compilatori/images/Pasted image 20260306110859.png",
     "Linguaggi formali e compilatori/images",
     "Sistemi operativi e laboratorio/images",
     "Recording 20260304152810.m4a",

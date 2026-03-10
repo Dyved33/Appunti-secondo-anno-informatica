@@ -293,3 +293,149 @@ Una hash table è una generalizzazione di un array. In un array gli elementi ven
 Idealmente *h(k)* verrebbe scelto casualmente e indipendentemente da $\{0,...,m-1\}$. Una volta scelto *h(k)* ogni valutazione seguente di *h(k)* deve ridare lo stesso risultato. L'idea che la hash function sia indipendente, uniforme o casuale è teoretico e non può essere implementato nella pratica (si usa per analizzare il comportamento della hash function e per trovare delle approssimazioni pratiche alla forma ideale)
 
 ![[Screenshot From 2026-03-03 23-14-22.png]]
+
+---
+### 26-03-09 lz. 5-6
+***Collision resolution by chaining:***
+Come un divide-et-impera non ricorsivo posso usare la hash function per dividere gli n elementi in maniera casuale in m sottoinsiemi, ognuno dei quali con circa $n/m$ elementi. Successivamente posso gestire ciascun sottoinsieme in maniera indipendente come una linked list. Nei vari casi delle operazioni di inserimento, ricerca e cancellazione abbiamo:
+- *insertion* = il caso peggiore richiede $O(1)$ in tempo
+- *search* = il caso peggiore richiede una quantità di tempo proporzionale alla lunghezza della lista di elementi in ogni slot
+- *deletion* = dato un puntatore x all'elemento da cancellare, in questo modo non devo cercare tale elemento
+
+Data una chiave quanto ci metto a trovare l'elemento con quella chiave o per determinare che non c'è nessun elemento con quella chiave? Posso sfruttare un'analisi in termine di *fattore di carico*: $\alpha = n/m$ con :
+- *n* = numero di elementi nella tabella
+- *m* = numero di slot nella tabella = numero di linked lists (possibilmente vuote)
+- Il fattore di carico è il numero medio di elementi per ogni linked list
+- Posso avere $\alpha < 1, \alpha = 1, \alpha > 1$
+
+Il caso medio dipende da quanto bene la hash function distribuisce le chiavi tra gli slot. Il caso peggiore, invece, si ha quando tutte le *n* chiavi sono inserite nello stesso slot $\implies$ per esempio il caso peggiore della ricerca è $\Theta(n)$. Se mi concentro sulla performance del caso medio dell'hashing with chaining:
+- Assumo *hashing indipendente e uniforme* = ogni elemento dato può essere distribuito in ognuno degli *m* slot
+- L'*hashing* uniforme e indipendente è universale = la probabilità che ogni 2 chiavi distinte collidano è $1/m$
+- $j = 0,1,...,m-1$, si denota la lunghezza della lista $T[j]$ da $n_j$ , in questo modo $n = n_0 + n_1 + ... + n_{m-1}$
+- Il valore atteso di $n_j$ è $E[n_j] = \alpha = n/m$
+- Assumo che la hash function richieda $O(1)$ in tempo per essere eseguita, in questo modo il tempo richiesto per cercare l'elemento di chiave *k* dipende dalla lunghezza $n_{h(k)}$ della lista $T[h(k)]$
+ 
+**Teorema:** una ricerca senza successo richiede nel caso medio $\Theta(1+\alpha)$ in tempo (dimostrazione si basa sul fatto che una ricerca senza successo arriva in fondo alla lista di lunghezza attesa $\alpha$ e a questo bisogna aggiungere il tempo per eseguire la hash function). Anche una ricerca con successo nel caso medio richiede $\Theta(1+\alpha)$ in tempo (**Teorema**). 
+
+**Cosa rende buona una hash function?**
+Idealmente la hash function soddisfa dell'hashing indipendente e uniform: ogni chiave ha la stessa probabilità delle altre chiavi di essere distribuita in ognuno dei *m* slot. Nella pratica, però, non è possibile soddisfare tale assunto siccome non si conosce in anticipo la distribuzione di probabilità che le chiavi siano estratte, e le chiavi potrebbero non essere estratte indipendentemente (se si conosce la distribuzione delle chiavi si può avere un vantaggio da ciò)
+
+Nella pratica le hash function assumono che le chiavi siano alternativamente:
+- Un interno non negativo e corto che rientri in una *machine word* (32 o 64 bit di solito)
+- Un vettore corto di interi non negativi, ciascuno dei quali rientra in un limite definito
+
+**Static hashing**
+Si tratta di una hash function fissa per la quale la casualità viene solo dalla "speranza per la distribuzione" delle chiavi
+- *Division method:* $h(k) = k \ \text{mod} \ m$. Il vantaggio è che è veloce e richiede solo un'operazione di divisione. Una buona scelta per $m$ è un numero primo non troppo vicino ad una potenza esatta di 2
+> [!example] $m$ = 20 e $k$ = 91 $\implies$ $h(k) = 11$
+- *Multiplication method:* si sceglie la costante $A \ \text{nel range} \ 0 < A < 1 \ \rightarrow$ moltiplico la chiave $k \ \text{per} \ A \ \rightarrow$ estraggo la parte frazionaria da $k*A \rightarrow$ moltiplico la parte frazionaria per $m \rightarrow$  prendo il *floor* del risultato. Questo metodo è più lento del *division method*, ma il valore di $m$ non è critico (può essere scelto indipendentemente da A)
+> [!info] $h(k) = \lfloor m(k*A \ \text{mod} \ 1)\rfloor$, dove $k*A \ \text{mod} \ 1 = k*A - \lfloor k*A \rfloor = \ \text{parte frazionaria di} \ k*A$ 
+
+**Hashing casuale**
+*Problema*: Un avversario malevolo, conoscendo la funzione hash, può scegliere chiavi che collidono tutte nello stesso slot, producendo il caso pessimo. Qualsiasi funzione hash statica è vulnerabile a questo attacco.
+*Soluzione*: Scegliere la funzione hash **casualmente**, indipendentemente dalle chiavi. Un caso particolare è l’**hashing universale**, che garantisce buone prestazioni medie quando si usa il chaining, indipendentemente dalle chiavi.
+
+Si consideri una collezione finita $\mathscr{H}$  di funzioni hash che mappi l'universo $U$ di chiavi nel range $\{0,1,...,m-1\}$. $\mathscr{H}$ è universale  se per ogni coppia di chiavi $k_1, k_2 \in U$, il numero di funzioni hash $h \in \mathscr{H}$ con $h(k_1) = h(k_2) \leq |\mathscr{H}|/m$. In altre parole $\mathscr{H}$ 
+è universale se, con una funzione hash *h* scelta casualmente da $\mathscr{H}$, la probabilità di una collisione tra due chiavi distinte non supera l' $1/m$ di probabilità di scegliere due slot casuali e indipendenti
+
+**Proprietà hashing casuale**
+Si possono ottenere limiti teorici sulle collisioni e sulle prestazioni attese. Considero una famiglia di hash function $\mathscr{H}$ su un dominio $U$ e con range $\{0,1,...,m-1\}$, le chiavi appartengono a $U$, i numeri degli slot sono in $\{0,1,...,m-1\}$, e una hash function *h* è presa casualmente da $\mathscr{H}$:
+- Uniforme: la probabilità di prendere *h* tale che $h(k) = q$ è $1/m$
+- Universale: per ogni chiave distinta $k_1, k_2$, la probabilità che $h(k_1) = h(k_2)$ è al massimo $1/m$
+- $\epsilon$-universale: per ogni chiave distinta $k_1, k_2$, la probabilità che $h(k_1) = h(k_2)$ è al massimo $\epsilon$
+- $d$ -indipendente: per ogni chiave distinta $k_1, k_2$ e ogni slot $q_1,q_2,...q_d$, non necessariamente distinto, la probabilità che $h(k_i) = q_i$ è $1/{m^d}$ 
+
+**Hashing basato su teoria dei numeri**
+Alcune famiglie di funzioni hash utilizzano proprietà della teoria dei numeri per garantire buone distribuzioni. Scelto un numero primo *p* abbastanza grande da permettere che ogni possibile chiave appartenga a $\{0,1,...,p-1\}$ e si assuma che $p > m$. Si denoti $\mathbb{Z}_p = \{0,1,...,p-1\}$, $\mathbb{Z^*}_p = \{0,1,...,p-1\}$. Dato ogni $a \in \mathbb{Z^*}_p$ e ogni $b \in \mathbb{Z}_p$, si definisce $h_{ab}(k) = ((ak + b) \ \text{mod} \ p) \ \text{mod} \ m$
+
+Dato *p* e *m*, la famiglia di hash function è $\mathscr{H}_{ab} = \{h_{ab} : a \in \mathbb{Z^*}_p, b \in \mathbb{Z}_p$ (ognuna delle quali mappa da $\mathbb{Z}_p$ a $\mathbb{Z^*}_p$). Questa famiglia di hash functions contiene $p(p-1)$ funzioni, una per ogni combinazioni di *a* e *b*.
+
+**Teorema:** la famiglia $\mathscr{H}_{p m}$ definita sopra di hash functions è universale
+
+**Open addressing**
+Idea principale:
+- Tutti gli elementi sono memorizzati **direttamente nella tabella**.   
+- Ogni slot contiene un elemento oppure NIL.
+- La tabella può riempirsi, ma il fattore di carico non può superare 1.
+
+**Inserimento****
+ 1. Calcolare la prima posizione scelta.
+ 2. Se è libera, inserire l’elemento. 
+ 3. Se è occupata, calcolare la seconda posizione. 
+ 4. Continuare finché si trova uno slot libero.
+Ogni elemento ha una propria sequenza di preferenze.
+
+```
+Hash-insert(T,k)
+i = 0
+repeat
+ q = h(k,i)
+ if Y[q] == NIL
+  T[q] = k
+  return q
+ else
+  i = i+1
+until i == m
+error "hash table overflow"   
+```
+
+**Ricerca**
+Si segue la stessa sequenza di probe dell’inserimento, ma se si incontra uno slot vuoto, si conclude che l’elemento non è presente. Il vantaggio di tale opzione è che non servono puntatori (a differenza del chaining) e che lo spazio risparmiato può essere usato per aumentare la dimensione della tabella (slide 30 pdf 11 per avere più specifiche nella ricerca della chiave k).
+
+```
+Hah-Search(T,k)
+i =0
+repeat
+ q = h(k,i)
+ if T[q] == k
+  return q
+ i = i+1
+until T[q] == NIL or i == m
+return NIL  
+```
+
+**Cancellazione**
+La cancellazione è più delicata rispetto al chaining.  
+Non si può semplicemente mettere NIL, perché si interromperebbero le sequenze di probe.  
+Si usano marcatori speciali (slot DELETED) al posto di *NIL* per marcare uno slot come vuoto durante la cancellazione.
+- Search dovrebbe trattare DELETED come se lo slot contenesse una chiave che non corrisponde a quella che viene cercata
+- Insertion dovrebbe trattare DELETED come se lo slot fosse vuoto, così da poter essere riusato
+Lo svantaggio di usare DELETED è che ora il tempo di ricerca non dipende più dal fattore di carico $\alpha$. Un caso speciale di open addressing, chiamato linear probing, evita di avere slot marcati con DELETED
+
+**Sequenze di Probe**
+La situazione ideale è quella di *independent uniform permutation hashing*: ogni chiave può avere ognuna delle $m!$ permutazioni di $\langle 0,1,...,m-1 \rangle$. Siccome è complesso implementare una vera independent uniform permutation hashing, posso approssimarla
+
+**Double hashing**
+Si usano due funzioni hash ausiliari $h_1, h_2$ e probe number i: $h(k,i)=(h_1(k)+i*h_2(k)) \ \text{mod} \ m$. Il primo probe va nello slot $h_1(k)$, successivamente i probe sono compensati dallo slot precedente da $h_2(k)$ mod $m$ $\implies$ la probe sequence dipende dalle chiavi in 2 modi. È necessario che $h_2(k)$ sia relativamente primo di *m* (nessun fattore comune a parte 1) per garantire che la probe sequence sia una permutazione di $\langle 0,1,...m-1 \rangle$
+- Si può scegliere *m* affinché sia una potenza di 2 e $h_2$ affinché produca sempre un numero dispari
+- Si può fare in modo che *m* sia primo e avere $1 < h_2(k) < m$
+Riduce clustering e migliora la distribuzione.
+
+**Linear probing**
+È un caso speciale del double hashing. Data una funzione hash ausiliaria $h'$, la probe sequence inizia allo slot $h'(k)$ e continua attraverso la tabella (da slot m-1 allo slot 0). Data una chiave k e un probe number $i, (0 \leq i \leq m)$: $h(k,i) = (h'(k) + i) \ \text{mod} \ m$. Il probe iniziale determina tutta la sequenza $\implies$ ogni *m* sequenza possibile. Semplice ma soffre di **primary clustering**.
+
+**Analisi dell'open addressing**
+Un 'analisi in termini di fattore di carico $\alpha$ implica che:
+- Si assuma che la tabella non si riempe mai, quindi si ha sempre $0 \leq n < m \implies 0 \leq \alpha < 1$ 
+- Si assuma un independent uniform permutation hashing
+- Nessuna cancellazione
+- In una ricerca con successo, ogni chiave è ugualmente probabile che sia cercata 
+
+**Teorema:** il numero atteso di probe in una ricerca senza successo è al massimo $1/(1-\alpha)$
+**Corollario:** il numero atteso di probe da inserire è al massimo $1/(1-\alpha)$
+
+**Teorema:** il numero atteso di probe in una ricerca con successo è al massimo $1/\alpha * \ln(1/(1-\alpha))$
+
+(su pdf ci sono le dimostrazioni di tutti e 3)
+
+**Considerazioni pratiche**
+Le CPU moderne influenzano il comportamento dell’hashing.
+- Gerarchie di memoria:
+ - Le cache sono piccole e veloci.
+ - Organizzate in cache line (es. 64 byte contigui).
+ - È più veloce riusare una cache line che accedere alla memoria principale.
+ - Iterare su dati contigui è vantaggioso.
+- Set di istruzioni avanzati: Alcune istruzioni hardware (usate per crittografia) possono essere sfruttate per calcolare hash efficienti.
+- Linear Probing: Nel modello RAM teorico il linear probing può performare male. In presenza di cache gerarchiche:
+ - Funziona meglio, 
+ - Perché probe consecutivi tendono a restare nella stessa cache line.
