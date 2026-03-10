@@ -27,7 +27,6 @@
 * È specificamente pensato per sistemi **touchscreen mobile**, come telefoni e tablet.
 
 **Concetti Base dei Sistemi Unix**
-
 =>*Struttura e Architettura*
 * Sistemi **multitasking e multiuser**.
 * **Modularità**: Unix non è un sistema monolitico.
@@ -46,7 +45,6 @@
 * Gli utenti possono essere aggregati in **gruppi** per definire e semplificare privilegi comuni.
 
 **Terminale, Console e BASH**
-
 =>*Definizioni*
 * **Terminal**: Un ambiente di input e output testuale. Una finestra di terminale (o emulatore di terminale) è una finestra di solo testo che emula una console all'interno di una GUI (Graphical User Interface).
 * **Console**: Un terminale fisico; un pannello della strumentazione contenente i controlli del computer. Una console è quindi un tipo specifico di terminale.
@@ -129,7 +127,7 @@ Le **opzioni** iniziano tipicamente con il carattere `-` e modificano il comport
 * `-t`: Ordina i file mostrati in base alla data di ultima modifica (dal più recente al meno recente).
 * `-r`: Inverte il senso dell'ordinamento.
 * `-h`: Visualizza le dimensioni dei file in un formato "human readable" e facilmente leggibile.
-	
+
 > [!EXAMPLE] Esempio combinato
 > Il comando `ls -lrta` elenca tutti i file e le cartelle (compresi i nascosti), ordinandoli in base al tempo di ultima modifica (dal meno recente al più recente) formattandoli in modalità lunga.
 
@@ -231,7 +229,6 @@ Per cambiare proprietario e permessi:
 Le system calls sono l'interfaccia per il programmatore ai servizi del sistema operativo (chiamata diretta al sistema). Vi si accede generalmente attraverso un API/linguaggi che la supportino. Ce ne sono vari tipi (accesso ai file, gestione di processi, IPC, semafori,...) e richiedono un "cambio di contesto": da *kernel mode* a *user mode* e viceversa.
 - Kernel mode = accesso senza limitazioni alle risorse HW/SW del sistema (memoria, dispositivi I/O, registri, codice del SO,...). Un errore in kernel mode può provocare un arresto del sistema
 - User mode = accesso limitato alle risorse di sistema (es. Memoria). Un errore in user mode può provocare il blocco del solo processo utente
-
 Quando si passa da un mode ad un altro il SO cambia il contesto di esecuzione del processore. Ciò implica un certo consumo di risorse di sistema (tempo di CPU, salvataggio e ripristino del processo e del contesto precedente,...)
 
 **Funzioni wrappers: Glibc**
@@ -247,6 +244,32 @@ Per l'accesso ai  file ci sono due possibilità:
 - Standard I/O library come fopen, fwrite,... 
 
 **System calls per i file:** 
+**write**
+`ssize_t write(int fd, const void *buf, size_t count);`
+Scrive i primi count byte contenuti in buf nel file aperto identificato da fd (file descriptor ritornato da open (2)). Ritorna il numero di byte scritti (che può anche essere inferiore a count se, per esempio, il device di scrittura si è riempito) o -1 in caso di errore (errno settata)
+
+**read**
+`ssize_t read(int fd, void *buf, size_t count);`
+Legge count byte dal file identificato da fd (file descriptor ritornato da open (2)) e li memorizza in buf. Ritorna il numero di byte letti (che può anche essere inferiore a count se c'erano a disposizione nel device di lettura meno byte) o -1 in caso di errore (errno settata). Il valore di ritorno 0 significa EOF (end of file).
+
+> [!info] le operazioni di lettura/scrittura sono eseguite a partire dalla posizione corrente (puntatore, cursore o file offset) nel file
+
+**lseek**
+`off_t lseek(int fd, off_t offset, int whence);`
+Riposiziona il puntatore nel file. A seconda dei seguenti valori di whence il puntatore è posizionato: 
+- SEEK_SET: a offset byte dall'inizio 
+- SEEK_CUR: a offset byte dalla posizione corrente 
+- SEEK_END: a offset byte dopo la fine del file 
+Ritorna la nuova posizione (distanza in byte) da inizio file o -1 in caso di errore (setta errno)
+
+**dup, dup 2**: 
+`int dup(int oldfd);`
+`int dup2(int oldfd, int newfd);` 
+- Dup () torna una copia di oldfd usando il primo file descriptor libero 
+- Dup 2 () torna una copia di oldfd ma usa newfd come file descriptor copia. 
+N.B.: Se c'era già un file aperto con descrittore pari a newfd viene chiuso 
+- Dopo la duplicazione i due file descriptor possono essere usati indifferentemente, ma si riferiscono alla stessa entry nella tabella di sistema che elenca i file aperti e quindi, per esempio, condividono la posizione corrente nel file (se viene modificata tramite uno dei due la modifica vale anche per l'altro) 
+- Ritornano il nuovo file descriptor copia; o -1 in caso di errore (errno settata)
 
 | Nome                | Cosa fa                                                                        |
 | ------------------- | ------------------------------------------------------------------------------ |
@@ -278,10 +301,11 @@ Per l'accesso ai  file ci sono due possibilità:
 | O_TRUNC                      | Se il file esiste il contenuto viene azzerato                                              |
 | O_EXCL                       | Se usato insieme a O_CREAT e il file esiste, open () fallisce ed errno è settata ad EEXIST |
 Questa system call ha due valori di ritorno possibili:
-- Un intero positivo che è il *file descriptor* da usare per le operazioni successive
-- -1 in caso di errore che viene settato da errno
+ 1. Un intero positivo che è il *file descriptor* da usare per le operazioni successive
+ 2.  -1 in caso di errore che viene settato da errno
 
 > [!info] 
+> - il file offset è la posizione corrente dentro al file, alla quale il prossimo read o write avverrà (è simile ad un cursore dentro al file)
 > - di default il puntatore (file offset) nel file è posizionato all'inizio (a meno che non si specifichi O_APPEND)
 > - i file aperti andrebbero chiusi prima di terminare il programma con `#include int close(int fd)`, dove fd è il file descriptor ritornato da open () 
 > - l'apertura di un file crea una nuova entry nella tabella di sistema dei file aperti. Quando un file descriptor viene duplicato (con dup 2 o simili), questo si riferisce alla stessa *open file description* del descrittore del file originale $\implies$  i due file descriptors condividono lo stesso *file offset* e le stesse *file status flags*
@@ -292,7 +316,50 @@ Questa system call ha due valori di ritorno possibili:
 > - con `strace -c ls` posso vedere le system call attive e alcuni dati che le riguardano: percentuale del tempo totale con cui il kernel è stato dentro alla syscall, tempo totale speso in quel tipo di syscall, media per ogni call, numero di volte che la syscall è stata eseguita, quante syscall hanno ritornato un errore, nome della syscall
 > - **buffering** = in generale il buffer è una certa quantità di memoria che deve essere riempita prima che accada una qualche chiamata o azione specifica (ad esempio se scrivo una stringa questa potrebbe non essere visualizzata subito perché la memoria buffer non è ancora piena). Esistono 3 tipi di buffer: interattivo (buffer si svuota quando appare `\n`), di pipe o di file (buffer si svuota solo quando la memoria predisposta è piena) e l'assenza di buffer (ogni carattere fa si che la memoria buffer si svuoti subito)
 
-``` C
+> [!info] fd = è un intero piccolo che il  SO usa per identificare un file aperto dentro ad un processo (non mi riferisco più a file. txt, ma al valore assunto da fd. )
+> - 0 = stdin
+> - 1 = stdout
+> - 2 = stderr
+> - 3 =primo file aperto dal programma
+
+| Comando      | Contenuto                                              |
+| ------------ | ------------------------------------------------------ |
+| Man syscalls | Linux system calls                                     |
+| Man 7 libc   | Overview of standard C libraries on Linux              |
+| Strace -c ls | Summary dell'uso delle syscalls                        |
+| Man 2 open   | Mostra la pagina del manuale per la system call *open* |
+
+---
+### 26-03-10
+Sempre attraverso `#include <unisrd.h>` posso usare anche syscall (wrapped) come write, read,...
+**write**
+`ssize_t write(int fd, const void *buf, size_t count);`
+<u>Scrive i primi count (numero di byte da scrivere) byte contenuti in buf (puntatore alla memoria che contiene i dati da scrivere) nel file aperto identificato da fd </u>(file descriptor ritornato da open(2)). Ritorna il numero di byte scritti (che può anche essere inferiore a count se, per esempio, il device di scrittura si è riempito) o -1 in caso di errore (errno settata). 
+
+**read**
+`ssize_t read(int fd, void *buf, size_t count);`
+<u>Legge count (numero massimo di byte da leggere) byte dal file identificato da fd (file descriptor ritornato da open(2)) e li memorizza in buf (buffer dove mette i dati letti)</u>. Ritorna il numero di byte letti (che può anche essere inferiore a count se c'erano a disposizione nel device di lettura meno byte) o -1 in caso di errore (errno settata). Il valore di ritorno 0 significa EOF (end of file).
+
+> [!info] le operazioni di lettura/scrittura sono eseguite a partire dalla posizione corrente (puntatore, cursore o file offset) nel file
+
+**lseek**
+`off_t lseek(int fd, off_t offset, int whence);`
+riposiziona il puntatore nel file. A seconda dei seguenti valori di whence il puntatore è posizionato: 
+- SEEK_SET: a offset byte dall'inizio 
+- SEEK_CUR: a offset byte dalla posizione corrente 
+- SEEK_END: a offset byte dopo la fine del file 
+Ritorna la nuova posizione (distanza in byte) da inizio file o -1 in caso di errore (setta errno)
+
+**dup, dup 2**: 
+`int dup(int oldfd);`
+`int dup2(int oldfd, int newfd);` 
+- dup() torna una copia di oldfd usando il primo file descriptor libero 
+- dup2() torna una copia di oldfd ma usa newfd come file descriptor copia. 
+N.B.: Se c'era già un file aperto con descrittore pari a newfd viene chiuso 
+- dopo la duplicazione i due file descriptor possono essere usati indifferentemente, ma si riferiscono alla stessa entry nella tabella di sistema che elenca i file aperti e quindi, per esempio, condividono la posizione corrente nel file (se viene modificata tramite uno dei due la modifica vale anche per l'altro) 
+- Ritornano il nuovo file descriptor copia, o -1 in caso di errore (errno settata)
+
+```C
 #include <fcntl.h> //serve per le costanti che usa open() come O_CREAT, O_RDWR
 #include <stdio.h>
 #include <stdlib.h>
@@ -300,20 +367,51 @@ Questa system call ha due valori di ritorno possibili:
 #include <string.h>
 #include <unistd.h>  //syscalls come write() e close()
 
-int main()
+int main(int argc, char *argv[]) //sono gli unici due parametri che può prendere la funzione main: argc è //il numero di argomenti scritti nella linea di comando del terminale, argv è il puntatore ad un array di //puntatori a ciascun elemento scritto nella linea di comando
 {
-	int iRet = EXIT_SUCCESS, fd; //iRet è il valore che ritorna il programma e fd è il file descriptor
+	int iRet = EXIT_SUCCESS, fd, iReadRet; //iRet è il valore che ritorna il programma e fd è il file 			//descriptor
 	char sBuf[] = "Ciao!\n"; //buffer che verrà scritto nel file
+	char sReadBuf[128];
 	
-	fd = open("pippo.txt", O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR); //chiamata al kernel con la syscall open()
+	if(argc < 2) // se non viene passato il nome del file (argv[1] è il nome del file ed è il secondo 			//parametro passato)
+	{
+	 printf("Dammi il nome del file");
+	 return EXIT_FAILURE;
+	}
+	
+	fd = open(argv[1], O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR); //chiamata al kernel con la syscall 		//open()
+	//le flag che compongono il secondo parametro mi dicono che viene aperto il file in scrittura e 			//lettura, viene creato il file se non esiste e viene svuotato il file se esiste
 	//S_IRUSR = read permission for user
 	//S_IWUSR = write permission for users
 	if (fd >= 0)
 	{
 		if (write(fd, sBuf, strlen(sBuf)) == strlen(sBuf)) //chiamata al kernel con la syscall write()
-		//write prende come argomenti il file descriptor, il memory buffer e numero di bytes
+		//write prende come argomenti il file descriptor, l'indirizzo in memoria del buffer e il numero di 			//bytes da scrivere
 		{
-			printf("Ho scritto nel file pippo.txt, fd = %d\n", fd);
+			printf("Ho scritto nel file %s, fd = %d\n", argv[1], fd);
+			if (lseek(fd, 0, SEEK_SET) != -1) //sposto il file offset all'inizio del file (perché dopo la 				//lettura sono alla fine dello stesso) e mi sposto di zero posizioni
+			{
+				if ((iReadRet = read(fd, sReadBuf, sizeof(sReadBuf) - 1)) != -1) //sReadBuf è l'indirizzo 					//al primo byte del buffer
+				{
+				 char sWriteBuf[] = "Questa proviene da write()\n";
+				 int iCount = strlen(sWriteBuf);
+				 sReadBuf[iReadRet] = '\0'; //terminazione della stringa (read non la aggiunge di default)
+				 dup2(fd,1); // duplica fd su STDOUT_FILENO, ora scrivere su STDOUT_FILENO scrive su fd
+				 //siccome newfd = 1, ora stdout (nello specifico printf) non stampa più a terminale ma 					 //direttamente nel file
+				 printf("Ho riletto per %d byte: %s", iReadRet, sReadBuf);//printf scrive sul descrittore 1
+				 /* write(STDOUT_FILENO, sWriteBuf, iCount); */
+				 }
+				 else
+				 {
+				 perror("Errore in read()");
+				 iRet = EXIT_FAILURE;
+				 }
+			}
+			else
+			{
+			perror("Errore in lseek()");
+			iRet = EXIT_FAILURE;
+			}
 			close(fd); //chiiamata al kernel con la syscall close() che rilascia il fd e flusha il kernel buffer
 		}
 		else //write error handling
@@ -333,48 +431,3 @@ int main()
 }
 //se eseguo il programma con strace ./nomeProgramma vedo tutto il percorso delle varie syscalls
 ```
-
-> [!info] fd =
-> - 0 = stdin
-> - 1 = stdout
-> - 2 = stderr
-> - 3 = riguarda l'apertura del file
-
-| Comando      | Contenuto                                              |
-| ------------ | ------------------------------------------------------ |
-| Man syscalls | Linux system calls                                     |
-| Man 7 libc   | Overview of standard C libraries on Linux              |
-| Strace -c ls | Summary dell'uso delle syscalls                        |
-| Man 2 open   | Mostra la pagina del manuale per la system call *open* |
-
----
-### 26-03-10
-Attraverso `#include <unisrd.h>` posso usare anche syscall (wrapped) come write, read,...
-
-**write**
-`ssize_t write(int fd, const void *buf, size_t count);`
-Scrive i primi count byte contenuti in buf nel file aperto identificato da fd (file descriptor ritornato da open(2)). Ritorna il numero di byte scritti (che può anche essere inferiore a count se, per esempio, il device di scrittura si è riempito) o -1 in caso di errore (errno settata)
-
-**read**
-`ssize_t read(int fd, void *buf, size_t count);`
-Legge count byte dal file identificato da fd (file descriptor ritornato da open(2)) e li memorizza in buf. Ritorna il numero di byte letti (che può anche essere inferiore a count se c'erano a disposizione nel device di lettura meno byte) o -1 in caso di errore (errno settata). Il valore di ritorno 0 significa EOF (end of file).
-
-> [!info] le operazioni di lettura/scrittura sono eseguite a partire dalla posizione corrente (puntatore, cursore o file offset) nel file
-
-**lseek**
-`off_t lseek(int fd, off_t offset, int whence);`
-riposiziona il puntatore nel file. A seconda dei seguenti valori di whence il puntatore è posizionato: 
-- SEEK_SET: a offset byte dall'inizio 
-- SEEK_CUR: a offset byte dalla posizione corrente 
-- SEEK_END: a offset byte dopo la fine del file 
-
-Ritorna la nuova posizione (distanza in byte) da inizio file o -1 in caso di errore (setta errno)
-
-**dup, dup 2**: 
-`int dup(int oldfd);`
-`int dup2(int oldfd, int newfd);` 
-- dup() torna una copia di oldfd usando il primo file descriptor libero 
-- dup2() torna una copia di oldfd ma usa newfd come file descriptor copia. 
-N.B.: Se c'era già un file aperto con descrittore pari a newfd viene chiuso 
-- dopo la duplicazione i due file descriptor possono essere usati indifferentemente, ma si riferiscono alla stessa entry nella tabella di sistema che elenca i file aperti e quindi, per esempio, condividono la posizione corrente nel file (se viene modificata tramite uno dei due la modifica vale anche per l'altro) 
-- Ritornano il nuovo file descriptor copia; o -1 in caso di errore (errno settata)

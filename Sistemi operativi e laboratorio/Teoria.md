@@ -82,14 +82,7 @@ Come funziona un sistema di elaborazione:
 - CPU = costituita dai registri (es. Program counter che contiene l'indirizzo dell'istruzione successiva da eseguire o l'instruction register che contiene l'istruzione da eseguire,...)
 - Memoria principale = vengono caricati i programmi che sono costituiti da istruzioni (quelli che la CPU può eseguire) e dati (locazioni di memoria in cui mettiamo le nostre informazioni). 
 - Moduli I/O = relativi a tastiera, monitor e dischi
-
-Nei sistemi moderni ci sono più processori (cores) su un singolo chip (socket) . Ognuno di questi può svolgere contemporaneamente agli altri delle istruzioni/programmi. Meno si accede alla memoria principale e più è veloce la computazione => per questo esiste la memoria cache (unità di memoria piccola così da essere veloce e poco costosa) dalla quale la CPU prende un piccolo numero di dati e informazioni. I dati contenuti nella cache sono quelli usati di recente (molto probabilmente li riuseremo).
-
-Poi di solito c'è un processore grafico (GPU). Questo è in grado di applicare la stessa istruzione a tutti i dati di un array (in un tempo ridotto). Usati principalmente per aspetti grafici (es. Pixel). La tecnica usata è la *Single-instruction multiple-data* (SIMD) e si può usare anche per applicazioni che non sono grafiche.
-
-Esiste poi un processore di segnale digitale (DSP) che codifica/decodifica segnali audio e video e garantisce un supporto crittografico.
-
-Ad oggi tutto ciò si può trovare su un solo chip (Soc) => funzionale per i cellulari
+Nei sistemi moderni ci sono più processori (cores) su un singolo chip (socket) . Ognuno di questi può svolgere contemporaneamente agli altri delle istruzioni/programmi. Meno si accede alla memoria principale e più è veloce la computazione => per questo esiste la memoria cache (unità di memoria piccola così da essere veloce e poco costosa) dalla quale la CPU prende un piccolo numero di dati e informazioni. I dati contenuti nella cache sono quelli usati di recente (molto probabilmente li riuseremo). Poi di solito c'è un processore grafico (GPU). Questo è in grado di applicare la stessa istruzione a tutti i dati di un array (in un tempo ridotto). Usati principalmente per aspetti grafici (es. Pixel). La tecnica usata è la *Single-instruction multiple-data* (SIMD) e si può usare anche per applicazioni che non sono grafiche. Esiste poi un processore di segnale digitale (DSP) che codifica/decodifica segnali audio e video e garantisce un supporto crittografico. Ad oggi tutto ciò si può trovare su un solo chip (Soc) => funzionale per i cellulari
 
 ***Ciclo di estrazione ed esecuzione:***
 L'istruzione viene estratta, viene eseguita e, se il processo è terminato, si torna in dietro e si ricomincia dall'inizio. Tipi di istruzione riguardano:
@@ -110,13 +103,12 @@ Le classi di interruzione sono:
 - Timer = permettono al sistema operativo di eseguire delle funzioni a intervalli regolari
 - I/O = generate da un controllore I/O per segnalare il completamento di un'operazione o un errore
 - Errori HW = generati da problemi hardware
-
 Quindi il procedimento è: estrazione istruzione -> esecuzione istruzione -> check delle interruzioni. Se c'è l'interruzione se ne guarda il tipo si compie un salto all'indirizzo al quale inizia il programma per la gestione delle interruzioni (*interrupt handler*) e successivamente si salta ad un'altra istruzione. Una volta che il gestore delle interruzioni ha finito di gestire il problema legato ad un'interruzione, questa viene eseguita. 
 
 ![[Screenshot From 2026-03-04 17-58-44.png]]
 
 Se avviene un'interruzione durante la gestione di un'interruzione ci sono almeno 2 possibilità:
-1. Disabilito le interruzione durante la gestione di un'interruzione (può funzionare dato che le interruzioni sono brevi)
+1. Disabilito le interruzioni durante la gestione di un'interruzione (può funzionare dato che le interruzioni sono brevi)
 2. Definisco uno schema di priorità: in questo caso il sistema permette a un'interruzione di interromperne un'altra in base ad un sistema di priorità. Ciò significa che se l'interruzione in arrivo ha una priorità **più alta** di quella attualmente in esecuzione, il processore mette in pausa la prima, viene salvato il PC e viene eseguita la seconda (quella più urgente). Alla fine della seconda istruzione, il processore recupera i dati relativi al PC e riprende la prima delle due istruzioni che ha causato un'interruzione.
 
 Aspetti principali nello sviluppo dei sistemi operativi:
@@ -132,7 +124,6 @@ Approcci e elementi progettuali dei sistemi operativi
 - Multiprocessing simmetrico
 - Sistemi operativi distribuiti
 - Architettura orientata agli oggetti
-
 Il sistema operativo può realizzare una macchina virtuale. Cioè il sistema operativo crea una macchina che abbia una sua memoria e un suo sistema operativo. Esiste un virtual machine monitor (VMM)  che viene eseguito sul sistema operativo e gestisce le comunicazioni tra i singoli sistemi operativi virtuali e il processore
 
 ***Servizi del sistema operativo:***
@@ -166,10 +157,10 @@ Si accede al sistema tramite delle interfacce:
 
 ***Interprete dei comandi (CLI) vs interfaccia grafica (GUI):***
 
-| CLI                                                                                                                                                                                                                                | GUI                                                                                                                                                                                                                                       |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Esegue in sequenza i comandi specificati dall'utente. Viene implementato nel nucleo o programma di sistema (in questo caso ci sono molte versioni (= *shells*). I comandi sono implementati nell'interprete o in programmi esterni | È un'interfaccia amichevole (*user friendly*) in cui le icone rappresentano file, directories, programmi e funzioni. Inoltre ci sono menù che permettono di selezionare i comandi e la possibilità di avere touch-screen e comandi vocali |
-| Per compiti ripetititvi                                                                                                                                                                                                            | Più intuitiva ma non accede a tutte le funzioni                                                                                                                                                                                           |
+| CLI                                                                                                                                                                                                                              | GUI                                                                                                                                                                                                                                       |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Esegue in sequenza i comandi specificati dall'utente. Viene implementato nel nucleo o programma di sistema (in questo caso ci sono molte versioni (*shells*). I comandi sono implementati nell'interprete o in programmi esterni | È un'interfaccia amichevole (*user friendly*) in cui le icone rappresentano file, directories, programmi e funzioni. Inoltre ci sono menù che permettono di selezionare i comandi e la possibilità di avere touch-screen e comandi vocali |
+| Per compiti ripetititvi                                                                                                                                                                                                          | Più intuitiva ma non accede a tutte le funzioni                                                                                                                                                                                           |
 
 ---
 ### 26-03-05
@@ -183,7 +174,7 @@ Le system call sono un'interfaccia per il programmatore ai servizi del SO. Vi si
 - Creazione e arresto
 - Caricamento e esecuzione
 - Terminazione normale e anormale
-- Esame e impostazione degli atributi tramite funzioni apposite
+- Esame e impostazione degli attributi tramite funzioni apposite
 - Funzioni che mettono in pausa per un tempo indicato
 - Attesa segnalazione evento 
 - Assegnazione e rilascio di memoria
@@ -195,7 +186,7 @@ Le system call sono un'interfaccia per il programmatore ai servizi del SO. Vi si
 - Esame e impostazione degli attributi
 
 **Gestione dei dispositivi I/O:**
-- Richiesta (di assegnazione) e e rilascio
+- Richiesta (di assegnazione) e rilascio
 - Lettura, scrittura e posizionamento
 - Esame e impostazione degli attributi
 - Inserimento ed esclusione logica
@@ -229,7 +220,7 @@ Un sistema operativo è fatto anche di programmi detti *utilities* che servono a
 
 ***Progettazione di un sistema operativo:***
 Non è semplice dato che devo tenere conto di che hardware si dispone e di che tipo di richiesta abbiamo da parte dell'utilizzatore. Quindi le specifiche da rispettare sono:
-- decidere hardware
+- Decidere hardware
 - Decidere che sistema usare
 - Obiettivi dell'utilizzatore
 - Obiettivi del sistema (es obiettivo dell'utilizzatore = far terminare i programmi nel minor tempo possibile, obiettivo del sistema = non lasciare il processore inutilizzato)
@@ -242,7 +233,7 @@ I moderni sistemi operativi sono scritti in linguaggi come C e C++ (non più Ass
 Inoltre sono linguaggi più efficienti di linguaggi interpretati come Python (computer non sono fatti per mandare avanti il sistema operativo, ma per far partire programmi di sistema). Alcune sezioni critiche che richiedono altissima efficienza sono scritte in Assembler.
 
 ***Struttura del sistema operativo:***
-**Sistemi monolitici**(Non sono divisi in moduli):
+**Sistemi monolitici** (Non sono divisi in moduli):
 MS-DOS o UNIX tradizionale sono sistemi monolitici complessi e scritti tramite molte funzioni. Il kernel di UNIX tradizionale ha un'interfaccia verso l'hardware per la gestione delle chiamate di sistema (questo all'interno del kernel che gestisce segnali I/O, file system, driver, dispositivi di archiviazione e scheduling)
 
 **Sistemi stratificati:**
@@ -258,7 +249,7 @@ Sono sistemi monolitici che facciano il minimo necessario. Il resto è trasferit
 > [!example]
 > ![[Screenshot From 2026-03-05 12-31-03.png]]
 
-Non c'è differenza dal punto di vista del sistema tra questi programmi, ma ogni volta che u programma applicativo deve accedere a un file o un dispositivo invierà una richiesta tramite messaggio che sarà svolta un un altro programma che è il gestore del dispositivo e non dal kernel dato che questo contiene solo le funzioni fondamentali (altre funzionalità sono in moduli, ogni modulo nasconde i dettagli di implementazione agli altri moduli)
+Non c'è differenza dal punto di vista del sistema tra questi programmi, ma ogni volta che un programma applicativo deve accedere a un file o un dispositivo invierà una richiesta tramite messaggio che sarà svolta un un altro programma che è il gestore del dispositivo e non dal kernel, dato che questo contiene solo le funzioni fondamentali (altre funzionalità sono in moduli, ogni modulo nasconde i dettagli di implementazione agli altri moduli)
 
 > [!tips]
 > ![[Screenshot From 2026-03-05 12-34-21.png]]
@@ -268,12 +259,12 @@ Non c'è differenza dal punto di vista del sistema tra questi programmi, ma ogni
 Per il fatto che i SO sono sistemi complessi, ci possono essere degli errori e per questo nella loro progettazione e gestione c'è il problema del debugging. Gli errori, però, si possono presentare in situazioni particolari (difficili da individuare), considerando che il SO deve fare il suo compito nel minor tempo possibile. Quindi valutare le prestazioni di un SO (e per monitorare il comportamento del sistema) richiede una lunga sperimentazione tramite anche la generazione di file di log che registrano il comportamento del sistema e *core dump*
 
 **Generazione sistema operativo:**
-Scritto il codice sorgente del sistema, va compilato e configurato per il sistema su sui verrà eseguito, poi si istalla il sistema e si avvia il computer e il nuovo sistema operativo. La configurazione può realizzarsi modificando il codice prima della compilazione in base al sistema su cui lo vado a installare, oppure tramite la selezione di tabelle e moduli precompilati da collegare al momento dell'installazione, oppure tramite un sistema guidato da tabelle di dati che guidano il sistema in base all'hardware. Per far partire il sistema l'esecuzione inizia in un predefinito indirizzo della ROM (parte di memoria non modificabile nemmeno a computer spento = *read only memory*) che contiene il *bootstrap loader*. Questo contiene le istruzioni necessarie a caricare il *bootstrap program* che a sua volta carica il kernel e avvia l'esecuzione del sistema
+Scritto il codice sorgente del sistema $\rightarrow$ va compilato e configurato per il sistema su sui verrà eseguito $\rightarrow$ poi si istalla il sistema $\rightarrow$ avvia il computer e il nuovo sistema operativo. La configurazione può realizzarsi modificando il codice prima della compilazione in base al sistema su cui lo vado a installare, oppure tramite la selezione di tabelle e moduli precompilati da collegare al momento dell'installazione, oppure tramite un sistema guidato da tabelle di dati che guidano il sistema in base all'hardware.<u> Per far partire il sistema l'esecuzione inizia in un predefinito indirizzo della ROM (parte di memoria non modificabile nemmeno a computer spento = *read only memory*) che contiene il *bootstrap loader*. Questo contiene le istruzioni necessarie a caricare il *bootstrap program* che a sua volta carica il kernel e avvia l'esecuzione del sistema</u>
 
 ***Processi***
-**Def:** un processo (o job) è un programma (lista di istruzioni con riferimenti a delle locazioni di memoria) in esecuzione. Gli elementi del processo sono:
+**Def:**<u> un processo (o job) è un programma (lista di istruzioni con riferimenti a delle locazioni di memoria) in esecuzione</u>. Gli elementi del processo sono:
 - Program counter (indirizzo istruzione da eseguire) e contenuto dei registri (immagine del processore)
-- Stack che contiene variabili locali (distrutte quando si esce dalla funzione), indirizzi di return o parametri delle funzioni
+- Stack che contiene variabili locali, indirizzi di return o parametri delle funzioni
 - Sezione testo (programma)
 - Sezione dati che contiene i valori delle variabili locali
 - Heap per l'allocazione dinamica
@@ -292,7 +283,7 @@ Scritto il codice sorgente del sistema, va compilato e configurato per il sistem
 - *Pronto* = il processo attende la disponibilità di un processore
 - *Terminato* = il processo ha terminato l'esecuzione
 
-Quando il processo viene creato può trovarsi o in stato di attesa di un processore assegnato ad esso che esegue le istruzioni e termina. Può capitare che l'esecuzione del processo sia temporaneamente interrotta => non è necessario che le risorse del processore siano ancora assegnate a questo processo => si salva l'immagine del processore e il processo rimane in attesa dell'evento che lo libera dallo stato di attesa. Quando l'evento avviene saranno riassegnate al processo delle risorse con l'immagine salvata prima e si completerà l'esecuzione/terminerà il processo
+Quando il processo viene creato può trovarsi in stato di attesa di un processore assegnato ad esso che esegua le istruzioni e lo termini. Può capitare che l'esecuzione del processo sia temporaneamente interrotta => non è necessario che le risorse del processore siano ancora assegnate a questo processo => si salva l'immagine del processore e il processo rimane in attesa dell'evento che lo libera dallo stato di attesa. Quando l'evento avviene saranno riassegnate al processo delle risorse con l'immagine salvata prima e si completerà l'esecuzione/terminerà il processo
 
 > [!info] ![[Screenshot From 2026-03-05 13-17-14.png]]
 
@@ -305,7 +296,6 @@ A ogni processo è associata una struttura dati detta descrittore di processo o 
 - Informazioni per la gestione della memoria
 - Informazioni di accounting per sistemi multiutente
 - Informazioni su I/O
-
 Un processo può avere multiple sequenze di istruzioni (*threads*) che possono essere eseguite in parallelo (anche su core differenti) per la realizzazione di task differenti. In tal caso il PCB include informazioni su ciascun thread.
 
 **Salvataggio del PCB:**
