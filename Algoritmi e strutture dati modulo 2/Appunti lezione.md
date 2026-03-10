@@ -439,3 +439,15 @@ Le CPU moderne influenzano il comportamento dell’hashing.
 - Linear Probing: Nel modello RAM teorico il linear probing può performare male. In presenza di cache gerarchiche:
  - Funziona meglio, 
  - Perché probe consecutivi tendono a restare nella stessa cache line.
+
+> [!info] Sintesi:
+> Hashing diventa una funzione in due variabili h(k, p) dove p indica il probe, ovvero il "tentativo" di inserimento nella hash table (in caso di collisione)
+> 
+> Hashing lineare: 
+> Indice = [h(k) + p] mod m
+> facilmente "hackerabile" perché rende molto probabile che se c'è un blocco di elementi allocati il prossimo cada sul primo blocco libero
+> 
+> Hashing con moltiplicazione e somma: comunque facilmente hackerabili (ad es, m=16 se inserisco 26 + k*m ottengo comunque collisioni sull'indice 10)
+> 
+> Hashing quadratico: meno prevedibile, poi non ho capito se ancora è buono o no
+

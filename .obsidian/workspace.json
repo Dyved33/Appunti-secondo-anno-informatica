@@ -8,30 +8,6 @@
         "type": "tabs",
         "children": [
           {
-            "id": "7cd04c99558fa8ee",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Linguaggi formali e compilatori/Appunti lezione.md",
-                "mode": "source",
-                "source": false,
-                "backlinks": true,
-                "backlinkOpts": {
-                  "collapseAll": false,
-                  "extraContext": false,
-                  "sortOrder": "alphabetical",
-                  "showSearch": false,
-                  "searchQuery": "",
-                  "backlinkCollapsed": false,
-                  "unlinkedCollapsed": true
-                }
-              },
-              "icon": "lucide-file",
-              "title": "Appunti lezione"
-            }
-          },
-          {
             "id": "b7c5e3dd0ad759d1",
             "type": "leaf",
             "state": {
@@ -78,9 +54,32 @@
               "icon": "lucide-file",
               "title": "Teoria"
             }
+          },
+          {
+            "id": "7cd04c99558fa8ee",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Linguaggi formali e compilatori/Appunti lezione.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "Appunti lezione"
+            }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -256,17 +255,19 @@
       "workspaces:Manage workspace layouts": false
     }
   },
-  "active": "b202a513050654f5",
+  "active": "b7c5e3dd0ad759d1",
   "lastOpenFiles": [
+    "Sistemi operativi e laboratorio/pluto.txt",
+    "Sistemi operativi e laboratorio/pluto",
+    "Sistemi operativi e laboratorio/Teoria.md",
+    "Algoritmi e strutture dati modulo 2/Appunti lezione.md",
     "Sistemi operativi e laboratorio/Laboratorio.md",
     "Linguaggi formali e compilatori/Appunti lezione.md",
-    "Algoritmi e strutture dati modulo 2/Appunti lezione.md",
     "Algoritmi e strutture dati modulo 2/lezione 3-4.md",
     "Pasted image 20260310084050.png",
     "Diritto privato dell'informatica/Appunti lezione.md",
     "Linguaggi formali e compilatori/images/Pasted image 20260308174311.png",
     "Linguaggi formali e compilatori/Pasted image 20260308174311.png",
-    "Sistemi operativi e laboratorio/Teoria.md",
     "Pasted image 20260308174311.png",
     "Untitled.md",
     "Ingegneria del software/Appunti lezione.md",
@@ -286,7 +287,6 @@
     "Sistemi operativi e laboratorio/images",
     "Recording 20260304152810.m4a",
     "Sistemi operativi e laboratorio/Appunti lezione.md",
-    "Sistemi operativi e laboratorio/ Attributi dei file.pdf",
     "Untitled 2.md",
     "Untitled 1.md",
     "valido.md",

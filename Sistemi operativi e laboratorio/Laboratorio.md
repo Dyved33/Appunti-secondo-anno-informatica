@@ -151,14 +151,14 @@ Per imparare le funzioni e le opzioni dei comandi, ci sono diverse utility fonda
 ---
 ### 26-03-03 
 ***Variabile $PATH:***
-Se voglio vedere dove è memorizzato l'eseguibile che corrisponde ad un comando (esterno) uso il comando **which**. Per vedere dove viene cercato nel filesystem uso la variabile d'ambiente $**PATH** 
+Se voglio vedere dove è memorizzato l'eseguibile che corrisponde ad un comando (esterno) uso il comando **which**. Uso la variabile d'ambiente $**PATH** per dire al terminale dove cercare i programmi (sono una serie di cartelle). Quindi, quando si desidera eseguire un programma, è sufficiente digitare il nome del file eseguibile e il terminale cercherà nelle cartelle specificate in PATH se è presente un file di programma eseguibile denominato in quel modo.
 
 > [!info] Con il comando help variables vedo nome e significato di alcune delle shell variables
 
-| Comando | Descrizione                                           | Tipologia |
-| ------- | ----------------------------------------------------- | --------- |
-| Set     | Visualizza, imposta o annulla le opzioni della sghell | Interno   |
-| Env     | Esegue un programma in un ambiente modificato         | Esterno   |
+| Comando | Descrizione                                          | Tipologia |
+| ------- | ---------------------------------------------------- | --------- |
+| Set     | Visualizza, imposta o annulla le opzioni della shell | Interno   |
+| Env     | Esegue un programma in un ambiente modificato        | Esterno   |
 > [!info] 
 > - Sudo è il comando che mi permette di richiedere i permessi da utente root.
 > - I software vengono distribuiti in Linux sotto forma di pacchetti. 
@@ -196,7 +196,7 @@ Per cambiare proprietario e permessi:
 **Parametri Chmod**:
  - *-R* = esegue il comando ricorsivamente
  - *mode* = nuova maschera dei permessi. Questa non è una parola chiave ma serve a capire come impostare i permessi e può essere scritto in 2 modi diversi
-   1. *mode simbolico* = chmod (chi) (operatore) (permessi) file. Si riferiscono a: **chi può cambiare i permessi** (u user, g group, o others, a all), gli **operatori**        (+ aggiunge, - toglie, = imposta esattamente) e ai **permessi** (r read, w write, x execute).
+   1. *mode simbolico* = chmod (chi) (operatore) (permessi) file. Si riferiscono a: **chi può cambiare i permessi** (u user, g group, o others, a all), gli **operatori** (+ aggiunge, - toglie, = imposta esattamente) e ai **permessi** (r read, w write, x execute).
 
 > [!example] 
 > - chmod u+x file.sh => Aggiungi il permesso di esecuzione al proprietario
@@ -228,7 +228,7 @@ Per cambiare proprietario e permessi:
 
 ---
 ### 26-03-06
-Le system calls sono l'interfaccia per il programmatore ai servizi del sistema operativo (chiamata diretta al sistema). Vi si accede generalmente attraverso un API/linguaggi che supportino che la supportino. Ce ne sono vari tipi (accesso ai file, gestione di processi, IPC, semafori,...) e richiedono un "cambio di contesto": da *kernel mode* a *user mode* e viceversa.
+Le system calls sono l'interfaccia per il programmatore ai servizi del sistema operativo (chiamata diretta al sistema). Vi si accede generalmente attraverso un API/linguaggi che la supportino. Ce ne sono vari tipi (accesso ai file, gestione di processi, IPC, semafori,...) e richiedono un "cambio di contesto": da *kernel mode* a *user mode* e viceversa.
 - Kernel mode = accesso senza limitazioni alle risorse HW/SW del sistema (memoria, dispositivi I/O, registri, codice del SO,...). Un errore in kernel mode può provocare un arresto del sistema
 - User mode = accesso limitato alle risorse di sistema (es. Memoria). Un errore in user mode può provocare il blocco del solo processo utente
 
@@ -254,7 +254,7 @@ Per l'accesso ai  file ci sono due possibilità:
 | close               | Chiude un file precedentemente aperto                                          |
 | read                | Legge da un file                                                               |
 | write               | Scrive su un file                                                              |
-| Iseek               | Sposta il puntatore di lettura/scrittura ad una determinata posizione nel file |
+| lseek               | Sposta il puntatore di lettura/scrittura ad una determinata posizione nel file |
 | unlink              | Rimuove una entry di un file nel filesystem                                    |
 | stat (fstat, Istat) | Fornisce informazioni sugli attributi di un file                               |
 | dup, dup 2, dup 3   | Duplicano un file descriptor                                                   |
@@ -348,3 +348,33 @@ int main()
 | Man 2 open   | Mostra la pagina del manuale per la system call *open* |
 
 ---
+### 26-03-10
+Attraverso `#include <unisrd.h>` posso usare anche syscall (wrapped) come write, read,...
+
+**write**
+`ssize_t write(int fd, const void *buf, size_t count);`
+Scrive i primi count byte contenuti in buf nel file aperto identificato da fd (file descriptor ritornato da open(2)). Ritorna il numero di byte scritti (che può anche essere inferiore a count se, per esempio, il device di scrittura si è riempito) o -1 in caso di errore (errno settata)
+
+**read**
+`ssize_t read(int fd, void *buf, size_t count);`
+Legge count byte dal file identificato da fd (file descriptor ritornato da open(2)) e li memorizza in buf. Ritorna il numero di byte letti (che può anche essere inferiore a count se c'erano a disposizione nel device di lettura meno byte) o -1 in caso di errore (errno settata). Il valore di ritorno 0 significa EOF (end of file).
+
+> [!info] le operazioni di lettura/scrittura sono eseguite a partire dalla posizione corrente (puntatore, cursore o file offset) nel file
+
+**lseek**
+`off_t lseek(int fd, off_t offset, int whence);`
+riposiziona il puntatore nel file. A seconda dei seguenti valori di whence il puntatore è posizionato: 
+- SEEK_SET: a offset byte dall'inizio 
+- SEEK_CUR: a offset byte dalla posizione corrente 
+- SEEK_END: a offset byte dopo la fine del file 
+
+Ritorna la nuova posizione (distanza in byte) da inizio file o -1 in caso di errore (setta errno)
+
+**dup, dup 2**: 
+`int dup(int oldfd);`
+`int dup2(int oldfd, int newfd);` 
+- dup() torna una copia di oldfd usando il primo file descriptor libero 
+- dup2() torna una copia di oldfd ma usa newfd come file descriptor copia. 
+N.B.: Se c'era già un file aperto con descrittore pari a newfd viene chiuso 
+- dopo la duplicazione i due file descriptor possono essere usati indifferentemente, ma si riferiscono alla stessa entry nella tabella di sistema che elenca i file aperti e quindi, per esempio, condividono la posizione corrente nel file (se viene modificata tramite uno dei due la modifica vale anche per l'altro) 
+- Ritornano il nuovo file descriptor copia; o -1 in caso di errore (errno settata)
