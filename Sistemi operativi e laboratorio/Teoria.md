@@ -385,12 +385,12 @@ Il genitore può terminare l'esecuzione del figlio con la syscall *abort()* e qu
 - Compito non più richiesto
 La terminazione di un processo figlio fa si che vengano terminati anche i figli del processo terminato (terminazione a cascata). Dolo dopo il wait() del genitore viene deallocato il pid:
 - Un processo diventa zombie quando ha terminato ola sua esecuzione, ma il padre non he ancora letto il suo stato di uscita tramite wait () o simili. 
-- Se il padre termina prima che i figli vengano terminati $\implies$ i figli sono detti orfani $\implies$ vengono riattribuiti i processi orfani al processo init
-MANCA QUALCOSA PERCHÉ MI SONO SENTITO MALE A VEDERE I PREZZI DELLE CASE CIAO DADOLINO TVB DA CAMI
+- Se il padre termina prima che i figli vengano terminati $\implies$ i figli sono detti orfani $\implies$ vengono attribuiti i processi orfani al processo init
+MANCA QUALCOSA 
 
 ##### **Threads**
 I processi sono caratterizzati da:
-- **Risorse allocate**: spazio di indirizzamento virtuale (immagine in memoria), la traccia di esecuzione, RAM, dispostivi I/O, file
+- **Risorse allocate**: spazio di indirizzamento virtuale (immagine in memoria), la traccia di esecuzione, RAM, dispositivi I/O, file
 - **Scheduling**: traccia di esecuzione (alternata con altri processi), stati e priorità
 Ma le due caratteristiche potrebbero essere trattate in maniera indipendente:
 - **Processo (o task)**: possiede le risorse

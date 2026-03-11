@@ -213,12 +213,10 @@ Le grammatiche mi permettono di definire dei linguaggi (anche infiniti). Questa 
 Capire se una parola appartiene a un linguaggio (ricognizione) è molto importante perché ci permette di capire se il nostro codice è sintatticamente corretto (equivale a verificare se il nostro codice come sequenza di token, è una delle parole appartenenti al linguaggio e alla grammatica) 
 
 A questo punto si pone la di generare un linguaggio e questo a sua volta genera 2 problemi:
-1. **Problema di ricognizione:**
-Prende quindi in input una grammatica e una parola sull'alfabeto determinato dalla mia grammatica, e avrà come output SI se la parola è generata dalla grammatica oppure NO.
+1. **Problema di ricognizione (la parola appartiene al linguaggio?):** Prende quindi in input una grammatica e una parola sull'alfabeto determinato dalla mia grammatica, e avrà come output SI se la parola è generata dalla grammatica oppure NO.
  - *Input:* una grammatica (linguaggio) $G = (V, \Sigma, P,S)$ e una parola *w* $\in$ $\Sigma^*$
  - *Output:* SI se w $\in$ $L(G)$, NO altrimenti.
-1. **Problema di parsing:** 
-Prende come input una grammatica, una parola del linguaggio generato, e vuole trovare una derivazione della parola, cioè una sequenza di forme sentenziali ognuna conseguenza diretta della precedente, in maniera tale che partendo dal simbolo iniziale si ottenga la nostra parola.
+1. **Problema di parsing (come è stata generata la parola?):** Prende come input una grammatica, una parola del linguaggio generato, e vuole trovare una derivazione della parola, cioè una sequenza di forme sentenziali ognuna conseguenza diretta della precedente, in maniera tale che partendo dal simbolo iniziale si ottenga la nostra parola.
  - *Input:* una grammatica (linguaggio) $G = (V, \Sigma, P,S)$ e una parola *w* $\in$ $L(G)$
  - *Output:* una derivazione *S*  => $\alpha_1$ => $\alpha_2$ => ... => $\alpha_n$ => *w* di *w* in *G*
 
@@ -230,13 +228,13 @@ La strategia è quindi quella di classificare (**gerarchia di Chomsky**) le nost
 
 ***Gerarchia di Chomsky:*** divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più complessi ai più semplici)
 **Linguaggi di tipo 0:**
-**Def:** le grammatiche a struttura di frase di dicono anche *grammatiche di tipo 0*. I linguaggi generati da grammatiche di tipo 0 si dicono *linguaggi di tipo 0* oppure *linguaggi ricorsivamente numerabili*. Fanno parte di questo livello le grammatiche a struttura di frase. Queste grammatiche hanno la massima espressività possibile: se io ho una procedura effettiva infinita che mi genera una lista di parole, quella lista di parole è un linguaggio di tipo 0.
+**Def:** le grammatiche a struttura di frase (in base alle loro regolo possono scrivere intere frasi e non solo singoli caratteri) si dicono anche *grammatiche di tipo 0*. I linguaggi generati da grammatiche di tipo 0 si dicono *linguaggi di tipo 0* oppure *linguaggi ricorsivamente numerabili*. Fanno parte di questo livello le grammatiche a struttura di frase. Queste grammatiche hanno la massima espressività possibile: <u>se io ho una procedura effettiva infinita che mi genera una lista di parole, quella lista di parole è un linguaggio di tipo 0.</u>
 
 > [!example] 
 > ![[Screenshot From 2026-03-05 10-15-42.png]]
 
 **Linguaggi di tipo 1 (grammatiche sensibili al contesto / contestuali):**
-**Def:** una grammatica a struttura di frase si dice sensibile al contesto se le produzioni hanno la forma: $\alpha_1X\alpha_2 \to \alpha_1\beta\alpha_2$, con $X \in N$, $\alpha_1, \alpha_2, \beta \in V^*$ , $\beta \neq \epsilon$.  Ciò significa che le produzioni di queste grammatiche hanno il lato sx che contiene una variabile, mentre il lato dx si ottiene sostituendo quella variabile con una parola qualsiasi purché non vuota. Quindi mentre prima potevamo sostituire una parola con una parola, qui possiamo sostituire solo una lettera all'interno di una parola con una parola, che per di più non deve essere vuota. I linguaggi generati da grammatiche di tipo *q* si dicono *linguaggi di tipo 1*  o anche *sensibili al contesto*.  A differenza dei linguaggi di tipo 0, per questo tipo di linguaggi esistono algoritmi che risolvono i problemi di parsing e ricognizione, ma sono molto costosi.
+**Def:** una grammatica a struttura di frase si dice sensibile al contesto se le produzioni hanno la forma: $\alpha_1X\alpha_2 \to \alpha_1\beta\alpha_2$, con $X \in N$, $\alpha_1, \alpha_2, \beta \in V^*$ , $\beta \neq \epsilon$.  Ciò significa che le produzioni di queste grammatiche hanno il lato sx che contiene una variabile, mentre il lato dx si ottiene sostituendo quella variabile con una parola qualsiasi purché non vuota. Quindi mentre prima potevamo sostituire una parola con una parola, qui possiamo sostituire solo una lettera all'interno di una parola con una parola, che per di più non deve essere vuota (posso sostituire una variabile solo se è contenuta in un  contesto). I linguaggi generati da grammatiche di tipo *q* si dicono *linguaggi di tipo 1*  o anche *sensibili al contesto*.  A differenza dei linguaggi di tipo 0, per questo tipo di linguaggi esistono algoritmi che risolvono i problemi di parsing e ricognizione, ma sono molto costosi.
 
 > [!example]
 > ![[Screenshot From 2026-03-05 10-22-40.png]]
@@ -274,11 +272,11 @@ Gli algoritmi di ricognizione e parsing per le grammatiche di tipo 2 si comporta
 > [!info] Gli algoritmi di ricognizione per i linguaggi di tipo 3 esistono e sono estremamente efficienti, sono molto importanti per l’analisi lessicale ovvero l’analisi di token che costituiscono il nostro codice. Questo si ottiene attraverso la Teoria degli Automi a Stati Finiti.
 
 ***Automi a stati finiti deterministici:***
-Un automa è un dispositivo che può raggiungere un certo numero finito di configurazioni interne. Il nastro di input è diviso in celle su cui si può scrivere l'input e a ogni passo il dispositivo:
+Un automa è un dispositivo che può raggiungere un certo numero finito di configurazioni interne. Il nastro di input è diviso in celle su cui si può scrivere l'input (scrivo la stringa in ingresso e la divido nei suoi caratteri) e a ogni passo il dispositivo:
 - Legge il contenuto di una cella
 - Passa in un nuovo stato (dipende esclusivamente dallo stato precedente e dal contenuto della cella letta)
 - Passa a esaminare la cella successiva
-Terminata la lettura del nastro, in base allo stato raggiunto, accetta o rifiuta la parola letta. Le parole accettate costituiscono un linguaggio di tipo 3 che, a sua volta, è sempre accettato da un automa a stati finiti. Questo algoritmo è lineare e in tempo reale, perché ad ogni cella letta so se tutto ciò che è venuto prima è stato accettato o meno.
+Terminata la lettura del nastro, in base allo stato raggiunto (se è uno stato accettante o meno) , accetta o rifiuta la parola letta. Le parole accettate costituiscono un linguaggio di tipo 3 che, a sua volta, è sempre accettato da un automa a stati finiti. Questo algoritmo è lineare e in tempo reale, perché ad ogni cella letta so se tutto ciò che è venuto prima è stato accettato o meno.
 
 **Def:** un *automa a stati finiti deterministico* è una quintupla $A = (Q, \Sigma, \delta, q_0, F)$ ove:
 - $Q$ è un insieme finito, detto insieme degli stati = tutte le configurazioni che il dispositivo può assumere
@@ -329,7 +327,8 @@ Se da questa definizione togliessi l'aspetto degli archi otterrei: una maggiore 
 - L'input è accettato se almeno una delle possibili computazioni ha successo (termina in uno stato finale)
 - L'input è rifiutato se tutte le possibili computazioni falliscono (terminano in uno stato non finale o prima che il nastro sia esaurito)
 
-**Sintesi** = Possiamo definire Automi a Stati finiti non Deterministici, dei meccanismi che non hanno la restrizione dei modelli deterministici: un meccanismo che può assumere un numero predefinito di configurazioni interne, che ha un nastro di input, ma che ad ogni passo non esegue più una sola transizione ben determinata ma dispone di un ventaglio di possibilità e può quindi eseguire varie transizioni (o nessuna). L’input viene accettato se tra le tante computazioni possibili c’è n’è almeno una che termina in uno stato finale. Quindi una parola viene rifiutata se tutte le computazioni terminano in uno stato non finale o terminano prima che il nastro sia esaurito. 
+**Sintesi** = Possiamo definire Automi a Stati finiti non Deterministici, dei meccanismi che non hanno la restrizione dei modelli deterministici: un meccanismo che può assumere un numero predefinito di configurazioni interne, che ha un nastro di input, ma che ad ogni passo non esegue più una sola transizione ben determinata ma dispone di un ventaglio di possibilità e può quindi eseguire varie transizioni (o nessuna). L’input viene accettato se tra le tante computazioni possibili c’è n’è almeno una che termina in uno stato finale. Quindi una parola viene rifiutata se tutte le computazioni terminano in uno stato non finale o terminano prima che il nastro sia esaurito
+. 
 
 **Def:** un automa a stati finiti non deterministico è una quintupla $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ dove:
 - Q è l'insieme degli stati
@@ -359,7 +358,7 @@ Ci si convince facilmente a questo punto che:
   > 
 > Questa computazione non è accettata perché non finisce in uno stato finale, ma questo non significa che la parola non sia accettata perché possono esserci altre computazioni (come la verde) che terminano in uno stato finale
 
-Apparentemente questo tipo di progettazione non ci da nessun vantaggio, perché le computazioni da fare diventerebbero troppe. Supponiamo infatti di avere 2 cammini possibili per ogni scelta, e dovessimo leggere una parola di lunghezza 10, questo vorrebbe dire che dovremmo fare 210 computazioni. Proviamo però a ragionare come segue: se mi trovo in q0 e il mio input è a, posso andare o in q0 o in q1, ecc… Se mi trovo in q1 e l’input è b, andrò in q2,… Quindi ad ogni passo, in base alla colonna che avevo al passo precedente, e alla lettera di input, produco una colonna nuova. Questo procedimento è praticamente uguale a quello di un automa a stati deterministico, perché in base alla configurazione del mio dispositivo e alla lettera di input, determina la configurazione successiva. In questo caso la differenza è che abbiamo delle colonnine di stati.
+Apparentemente questo tipo di progettazione non ci da nessun vantaggio, perché le computazioni da fare diventerebbero troppe. Supponiamo infatti di avere 2 cammini possibili per ogni scelta, e dovessimo leggere una parola di lunghezza 10, questo vorrebbe dire che dovremmo fare 210 computazioni. Proviamo però a ragionare come segue: se mi trovo in q0 e il mio input è $a$, posso andare o in q0 o in q1, ecc… Se mi trovo in q1 e l’input è $b$, andrò in q2,… Quindi ad ogni passo, in base alla colonna che avevo al passo precedente, e alla lettera di input, produco una colonna nuova. Questo procedimento è praticamente uguale a quello di un automa a stati deterministico, perché in base alla configurazione del mio dispositivo e alla lettera di input, determina la configurazione successiva. In questo caso la differenza è che abbiamo delle colonnine di stati.
 
 > [!info] ![[Pasted image 20260306110859.png]]
 
@@ -368,9 +367,9 @@ Apparentemente questo tipo di progettazione non ci da nessun vantaggio, perché 
 
 **Costruzione:**
 Sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ l'automa non deterministico. Definisco l'automa deterministico $A' = \langle Q', \Sigma, \delta', s_0, F' \rangle$ come segue: 
-- L'insieme degli stati è l'insieme $Q' = \wp(Q)$ costituito dai sottoinsiemi di $Q$ (uno stato dell' $A$ deterministico è in realtà un'insieme di stati dell' $A$ non deterministico)
+- L'insieme degli stati è l'insieme $Q' = \wp(Q)$ costituito dai sottoinsiemi di $Q$ (uno stato dell' $A'$ deterministico è in realtà un'insieme di stati dell' $A$ non deterministico)
 - Lo stato iniziale è $s_0 = \{q_0\}$ (singleton costituito dallo stato iniziale dell' $A$ non deterministico)
-- Gli stati finali sono tutti i sottoinsiemi di $Q$ che contengono almeno un elemento di $F$ (quindi almeno uno stato finale dell' $A$ di partenza), cioè: $F' = \{s \in p(Q) | s \cap F \neq \emptyset\}$ 
+- Gli stati finali sono tutti i sottoinsiemi di $Q$ che contengono almeno un elemento di $F$ (quindi almeno uno stato finale dell' $A$ di partenza), cioè: $F' = \{s \in \wp(Q) | s \cap F \neq \emptyset \}$ 
 - La funzione di transizione $\delta'(s,a) = \displaystyle\bigcup_{q \in s} \delta(q,a), s \in \wp(Q), a \in \Sigma$ (prende in input uno stato dell' $A$, cioè un insieme degli stati dell'automa non-deterministico, e una lettera $a$)
 **Dimostrazione:** per ogni $w \in \Sigma^*$ risulta che $\hat{\delta'}(s_0,w) = \{q \in Q | \text{nel grafo di A c'è un cammino da}\ q_0 \ \text{a} \ q \ \text{con etichetta} \ w\}$ (dimostrazione per induzione sulla lunghezza di $w$). Pertanto sono equivalenti: 
 - $w\ \text{è accettata da} \ A$
@@ -388,18 +387,17 @@ Se io elimino tutti questi stati inaccessibili e restringo la funzione di transi
 > [!example] ![[Screenshot From 2026-03-06 11-26-56.png]]
 > Nell’esempio vediamo come lo stato q1 è stato eliminato perché, iniziando da q0 (stato di partenza), non c’è nessun cammino che mi porta in q1.
 
-Attraverso un Algoritmo di Determinizzazione andremo a progettare un automa che prevede solo gli stati accessibili, e di conseguenza avrà un numero di stati molto inferiore di 2 n.
-
-**Algoritmo di determinizzazione:**
+**Algoritmo di determinizzazione (per prevedere solo gli stati accessibili):**
 1. Prima di tutto inserisco nella lista degli stati, lo stato iniziale dell’automa deterministico, che come abbiamo visto prima corrisponde all'insieme costituito dal solo stato iniziale dell’automa non deterministico di partenza: $s_0=\{q_0\}$ 
-2. Per ogni stato $r$ della lista (che per ora contiene il solo elemento $q0$, singleton) e ogni lettera $a \in \Sigma$ 
+2. Considero ogni stato $r$ della lista (che per ora contiene il solo elemento $q0$, singleton) e ogni lettera $a \in \Sigma$ 
 3. Calcolo il valore della funzione di transizione sulla coppia stato-lettera: $s= \delta'(r, a)$; Una volta calcolato ho due possibilità: o lo stato è già nella lista degli stati, oppure no.   
-4. Se $s$ non è nella lista degli stati allora lo appendo alla lista degli stati. 
+4. Se $s$ non è nella lista degli stati allora lo aggiungo alla lista degli stati. 
 5. Se $s$ contiene uno stato finale di $A$, aggiungo $s$ alla lista degli stati finali. 
 
 > [!example] ![[Screenshot From 2026-03-06 11-32-20.png]]
 > ![[Screenshot From 2026-03-06 11-32-32.png]]
 > ![[Screenshot From 2026-03-06 11-33-08.png]]
+> 
 > Come possiamo notare, l’automa deterministico ha più stati rispetto a quelli che avevamo trovato noi manualmente nel primo esempio abac (pag.11), successivamente vedremo infatti un altro algoritmo in grado di trovare partendo da un automa non deterministico, un automa deterministico con il minimo numero di stati possibile (automa minimo).
 
 > [!info] Caso difficile:

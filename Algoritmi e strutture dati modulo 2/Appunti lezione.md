@@ -505,4 +505,11 @@ BFS(G,s)
 ```
 
 > [!example] ![[Screenshot From 2026-03-11 15-53-03.png]]
+> - gli archi più spessi sono nel sotto-grafo predecessore
+> - fsd
+> - fads
+> - fasdfa
+> BFS potrebbe non raggiungere tutti i vertici e richiede in tempo $O(V+E)$
+> - $O (V)$ perché ogni vertice è messo in coda al massimo una volta
+> - $O(E)$ perché ogni vertice è estratto dalla coda al massimo una volta e l'arco $(u,v)$ è esaminato solo quando $u$ è estratto dalla coda. In questo modo ogni arco viene esaminato al massimo 1 volta se orientato, al massimo 2 volte se non orientato
 
