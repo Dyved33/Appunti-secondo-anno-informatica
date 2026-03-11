@@ -2,8 +2,8 @@
   "pdfExportSettings": {
     "pageSize": "A4",
     "landscape": false,
-    "margin": "0",
-    "downscalePercent": 85
+    "margin": "1",
+    "downscalePercent": 70
   },
   "promptDelete": true,
   "strictLineBreaks": true,

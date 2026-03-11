@@ -74,7 +74,7 @@ In informatica teorica, un **linguaggio è definito come un insieme di parole**.
 * **Linguaggi Finiti:** Se un linguaggio è finito, la sua descrizione è banale poiché è possibile elencarne tutti gli elementi uno per uno. Un esempio è $L=\{a,ab,abb,abbb\}$.
 * **Linguaggi Infiniti:** Il problema sorge quando cerchiamo di descrivere linguaggi con infinite parole.
 
-Il **Teorema di Cantor** ci pone un limite matematico insuperabile: non esiste una funzione iniettiva dall'insieme delle parti $\mathcal{P}(\Sigma^{*})$ all'insieme delle parole $\Sigma^{*}$. Di conseguenza, non è possibile associare a *ciascun* linguaggio possibile una parola univoca (la sua "descrizione") che lo caratterizzi in modo perfetto. In altre parole, non possiamo inventare una "parola descrittiva" univoca per tutti i possibili linguaggi infiniti esistenti.
+Il **Teorema di Cantor** ci pone un limite matematico insuperabile: non esiste una funzione iniettiva dall'insieme delle parti $\mathcal{P}(\Sigma^{*})$ all'insieme delle parole $\Sigma^{*}$. Di conseguenza, non è possibile associare a *ciascun* linguaggio possibile una parola univoca (la sua "descrizione") che lo caratterizzi in modo perfetto. In altre parole, non possiamo inventare una "parola descrittiva" univoca per tutti i possibili linguaggi infiniti esistenti (linguaggio infinito non può essere descritto da una descrizione finita).
 
 > [!NOTE] L'approccio Informatico
 > Nonostante il Teorema di Cantor, in informatica non abbiamo bisogno di descrivere *tutti* i linguaggi infiniti. È comunque possibile fornire **descrizioni finite** per *alcuni* linguaggi infiniti che ci sono particolarmente utili. Ad esempio, possiamo usare una regola descrittiva semplice come "tutte le parole sull'alfabeto $\{a,b\}$ di lunghezza dispari", oppure la notazione formale $\{a^{n}b^{n}|n\ge0\}$.
@@ -132,7 +132,7 @@ La soluzione "informatica" parte sempre da un segnaposto iniziale (es. `frase`) 
 > [!EXAMPLE] Come si genera l'infinito
     > Contenendo se stessa nella parte destra dell'assegnazione, può essere applicata all'infinito per aggiungere quante virgole e quanti nomi desideriamo, creando una lunghezza illimitata a partire da una singola regola.
 
-4.  **Chiusura:** Il blocco $\langle nome \rangle \langle fine Lista \rangle$ si sostituisce rigorosamente con $e \langle nome \rangle$. Questo trucco garantisce che, alla fine del processo meccanico, l'ultimo elemento sia sempre preceduto dalla 'e' e non dalla virgola.
+4.  **Chiusura:** Il blocco $\langle nome \rangle \langle fine Lista \rangle$ si sostituisce rigorosamente con $e \langle nome \rangle$. Questo trucco garantisce che, alla fine del processo meccanico, l'ultimo elemento sia sempre preceduto dalla 'e' e non dalla virgola. 
 
 Ci si arresta solo quando i segnaposto non compaiono più.
 **Il concetto chiave è che un linguaggio di complessità e lunghezza infinita può essere generato meccanicamente e senza ambiguità tramite un set ristretto di regole di sostituzione locali**.
@@ -141,7 +141,7 @@ Ci si arresta solo quando i segnaposto non compaiono più.
 Le regole di sostituzione viste nell'esempio vengono astratte nel concetto matematico di **Grammatica a Struttura di Frase**, formalmente definita come una quadrupla $G=\langle V,\Sigma,P,S\rangle$:
 
 * **$V$ (Vocabolario Totale):** Un alfabeto finito che comprende tutti i simboli.
-* **$\Sigma$ (Alfabeto dei Simboli Terminali):** Sottoinsieme di $V$ ($\Sigma\subseteq V$), comprende i simboli definitivi (es. "Aldo", la virgola, la "e").
+* **$\Sigma$ (Alfabeto dei Simboli Terminali):** Sottoinsieme di $V$ ($\Sigma\subseteq V$), comprende i simboli definitivi, cioè quelli usati (es. "Aldo", la virgola, la "e").
 * **$P$ (Insieme delle Produzioni):** Un insieme finito di regole di riscrittura della forma $\alpha\rightarrow\beta$.
     * La parte sinistra $\alpha \in V^{*} \setminus \Sigma^{*}$  = deve contenere almeno una variabile.
     * La parte destra $\beta \in V^{*}$ =  può essere una sequenza qualsiasi di variabili e terminali.
@@ -212,12 +212,12 @@ Le grammatiche mi permettono di definire dei linguaggi (anche infiniti). Questa 
 **DEF** = Due grammatiche si dicono equivalenti se generano lo stesso linguaggio.  
 Capire se una parola appartiene a un linguaggio (ricognizione) è molto importante perché ci permette di capire se il nostro codice è sintatticamente corretto (equivale a verificare se il nostro codice come sequenza di token, è una delle parole appartenenti al linguaggio e alla grammatica) 
 
-A questo punto si pone il problema di generare un linguaggio e questo a sua volta genera 2 problemi:
+A questo punto si pone la di generare un linguaggio e questo a sua volta genera 2 problemi:
 1. **Problema di ricognizione:**
 Prende quindi in input una grammatica e una parola sull'alfabeto determinato dalla mia grammatica, e avrà come output SI se la parola è generata dalla grammatica oppure NO.
  - *Input:* una grammatica (linguaggio) $G = (V, \Sigma, P,S)$ e una parola *w* $\in$ $\Sigma^*$
- - *Output:* SI se w $\in$ $L(G)$, NO altrimenti
-2. **Problema di parsing:** 
+ - *Output:* SI se w $\in$ $L(G)$, NO altrimenti.
+1. **Problema di parsing:** 
 Prende come input una grammatica, una parola del linguaggio generato, e vuole trovare una derivazione della parola, cioè una sequenza di forme sentenziali ognuna conseguenza diretta della precedente, in maniera tale che partendo dal simbolo iniziale si ottenga la nostra parola.
  - *Input:* una grammatica (linguaggio) $G = (V, \Sigma, P,S)$ e una parola *w* $\in$ $L(G)$
  - *Output:* una derivazione *S*  => $\alpha_1$ => $\alpha_2$ => ... => $\alpha_n$ => *w* di *w* in *G*

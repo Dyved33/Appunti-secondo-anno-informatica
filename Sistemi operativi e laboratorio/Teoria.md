@@ -288,8 +288,8 @@ Quando il processo viene creato può trovarsi in stato di attesa di un processor
 > [!info] ![[Screenshot From 2026-03-05 13-17-14.png]]
 
 **PCB (descrittore di processo):**
-A ogni processo è associata una struttura dati detta descrittore di processo o PCB (process control block) contenente tutte le informazioni relative al processo:
-- stato del processo
+A ogni processo è associata una struttura dati detta descrittore di processo o PCB (*process control block*) contenente tutte le informazioni relative al processo:
+- Stato del processo
 - Program counter
 - Registri CPU (immagine processore)
 - Parametri per lo scheduling della CPU 
@@ -303,7 +303,135 @@ Supponiamo che venga creato il processo P0 che è in stato di running. Ad un cer
 
 ![[Screenshot From 2026-03-05 13-28-52.png]]
 
-I PCB sono inseriti in varie code:
-- Coda di job che contiene tutti i processi
-- Coda di ready che contiene tutti i processi pronti a partire
-- Coda dei dispositivi (una per dispositivo) che contiene i processi in attesa di quel dispositivo
+Il sistema ha bisogno di conoscere la situazione dei vari processi e per questo i PCB sono inseriti in varie code:
+- Coda di job che contiene tutti i processi 
+- Coda di ready che contiene tutti i processi pronti a partire (quelli tra i quali il processore deve decidere a chi assegnare le risorse)
+- Coda dei dispositivi (una per dispositivo) che contiene i processi in attesa di interagire con quel dispositivo (il dispositivo genera una nuova interruzione)
+---
+### 26-03-11
+**Schedulatore a breve termine**
+*CPU scheduler*: assegna CPU a uno dei processi pronti. Siccome è un programma eseguito con grande frequenza (millisec) $\implies$ deve essere veloce
+
+**Schedulatore a lungo termine**
+Seleziona tra i processi nuovi quali fa passare in coda ready, ma non è opportuno che i processi finiscano tutti in questa coda. Per questo esiste il *job scheduler*: Seleziona i processi da inserire in coda ready e per fare ciò controlla il grado di multiprogrammazione, cioè i programmi eseguiti contemporaneamente. Non viene eseguito con frequenza, per questo può applicare procedure più complesse.
+
+> [!example]
+> - I/O bound processi che interagiscono con input e output
+> - Es CPU bound processi che interagiscono con il processore direttamente come Word
+> È bene avere entrambi i tipi di processi in quanto ci potrebbero essere o processi che non possono avanzare o processi che richiedono troppe risorse (RIGUARDA QUESTO PUNTO) 
+
+**Schedulatore a medio termine**
+Determina con che velocità avanzano i processi nel sistema. Si occupa di assegnare o revocare la memoria ai processi (*swapping*). Quando i processi non hanno bisogno di memoria, gli viene revocata la RAM e la memoria del processo viene copiata su disco rigido. La memoria liberata viene occupata da un nuovo processo. (CONTROLLA)
+
+La schedulazione realizza delle politiche per l'assegnazione della CPU. Generalmente distingue tra:
+- Processi *I/O bound*
+- *Processi CPU bound*
+Oltre a questo c'è un problema di overhead nel cambio dei contesto, il quale varia in funzione di:
+- Velocità della memoria
+- Numero registri del processore
+- Istruzioni speciali (riservate al kernel)
+
+***Creazione del processo***
+Il sistema operativo fornisce meccanismi per creazione/terminazione dei processi. Generalmente un processo genitore chiede al kernel di creare un processo figlio che a sua volta può creare altri processi (*albero dei processi*). Ogni processo è identificato da un numero detto *identificatore di processo (pid)* $\rightarrow$ su linux è il primo numero che vedo quando scrivo `ps` nel terminale. Quando un processo termina, viene eliminato dall'albero.
+
+**Assegnazione delle risorse ad un processo**
+Avviene in base al tipo di sistema operativo:
+- Un processo figlio riceve le risorse dal processo padre 
+ - Risorse ripartite = il padre non può usarle finché il figlio non ha finito di usarle
+ - Risorse condivise 
+- Il processo figlio ottiene le risorse dal sistema operativo
+
+**Opzioni di esecuzione**
+- Il processo padre e il processo figlio possono essere eseguiti concorrentemente
+- Il padre attende la terminazione del figlio
+
+**Memoria**
+- Il figlio è un duplicato del genitore  
+- Il figlio ha un nuovo programma
+
+> [!info] La funzione `fork` è una syscall che crea una copia esatta del processo e restituisce al padre il pid del figlio. 
+>> [!example]
+>> #include < sys/types.h >
+>> #include < stdio.h >
+>> #include < unistd.h >
+>> int main()
+>> {
+>> pid_t pid;
+>> /* fork a child process */
+>> pid = fork();
+>> if (pid < 0) { /* error occurred */
+>> fprintf(stderr, "Fork Failed");
+>> return 1;
+>> }
+>> else if (pid == 0) { /* child process */
+>> execlp("/bin/ls","ls",NULL);
+>> }
+>> else { /* parent process */
+>> /* parent will wait for the child to complete */
+>> wait(NULL);
+>> printf("Child Complete");
+>> }
+>> return 0;
+>> }
+
+
+
+***Terminazione del processo***
+Il processo termina con la syscall *exit()*, così:
+- Restituisce un valore di stato al processo genitore, via *wait()*
+- Le risorse sono deallocate dal sistema operativo
+Il genitore può terminare l'esecuzione del figlio con la syscall *abort()* e questo per varie motivazioni:
+- Eccesso di risorse allocate
+- Compito non più richiesto
+La terminazione di un processo figlio fa si che vengano terminati anche i figli del processo terminato (terminazione a cascata). Dolo dopo il wait() del genitore viene deallocato il pid:
+- Un processo diventa zombie quando ha terminato ola sua esecuzione, ma il padre non he ancora letto il suo stato di uscita tramite wait () o simili. 
+- Se il padre termina prima che i figli vengano terminati $\implies$ i figli sono detti orfani $\implies$ vengono riattribuiti i processi orfani al processo init
+MANCA QUALCOSA PERCHÉ MI SONO SENTITO MALE A VEDERE I PREZZI DELLE CASE CIAO DADOLINO TVB DA CAMI
+
+##### **Threads**
+I processi sono caratterizzati da:
+- **Risorse allocate**: spazio di indirizzamento virtuale (immagine in memoria), la traccia di esecuzione, RAM, dispostivi I/O, file
+- **Scheduling**: traccia di esecuzione (alternata con altri processi), stati e priorità
+Ma le due caratteristiche potrebbero essere trattate in maniera indipendente:
+- **Processo (o task)**: possiede le risorse
+- **Thread (o processo leggero)**: unità che viene assegnata al processore. 
+Si parla di multithreading la capacità di un SO di permettere pi
+ Tracce di esecuzione concorrenti in un singolo processo
+
+| Single-threading                                         | Multi-threadin                                                 |
+| -------------------------------------------------------- | -------------------------------------------------------------- |
+| Un processo, un thread (MD-DOS)                          | Un processo, più thread (Java run-time)                        |
+| Più processi, un thread per ciascuno (UNIX tradizionale) | Più processi, ciascuno con più thread (Windows, Solaris, UNIX) |
+**Def**: in un ambiente multi-thread, il processo è l'unità di allocazione delle risorse e un'unità di protezione (nessun altro può accedere alle risorse assegnate al processo). Associati al processo ci sono:
+- Spazio di indirizzamento virtuale (contiene immagine del processo)
+- Accesso protetto al processore, ad altri processi
+- MANCA
+Associati al thread ci sono:
+- Stato = pronto, in attesa, in esecuzione
+- Contesto del thread (immagine del processore). Viene salvata quando non è in esecuzione
+- Stack di esecuzione
+- Spazio di memoria statico per le variabili locali
+- Accesso a memoria e risorse del processo, condivise con gli altri thread del processo
+Questo genera un problema: due thread che accedono agli stessi dati/stessa memoria (magari uno vuole incrementare e l'altro decrementare la stessa variabile)
+
+IMMAGINE
+
+- La creazione di un thread è iù rapida della creazione di un processo
+- La teminazione di un thread è più rapida della terminazione di un processo (no questione di protezione della memoria)
+- Lo switch tra due thread del medesimo processo è più rapida dello switch tra due processi (sempre per via della memoria)
+- Efficianza della comunicazione fra programmi (eseguiti da thread dello stesso processo)
+**In un sistema a utente singolo**
+- Esecuzione in foreground e background
+- Elaborazione asincrona
+- Velocità di esecuzione
+- Struttura modulare dei programmi
+**OSS**: la schedulazione è gestita principalmente a livello di thread, ma non la sospensione (memory swap) MANCA/NON CHIARO
+
+**Stati del thread**
+- In esecuzione
+- MANCA
+
+IMMAGINE
+
+**Sincronizzazione dei thread**
+I thread di un processo condividono spazion di indirizzamento e altre risorse. Ogni modifica MANCA

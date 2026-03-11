@@ -1,4 +1,4 @@
-### 26-02-23 lz.1
+### 26-02-23 lz. 1
 **Alberi binari**
 Le linked lists vanno bene per rappresentare delle relazioni lineari (non tutte le relazioni sono lineari). In particolare ci concentriamo sul problema di rappresentare un albero costruito a partire da una linked data structure. Ogni nodo dell'albero è un oggetto e supponiamo che ogni nodo dell'albero contenga un attributo chiave (key). L'altro attributo d'interesse sono i puntatori che connettono ogni nodo agli altri. Un albero binario è un grafo non orientato rappresentato con i puntatori, caratterizzato dal fatto che ogni nodo ha al massimo due figli, uno destro e uno sinistro:
  - Ogni nodo è definito con 3 puntatori, $p,\space left,\space right$, in cui $p$ è il puntatore al nodo padre; il nodo $left$ è il puntatore al figlio sinistro e il nodo $right$ è il puntatore al figlio destro.
@@ -50,7 +50,7 @@ inorderTreeWalk(x)
 L'algoritmo è così chiamato perché prima stampa tutti gli elementi di un sotto-albero partendo dalla sinistra della radice e concludendo alla sua destra.
 
 ---
-### 26-02-24 lz.2
+### 26-02-24 lz. 2
 **Pre-order tree walk**
 Stampa la radice prima dei valori di ciascun sotto-albero
 
@@ -81,7 +81,7 @@ treeSearch(x,k)
   return x
 ~~~
 
-Dato un puntatore x alla radice di un sotto-albero e una chiave k, il metodo *treeSearch(x,k)* ritorna un puntatore al nodo in cui la chiave è contenuta. Se tale nodo non esiste il metodo ritorna $NIL$. Per fare una ricerca "globale" della chiave richiamo *treeSearch(T.root,k)*. Questa procedura inizia alla radice dell'albero e traccia un percorso scendendo lungo l'albero. Per ogni nodo che viene incontrato si confronta la chiave k con la *x.key* e se le due chiavi sono uguali la ricerca termina. Se la la *x.key* è più piccola di k la ricerca continua nel sotto-albero sinistro di x, altrimenti (*x.key* più grande di k) si continua nel sotto-albero destro di x.
+Dato un puntatore x alla radice di un sotto-albero e una chiave k, il metodo *treeSearch (x, k)* ritorna un puntatore al nodo in cui la chiave è contenuta. Se tale nodo non esiste il metodo ritorna $NIL$. Per fare una ricerca "globale" della chiave richiamo *treeSearch (T.root, k)*. Questa procedura inizia alla radice dell'albero e traccia un percorso scendendo lungo l'albero. Per ogni nodo che viene incontrato si confronta la chiave k con la *x.key* e se le due chiavi sono uguali la ricerca termina. Se la la *x.key* è più piccola di k la ricerca continua nel sotto-albero sinistro di x, altrimenti (*x.key* più grande di k) si continua nel sotto-albero destro di x.
 
 **Massimo e minimo:**
 Per trovare il minimo in un albero di ricerca binario basta seguire i puntatori ai figli sinistri di ogni nodo dalla radice fino a $NIL$ (la procedura ritorna un puntatore al nodo contenente il minimo elemento). Per trovare il massimo si segue lo stesso principio scegliendo però il percorso fatto da sotto-alberi destri.
@@ -117,7 +117,7 @@ treeSuccessor(x)
 
 Tale procedura presenta 2 casi:
  - il sotto-albero destro di x è non vuoto => il successore di x è il nodo più a sinistra nel sotto-albero destro di x.
- - il sotto-albero destro di x è vuoto e x ha un successore y => y è il più piccolo "genitore" di x il cui figlio (di y) è a sua volta un "genitore" di x
+ - Il sotto-albero destro di x è vuoto e x ha un successore y => y è il più piccolo "genitore" di x il cui figlio (di y) è a sua volta un "genitore" di x
  L'algoritmo per trovare il successore di un nodo richiede $O(h)$ tempo per un albero di altezza h in quanto segue o un *path-up* o un *path-down* dell'albero. Anche la procedura per trovare un predecessore, dato che è simmetrica a quella per trovare il successore, ha costo $O(h)$
 
 **Inserimento ed eliminazione:**
@@ -177,7 +177,7 @@ treeDelete(T,z)
   y.left.p = y
 ~~~
  
-Come parte del processo di eliminazione di un nodo, ho la necessità di spostare interi sotto-alberi dell'albero binario di ricerca. posso fare ciò con la subroutine *trasnsplant*, la quale rimpiazza un sotto-albero "figlio" del proprio "genitore" con un altro sotto-albero. Nell'algoritmo quando rimpiazzo il sotto-albero con radice nel nodo *u* con il sotto-albero con radice nel nodo *v*, il "genitore" del nodo *u* diventa il genitore del nodo *v*.
+Come parte del processo di eliminazione di un nodo, ho la necessità di spostare interi sotto-alberi dell'albero binario di ricerca. Posso fare ciò con la subroutine *trasnsplant*, la quale rimpiazza un sotto-albero "figlio" del proprio "genitore" con un altro sotto-albero. Nell'algoritmo quando rimpiazzo il sotto-albero con radice nel nodo *u* con il sotto-albero con radice nel nodo *v*, il "genitore" del nodo *u* diventa il genitore del nodo *v*.
  
 ~~~
 transplant(T,u,v)
@@ -195,7 +195,7 @@ transplant(T,u,v)
 N.B. Sia l'algoritmo di inserimento che quello di eliminazione richiedono tempo $O(h)$ per alberi di altezza h
 
 ---
-### 26-03-02/03 lz.3/4
+### 26-03-02/03 lz. 3/4
 Il set di operazioni viste nella scorsa lezione sono veloci se l'altezza dell'albero di ricerca è piccola. Viceversa se l'altezza fosse un valore più grande le stesse operazioni sarebbero veloci tanto quanto una linked list. In questo contesto vengono introdotti gli alberi di ricerca bilanciati (**red-black trees**) che garantiscono delle operazioni che impiegano $O(log(n))$ di tempo nel caso peggiore.
 
 ***Proprietà:***
@@ -219,7 +219,7 @@ Il set di operazioni viste nella scorsa lezione sono veloci se l'altezza dell'al
 > Nel primo dei due alberi i numeri accanto ai nodi stanno ad indicare quanti nodi neri ci sono da quel nodo fino alle foglie (per rispettare la proprietà 5)
 
 La sentinella permette di trattare un figlio $NIL$ di un nodo *x*  come un nodo normale il cui padre sia *x*.  
-Il numero di nodi neri in ogni cammino semplice discendente a partire (senza includere) un nodo *x*  fino alle foglie è denotato come *bh(x)* . A partire dalle proprietà sopra definite si può dire che un black-height è ben definito.  In generale un black-height di un red-black tree è un black-height della sua radice. Un red-black tree con *n* nodi interni ha altezza al massimo $2log(n+1)$
+Il numero di nodi neri in ogni cammino semplice discendente a partire (senza includere) un nodo *x*  fino alle foglie è denotato come *bh (x)* . A partire dalle proprietà sopra definite si può dire che un black-height è ben definito.  In generale un black-height di un red-black tree è un black-height della sua radice. Un red-black tree con *n* nodi interni ha altezza al massimo $2log(n+1)$
 
 ***Basic operations:***
 Le operazioni di base sono ricerca, minimo, massimo, successore, predecessore e richiedono tutti $O(log(n))$ di tempo. 
@@ -278,19 +278,19 @@ Una hash table è una generalizzazione di un array. In un array gli elementi ven
 | Direct-address tables                                                        | Hash tables                                                                                                                                               |
 | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Mantiene un set dinamico                                                     | Richiede meno spazio di un array dato che può succedere che l'insieme di chiavi usate sia inferiore più piccolo dell'insieme di tutte le chiavi possibili |
-| Ogni elemento ha una chiave presa dall'insieme universo $U = \{0...m-1\}$    | Può ridurre la richiesta di storage fino a $\Theta(\|K\|)$, con K l'insieme di chiavi effettivamente usate                                                |
+| Ogni elemento ha una chiave presa dall'insieme universo $U = \{0...m-1\}$    | Può ridurre la richiesta di storage fino a $\Theta(\  |K\|)$, con K l'insieme di chiavi effettivamente usate                                                |
 | Non esistono due elementi con la stessa chiave                               | Può ancora richiedere (nel caso medio, non nel peggiore) $O(1)$ in tempo per la ricerca                                                                   |
-| Se c'è un elemento *x* con chiave *k*  => *T[k]* contiene il puntatore a *x* | Si usa una funzione *h* per immagazzinare l'elemento nello slot *h(k)*                                                                                    |
+| Se c'è un elemento *x* con chiave *k*  => *T[k]* contiene il puntatore a *x* | Si usa una funzione *h* per immagazzinare l'elemento nello slot *h (k)*                                                                                    |
 > [!info]  
 > - chiamiamo *h* la **hash function** e *T* la **hash table**
-> - $h: U \rightarrow \{0,...,m-1\}$, così *h(k)* è uno slot in *T*
+> - $h: U \rightarrow \{0,...,m-1\}$, così *h (k)* è uno slot in *T*
 
 > [!warning] Quando due o più chiavi puntano allo stesso slot si ha una collisione:
 > - può accadere quando ci sono più chiavi che slot $(|U| > m)$
 > - dato un set K di chiavi con $|K| < m$ potrebbe come potrebbe non accadere (accade sicuramente se $|K| > m$)
 
 ***Hashing indipendente e uniforme:***
-Idealmente *h(k)* verrebbe scelto casualmente e indipendentemente da $\{0,...,m-1\}$. Una volta scelto *h(k)* ogni valutazione seguente di *h(k)* deve ridare lo stesso risultato. L'idea che la hash function sia indipendente, uniforme o casuale è teoretico e non può essere implementato nella pratica (si usa per analizzare il comportamento della hash function e per trovare delle approssimazioni pratiche alla forma ideale)
+Idealmente *h (k)* verrebbe scelto casualmente e indipendentemente da $\{0,...,m-1\}$. Una volta scelto *h (k)* ogni valutazione seguente di *h (k)* deve ridare lo stesso risultato. L'idea che la hash function sia indipendente, uniforme o casuale è teoretico e non può essere implementato nella pratica (si usa per analizzare il comportamento della hash function e per trovare delle approssimazioni pratiche alla forma ideale)
 
 ![[Screenshot From 2026-03-03 23-14-22.png]]
 
@@ -342,7 +342,7 @@ Si consideri una collezione finita $\mathscr{H}$  di funzioni hash che mappi l'u
 Si possono ottenere limiti teorici sulle collisioni e sulle prestazioni attese. Considero una famiglia di hash function $\mathscr{H}$ su un dominio $U$ e con range $\{0,1,...,m-1\}$, le chiavi appartengono a $U$, i numeri degli slot sono in $\{0,1,...,m-1\}$, e una hash function *h* è presa casualmente da $\mathscr{H}$:
 - Uniforme: la probabilità di prendere *h* tale che $h(k) = q$ è $1/m$
 - Universale: per ogni chiave distinta $k_1, k_2$, la probabilità che $h(k_1) = h(k_2)$ è al massimo $1/m$
-- $\epsilon$-universale: per ogni chiave distinta $k_1, k_2$, la probabilità che $h(k_1) = h(k_2)$ è al massimo $\epsilon$
+- $\epsilon$ -universale: per ogni chiave distinta $k_1, k_2$, la probabilità che $h(k_1) = h(k_2)$ è al massimo $\epsilon$
 - $d$ -indipendente: per ogni chiave distinta $k_1, k_2$ e ogni slot $q_1,q_2,...q_d$, non necessariamente distinto, la probabilità che $h(k_i) = q_i$ è $1/{m^d}$ 
 
 **Hashing basato su teoria dei numeri**
@@ -441,13 +441,68 @@ Le CPU moderne influenzano il comportamento dell’hashing.
  - Perché probe consecutivi tendono a restare nella stessa cache line.
 
 > [!info] Sintesi:
-> Hashing diventa una funzione in due variabili h(k, p) dove p indica il probe, ovvero il "tentativo" di inserimento nella hash table (in caso di collisione)
+> Hashing diventa una funzione in due variabili h (k, p) dove p indica il probe, ovvero il "tentativo" di inserimento nella hash table (in caso di collisione)
 > 
 > Hashing lineare: 
-> Indice = [h(k) + p] mod m
-> facilmente "hackerabile" perché rende molto probabile che se c'è un blocco di elementi allocati il prossimo cada sul primo blocco libero
+> Indice = [h (k) + p] mod m
+> Facilmente "hackerabile" perché rende molto probabile che se c'è un blocco di elementi allocati il prossimo cada sul primo blocco libero
 > 
 > Hashing con moltiplicazione e somma: comunque facilmente hackerabili (ad es, m=16 se inserisco 26 + k*m ottengo comunque collisioni sull'indice 10)
 > 
 > Hashing quadratico: meno prevedibile, poi non ho capito se ancora è buono o no
+
+---
+### 26-03-11 lz. 7
+Dato un grafo $G = (V,E)$, in pseudocodice si rappresenta il set di vertici con $G.V$ e il set degli archi con $G.E$.
+- $G$ può essere orientato o non orientato
+- Due modi comuni per rappresentare i grafi per gli algoritmi sono: 
+ 1. *Liste di adiacenza*: array *Adj* di $|V|$ liste, una per vertice. La lista del vertice *u* ha tutti i vertici *v* in modo da avere che $(u,v) \in E$ (vale sia per grafi orientati che non orientati). In pseudocodice si denota tale array come un attributo (G.*Adj*)
+>[!example] ![[Screenshot From 2026-03-11 14-55-01.png]] 
+> - Spazio: $\Theta(V+E)$
+> - Tempo: per listare tutti i vertici adiacenti a *u*: $\Theta(deg(u))$
+> - Tempo: per determinare se $(u,v) \in E: O(\text{deg}(u))$
+ 
+ 2. *Matrici di adiacenza*: $|V| \times |V|$, matrice $A = (a_{ij})$ con $a_{ij} =\begin{cases} 1 &\text{if} \ (i,j) \in E \\ 0 &\text{altrimenti} \end{cases}$. Queste richiedono:
+   - Spazio: $\Theta(V^2)$
+   - Tempo: per listare tutti i vertici adiacenti a *u*: $\Theta(V)$
+   - Tempo: per determinare se $(u,v) \in E : \Theta(1)$
+Per quanto riguarda l'espressione del tempo di esecuzione di un algoritmo, è spesso in termini sia di $|V|$ sia di $|E|$ (cardinalità).
+
+**Breadth-first search**
+In input ho un grafo $G = (V,E)$, sia orientato che non orientato, e un vertice sorgente $s \in V$. In output ho:
+- $v.d$ = distanza (numero di archi più piccolo) da $s$ a $v$ per ogni $v \in V$
+- $v.\pi$ = è il predecessore di $v$ nel cammino più breve da $s$. $(u,v)$ è l'ultimo arco nel cammino più breve $s \rightsquigarrow v$. Il sotto-grafo predecessore contiene gli archi $(u,v)$ tali che $v.\pi = u$. Il sotto-grafo predecessore forma un albero chiamato *breadth-first tree*
+
+Intuizione: i breadth-first tree espandono la frontiera tra i vertici scoperti e non scoperti uniformemente attraverso l'ampiezza della frontiera. A partire da $s$ vengono scoperti i vertici in ondate
+- Prima visita tutti i vertici distanti 1 arco da $s$
+- Da qui visita tutti i vertici distanti 2 archi da $s$
+- Etc.
+Per mantenere il "fronte d'onda" si usa il metodo FIFO sulla coda $Q$:
+- $v \in Q \iff$ l'onda ha visitato $v$ ma non è ancora uscito da $v$ 
+- $Q$ contiene i vertici a distanza $k$, e possibilmente alcuni vertici a una distanza $k+1$. Perciò in ogni momento $Q$ contiene porzioni di due ondate consecutive
+
+
+```
+BFS(G,s)
+ for each vertex $u \in G.V - {s}$
+  u.color = WHITE
+  u.d = $\infty$
+  u.\pi = NIL
+ s.color = GRAY
+ s.d = 0
+ s.\pi = NIL
+ $Q$ = $\empty$
+ ENQUEUE($Q,s$)
+ while $Q != \empty$
+  u = DEQUEUE($Q$)
+  for each vertex $v \in G.Adj[u]$ //cerca i vicini di u
+   if v.color == WHITE //v è stato scoperto? 
+    v.color = GRAY
+    v.d = u.d + 1
+    u.$\pi$ = u
+    ENQUEUE($Q$,v) //v è sulla frontiera ora
+  u.color = BLACK //u è dietro la frontiera ora
+```
+
+> [!example] ![[Screenshot From 2026-03-11 15-53-03.png]]
 
