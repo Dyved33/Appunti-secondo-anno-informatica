@@ -708,3 +708,161 @@ Alcuni errori ricorrenti:
 - usare nomi vaghi o poco significativi (dati1, oggetto, elemento...).
 
 È importante ricordare che in questa fase lo scopo non è “scrivere codice”, ma capire bene il problema.
+
+---
+### 26-03-12 lz. 5
+Iniziamo oggi ad usare una notazione standard per rappresentare i modelli: UML (unified modelling language) che è un linguaggio visivo condiviso
+
+UML è un linguaggio di modellazione standard, non un linguaggio di programmazione. Fornisce un insieme di diagrammi per descrivere:
+- la struttura statica del sistema
+- il comportamento dinamico
+- le interazioni tra parti del sistema e attori esterni. 
+Non obbliga a un particolare processo (waterfall, agile,...), ma può essere usato in tutti. 
+
+UML nasce negli anni ’90 per unificare diverse notazioni di analisi e progettazione. I principali contributori iniziali sono Grady Booch, Ivar Jacobson e James Rumbaugh. La prima standardizzazione avviene in ambito OMG (Object Management Group). Nel tempo UML ha avuto più versioni: la famiglia 1.x e poi 2.x, con estensioni e chiarimenti della notazione. Oggi UML resta un riferimento diffuso per comunicare modelli in modo condiviso tra team diversi.
+
+UML mette a disposizione diversi tipi di diagrammi. In questo corso vedremo soprattutto: 
+- Use Case Diagram — vista del sistema dal punto di vista degli attori esterni; 
+- Modello di dominio — modello concettuale del dominio, spesso rappresentato con un class diagram semplificato; 
+- Class Diagram — struttura statica del dominio (classi, attributi, associazioni); 
+- Sequence Diagram — interazioni nel tempo tra oggetti/attori; 
+- Activity Diagram — flusso di attività, decisioni e responsabilità di processo. 
+UML include anche altri diagrammi (ad esempio State Machine, Component, Deployment). 
+
+Inizieremo dall'Use Case Diagram, perché: 
+- è vicino ai requisiti e alle user stories, 
+- riguarda chi usa il sistema e per quali obiettivi.
+
+> [!info] I casi d’uso descrivono gli obiettivi significativi per gli utenti.
+
+Abbiamo già ragionato su: 
+- chi interagisce con un sistema software; 
+- che cosa sta dentro e che cosa sta fuori dal sistema. 
+Nel Use Case Diagram UML: 
+- gli attori sono ruoli esterni; 
+- il sistema è rappresentato da un rettangolo che racchiude i casi d’uso; 
+- le interazioni diventano associazioni.
+
+**Attore**
+Un attore è un ruolo esterno che interagisce con il sistema:
+- una persona (studente, docente), 
+- un altro sistema (sistemi di autenticazione, basi dati esterne), 
+- un dispositivo. 
+È importante ricordare che: 
+- non rappresenta una singola persona, ma un tipo di utilizzatore; 
+- è sempre fuori dal sistema. 
+In UniManager i nostri attori principali sono: Studente, Docente, Segreteria.
+
+**Caso d'uso**
+Un caso d’uso rappresenta un obiettivo significativo per un attore non è un singolo “click” ne una funzione tecnica (“query sul DB”), ma un risultato che ha senso dal punto di vista dell’utente. 
+
+> [!example] Esempi tipici in UniManager: 
+> -  Iscrizione all’appello, 
+> - Registrazione voti, 
+> - Consultazione libretto, 
+> - Creazione appello
+
+Nella notazione UML, i casi d’uso sono rappresentati come ellissi con un nome. Nei diagrammi completi i casi d’uso stanno dentro il confine del sistema; negli esempi minimali di queste slide il rettangolo può essere omesso per semplicità visiva.
+
+Nella lezione precedente abbiamo letto frasi come: 
+- «Lo studente si iscrive a un appello d’esame.» 
+- «Il docente registra il voto.» 
+- «Lo studente visualizza la propria carriera.» 
+Dal punto di vista dei casi d’uso: 
+- attore: chi compie l’azione (Studente, Docente,...); 
+- obiettivo: che cosa vuole ottenere (essere iscritto, vedere la carriera, registrare il voto); 
+- sistema: che parte del lavoro è di UniManager. 
+Il Use Case Diagram sintetizza queste relazioni in forma visuale.
+Dai requisiti e dalle user stories emergono quattro casi d’uso fondamentali: 
+- Iscrizione all’appello; 
+- Creazione appello; 
+- Registrazione voti; 
+- Consultazione libretto. 
+Questi casi d’uso coinvolgono i tre attori principali del sistema: Studente, Docente, Segreteria. Sono il punto di partenza per costruire il primo Use Case Diagram di UniManager.
+
+> [!tip] ![[Screenshot From 2026-03-12 15-15-14.png|400]]
+
+**Relazione *include* (obbligatorio)**
+Include rappresenta un comportamento comune e obbligatorio tra più casi d’uso. Un caso d’uso A include B se: 
+- ogni volta che si esegue A, a un certo punto è necessario eseguire B; 
+- B è un “pezzo riusabile” usato da più casi d’uso. 
+A livello grafico: 
+- la relazione è una freccia tratteggiata con l’etichetta «include»; 
+- la freccia punta verso il caso d’uso incluso (da A verso B). 
+Serve quando una parte del comportamento è identica e va eseguita sempre prima o durante un caso d’uso principale.
+
+> [!example] Esempio uso include
+>  ![[Screenshot From 2026-03-12 15-18-15.png|400]]
+
+**Relazione *extend* (opzionale)**
+Extend rappresenta una variante opzionale di un caso d’uso. Un caso d’uso B estende A se: 
+- A descrive il flusso “normale”; 
+- B aggiunge passi opzionali o condizioni particolari. 
+A livello grafico: 
+- la relazione è una freccia tratteggiata con etichetta «extend»; 
+- la freccia punta verso il caso d’uso esteso (da B verso A). 
+- Serve quando un comportamento aggiuntivo può avvenire, ma non è obbligatorio.
+
+> [!example] Esempio uso extend
+> ![[Screenshot From 2026-03-12 15-21-24.png|400]]
+
+**Generalizzazione tra attori**
+È possibile organizzare gli attori in una gerarchia, serve quando più attori condividono gli stessi casi d’uso. Significato: 
+- l’attore “padre” rappresenta un ruolo più generale; 
+- l’attore “figlio” eredita le sue interazioni. 
+A livello grafico (UML): 
+- si usa una linea continua con una freccia triangolare non piena; 
+- la freccia punta verso l’attore più generale (da Specializzato → Generale). 
+Va usata solo se semplifica il modello o riduce ripetizioni. • In alcuni casi può essere utile introdurre un attore più generale: Utente come ruolo comune. Attori più specifici: 
+- Studente, 
+- Docente. 
+La generalizzazione permette di evitare ripetizioni: 
+- i casi d’uso comuni a tutti gli utenti possono collegarsi a Utente; 
+- i casi specifici rimangono ai ruoli specializzati.
+
+**Note e commenti**
+In UML possiamo aggiungere note/commenti per chiarire assunzioni e scelte. Le note aiutano a esplicitare dettagli utili senza appesantire i casi d’uso. Sono particolarmente utili quando una regola non è rappresentabile in modo diretto con soli attori e relazioni. Una buona pratica è quella di scrivere note brevi e mirate, collegate solo ai punti davvero ambigui.
+
+> [!example] ![[Screenshot From 2026-03-12 15-27-37.png|400]]
+
+**Package e raggruppamenti**
+In UML possiamo raggruppare casi d’uso in package/aree funzionali. Ciò è utile quando il diagramma cresce e vogliamo separare aree funzionali. La motivazione principale è la leggibilità: meno incroci visivi, più chiarezza su responsabilità e perimetri. I package non cambiano il comportamento dei casi d’uso: organizzano la vista del modello.
+
+> [!example] ![[Screenshot From 2026-03-12 15-27-47.png|400]]
+
+**Molteplicità sulle relazioni**
+In alcuni casi possiamo esplicitare la molteplicità sulle relazioni (senza esagerare per rimanere il più asciutti possibile, altrimenti si rischia solo rumore). Va usata solo quando aggiunge chiarezza al significato del modello. Nei Use Case Diagram è una notazione possibile ma non centrale (più comune nei Class Diagram). 
+
+> [!example]
+> - Esempio 1 (1–*): uno Studente può effettuare molte iscrizioni nel tempo. 
+> - Esempio 2 (1–0..*): un Docente può registrare zero o più voti. 
+
+**Vincoli**
+In UML possiamo esprimere vincoli con testo tra parentesi graffe. I vincoli servono per esplicitare regole di business non evidenti dal solo diagramma (riguardo l'implementazione). Sono utili quando una condizione è decisiva per il dominio (scadenze, prerequisiti, autorizzazioni). Un vincolo deve essere verificabile: formulazioni vaghe riducono il valore del modello.
+
+> [!example] ![[Screenshot From 2026-03-12 15-36-05.png|400]]
+![[Screenshot From 2026-03-12 15-36-23.png|400]]
+
+**Good practices**
+- Usare i casi d’uso per descrivere obiettivi, non schermate o click. 
+- Mantenere un livello di dettaglio gestibile: pochi casi d’uso macro, non decine di micro-casi. 
+- Evitare di usare include/extend in modo eccessivo o artificiale. 
+- Annotare, quando serve, qualche breve descrizione testuale per chiarire le intenzioni. 
+- Ricordare che il Use Case Diagram è uno strumento di comunicazione con gli stakeholder: deve essere leggibile anche da chi non è tecnico.
+
+**Descrizione testuale**
+Il diagramma dei casi d’uso dà una vista sintetica, ma spesso non basta. Per i casi d’uso più importanti conviene scrivere una scheda testuale con: 
+- Nome del caso d’uso; 
+- Attori coinvolti; 
+- Breve descrizione (obiettivo principale); 
+- Precondizioni (cosa deve essere vero prima); 
+- Postcondizioni (cosa deve essere vero dopo); 
+- Flusso principale (passi “normali”); 
+- eventuali flussi alternativi / eccezioni. 
+L’idea è avere un livello di dettaglio sufficiente per: 
+- chiarire il comportamento atteso, 
+- preparare i diagrammi successivi (sequence, activity. . . ).
+
+> [!example] ![[Screenshot From 2026-03-12 15-40-44.png|400]]
+
+---

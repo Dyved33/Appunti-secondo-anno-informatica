@@ -404,3 +404,94 @@ Se io elimino tutti questi stati inaccessibili e restringo la funzione di transi
 > ![[Pasted image 20260308174311.png]]
 
 ---
+### 26-03-12
+***Automa a stati finiti non deterministico con epsilon-transizioni***
+Un automa a stati finiti non deterministico con $\epsilon$-transizioni è una quintupla $A = \langle Q,\Sigma, \delta, q_0, F \rangle$, dove $Q,\Sigma, q_0, F$ sono come nell'automa deterministico, mentre la funzione $\delta: Q \times (\Sigma \cup \{\epsilon\}) \rightarrow \wp(Q)$ è la funzione di transizione, che ora non è definita solo sulle coppie stato-lettera, ma anche sulle coppie stato-parolaVuota, e restituisce un insieme di stati (potrebbe essere anche vuoto). Questo modello mi permette di saltare da uno stato all'altro senza leggere il nastro di input (anche per questo modello c'è un algoritmo che mi permette di passare da un automa di questo tipo ad un automa a stati finiti deterministico).
+
+Una parola $w \in \Sigma^*$ è *accettata* da $A$ se esistono $n\geq 0$, $a_1,...,a_n \in \Sigma \cup \{\epsilon\}$ e $q_1,..q_n \in Q$ tali che $w = a_1a_2...a_n$, $q_i \in \delta(q_{i-1},a_i)$, $1 \leq i \leq n$, $q_n \in F$. In altre parole la parola è accettata dall'automa se esiste un cammino dallo stato iniziale a uno finale nel grafo con etichetta $w$, e se $w$ può essere scritta come una sequenza di lettere e parole vuote. L'insieme delle parole accettate da $A$ si dice *linguaggio accettato (o riconosciuto)* da $A$ e si denota con $L(A)$.
+
+**Grafo dell'automa**
+A ogni automa non deterministico con $\epsilon$-transizioni $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ associamo un grafo diretto con frecce etichettate:
+- I vertici sono gli stati
+- Le frecce sono le triple $(q,a,p)$ con $q \in Q$, $a \in \Sigma \cup \{\epsilon\}$, $p \in \delta(q,a)$ 
+- Lo stato iniziale è denotato da una freccia entrante
+- Gli stati finali sono identificati dal bordo doppio
+
+Ci si convince facilmente a questo punto che:
+- Una parola *w* può essere etichetta di molti cammini uscenti dallo stato iniziale, o anche nessuno
+- La parola *w* è accettata $\iff$ c'è un cammino dallo stato iniziale a uno stato finale con etichetta *w*
+- Questo non esclude però che vi possano essere altri cammini con etichetta *w* che partono dallo stato iniziale e terminano in uno stato non finale
+
+> [!example] ![[Screenshot From 2026-03-12 10-16-28.png]]
+> Nota che tra le colonne ora appare anche $\epsilon$, cosa che prima non era contemplata
+
+**Teorema**: Sia $A$ un automa a stati finiti non deterministico con $\epsilon$-transizioni. Esiste effettivamente un automa a stati finiti deterministico $A'$ tale che $L(A) = L(A')$ (accetta lo stesso linguaggio)
+**Dimostrazione**: Gli stati dell’automa deterministico registreranno l’insieme degli stati raggiungibili dalle computazioni dell’automa non deterministico sul medesimo input. Accetto la parola se fra questi ce uno finale
+
+**$\epsilon$-chiusura**
+Ora il mio problema è capire dove posso arrivare con $\epsilon$-transizioni, questo perché non so quante ne leggo consecutivamente. Informalmente l' $\epsilon$-chiusura è l'insieme degli stati che da questo si possono raggiungere utilizzando solo $\epsilon$-transizioni. 
+**Def:** sia $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ un automa a stati finiti non deterministico con $\epsilon$-transizioni, la $\epsilon$-chiusura di uno stato $q \in Q$ è il più piccolo sottoinsieme $C_{\epsilon}(q)$ di $Q$ tale che:
+- $q \in C_{\epsilon}(q)$
+- Per ogni $p \in C_{\epsilon}(q)$, $\delta(p,\epsilon) \subseteq C_{\epsilon}(q)$
+La $\epsilon$-chiusura di un insieme di stati $S \subseteq Q$ è l'unione delle $\epsilon$ chiusure dei singoli stati di $S: C_{\epsilon}(S) = \bigcup_{q \in S} C_{\epsilon}(q)$
+
+> [!example] ![[Screenshot From 2026-03-12 10-31-58.png]]
+
+**Calcolo della $\epsilon$-chiusura**
+*Input*: un automa non deterministico con $\epsilon$-transizioni $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ e uno stato $q \in Q$
+*Output*: la $\epsilon$-chiusura di $q$
+
+```
+R <- (q)
+p <- primo elemento di R
+while p != NIL
+ appendi a R tutti gli elementi di $\delta$(p,$\epsilon$) \ R
+ p <- successivo(p)
+return R
+```
+
+> [!example] ![[Screenshot From 2026-03-12 10-35-50.png]]
+
+**Costruzione**:
+Sia $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ l'automa non deterministico con $\epsilon$-transizioni, definisco l'automa deterministico $A' = \langle Q',\Sigma, \delta', q_0, F' \rangle$ come segue:
+- L'insieme degli stati è l'insieme $Q' = \wp(Q)$ costituito dai sottoinsiemi di $Q$
+- Lo stato iniziale è $s_0 = C_{\epsilon}(q_0)$
+- Gli stati finali sono tutti i sottoinsiemi di Q che contengono almeno un elemento di $F$, cioé: $F' = \{s \in \wp(Q) | s \cap F \neq \emptyset\}$
+- La funzione di transizione è $\delta': C_{\epsilon}(\bigcup_{p \in s} \delta(p,a))$, $s \in \wp(Q)$, $a \in \Sigma$
+**Dimostrazione:**
+Per ogni $w \in \Sigma^*$ risulta che $\hat{\delta'}(s-=,w) = \{q \in Q |$ nel grafo di $A$  c'è un cammino da $q_0$ a $q$ con etichetta $w$ $\}$. Pertanto sono equivalenti:
+- $w$ è accettata da $A$
+- $\hat{\delta'}(s_0,w)$ contiene uno stato di $F$
+- $\hat{\delta'}(s_0,w) \in F'$
+- $w$ è accettata da $A'$
+Quindi $L(A) = L(A')$
+
+**Algoritmo di determinazione:**
+*Input*: un automa non deterministico con $\epsilon$ transizioni $A = \langle Q,\Sigma, \delta, q_0, F \rangle$
+*Output*: un automa deterministico equivalente $A' = \langle Q',\Sigma, \delta', q_0, F' \rangle$
+
+```
+n <- 1 //numero degli stati
+j <- 0
+$s_0$ <- $C_{\epsilon}(q_0)$
+if $s_0 \cap F \neq \emptyset$ then $F'$ else $F'$ <- $\emptyset$
+while j < n 
+ for $a \in \Sigma$
+  s <- $\bigcup_{q \in s_j}\delta(q,a)$
+  s <- $C_{\epsilon}(s)$
+  if $s = s_j$ per qualche $i < n$
+   $\delta'(j,a) <- i$
+  else
+   $s_n <- s$
+   $\delta'(j,a) <- n$
+   if $s \cap F \neq \empty$ then $F' <- F \cup \{n\}$
+   n <- n+1
+ j <- j+1   
+```
+
+> [!example] ![[Screenshot From 2026-03-12 11-25-10.png]]
+> ![[Screenshot From 2026-03-12 11-25-29.png]]
+> ![[Screenshot From 2026-03-12 11-29-04.png]]
+
+
+
