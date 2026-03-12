@@ -13,7 +13,7 @@ Per **L'ingegneria del software** non si parla solo di programmare, ma serve un 
 - costruire
 - mantenere
 Sistemi complessi e duraturi
- 
+
 **Quando il software fallisce**
 I problemi, oltre ad essere "bug fastidiosi", creano anche dei problemi reali
 - sistemi di prenotazioni in down durante i picchi di accesso
@@ -33,7 +33,7 @@ Nei sistemi reali entrano in gioco diversi fattori
 - contesti d'uso diversificati
 L’Ingegneria del Software nasce per gestire questa complessità e fornire strumenti, metodi e pratiche per affrontare lo sviluppo in modo sistematico.
 
-**Programmazione != ingegneria del software**
+**Programmazione $\neq$ ingegneria del software**
 La scrittura del codice è solo una delle attività dello sviluppo software e rappresenta una porzione limitata del lavoro complessivo.
 Prima dell’implementazione c’è la fase di analisi e comprensione del problema:
 - definizione dei requisiti
@@ -53,7 +53,6 @@ L'attività di sviluppo si suddivide principalmente in 4 processi:
 - **Sviluppo**: progettare l’architettura e le strutture interne, scrivere il codice.
 - **Validazione**: verificare che il sistema soddisfi davvero i requisiti attesi.
 - **Evoluzione**: adattare il software a nuove esigenze, correzioni, cambiamenti di contesto.
-
 **Il costo reale del software è nella manutenzione**
 Nei progetti reali, la fase  iniziale di sviluppo rappresenta solo una parte del costo complessivo. Ma è la **manutenzione** che assorbe la maggior parte delle risorse
 - correzione dei bug
@@ -123,7 +122,7 @@ Molti difetti e ritardi non derivano da problemi tecnici, ma da incomprensioni t
 - decisioni progettuali non documentate
 - informazioni critiche che non vengono condivise
 Una Comunicazione efficace è **parte integrante dell’ingegneria del software**, tanto quanto il codice.
-
+ 
  **Il rischio è parte naturale di ogni progetto**
 Ogni decisione progettuale e tecnologica introduce incertezza. 
 - scelte tecnologiche premature o non verificate.

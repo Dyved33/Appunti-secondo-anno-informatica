@@ -330,24 +330,22 @@ Il sistema ha bisogno di conoscere la situazione dei vari processi e per questo 
 - Coda dei dispositivi (una per dispositivo) che contiene i processi in attesa di interagire con quel dispositivo (il dispositivo genera una nuova interruzione)
 ---
 ### 26-03-11
-**Schedulatore a breve termine**
-*CPU scheduler*: assegna CPU a uno dei processi pronti. Siccome è un programma eseguito con grande frequenza (millisec) $\implies$ deve essere veloce
-
-**Schedulatore a lungo termine**
-Seleziona tra i processi nuovi quali fa passare in coda ready, ma non è opportuno che i processi finiscano tutti in questa coda. Per questo esiste il *job scheduler*: Seleziona i processi da inserire in coda ready e per fare ciò controlla il grado di multiprogrammazione, cioè i programmi eseguiti contemporaneamente. Non viene eseguito con frequenza, per questo può applicare procedure più complesse.
+***Schedulatori***
+Il sistema operativo deve decidere a quali processi assegnare il processore e per fare ciò ci sono diversi schedulatori:
+- **Schedulatore a breve termine (CPU scheduler):** Prende i processi dalla coda ready e gli assegna un processore. Siccome deve essere eseguito con grande frequenza, deve essere molto veloce (i processi running vengono anche messi in coda ready proprio perché lo scheduler assegna la CPU a un processo, poi la toglie a quello per assegnarla ad un altro, così da far avanzare più processi contemporaneamente).
+- **Schedulatore a lungo termine:** Seleziona tra i processi nuovi quali fa passare in coda ready, ma non è opportuno che i processi finiscano tutti in questa coda. Per questo esiste il *job scheduler*: Seleziona i processi da inserire in coda ready e per fare ciò controlla il grado di multiprogrammazione, cioè i programmi eseguiti contemporaneamente. Non viene eseguito con frequenza, per questo può applicare procedure più complesse. Ci sono ad esempio processi CPU-bound, ovvero processi che non rilasciano mai a meno che non forzati la CPU a loro assegnata 
 
 > [!example]
 > - I/O bound processi che interagiscono con input e output
-> - Es CPU bound processi che interagiscono con il processore direttamente come Word
-> È bene avere entrambi i tipi di processi in quanto ci potrebbero essere o processi che non possono avanzare o processi che richiedono troppe risorse (RIGUARDA QUESTO PUNTO) 
+> - In UNIX se entro un certo periodo di tempo il processo non rilascia il processore viene costretto a rilasciarlo e viene rimesso in coda (timebound)
+> È bene avere entrambi i tipi di processi in quanto ci potrebbero essere o processi che non possono avanzare o processi che richiedono troppe risorse se ci fosse una prevalenza dei due
 
-**Schedulatore a medio termine**
-Determina con che velocità avanzano i processi nel sistema. Si occupa di assegnare o revocare la memoria ai processi (*swapping*). Quando i processi non hanno bisogno di memoria, gli viene revocata la RAM e la memoria del processo viene copiata su disco rigido. La memoria liberata viene occupata da un nuovo processo. (CONTROLLA)
+- **Schedulatore a medio termine:** Determina con che velocità avanzano i processi nel sistema. Si occupa di assegnare o revocare la memoria ai processi (*swapping*). Quando i processi non hanno bisogno di memoria, gli viene revocata la RAM e la memoria del processo viene copiata su disco rigido. La memoria liberata viene occupata da un nuovo processo. 
 
 La schedulazione realizza delle politiche per l'assegnazione della CPU. Generalmente distingue tra:
 - Processi *I/O bound*
 - *Processi CPU bound*
-Oltre a questo c'è un problema di overhead nel cambio dei contesto, il quale varia in funzione di:
+Oltre a questo c'è un problema di overhead (risorse accessorie sono ridondanti rispetto a quelle necessarie) nel cambio dei contesto, il quale varia in funzione di:
 - Velocità della memoria
 - Numero registri del processore
 - Istruzioni speciali (riservate al kernel)
@@ -355,47 +353,19 @@ Oltre a questo c'è un problema di overhead nel cambio dei contesto, il quale va
 ***Creazione del processo***
 Il sistema operativo fornisce meccanismi per creazione/terminazione dei processi. Generalmente un processo genitore chiede al kernel di creare un processo figlio che a sua volta può creare altri processi (*albero dei processi*). Ogni processo è identificato da un numero detto *identificatore di processo (pid)* $\rightarrow$ su linux è il primo numero che vedo quando scrivo `ps` nel terminale. Quando un processo termina, viene eliminato dall'albero.
 
-**Assegnazione delle risorse ad un processo**
+**Assegnazione delle risorse ad un processo figlio**
 Avviene in base al tipo di sistema operativo:
 - Un processo figlio riceve le risorse dal processo padre 
  - Risorse ripartite = il padre non può usarle finché il figlio non ha finito di usarle
  - Risorse condivise 
 - Il processo figlio ottiene le risorse dal sistema operativo
 
-**Opzioni di esecuzione**
-- Il processo padre e il processo figlio possono essere eseguiti concorrentemente
-- Il padre attende la terminazione del figlio
+Genitore e figlio possono essere eseguiti concorrentemente mentre il genitore attende la terminazione del figlio. Per quanto riguarda la memoria il processo figlio può avere un duplicato di memoria del genitore e quindi avere lo stesso programma, oppure può averne uno nuovo.
 
-**Memoria**
-- Il figlio è un duplicato del genitore  
-- Il figlio ha un nuovo programma
-
-> [!info] La funzione `fork` è una syscall che crea una copia esatta del processo e restituisce al padre il pid del figlio. 
->> [!example]
->> #include < sys/types.h >
->> #include < stdio.h >
->> #include < unistd.h >
->> Int main ()
->> {
->> Pid_t pid;
->> /* fork a child process */
->> Pid = fork ();
->> If (pid < 0) { /* error occurred */
->> Fprintf (stderr, "Fork Failed");
->> Return 1;
->> }
->> Else if (pid == 0) { /* child process */
->> Execlp ("/bin/ls","ls", NULL);
->> }
->> Else { /* parent process */
->> /* parent will wait for the child to complete */
->> Wait (NULL);
->> Printf ("Child Complete");
->> }
->> Return 0;
->> }
-
-
+> [!info] La funzione `fork` è una syscall che crea una copia esatta del processo e restituisce al padre il pid del figlio:
+> - **0 (Zero):** Indica che il processo corrente è il **processo figlio** appena creato.
+> - **Maggiore di 0 (Positivo):** Indica che il processo corrente è il **processo padre** e il valore corrisponde al PID del figlio.
+> - **-1 (Negativo):** Indica che la `fork()` è fallita e nessun processo figlio è stato creato.
 
 ***Terminazione del processo***
 Il processo termina con la syscall *exit ()*, così:
@@ -404,10 +374,9 @@ Il processo termina con la syscall *exit ()*, così:
 Il genitore può terminare l'esecuzione del figlio con la syscall *abort ()* e questo per varie motivazioni:
 - Eccesso di risorse allocate
 - Compito non più richiesto
-La terminazione di un processo figlio fa si che vengano terminati anche i figli del processo terminato (terminazione a cascata). Dolo dopo il wait () del genitore viene deallocato il pid:
-- Un processo diventa zombie quando ha terminato ola sua esecuzione, ma il padre non he ancora letto il suo stato di uscita tramite wait () o simili. 
-- Se il padre termina prima che i figli vengano terminati $\implies$ i figli sono detti orfani $\implies$ vengono attribuiti i processi orfani al processo init
-MANCA QUALCOSA 
+La terminazione di un processo figlio fa si che vengano terminati anche i figli del processo terminato (terminazione a cascata). Dolo dopo il wait () del genitore viene deallocato il pid: 
+- il pid però non scompare subito e il processo rimane in stato di zombie e scompare solo dopo che il genitore ha eseguito il wait ()
+- il genitore termini senza che vengano terminati i suoi processi figli, in tal caso quei processi si dicono orfani.
 
 ##### **Threads**
 I processi sono caratterizzati da:
@@ -416,17 +385,16 @@ I processi sono caratterizzati da:
 Ma le due caratteristiche potrebbero essere trattate in maniera indipendente:
 - **Processo (o task):** possiede le risorse
 - **Thread (o processo leggero):** unità che viene assegnata al processore. 
-Si parla di multithreading la capacità di un SO di permettere pi
- Tracce di esecuzione concorrenti in un singolo processo
+Si parla di multithreading la capacità di un SO di permettere più tracce di esecuzione concorrenti in un singolo processo (quindi ad un processo o più processi vengono assegnati più di un singolo thread ciascuno)
 
-| Single-threading                                         | Multi-threadin                                                 |
+| Single-threading                                         | Multi-threading                                                |
 | -------------------------------------------------------- | -------------------------------------------------------------- |
 | Un processo, un thread (MD-DOS)                          | Un processo, più thread (Java run-time)                        |
 | Più processi, un thread per ciascuno (UNIX tradizionale) | Più processi, ciascuno con più thread (Windows, Solaris, UNIX) |
 **Def:** in un ambiente multi-thread, il processo è l'unità di allocazione delle risorse e un'unità di protezione (nessun altro può accedere alle risorse assegnate al processo). Associati al processo ci sono:
 - Spazio di indirizzamento virtuale (contiene immagine del processo)
-- Accesso protetto al processore, ad altri processi
-- MANCA
+- Accesso protetto al processore, ad altri processi (IPC), files, dispositivi I/O
+- Uno o più thread
 Associati al thread ci sono:
 - Stato = pronto, in attesa, in esecuzione
 - Contesto del thread (immagine del processore). Viene salvata quando non è in esecuzione
@@ -435,27 +403,26 @@ Associati al thread ci sono:
 - Accesso a memoria e risorse del processo, condivise con gli altri thread del processo
 Questo genera un problema: due thread che accedono agli stessi dati/stessa memoria (magari uno vuole incrementare e l'altro decrementare la stessa variabile)
 
-IMMAGINE
-
-- La creazione di un thread è iù rapida della creazione di un processo
+![[Screenshot From 2026-03-12 19-20-44.png|400]]
+I benefici del multithreading sono:
+- La creazione di un thread è più rapida della creazione di un processo
 - La teminazione di un thread è più rapida della terminazione di un processo (no questione di protezione della memoria)
 - Lo switch tra due thread del medesimo processo è più rapida dello switch tra due processi (sempre per via della memoria)
 - Efficianza della comunicazione fra programmi (eseguiti da thread dello stesso processo)
-**In un sistema a utente singolo**
+In un sistema a utente singolo:
 - Esecuzione in foreground e background
 - Elaborazione asincrona
 - Velocità di esecuzione
 - Struttura modulare dei programmi
-**OSS:** la schedulazione è gestita principalmente a livello di thread, ma non la sospensione (memory swap) MANCA/NON CHIARO
 
-**Stati del thread**
-- In esecuzione
-- MANCA
+**OSS:** Si nota che la schedulazione è gestita principalmente nel thread, ma non la sospensione e la terminazione del processo.
 
-IMMAGINE
+Gli stati del thread sono gli stessi dei processi (in esecuzione, pronto e in attesa), così come le operazioni (creazione, block/sospensione, unblock/riattivazione, terminazione).
+
+![[Screenshot From 2026-03-12 19-24-20.png|400]]
 
 **Sincronizzazione dei thread**
-I thread di un processo condividono spazio di indirizzamento e altre risorse. Ogni modifica simultanea di un dato da parte di due thread può corrompere il dato medesimo. Per questi motivi è necessario sincronizzare l'accesso dei thread alle risorse
+I thread di un processo condividono spazio di indirizzamento e altre risorse. Ogni modifica simultanea di un dato da parte di due thread può corrompere il dato stesso. Per questi motivi è necessario sincronizzare l'accesso dei thread alle risorse
 
 ---
 ### 26-03-12
@@ -492,20 +459,25 @@ Il vantaggio lo hanno:
 
 **Threads in UNIX**
 - Il kernel non distingue tra processi e thread
-- Per ogni task (processo o thread) c'è un task control block
+- Per ogni task (processo o thread) c'è un *task control block* (TCB) con fork ()
 - Fork () crea una nuova task, con una copia del task control block
-- Clone () crea una nuova task, ma nel suo task control block ci sono puntatori ai campi di quello del genitore (in base ai parametri passati a clone ())
+- Clone () crea una nuova task, ma nel suo TCB ci sono puntatori ai campi di quello del genitore (in base ai parametri passati a clone ()
 
 ***Mutua esclusione***
-Multiprogrammazione: molti processi, un singolo processore
-Multiprocessing: molti processi, un multiprocessore
-Processi distribuiti: molti processi, molti processi distribuiti (cluster)
+ I processi possono interferire tra di loro in maniera positiva o negativa, negativa ad esempio quando sottrae risorse ad altri processi, in maniera positiva quando due o più processi interagiscono e ci permettono di realizzare un’attività che sfrutta l’uso di diversi processi in un’unica applicazione. La gestione dei processi può avvenire tramite: 
+ - Multiprogrammazione: molti processi con un singolo processore, i processi avanzano attendendo che il processore si liberi; 
+ - Multiprocessing: molti processi gestiti da un multiprocessore; 
+ - Processi distribuiti: molti processi, gestiti da molti processori distribuiti (*cluster*), con memorie distribuite, rende le cose più complicate da gestire, ma sicuramente più veloci. 
+ I differenti processi hanno bisogno di risorse che tipicamente vengono condivise tra i vari processi, si crea quindi una *concorrenza*:
 
-La concorrenza appare in 3 differenti contesti (problema: i processi vogliono accedere alle stesse risorse):
-- Manca
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ - Nelle applicazioni multiple, o nelle applicazioni strutturate (con più processi o threads che devono accedere a delle risorse)
+ - La modifica dei dati disponibili da parte di un processo influenza l’andamento di un altro processo
+ - Nella struttura del sistema operativo.
 
 **Principi della concorrenza**
-- Nell'uniprocessore multiprogrammato, le esecuzioni de processi si alternano
+- Nell'uniprocessore multiprogrammato, le esecuzioni dei processi si alternano
 - Nel multiprocessore, le esecuzioni dei processi si alternano e si sovrappongono
 - In entrambi i casi, la velocità relativa di esecuzione dei processi non è prevedibile. Dipende da:
  - Attività degli altri processi
@@ -529,3 +501,4 @@ Processi concorrenti sono in conflitto per l'uso delle risorse. I problemi sono:
 - Mutua esclusione (risorsa critica e sezione critica)
 - Stallo (*deadlock*)
 - Starvation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
