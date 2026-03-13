@@ -452,3 +452,6 @@ DEVI CAPIRE BENE LA DIFFERENZA TRA USARE O MENO IL SIMBOLO < OPPURE >
 MANCA UNA SBREGA DI ROBA
 
 ***Pipeline***
+Vari comandi separati da | (pipe) stdout di cmd1
+
+Command-line completion
