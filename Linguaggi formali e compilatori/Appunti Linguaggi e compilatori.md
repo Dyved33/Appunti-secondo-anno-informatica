@@ -1,22 +1,18 @@
-### 26-02-26 lz.1
-**Compilatori e Interpreti**
-La traduzione del codice sorgente in un linguaggio comprensibile dalla macchina può avvenire in modalità differenti (è anche possibile la traduzione da un linguaggio di programmazione a un altro).
+##### **Compilatori e Interpreti**
+La traduzione del codice sorgente in un linguaggio comprensibile dalla macchina può avvenire in modalità differenti (è anche possibile la traduzione da un linguaggio di programmazione a un altro):
 * **Compilatore:** Esegue la traduzione in blocco *prima* dell'esecuzione. Prende in input il **codice sorgente** e, tramite il traduttore, restituisce il **codice oggetto** (oppure delle notifiche di errore).
 * **Interprete:** Esegue la traduzione *istruzione per istruzione*, simultaneamente all'esecuzione del programma. Prende in input sia il **codice sorgente** sia l'**input** dell'utente, producendo direttamente l'**output**.
-
 Esistono compilatori Ibridi (Es. Java) che combinano i due approcci:
 1. Traduttore analizza il codice sorgente e lo traduce in un **programma intermedio** (ad esempio, il *Java bytecode*).
 2. Successivamente, una **macchina virtuale** (ad esempio, la JVM) riceve gli input dell'utente e *interpreta* il codice intermedio per produrre l'output finale.
-
-**Le Fasi della Compilazione: Dall'Analisi alla Sintesi**
+##### **Le Fasi della Compilazione: Dall'Analisi alla Sintesi**
 La compilazione si divide concettualmente in due macro-fasi principali:
 * **Fase Analitica (Analisi):** Riguarda la comprensione del codice in ingresso. Ha lo scopo di costruire l'**Albero Sintattico Astratto (AST)** partendo dal codice sorgente.
 * **Fase Sintetica (Sintesi):** Riguarda la generazione dell'output. Si occupa di produrre il codice oggetto finale a partire dall'AST generato.
-
 **Le 8 Fasi del Sistema di Compilazione**
 Il passaggio dal codice sorgente al codice macchina attraversa stadi sequenziali, che comunicano tra loro avvalendosi di strutture condivise come la **tabella dei simboli** e il modulo di **gestione degli errori**.
 
-=>*FASE DI ANALISI*
+**FASE DI ANALISI**
 1. **Gestione Input (Preprocessore / Lettura):** Prende in ingresso il codice sorgente puro.
    > [!NOTE] Nota del Prof
    > Il codice sorgente è tipicamente un file di testo che deve essere letto e processato sequenzialmente dal sistema.
@@ -41,7 +37,7 @@ Il passaggio dal codice sorgente al codice macchina attraversa stadi sequenziali
    * *Esempio in C:* È permesso moltiplicare un intero per un reale; il compilatore converte silenziosamente l'intero in un reale.
    * *Esempio in Pascal:* Il costrutto `WHILE` richiede obbligatoriamente un valore `BOOLEAN`. L'espressione `WHILE X DO X := X - 1 ;` farà segnalare un errore all'analizzatore semantico.
 
-=>*FASE DI SINTESI*
+**FASE DI SINTESI**
 4. **Generazione del Codice Intermedio:** Dall'AST e dalla tabella dei simboli si ottiene un codice intermedio basato su istruzioni elementari, facili da tradurre in codice macchina. È **indipendente dall'architettura** (non specifica gli indirizzi fisici in memoria né i registri).
    * *Esempio pratico:* L'espressione precedente viene scomposta in operazioni atomiche: `t1 = inttofloat(60)`, `t2 = id3 * t1`, `t3 = id2 + t2`, `id1 = t3`.
 6. **Ottimizzazione:** L'ottimizzatore elabora il codice intermedio per ridurre il tempo o lo spazio necessario all'esecuzione.
@@ -55,9 +51,8 @@ Il passaggio dal codice sorgente al codice macchina attraversa stadi sequenziali
    > A rigore, l'Assemblatore (se il compilatore emette assembly) e il Linker sono strumenti esterni che intervengono al termine della compilazione. Il Linker si occuperà di collegare il codice oggetto generato in questa fase con eventuali librerie esterne, producendo il file eseguibile finale.
 8. **Ottimizzazione Peep-hole:** Un'ulteriore e ultimissima fase di ottimizzazione legata alle specificità e ai "trucchi" dell'architettura hardware di destinazione.
 
-**L'Architettura Software del Compilatore**
+##### **L'Architettura Software del Compilatore**
 L'organizzazione interna del compilatore definisce come i moduli comunichino effettivamente tra loro durante il processo di traduzione.
-
 * **Il Nucleo Centrale (Parser & Semantica):** la parte centrale di tutto il processo è l'**analizzatore sintattico**. In questa architettura, esso realizza contestualmente anche l'**analisi semantica statica**.
    > [!IMPORTANT] Avanzamento Parallelo
    > Dato che le due funzioni sono accorpate nel nucleo, l'analisi sintattica e l'analisi semantica avanzano parallelamente.
@@ -65,7 +60,6 @@ L'organizzazione interna del compilatore definisce come i moduli comunichino eff
 * **Dialogo Scanner-Parser:** L'analizzatore sintattico coordina il lavoro chiedendo i dati all'analizzatore lessicale tramite la chiamata alla funzione `prossimoToken()`. Questa funzione, implementata nello scanner, restituisce il `token` richiesto per continuare a costruire l'albero.
 * **Gestione degli Errori:** Il **notificatore degli errori** riceve comunicazioni dirette e incrociate dal gestore input, dall'analizzatore lessicale e dal blocco sintattico/semantico ogni volta che viene rilevata un'anomalia. Alla fine, produce in output la "lista degli errori".
 * **Generazione del Codice Finale:** Completata l'analisi senza errori bloccanti, è sempre l'analizzatore sintattico ad attivare la sintesi. Tramite chiamate a funzioni opportune, innesca il **generatore del codice**, che a sua volta emetterà il **codice oggetto** definitivo.
-
 ---
 ### 26-02-27 lz.2
 **Il problema dell'infinito e il Teorema di Cantor**
@@ -228,26 +222,35 @@ La strategia è quindi quella di classificare (**gerarchia di Chomsky**) le nost
 
 ***Gerarchia di Chomsky:*** divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più complessi ai più semplici)
 **Linguaggi di tipo 0:**
-**Def:** le grammatiche a struttura di frase (in base alle loro regolo possono scrivere intere frasi e non solo singoli caratteri) si dicono anche *grammatiche di tipo 0*. I linguaggi generati da grammatiche di tipo 0 si dicono *linguaggi di tipo 0* oppure *linguaggi ricorsivamente numerabili*. Fanno parte di questo livello le grammatiche a struttura di frase. Queste grammatiche hanno la massima espressività possibile: <u>se io ho una procedura effettiva infinita che mi genera una lista di parole, quella lista di parole è un linguaggio di tipo 0.</u>
+**Definizione:** le grammatiche a struttura di frase (in base alle loro regolo possono scrivere intere frasi e non solo singoli caratteri) si dicono anche *grammatiche di tipo 0*. I linguaggi generati da grammatiche di tipo 0 si dicono *linguaggi di tipo 0* oppure *linguaggi ricorsivamente numerabili*. Fanno parte di questo livello le grammatiche a struttura di frase. Queste grammatiche hanno la massima espressività possibile: <u>se io ho una procedura effettiva infinita che mi genera una lista di parole, quella lista di parole è un linguaggio di tipo 0.</u>
 
 > [!example] 
-> ![[Screenshot From 2026-03-05 10-15-42.png]]
+> ![[Screenshot From 2026-03-05 10-15-42.png|400]]
 
 **Linguaggi di tipo 1 (grammatiche sensibili al contesto / contestuali):**
-**Def:** una grammatica a struttura di frase si dice sensibile al contesto se le produzioni hanno la forma: $\alpha_1X\alpha_2 \to \alpha_1\beta\alpha_2$, con $X \in N$, $\alpha_1, \alpha_2, \beta \in V^*$ , $\beta \neq \epsilon$.  Ciò significa che le produzioni di queste grammatiche hanno il lato sx che contiene una variabile, mentre il lato dx si ottiene sostituendo quella variabile con una parola qualsiasi purché non vuota. Quindi mentre prima potevamo sostituire una parola con una parola, qui possiamo sostituire solo una lettera all'interno di una parola con una parola, che per di più non deve essere vuota (posso sostituire una variabile solo se è contenuta in un  contesto). I linguaggi generati da grammatiche di tipo *q* si dicono *linguaggi di tipo 1*  o anche *sensibili al contesto*.  A differenza dei linguaggi di tipo 0, per questo tipo di linguaggi esistono algoritmi che risolvono i problemi di parsing e ricognizione, ma sono molto costosi.
+**Definizione:** una grammatica a struttura di frase si dice sensibile al contesto se le produzioni hanno la forma: $\alpha_1X\alpha_2 \to \alpha_1\beta\alpha_2$, con $X \in N$, $\alpha_1, \alpha_2, \beta \in V^*$ , $\beta \neq \epsilon$.  Ciò significa che le produzioni di queste grammatiche hanno il lato sx che contiene una variabile, mentre il lato dx si ottiene sostituendo quella variabile con una parola qualsiasi purché non vuota. Quindi mentre prima potevamo sostituire una parola con una parola, qui possiamo sostituire solo una lettera all'interno di una parola con una parola, che per di più non deve essere vuota (posso sostituire una variabile solo se è contenuta in un  contesto). I linguaggi generati da grammatiche di tipo *q* si dicono *linguaggi di tipo 1*  o anche *sensibili al contesto*.  A differenza dei linguaggi di tipo 0, per questo tipo di linguaggi esistono algoritmi che risolvono i problemi di parsing e ricognizione, ma sono molto costosi.
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Screenshot From 2026-03-05 10-22-40.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  VN / VU è possibile $\iff$ V è seguita da N / U (per questo dipende da contesto)
+  </div>
+</div>
+
 
 > [!example]
 > ![[Screenshot From 2026-03-05 10-22-40.png]]
-> VN / VU è possibile $\iff$ V è seguita da N / U (per questo dipende da contesto)
+
 
 **Grammatiche monotone (sempre di tipo 1):**
-**Def:** una grammatica si dice *monotona* se tutte le produzioni hanno la forma: $\alpha \to \beta$ con $|\alpha| \leq |\beta|$ . Cioè una grammatica in cui tutte le produzioni hanno il lato dx che ha lunghezza maggiore o uguale a quella del lato sx. Quindi non c’è più l’obbligo di sostituire singole variabili, ma c’è la sola regola che il lato dx non può essere più corto di quello sx. Inoltre: 
+**Definizione:** una grammatica si dice *monotona* se tutte le produzioni hanno la forma: $\alpha \to \beta$ con $|\alpha| \leq |\beta|$ . Cioè una grammatica in cui tutte le produzioni hanno il lato dx che ha lunghezza maggiore o uguale a quella del lato sx. Quindi non c’è più l’obbligo di sostituire singole variabili, ma c’è la sola regola che il lato dx non può essere più corto di quello sx. Inoltre: 
 - Le grammatiche sensibili al contesto sono monotone, perché in esse si sostituisce (all'interno del contesto) una variabile con qualcosa che non è vuoto, quindi quello che otterremo sarà qualcosa di più lungo o al massimo della stessa lunghezza di quello che già abbiamo.
 - Non tutte le grammatiche monotone sono sensibili al contesto
 - Ogni grammatica monotona è equivalente a una grammatica sensibile al contesto (che genera lo stesso linguaggio)
 
-> [!example]
->  ![[Screenshot From 2026-03-05 10-26-52.png]]
+> [!example] ![[Screenshot From 2026-03-05 10-26-52.png]]
 
 ***Sintesi:***
 1. I linguaggi di tipo 1 costituiscono una sottoclasse propria dei linguaggi di tipo 0
@@ -264,7 +267,7 @@ I linguaggi di tipo 2 costituiscono una sottoclasse propria dei linguaggi di tip
 Gli algoritmi di ricognizione e parsing per le grammatiche di tipo 2 si comportano abbastanza bene, alcuni sono moderatamente efficienti . La maggior parte dei linguaggi di programmazione sono generati da una grammatica non contestuale.
 
 **Linguaggi di tipo 3 Grammatiche regolari):**
-**Def:** una grammatica a struttura di frase si dice *regolare* o di *tipo 3* se le produzioni hanno la forma $X \to aY$ oppure $X \to a$, con $X,Y \in N$, $a \in \Sigma$. Dunque Le produzioni hanno una forma ancora più semplice: a sx sempre una variabile, come nelle grammatiche di tipo 2, ma a dx ho un terminale da solo o un terminale seguito da una variabile. I linguaggi generati da grammatiche di tipo 3 si dicono *linguaggi di tipo 3* o anche *regolari*. I linguaggi di tipo 3 costituiscono una sottoclasse dei linguaggi di tipo 2 perché le produzioni a sx hanno una singola variabile. Quindi un linguaggio generato da una grammatica di tipo 3, è anche un linguaggio generato da una grammatica di tipo 2. Anche in questo caso, però, ci sono linguaggi di tipo 2 che non sono linguaggi di tipo 3.
+**Definizione:** una grammatica a struttura di frase si dice *regolare* o di *tipo 3* se le produzioni hanno la forma $X \to aY$ oppure $X \to a$, con $X,Y \in N$, $a \in \Sigma$. Dunque Le produzioni hanno una forma ancora più semplice: a sx sempre una variabile, come nelle grammatiche di tipo 2, ma a dx ho un terminale da solo o un terminale seguito da una variabile. I linguaggi generati da grammatiche di tipo 3 si dicono *linguaggi di tipo 3* o anche *regolari*. I linguaggi di tipo 3 costituiscono una sottoclasse dei linguaggi di tipo 2 perché le produzioni a sx hanno una singola variabile. Quindi un linguaggio generato da una grammatica di tipo 3, è anche un linguaggio generato da una grammatica di tipo 2. Anche in questo caso, però, ci sono linguaggi di tipo 2 che non sono linguaggi di tipo 3.
 
 > [!example]
 > ![[Pasted image 20260305103801.png]]
@@ -278,7 +281,7 @@ Un automa è un dispositivo che può raggiungere un certo numero finito di confi
 - Passa a esaminare la cella successiva
 Terminata la lettura del nastro, in base allo stato raggiunto (se è uno stato accettante o meno) , accetta o rifiuta la parola letta. Le parole accettate costituiscono un linguaggio di tipo 3 che, a sua volta, è sempre accettato da un automa a stati finiti. Questo algoritmo è lineare e in tempo reale, perché ad ogni cella letta so se tutto ciò che è venuto prima è stato accettato o meno.
 
-**Def:** un *automa a stati finiti deterministico* è una quintupla $A = (Q, \Sigma, \delta, q_0, F)$ ove:
+**Definizione:** un *automa a stati finiti deterministico* è una quintupla $A = (Q, \Sigma, \delta, q_0, F)$ ove:
 - $Q$ è un insieme finito, detto insieme degli stati = tutte le configurazioni che il dispositivo può assumere
 - $\Sigma$ è un alfabeto detto alfabeto di input
 - $\delta$: $Q \times \Sigma \to Q$ è la funzione di transizione  = legge con cui i nostri stati cambiano in base ad uno stato precedente e alla lettera scritta sul nastro
@@ -296,7 +299,7 @@ Per ogni $q \in Q, u, v \in \Sigma^*$,  si ha $\hat{\delta}(q,uv) = \hat{\delta}
 > [!example] ![[Screenshot From 2026-03-05 21-47-18.png]]
 
 **Linguaggio accettato:**
-**Def:** una parola $w \in \Sigma^*$ è accettata da $A$ se $\hat{\delta}(q_0, w) \in F$. L'insieme delle parole accettate da $A$ si dice linguaggio riconosciuto (o accettato) da $A$ e si denota come $L(A) = \{w \in \Sigma^* | \hat{\delta}(q_0,w) \in F\}$ 
+**Definizione:** una parola $w \in \Sigma^*$ è accettata da $A$ se $\hat{\delta}(q_0, w) \in F$. L'insieme delle parole accettate da $A$ si dice linguaggio riconosciuto (o accettato) da $A$ e si denota come $L(A) = \{w \in \Sigma^* | \hat{\delta}(q_0,w) \in F\}$ 
 
 **Grafo di un automa:**
 A ogni automa $A = (Q, \Sigma, \delta, q_0, F)$ associamo un grafo diretto con frecce etichettate:
@@ -330,7 +333,7 @@ Se da questa definizione togliessi l'aspetto degli archi otterrei: una maggiore 
 **Sintesi** = Possiamo definire Automi a Stati finiti non Deterministici, dei meccanismi che non hanno la restrizione dei modelli deterministici: un meccanismo che può assumere un numero predefinito di configurazioni interne, che ha un nastro di input, ma che ad ogni passo non esegue più una sola transizione ben determinata ma dispone di un ventaglio di possibilità e può quindi eseguire varie transizioni (o nessuna). L’input viene accettato se tra le tante computazioni possibili c’è n’è almeno una che termina in uno stato finale. Quindi una parola viene rifiutata se tutte le computazioni terminano in uno stato non finale o terminano prima che il nastro sia esaurito
 . 
 
-**Def:** un automa a stati finiti non deterministico è una quintupla $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ dove:
+**Definizione:** un automa a stati finiti non deterministico è una quintupla $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ dove:
 - Q è l'insieme degli stati
 - $\Sigma$ è l'alfabeto di input
 - $\delta: Q \times \Sigma \to \wp(Q)$ è la funzione di transizione
@@ -362,7 +365,7 @@ Apparentemente questo tipo di progettazione non ci da nessun vantaggio, perché 
 
 > [!info] ![[Pasted image 20260306110859.png]]
 
-**Teorema**: Sia $A$ un automa a stati finiti non deterministico, esiste effettivamente un equivalente automa a stati finiti deterministico $A’$ tale che $L (A) = L (A’)$, cioè esiste l’automa deterministico e l’algoritmo per costruire questo automa a partire dall'automa non deterministico. Quindi, prima andremo a disegnare l’automa a stati non deterministico (prima immagine con più percorsi in verde e rosso), cosa che risulta molto più facile rispetto al crearne uno deterministico, e poi sapremo che esiste l’algoritmo in grado di trasformare quel grafo nel grafo di un automa a stati deterministico (seconda immagine con colonne). 
+**Teorema:** Sia $A$ un automa a stati finiti non deterministico, esiste effettivamente un equivalente automa a stati finiti deterministico $A’$ tale che $L (A) = L (A’)$, cioè esiste l’automa deterministico e l’algoritmo per costruire questo automa a partire dall'automa non deterministico. Quindi, prima andremo a disegnare l’automa a stati non deterministico (prima immagine con più percorsi in verde e rosso), cosa che risulta molto più facile rispetto al crearne uno deterministico, e poi sapremo che esiste l’algoritmo in grado di trasformare quel grafo nel grafo di un automa a stati deterministico (seconda immagine con colonne). 
 **Dimostrazione:** Gli stati dell’automa deterministico registreranno l’insieme gli stati raggiungibili dalle computazioni dell’automa non deterministico sul medesimo input $\rightarrow$ Accetto se fra questi ce n’è uno finale
 
 **Costruzione:**
@@ -380,7 +383,7 @@ $\implies L(A) = L(A')$
 
 Come abbiamo accennato precedentemente, però, sarebbero presenti troppi stati da controllare (se $Q=n$, allora $Q’=2^n$). Per fortuna non tutti questi stati sono necessari: possiamo definire uno stato necessario/accessibile come un cammino nel grafo dell’automa che, dallo stato iniziale, mi porta a $q$. Tutti gli altri stati si dicono inaccessibili.
 
-**Def:** sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ un automa a stati finiti deterministico. Uno stato $q \in Q$ si dice *accessibile* se $q = \hat{\delta}(q_0,w)$ per qualche $w \in \Sigma^*$
+**Definizione:** sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ un automa a stati finiti deterministico. Uno stato $q \in Q$ si dice *accessibile* se $q = \hat{\delta}(q_0,w)$ per qualche $w \in \Sigma^*$
 
 Se io elimino tutti questi stati inaccessibili e restringo la funzione di transizione (delta cappello) solo agli stati accessibili, ottengo un automa con un numero di stati più piccolo, equivalente a quello di partenza, che accetta lo stesso linguaggio di quello di partenza.
 
@@ -425,12 +428,12 @@ Ci si convince facilmente a questo punto che:
 > [!example] ![[Screenshot From 2026-03-12 10-16-28.png]]
 > Nota che tra le colonne ora appare anche $\epsilon$, cosa che prima non era contemplata
 
-**Teorema**: Sia $A$ un automa a stati finiti non deterministico con $\epsilon$-transizioni. Esiste effettivamente un automa a stati finiti deterministico $A'$ tale che $L(A) = L(A')$ (accetta lo stesso linguaggio)
-**Dimostrazione**: Gli stati dell’automa deterministico registreranno l’insieme degli stati raggiungibili dalle computazioni dell’automa non deterministico sul medesimo input. Accetto la parola se fra questi ce uno finale
+**Teorema:** Sia $A$ un automa a stati finiti non deterministico con $\epsilon$-transizioni. Esiste effettivamente un automa a stati finiti deterministico $A'$ tale che $L(A) = L(A')$ (accetta lo stesso linguaggio)
+**Dimostrazione:** Gli stati dell’automa deterministico registreranno l’insieme degli stati raggiungibili dalle computazioni dell’automa non deterministico sul medesimo input. Accetto la parola se fra questi ce uno finale
 
 **$\epsilon$-chiusura**
 Se però con l’automa a stati finiti non deterministico le nostre computazioni si limitavano alla potenza-numero-di- lettere della parola, ora teoricamente posso avere anche infinite ε-transizioni (la concatenazione di un miliardo di ε, è sempre una parola vuota). Quindi bisogna utilizzare una tecnica per trattare queste ε-transizioni: la ε-chiusura di uno stato. 
-**Def:** sia $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ un automa a stati finiti non deterministico con $\epsilon$-transizioni, la $\epsilon$-chiusura di uno stato $q \in Q$ è il più piccolo sottoinsieme $C_{\epsilon}(q)$ di $Q$ tale che:
+**Definizione:** sia $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ un automa a stati finiti non deterministico con $\epsilon$-transizioni, la $\epsilon$-chiusura di uno stato $q \in Q$ è il più piccolo sottoinsieme $C_{\epsilon}(q)$ di $Q$ tale che:
 - $q \in C_{\epsilon}(q)$
 - Per ogni $p \in C_{\epsilon}(q)$, $\delta(p,\epsilon) \subseteq C_{\epsilon}(q)$
 La $\epsilon$ -chiusura di un insieme di stati $S \subseteq Q$ è l'unione delle $\epsilon$ chiusure dei singoli stati di $S: C_{\epsilon}(S) = \bigcup_{q \in S} C_{\epsilon}(q)$.  In altre parole la ε-chiusura di uno stato è l’insieme degli stati che da questo si possono raggiungere utilizzando solo ε- transizioni.
@@ -450,7 +453,7 @@ return R
 
 > [!example] ![[Screenshot From 2026-03-12 10-35-50.png]]
 
-**Costruzione**:
+**Costruzione:**
 Sia $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ l'automa non deterministico con $\epsilon$-transizioni, definisco l'automa deterministico $A' = \langle Q',\Sigma, \delta', q_0, F' \rangle$ come segue:
 - L'insieme degli stati è l'insieme $Q' = \wp(Q)$ costituito dai sottoinsiemi di $Q$ (cioè uno stato di $A'$  è un insieme di stati di $A$ )
 - Lo stato iniziale è $s_0 = C_{\epsilon}(q_0)$ (stato iniziale è una $\epsilon$ -chiusura, quindi non si tratta più di un singleton, ma di un insieme di stati)
@@ -491,3 +494,113 @@ while $j < n$
 > ![[Screenshot From 2026-03-12 11-25-29.png]]
 > ![[Screenshot From 2026-03-12 11-29-04.png]]
 
+---
+### 26-03-13
+***Espressioni regolari***
+**Operazioni sui linguaggi**
+Le operazioni principali che posso fare con i linguaggi sono: 
+1. unione, intersezione e completamento
+2. Concatenazione: $L_1L_2 = \{uv | u \in L_1, v \in L_2\}$
+3. Potenza: $L^n = LL...L$ (n volte)
+4. Chiusura di Kleene: $L^* = \bigcup\limits_{n \geq 0}L^n = \{u_1u_2...u_n | n \geq 0, u_1,...,u_n \in L\}$ 
+
+MANCANO ESEMPI
+
+**Osservazione:** unione, concatenazione e chiusura di Kleene sono dette operazioni regolari
+**Definizione:** sia $\hat\Sigma$ l'alfabeto ottenuto aggiungendo a $\Sigma$ le lettere $\emptyset, +, *, (,), . \implies$ si dicono *espressioni regolari* sull'alfabeto $\Sigma$ le parola sull'alfabeto $\hat\Sigma$ ch e si ottengono applicando un numero finito di volte le regole seguenti:
+1. Ogni lettera $a \in \Sigma$ è un'espressione regolare, $\emptyset$ è un'espressione regolare
+2. Se $E$ e $F$ sono espressioni regolari, allora $(E+F), (EF)$ e $E^*$ sono espressioni regolari.
+
+A ogni espressione regolare è associato un linguaggio, detto linguaggio denotato dall'espressione regolare  e definito dalle regole seguenti:
+1. Per ogni $a \in \Sigma$, l'espressione regolare $a$ denota il linguaggio $\{a\}$; l'espressione regolare $\emptyset$ denota il linguaggio vuoto
+2. Detti $L_E$ e $L_F$ i linguaggi denotati dalle espressioni regolari $E$ e $F$, i linguaggi denotati dalle espressioni regolari $E+F, (EF), E^*$ sono, rispettivamente, $L_E \cup L_F, L_EL_F, L_{E^*}$
+
+**Definizione:** i linguaggi denotati da espressioni regolari si dicono *linguaggi regolari*
+
+**Osservazione:** la classe dei linguaggi regolari è la più piccola famiglia di linguaggi che:
+- Contiene i linguaggi finiti
+- è chiusa per le operazioni regolari
+
+**Osservazione:** possiamo omettere qualche parentesi, rispettando la priorità:
+- Chiusura di Kleene
+- Concatenazione
+- Somma
+
+> [!example] Se si omettono le parentesi, la priorità delle operazioni sono: chiusura di Kleene, concatenazione e poi somma.
+> - $a+b$: espressione regolare che denota il linguaggio composto dalle due parole a e b
+> - $(a+b)^*$: chiusura di Kleene, tutte le concatenazioni di parole che appartengono all'insieme a, b. Cioè tutte le concatenazioni di lettere a, b . In sostanza è l'insieme delle parole sull'alfabeto (a, b)
+> - $\emptyset$: se concateno 0 parole dell'insieme vuoto (linguaggio che contiene solo la parola vuota)
+> - $((a+b)(a+b)(a+b))$: ottengo tutte le parole di lunghezza 3, e poi ne faccio la chiusura di Kleene e ottengo  tutte le parole che hanno lunghezza multipla di 3
+> - $(a+ab)^*$:
+> - $(a+b)^*abb$: otteniamo tutte le lettere che finiscono con $abb$
+> - $(b^*ab^*ab^*)^*b^*ab^*$:
+> - $(a+b+c)^*abac (a+b+c)^*$:
+> - $((a+b+c),)^*(a+b+c) \& (a+b+c)+a+b+c$
+
+**Teorema di Kleene:** un linguaggi è regolare $\iff$ è riconosciuto da un automa a stati finiti. Esiste una procedura effettiva che:
+- Data un'espressione regolare, produce un automa a stati finiti che accetta il linguaggio denotato da tale espressione (*sintesi*)
+- Dato un'automa a stati finiti, produce un'espressione regolare che denota il linguaggio accettato da tale  automa (*analisi*)
+
+> [!example] Dall'espressione regola all'automa
+> <div style="display: flex; align-items: flex-start; gap: 20px;">
+>   <div style="flex: 1;">
+>     <img src="Screenshot From 2026-03-13 11-02-19.png" style="width: 100%; border-radius: 8px;">
+>   </div>
+>   <div style="flex: 1.5;">
+>   Utilizzeremo esclusivamente automi non deterministici con 𝜀-transizioni con un unico stato finale (non restrittivo)
+>   </div>
+> </div>
+
+> [!info]
+> ![[Screenshot From 2026-03-13 11-05-00.png]] base
+> ![[Screenshot From 2026-03-13 11-05-15.png]] unione
+> ![[Screenshot From 2026-03-13 11-05-38.png]] unione
+
+Siano $A_1 = \langle Q_1,\Sigma,\delta_1, i_1, \{f_1\}\rangle$ e $A_2 = \langle Q_2,\Sigma,\delta_2, i_2, \{f_2\}\rangle$ gli automi che riconoscono i linguaggi denotati dalle espressioni regolari $E$ e $F$. 
+Supponiamo $Q_1 \cap Q_2 = \emptyset$. 
+Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
+- $Q = Q_1 \cup Q_2 \cup \{i,f\}$ ove $i,f$ sono due nuovi stati
+- $i,f$ sono rispettivamente lo stato iniziale e l'unico stato finale
+- Le frecce del grafo di $A$ sono le frecce dei grafi di $A_1$ e $A_2$ e, inoltre, $(i,\epsilon,i_1), (i,\epsilon,i_2), (f_1,\epsilon, f), (f_2,\epsilon, f)$
+Allora $A$ accetta il linguaggio denotato da $(E+F)$
+
+> [!example] ![[Screenshot From 2026-03-13 11-13-32.png]]
+
+> [!info] concatenazione
+> ![[Screenshot From 2026-03-13 11-14-50.png]]
+> ![[Screenshot From 2026-03-13 11-14-59.png]]
+
+Siano $A_1 = \langle Q_1,\Sigma,\delta_1, i_1, \{f_1\}\rangle$ e $A_2 = \langle Q_2,\Sigma,\delta_2, i_2, \{f_2\}\rangle$ gli automi che riconoscono i linguaggi denotati dalle espressioni regolari $E$ e $F$. 
+Supponiamo $Q_1 \cap Q_2 = \emptyset$. 
+Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
+- $Q = Q_1 \cup Q_2$
+- Lo stato iniziale è quello di $A_1$ e quello finale è quello di $A_2$
+- Le frecce del grafo di $A$ sono le frecce dei grafi di $A_1$ e $A_2$ con l'aggiunta della freccia $f_1, \epsilon, i_2$
+Allora $A$ accetta il linguaggio denotato da $(EF)$
+
+> [!example] 
+> ![[Screenshot From 2026-03-13 11-17-52.png]]
+
+Chiusura di kleene
+> [!info] 
+> ![[Screenshot From 2026-03-13 11-18-28.png]]
+> ![[Screenshot From 2026-03-13 11-18-53.png]]
+
+Siano $A_1 = \langle Q_1,\Sigma,\delta_1, i_1, \{f_1\}\rangle$ l'automa che riconosce il linguaggio denotato dall'espressione regolare $E$. 
+Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
+- $Q = Q_1 \cup \{i,f\}$ ove $i,f$ sono due nuovi stati
+- $i,f$ sono rispettivamente lo stato iniziale e l'unico stato finale
+- Le frecce del grafo di $A$ sono le frecce del grafo di $A_1$ e, inoltre, $(i,\epsilon,i_1), (i,\epsilon,i_2), (f_1,\epsilon, f), (f_2,\epsilon, f)$
+Allora $A$ accetta il linguaggio denotato da $E^*$
+
+> [!example]
+> ![[Pasted image 20260313112221.png]]
+
+**L'algoritmo di sintesi**
+**Proposizione:** data un'espressione regolare $G$, si può effettivamente costruire un'automa a stati finiti che riconosce il linguaggio denotato da $G$:
+1. se $G$ è un’espressione regolare di base (lettera o insieme vuoto), allora restituisco l’automa corrispondente; 
+2. se $G = (E + F)$, allora calcolo gli automi $A_1$ e $A_2$ corrispondenti a $E$ e $F$; costruisco l’automa dell’espressione $(E + F)$; 
+3. se $G = (EF)$, allora calcolo gli automi $A_1$ e $A_2$ corrispondenti a $E$ e $F$; costruisco l’automa dell’espressione $(EF)$; 
+4. se $G = E^*$ , allora calcolo l’automa $A_1$ corrispondente a $E$; costruisco l’automa dell’espressione $E^*$;
+
+ESEMPIO

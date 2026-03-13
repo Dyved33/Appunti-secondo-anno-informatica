@@ -328,6 +328,7 @@ Questa system call ha due valori di ritorno possibili:
 | Man 7 libc   | Overview of standard C libraries on Linux              |
 | Strace -c ls | Summary dell'uso delle syscalls                        |
 | Man 2 open   | Mostra la pagina del manuale per la system call *open* |
+| Man 3 stdio  | Funzioni I/O                                           |
 
 ---
 ### 26-03-10
@@ -431,3 +432,23 @@ int main(int argc, char *argv[]) //sono gli unici due parametri che può prender
 }
 //se eseguo il programma con strace ./nomeProgramma vedo tutto il percorso delle varie syscalls
 ```
+
+***Standard I/O library***
+È un insieme di funzioni per accesso ai file, agli *streams* standard, etc che astraggono le operazioni di input-output sotto forma di streams. Le operazioni sono bufferizzate in spazio utente e ciò riduce il numero di chiamate alle sottostanti syscall e i relativi cambi di contesto ottimizzando le prestazioni. Forniscono un'interfaccia verso il SO di più alto livello rispetto alle syscall
+
+| Syscall (no bufferizzazione nello spazio utante) | StdIO library (bufferizzazione nello spazio utente)                                                         |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| Open                                             | Fopen                                                                                                       |
+| Close                                            | Fclose                                                                                                      |
+| Read/write                                       | getchar/putchar, getc/putc, fgetc/fputc, fread/fwrite, gets/puts, fgets/fputs, scanf/printf, fscanf/fprintf |
+| Lseek                                            | Fseek                                                                                                       |
+| Richiedono cambio contesto user-kernel           | Tipicamente più efficaci e più veloci                                                                       |
+***Bash: standard streams***
+- Ogni processo ha dei canali predefiniti di comunicazione con il mondo esterno
+- MANCA QUALCOSA??????
+- *stdin*,*stdout* e *stderr* possono essere collegati ad altro con la redirezione e il carattere pipe (|) per esempio a dei file
+
+DEVI CAPIRE BENE LA DIFFERENZA TRA USARE O MENO IL SIMBOLO < OPPURE >
+MANCA UNA SBREGA DI ROBA
+
+***Pipeline***

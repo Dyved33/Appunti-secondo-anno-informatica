@@ -457,11 +457,20 @@ Dato un grafo $G = (V,E)$, in pseudocodice si rappresenta il set di vertici con 
 - $G$ può essere orientato o non orientato
 - Due modi comuni per rappresentare i grafi per gli algoritmi sono: 
  1. *Liste di adiacenza*: array *Adj* di $|V|$ liste, una per vertice. La lista del vertice *u* ha tutti i vertici *v* in modo da avere che $(u,v) \in E$ (vale sia per grafi orientati che non orientati). In pseudocodice si denota tale array come un attributo (G.*Adj*)
->[!example] ![[Screenshot From 2026-03-11 14-55-01.png]] 
-> - Spazio: $\Theta(V+E)$
-> - Tempo: per listare tutti i vertici adiacenti a *u*: $\Theta(deg(u))$
-> - Tempo: per determinare se $(u,v) \in E: O(\text{deg}(u))$
- 
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Screenshot From 2026-03-11 14-55-01.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+    <ul>
+      <li>Spazio: $\Theta (V+E)$</li>
+      <li>Tempo: per listare tutti i vertici adiacenti a <i>u</i>: $\Theta (deg (u))$</li>
+      <li>Tempo: per determinare se $(u, v) \in E$: $O (\text{deg}(u))$</li>
+    </ul>
+  </div>
+</div>
+
  2. *Matrici di adiacenza*: $|V| \times |V|$, matrice $A = (a_{ij})$ con $a_{ij} =\begin{cases} 1 &\text{if} \ (i,j) \in E \\ 0 &\text{altrimenti} \end{cases}$. Queste richiedono:
    - Spazio: $\Theta(V^2)$
    - Tempo: per listare tutti i vertici adiacenti a *u*: $\Theta(V)$
@@ -481,19 +490,17 @@ Per mantenere il "fronte d'onda" si usa il metodo FIFO sulla coda $Q$:
 - $v \in Q \iff$ l'onda ha visitato $v$ ma non è ancora uscito da $v$ 
 - $Q$ contiene i vertici a distanza $k$, e possibilmente alcuni vertici a una distanza $k+1$. Perciò in ogni momento $Q$ contiene porzioni di due ondate consecutive
 
-
-```
 BFS(G,s)
  for each vertex $u \in G.V - {s}$
   u.color = WHITE
   u.d = $\infty$
-  u.\pi = NIL
+  u.$\pi$ = NIL
  s.color = GRAY
  s.d = 0
  s.\pi = NIL
- $Q$ = $\empty$
+ $Q$ = $\emptyset$
  ENQUEUE($Q,s$)
- while $Q != \empty$
+ while $Q \neq \emptyset$
   u = DEQUEUE($Q$)
   for each vertex $v \in G.Adj[u]$ //cerca i vicini di u
    if v.color == WHITE //v è stato scoperto? 
@@ -502,7 +509,7 @@ BFS(G,s)
     u.$\pi$ = u
     ENQUEUE($Q$,v) //v è sulla frontiera ora
   u.color = BLACK //u è dietro la frontiera ora
-```
+
 
 > [!example] ![[Screenshot From 2026-03-11 15-53-03.png]]
 > - gli archi più spessi sono nel sotto-grafo predecessore
