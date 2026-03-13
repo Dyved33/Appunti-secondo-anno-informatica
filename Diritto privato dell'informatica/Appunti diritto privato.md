@@ -1,42 +1,36 @@
-### 26-02-09 lz.1
-**Norme giuridiche**
-Le norme giuridiche sono regole di condotta obbligatorie imposte dallo Stato per disciplinare la convivenza sociale, la cui inosservanza comporta una sanzione. Nel caso in cui due leggi si sovrappongano si controlla l'autorità di ciascuna:
+###### Concetti preliminari
+**Norme giuridiche:** Le norme giuridiche sono regole di condotta obbligatorie imposte dallo Stato per disciplinare la convivenza sociale, la cui inosservanza comporta una sanzione. Nel caso in cui due leggi si sovrappongano si controlla l'autorità di ciascuna:
  - *Abrogazione = se due leggi di eguale autorità sono in conflitto, la più recente abroga la precedente (se le due sono incompatibili)
- - *Subordinazione = se due leggi di autorità diversa sono in conflitto, la più autorevole viene applicata al posto della meno autorevole se le due sono incompatibili
- 
+ - *Subordinazione* = se due leggi di autorità diversa sono in conflitto, la più autorevole viene applicata al posto della meno autorevole se le due sono incompatibili
 Nell'ordinamento italiano le norme scritte sono di diritto positivo (positum = posto)
-**Parlamento e promulgazione leggi**
-L'autorità italiana nell'ambito della promulgazione delle leggi è il Parlamento (potere conferito dalla costituzione). Per approvare una legge, entrambe le camere (Camera dei Deputati e Senato) devono approvarla. Se non la approvano entrambe per 2 volte si va al referendum (confermativo). Viceversa, se la legge viene approvata, questa viene mandata al Presidente della repubblica, che è garante della costituzione e ha la possibilità di (diritto di voto contro le leggi ritenute anticostituzionali) rimandare alle camere una legge ritenuta non conforme alle norme presenti nella costituzione. Se le camere rimandano al Presidente della Repubblica la stessa legge senza modifiche, questo è costretto a promulgarla (firmarla). Esistono altri 2 tipi di referendum che ai quali il popolo può essere chiamato a votare:
+
+**Parlamento e promulgazione leggi:** L'autorità italiana nell'ambito della promulgazione delle leggi è il Parlamento (potere conferito dalla costituzione). Per approvare una legge, entrambe le camere (Camera dei Deputati e Senato) devono approvarla. Se non la approvano entrambe per 2 volte si va al referendum (confermativo). Viceversa, se la legge viene approvata, questa viene mandata al Presidente della repubblica, che è garante della costituzione e ha la possibilità di (diritto di voto contro le leggi ritenute anticostituzionali) rimandare alle camere una legge ritenuta non conforme alle norme presenti nella costituzione. Se le camere rimandano al Presidente della Repubblica la stessa legge senza modifiche, questo è costretto a promulgarla (firmarla). Esistono altri 2 tipi di referendum che ai quali il popolo può essere chiamato a votare:
  - In caso di un cambio della costituzione
  - Per abrogare una legge in vigore (per fare ciò è necessario seguire un iter che include raggiungere un certo numero di persone che firmino per l'abrogazione)
 
-**Costituzione**
-La costituzione ha l'autorità massima fra tutte le fonti della legge. Prima della costituzione c'era lo Statuto Albertino. Questo era più flessibile perché poteva essere modificato (si potevano promulgare leggi ordinarie che sovrastano la legge precedente)
-**Decreti legge e decreti legislativi** = Parificato alle leggi esistono due fonti utilizzate dal governo: decreti legge e decreti legislativi. Il decreto legislativo ha la stessa forza della legge e rimane finché non viene cambiato (promulgato o abrogato). Il decreto legge, invece, viene adottato in caso di emergenza. In questo caso il Parlamento da la possibilità al governo per un certo periodo di tempo di emanare delle leggi provvisorie. Raggiunto il limite di tempo il Parlamento deve decidere se promulgare o abrogare la legge in questione (altrimenti la stessa decade). Questo tipo di norme sono immediatamente efficaci. 
-**Regolamenti** 
-Sono norme attuative, dettano disposizioni dettagliate di applicazioni di legge (dettagli riguardo le sanzioni o i metodi di verifica per capire se è avvenuto l'illecito). Vengono applicati dal presidente della repubblica o dal presidente del consiglio dei ministri.
-**Leggi regionali** 
-In alcuni ambiti valgono delle leggi limitate ad una singola regione (lr) che però non possono contravvenire alle leggi dello Stato e alle direttive dell'UE.
-**UE**
-L'Italia è stato membro dell'unione europea e ciò permette il libero circolo delle merci e delle persone. Con il trattato di Mastricht vengono approvati due trattati che prevedono la protezione di ambiti collaterali al mercato (diritti di viaggio, validità di titoli,...)  
-**Carta di Nizza** 
-Regolamenti e direttive che sanciscono norme efficaci per tutti i cittadini e gli stati dell'UE. Quando entra in vigore un regolamento esso diventa valido per tutti i paesi (pubblicato nella gazzetta dell'UE, tradotta in ogni lingua). La direttiva europea vincola gli stati a modificare il loro regolamento interno per soddisfare gli obiettivi delineati nella direttiva. Le norme interne possono essere diverse di paese in paese anche se la direttiva è la stessa
+**Costituzione:** La costituzione ha l'autorità massima fra tutte le fonti della legge. Prima della costituzione c'era lo Statuto Albertino. Questo era più flessibile perché poteva essere modificato (si potevano promulgare leggi ordinarie che sovrastano la legge precedente)
 
----
-### 26-02-11 lz.2
-**Codice civile**
+**Decreti legge e decreti legislativi:** Parificato alle leggi esistono due fonti utilizzate dal governo: decreti legge e decreti legislativi. Il decreto legislativo ha la stessa forza della legge e rimane finché non viene cambiato (promulgato o abrogato). Il decreto legge, invece, viene adottato in caso di emergenza. In questo caso il Parlamento da la possibilità al governo per un certo periodo di tempo di emanare delle leggi provvisorie. Raggiunto il limite di tempo il Parlamento deve decidere se promulgare o abrogare la legge in questione (altrimenti la stessa decade). Questo tipo di norme sono immediatamente efficaci. 
+
+**Regolamenti:** 
+Sono norme attuative, dettano disposizioni dettagliate di applicazioni di legge (dettagli riguardo le sanzioni o i metodi di verifica per capire se è avvenuto l'illecito). Vengono applicati dal presidente della repubblica o dal presidente del consiglio dei ministri.
+
+**Leggi regionali:** In alcuni ambiti valgono delle leggi limitate ad una singola regione (lr) che però non possono contravvenire alle leggi dello Stato e alle direttive dell'UE.
+
+**UE:** L'Italia è stato membro dell'unione europea e ciò permette il libero circolo delle merci e delle persone. Con il trattato di Mastricht vengono approvati due trattati che prevedono la protezione di ambiti collaterali al mercato (diritti di viaggio, validità di titoli,...)  
+
+**Carta di Nizza:** Regolamenti e direttive che sanciscono norme efficaci per tutti i cittadini e gli stati dell'UE. Quando entra in vigore un regolamento esso diventa valido per tutti i paesi (pubblicato nella gazzetta dell'UE, tradotta in ogni lingua). La direttiva europea vincola gli stati a modificare il loro regolamento interno per soddisfare gli obiettivi delineati nella direttiva. Le norme interne possono essere diverse di paese in paese anche se la direttiva è la stessa
+###### Codice civile
 Il codice civile è un regio decreto perché deriva da quello precedente e ha la stessa forza normativa di un decreto e non perde di efficacia nel tempo se viene modificato. È diviso in 6 libri.
-**Libro 1 (riguarda le persone e la famiglia)**
-Quando parla di persone si riferisce sia a persone fisiche che giuridiche (soggetti di diritto). Un soggetto di diritto è un individuo cui può essere imputata una situazione giuridica soggettiva. Il soggetto di diritto acquisisce la capacità giuridica alla nascita. Non viene detto quando la persona fisica nasce perché quando venne scritto c'erano le leggi razziali in vigore (alcune persone fisiche non avevano la capacità giuridica a causa della razza). Il codice deriva dal diritto romano. In questo contesto la persona era colui che indossava una maschera (a teatro). L'ordinamento considera persona tutte le persone fisiche (non importa chi ci sia dietro la maschera).
-**Regolamentazione IA**
-L'intelligenza artificiale può essere un soggetto di diritto? Solo se l'ordinamento la ammetterà tra i soggetti di diritto. Ad ora non è così dato che l'intelligenza artificiale è visto come uno strumento usato dall'uomo.
+
+**Libro 1 (riguarda le persone e la famiglia):** Quando parla di persone si riferisce sia a persone fisiche che giuridiche (soggetti di diritto). Un soggetto di diritto è un individuo cui può essere imputata una situazione giuridica soggettiva. Il soggetto di diritto acquisisce la capacità giuridica alla nascita. Non viene detto quando la persona fisica nasce perché quando venne scritto c'erano le leggi razziali in vigore (alcune persone fisiche non avevano la capacità giuridica a causa della razza). Il codice deriva dal diritto romano. In questo contesto la persona era colui che indossava una maschera (a teatro). L'ordinamento considera persona tutte le persone fisiche (non importa chi ci sia dietro la maschera).
+
+**Regolamentazione IA:** L'intelligenza artificiale può essere un soggetto di diritto? Solo se l'ordinamento la ammetterà tra i soggetti di diritto. Ad ora non è così dato che l'intelligenza artificiale è visto come uno strumento usato dall'uomo.
 >[!info] Per i giuristi i terzi sono coloro che sono estranei al rapporto di base
 
 >[!info] L'intelligenza artificiale può causare danni anche all'utilizzatore (es vettura a guida autonoma va a sbattere o investe qualcuno)
 
----
-### 26-02-16 lz.3
-**Diritto d'autore** 
+###### Diritto d'autore
 È un diritto fondamentale per il nostro ordinamento, vale per gli autori che producono qualcosa di creativo (1983). Tale diritto vale anche per chi fa fotografia e cinematografia (prima no perché non era una penna a produrre l'opera ma una macchina). Con il tempo anche lo script di un programma è protetto dal diritto d'autore
 **Banca dati**
 È protetta da un diritto sui generis se protegge una visione creativa. In generale se un'opera è originale è protetta da diritto d'autore, altrimenti da diritto sui generis (ha durata limitata).
@@ -51,7 +45,7 @@ In altri ordinamenti non esiste il diritto d'autore ma il copyright (es USA dove
 >[!example] software per internet è open source
 
 **IA**
-In origine i dati usati per il training erano di pubblico dominio e presentavano dei pregiudizi (es razziali o misogini) poiché erano usati dati vecchi e che causavano un bias nell'output. C'è però anche il caso in cui i dati per il training fossero delle vecchie tac (medicina nucleare) e da ciò si possono identificare casi nuovi (diagnosi anticipata). L'IA può porre l'attenzione su qualcosa, ma non sa perché -> ci deve guardare il radiologo. Un problema in questo ambito è quello dei falsi positivi/negativi. Dell'AI risponde l'operatore umano -> l'ai act fa una scelta di campo (es con un coltello posso spalmare la nutella o uccidere una persona). L'ai act non vieta, ma classifica i sistemi di intelligenza artificiale in base ai rischi che possono ledere i diritti fondamentali (il prodotto deve essere fatto in modo da evitate certi tipi di utilizzi).Un rischio è la combinazione della probabilità di verificarsi di un danno (*p*) per l'entità del danno (*d*) =>$(p *d)$. Rispetto a questa formula l'ai act detta una piramide del rischio (al vertice le pratiche vietate). Tale linea guida non si applica alla ricerca. 
+In origine i dati usati per il training erano di pubblico dominio e presentavano dei pregiudizi (es razziali o misogini) poiché erano usati dati vecchi e che causavano un bias nell'output. C'è però anche il caso in cui i dati per il training fossero delle vecchie tac (medicina nucleare) e da ciò si possono identificare casi nuovi (diagnosi anticipata). L'IA può porre l'attenzione su qualcosa, ma non sa perché -> ci deve guardare il radiologo. Un problema in questo ambito è quello dei falsi positivi/negativi. Dell'AI risponde l'operatore umano -> l'ai act fa una scelta di campo (es con un coltello posso spalmare l o uccidere una persona). L'ai act non vieta, ma classifica i sistemi di intelligenza artificiale in base ai rischi che possono ledere i diritti fondamentali (il prodotto deve essere fatto in modo da evitate certi tipi di utilizzi).Un rischio è la combinazione della probabilità di verificarsi di un danno (*p*) per l'entità del danno (*d*) =>$(p *d)$. Rispetto a questa formula l'ai act detta una piramide del rischio (al vertice le pratiche vietate). Tale linea guida non si applica alla ricerca. 
 **Social credit score** 
 È un sistema nato in Cina che riconosce una persona in base alle proprie caratteristiche fisiche, ecc (dato che c'erano problemi di registrazione all'anagrafe). Siccome i diritti e le possibilità di ciascun individuo dipendono da questo punteggio lede i diritti e le libertà fondamentali (per questo è illegale in Europa). 
 **Sistemi di IA ad alto rischio**
@@ -134,9 +128,9 @@ La Dichiarazione Universale dei Diritti dell'Uomo sancisce, all'Articolo 12, il 
 > [!INFO] Elencare i casi in cui la legge consente di controllare la posta o la corrispondenza (es. indagini penali, specifiche tutele sul luogo di lavoro).
 
 Nel contesto odierno, un esempio di corrispondenza privata moderna è rappresentato dalla messaggistica istantanea, come i messaggi su WhatsApp. Il bilanciamento tra la libertà di informazione e la protezione dei dati si fonda su tre caratteristiche/limiti fondamentali (diritto di cronaca):
-1. **Verità/Verosimiglianza**: la notizia deve corrispondere al vero o essere seriamente accertata.
-2. **Continenza**: la forma dell'esposizione deve essere corretta, utilizzando termini non intrinsecamente ingiuriosi.
-3. **Pertinenza**: le informazioni divulgate devono essere strettamente necessarie per realizzare la finalità del contenuto. 
+1. **Verità/Verosimiglianza:** la notizia deve corrispondere al vero o essere seriamente accertata.
+2. **Continenza:** la forma dell'esposizione deve essere corretta, utilizzando termini non intrinsecamente ingiuriosi.
+3. **Pertinenza:** le informazioni divulgate devono essere strettamente necessarie per realizzare la finalità del contenuto. 
 >[!example] Esempio: Se un minore è coinvolto in una notizia, i suoi **Dati personali** possono essere diffusi solo se sussiste un preminente interesse pubblico o del minore stesso.
 
 > [!info] Carta di Treviso: stabilisce i doveri deontologici dei giornalisti per la tutela dei minori. Molti di questi principi sono stati successivamente integrati in norme e leggi vincolanti.
@@ -175,9 +169,9 @@ Questa impostazione è supportata anche dalla giurisprudenza di merito, che evid
 ***Le Linee Guida EDPB sul modello "Consenti o Paga"***
 Il dibattito sull'uso dei dati come controprestazione si è acceso con l'introduzione dei modelli *Pay-or-Consent* (consenti o paga) da parte delle grandi piattaforme online (es. per la pubblicità comportamentale). Alcune Autorità di Controllo (Garante Privacy) hanno richiesto all'EDPB (European Data Protection Board) un parere (ispirato anche dalla sentenza della CGUE C-252/21) per stabilire se e quando queste scelte costituiscano un Consenso valido e liberamente prestato. 
 I punti chiave (rif. della prof):
-- **Scelta binaria insufficiente**: Nella maggior parte dei casi, presentare agli utenti *solo* una scelta binaria tra "acconsentire al tracciamento per pubblicità comportamentale" o "pagare una tariffa" non soddisfa i requisiti del GDPR per un consenso valido.
-- **Alternativa equivalente**: Le grandi piattaforme (Very Large Online Platforms - VLOPs) dovrebbero fornire agli interessati un'"alternativa equivalente" che non comporti il pagamento in denaro.
-- **Terza opzione gratuita**: Dovrebbe essere considerata l'offerta di un'ulteriore alternativa gratuita priva di pubblicità comportamentale (ad esempio, sostenuta da pubblicità contestuale che comporta un Trattamento di dati personali minimo o nullo).
+- **Scelta binaria insufficiente:** Nella maggior parte dei casi, presentare agli utenti *solo* una scelta binaria tra "acconsentire al tracciamento per pubblicità comportamentale" o "pagare una tariffa" non soddisfa i requisiti del GDPR per un consenso valido.
+- **Alternativa equivalente:** Le grandi piattaforme (Very Large Online Platforms - VLOPs) dovrebbero fornire agli interessati un'"alternativa equivalente" che non comporti il pagamento in denaro.
+- **Terza opzione gratuita:** Dovrebbe essere considerata l'offerta di un'ulteriore alternativa gratuita priva di pubblicità comportamentale (ad esempio, sostenuta da pubblicità contestuale che comporta un Trattamento di dati personali minimo o nullo).
 
 ---
 ### 26-03-02 lz.7
