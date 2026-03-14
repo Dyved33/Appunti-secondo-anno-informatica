@@ -1,5 +1,4 @@
-### 26-02-26
-**Evoluzione Hardware e Multiprogrammazione**
+###### Evoluzione Hardware e Multiprogrammazione
 > [!NOTE] Contesto Storico
 > Agli albori dell'informatica, quando i calcolatori funzionavano ancora a valvole ed erano estremamente costosi e lenti, la presenza di un operatore umano era indispensabile per risparmiare tempo e gestire manualmente l'esecuzione.
 
@@ -75,16 +74,13 @@ Pur condividendo principi di esecuzione concorrente, hanno finalità diverse:
 
 > [!NOTE] Nuovi Dispositivi
 > I moderni sistemi operativi mobili devono tenere costantemente conto dell'energia utilizzata, dei forti limiti della **memoria** a disposizione e della presenza di innumerevoli componenti hardware aggiuntive, come i **sensori**, che richiedono driver e gestioni specifiche.
-
----
-### 26-03-04 
-Come funziona un sistema di elaborazione:
+###### Funzionamento di un sistema di elaborazione
 - CPU = costituita dai registri (es. Program counter che contiene l'indirizzo dell'istruzione successiva da eseguire o l'instruction register che contiene l'istruzione da eseguire,...)
 - Memoria principale = vengono caricati i programmi che sono costituiti da istruzioni (quelli che la CPU può eseguire) e dati (locazioni di memoria in cui mettiamo le nostre informazioni). 
 - Moduli I/O = relativi a tastiera, monitor e dischi
 Nei sistemi moderni ci sono più processori (cores) su un singolo chip (socket) . Ognuno di questi può svolgere contemporaneamente agli altri delle istruzioni/programmi. Meno si accede alla memoria principale e più è veloce la computazione => per questo esiste la memoria cache (unità di memoria piccola così da essere veloce e poco costosa) dalla quale la CPU prende un piccolo numero di dati e informazioni. I dati contenuti nella cache sono quelli usati di recente (molto probabilmente li riuseremo). Poi di solito c'è un processore grafico (GPU). Questo è in grado di applicare la stessa istruzione a tutti i dati di un array (in un tempo ridotto). Usati principalmente per aspetti grafici (es. Pixel). La tecnica usata è la *Single-instruction multiple-data* (SIMD) e si può usare anche per applicazioni che non sono grafiche. Esiste poi un processore di segnale digitale (DSP) che codifica/decodifica segnali audio e video e garantisce un supporto crittografico. Ad oggi tutto ciò si può trovare su un solo chip (Soc) => funzionale per i cellulari
 
-***Ciclo di estrazione ed esecuzione:***
+**Ciclo di estrazione ed esecuzione:**
 L'istruzione viene estratta, viene eseguita e, se il processo è terminato, si torna in dietro e si ricomincia dall'inizio. Tipi di istruzione riguardano:
 - Memoria
 - I/O
@@ -96,9 +92,7 @@ L'istruzione viene estratta, viene eseguita e, se il processo è terminato, si t
 > - PC = memorizza l'indirizzo di memoria della prossima istruzione da prelevare. Durante la fase di fetch il valore contenuto nel PC viene inviato alla memoria e, dopo il prelievo, viene automaticamente incrementato per puntare all'istruzione successiva nella sequenza. Nel caso di un salto il PC viene caricato con un nuovo indirizzo specifico
 > - IR = contiene l'istruzione che la CPU sta elaborando. L'istruzione prelevata dalla RAM viene copiata nell'IR. Dopodiché il suo contenuto viene letto per decodificare l'operazione e i dati da utilizzare
 
-***Interruzioni:***
-Se la macchina funzionasse sempre in questo modo non avrei modo di intervenire. Per questo esistono le interruzioni che permettono agli altri moduli di interrompere il ciclo di fetch-execute. In questo modo si evita di lasciare la CPU inattiva o in attesa di I/O e si può sospendere l'esecuzione di un programma.
-Le classi di interruzione sono:
+**Interruzioni:** Se la macchina funzionasse sempre in questo modo non avrei modo di intervenire. Per questo esistono le interruzioni che permettono agli altri moduli di interrompere il ciclo di fetch-execute. In questo modo si evita di lasciare la CPU inattiva o in attesa di I/O e si può sospendere l'esecuzione di un programma. Le classi di interruzione sono:
 - Interruzioni di programma = generate da errori nell'esecuzione di un programma (es. Overflow, eccezioni di indirizzo = un programma non può andare a modificare le informazioni di altri programmi e deve restare nello spazio di memoria a lui assegnato, ecc ...)
 - Timer = permettono al sistema operativo di eseguire delle funzioni a intervalli regolari
 - I/O = generate da un controllore I/O per segnalare il completamento di un'operazione o un errore
@@ -116,15 +110,15 @@ Le classi di interruzione sono:
 Se avviene un'interruzione durante la gestione di un'interruzione ci sono almeno 2 possibilità:
 1. Disabilito le interruzioni durante la gestione di un'interruzione (può funzionare dato che le interruzioni sono brevi)
 2. Definisco uno schema di priorità: in questo caso il sistema permette a un'interruzione di interromperne un'altra in base ad un sistema di priorità. Ciò significa che se l'interruzione in arrivo ha una priorità **più alta** di quella attualmente in esecuzione, il processore mette in pausa la prima, viene salvato il PC e viene eseguita la seconda (quella più urgente). Alla fine della seconda istruzione, il processore recupera i dati relativi al PC e riprende la prima delle due istruzioni che ha causato un'interruzione.
-
-Aspetti principali nello sviluppo dei sistemi operativi:
+###### Sviluppo di un sistema operativo
+**Aspetti principali nello sviluppo dei sistemi operativi:**
 - Processi
 - Gestione della memoria
 - Protezione e sicurezza dell'informazione
 - Schedulazione e gestione delle risorse
 - Struttura del sistema
 
-Approcci e elementi progettuali dei sistemi operativi
+**Approcci e elementi progettuali dei sistemi operativi:**
 - Architettura micro-kernel
 - Multithread
 - Multiprocessing simmetrico
@@ -132,7 +126,7 @@ Approcci e elementi progettuali dei sistemi operativi
 - Architettura orientata agli oggetti
 Il sistema operativo può realizzare una macchina virtuale. Cioè il sistema operativo crea una macchina che abbia una sua memoria e un suo sistema operativo. Esiste un virtual machine monitor (VMM)  che viene eseguito sul sistema operativo e gestisce le comunicazioni tra i singoli sistemi operativi virtuali e il processore
 
-***Servizi del sistema operativo:***
+**Servizi del sistema operativo:**
 - Esecuzione programmi
 - Gestione di operazioni di I/O
 - Filesystem
@@ -141,14 +135,12 @@ Il sistema operativo può realizzare una macchina virtuale. Cioè il sistema ope
 - Accounting (verifica chi usa il sistema e per quanto tempo)
 - Sicurezza e protezione
 - Riconoscimento degli errori (nell'esecuzione dei programmi)
-
-Queste funzioni sono utilizzate attraverso le chiamate di sistema = interruzioni richieste dall'utente stesso. 
-Si accede al sistema tramite delle interfacce:
+Queste funzioni sono utilizzate attraverso le chiamate di sistema = interruzioni richieste dall'utente stesso. Si accede al sistema tramite delle interfacce:
 - GUI
 - Batch (file di istruzioni che vengono eseguite una dietro l'altra)
 - Linea di comando
 
-***Servizi per l'utente*:**
+**Servizi per l'utente:**
 - Interfaccia utente: devo essere in grado di interagire con il sistema operativo (o da interfaccia grafica o da linea di comando o dai file di batch)
 - Esecuzione di programmi: caricamento, esecuzione e terminazione di programmi
 - Operazioni I/O
@@ -156,64 +148,56 @@ Si accede al sistema tramite delle interfacce:
 - Comunicazione fra processi: ogni processo ha il suo spazio e non può invadere lo spazio di altri processi (di solito va bene ma a volte voglio che i processi interagiscano tra di loro). A volte ci può essere uno spazio di memoria condivisa tra i vari processi o in alternativa c'è uno scambio di messaggi (un processo manda un messaggio ad un altro processo attraverso il sistema operativo)
 - Rilevazione errori: hardware, di I/O o dei programmi utente
 
-***Funzioni che servono ad assicurare l'efficienza del sistema:***
+**Funzioni che servono ad assicurare l'efficienza del sistema:**
 - Allocazione delle risorse: alcuni programmi necessitano di risorse di processore/i, memoria, disco o altri dispositivi I/O. L'ordine con cui assegno le risorse determina se il sistema è efficiente o meno
 - Accounting: soprattutto nei processi condivisi è bene sapere chi usa il sistema e quanto lo usa 
 - Protezione e sicurezza: utilizzo di tutte le risorse va riservato a chi ne ha diritto (protezione) e controllo degli accessi al sistema (sicurezza)
 
-***Interprete dei comandi (CLI) vs interfaccia grafica (GUI):***
+**Interprete dei comandi (CLI) vs interfaccia grafica (GUI):**
 
 | CLI                                                                                                                                                                                                                              | GUI                                                                                                                                                                                                                                       |
 | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Esegue in sequenza i comandi specificati dall'utente. Viene implementato nel nucleo o programma di sistema (in questo caso ci sono molte versioni (*shells*). I comandi sono implementati nell'interprete o in programmi esterni | È un'interfaccia amichevole (*user friendly*) in cui le icone rappresentano file, directories, programmi e funzioni. Inoltre ci sono menù che permettono di selezionare i comandi e la possibilità di avere touch-screen e comandi vocali |
 | Per compiti ripetititvi                                                                                                                                                                                                          | Più intuitiva ma non accede a tutte le funzioni                                                                                                                                                                                           |
-
----
-### 26-03-05
+###### System call
 Le system call sono un'interfaccia per il programmatore ai servizi del SO. Vi si accede attraverso l'API che nasconde i dettagli al programmatore (gestita da libreria di supporto run-time). I parametri sono passati attraverso:
 - Registri
 - In un blocco o tabella di memoria dell'indirizzo in un registro
 - Nello stack da cui sono prelevati (pop) dal sistema operativo
 
-***Categorie di chiamate di sistema:***
-**Controllo dei processi:
-- Creazione e arresto
-- Caricamento e esecuzione
-- Terminazione normale e anormale
-- Esame e impostazione degli attributi tramite funzioni apposite
-- Funzioni che mettono in pausa per un tempo indicato
-- Attesa segnalazione evento 
-- Assegnazione e rilascio di memoria
-
-**Gestione file:**
-- Creazione e cancellazione
-- Apertura e chiusura
-- Lettura, scrittura, posizionamento (posso leggere un carattere a scelta e non per forza uno dopo l'altro)
-- Esame e impostazione degli attributi
-
-**Gestione dei dispositivi I/O:**
-- Richiesta (di assegnazione) e rilascio
-- Lettura, scrittura e posizionamento
-- Esame e impostazione degli attributi
-- Inserimento ed esclusione logica
-
-**Gestione delle informazioni:**
-- Esame e impostazione dell'ora e della data
-- Esame e impostazione dei dati di sistema
-- Esame e impostazione degli attributi dei processi, file e dispositivi
-
-**Comunicazione:**
-- Creazione e chiusura di connessione
-- Invio e ricezione di messaggi
-- Creazione e accesso a regioni di memoria condivisa (interazione con condivisione)
-- Informazioni sullo stato di un trasferimento
-- Inserimento ed esclusione dei dispositivi remoti
-
-**Protezione:**
-- Controllo degli accessi alle risorse
-- Visualizzazione e impostazione dei permessi
-- Autorizzazione e divieto di accesso all'utente
-
+**Categorie di chiamate di sistema:**
+1. **Controllo dei processi:
+ - Creazione e arresto
+ - Caricamento e esecuzione
+ - Terminazione normale e anormale
+ - Esame e impostazione degli attributi tramite funzioni apposite
+ - Funzioni che mettono in pausa per un tempo indicato
+ - Attesa segnalazione evento 
+ - Assegnazione e rilascio di memoria
+2. **Gestione file:**
+ - Creazione e cancellazione
+ - Apertura e chiusura
+ - Lettura, scrittura, posizionamento (posso leggere un carattere a scelta e non per forza uno dopo l'altro)
+ - Esame e impostazione degli attributi
+3. **Gestione dei dispositivi I/O:**
+ - Richiesta (di assegnazione) e rilascio
+ - Lettura, scrittura e posizionamento
+ - Esame e impostazione degli attributi
+ - Inserimento ed esclusione logica
+4. **Gestione delle informazioni:**
+ - Esame e impostazione dell'ora e della data
+ - Esame e impostazione dei dati di sistema
+ - Esame e impostazione degli attributi dei processi, file e dispositivi
+5. **Comunicazione:**
+ - Creazione e chiusura di connessione
+ - Invio e ricezione di messaggi
+ - Creazione e accesso a regioni di memoria condivisa (interazione con condivisione)
+ - Informazioni sullo stato di un trasferimento
+ - Inserimento ed esclusione dei dispositivi remoti
+6. **Protezione:**
+ - Controllo degli accessi alle risorse
+ - Visualizzazione e impostazione dei permessi
+ - Autorizzazione e divieto di accesso all'utente
 Un sistema operativo è fatto anche di programmi detti *utilities* che servono a realizzare l'ambiente utile per lo sviluppo e l'esecuzione dei programmi. Ce ne sono diverse categorie:
 - Gestione files
 - Informazione di stato
@@ -223,32 +207,26 @@ Un sistema operativo è fatto anche di programmi detti *utilities* che servono a
 - Comunicazioni
 - Servizi in background
 - Programmi applicativi
-
-***Progettazione di un sistema operativo:***
+###### Progettazione di un sistema operativo
 Non è semplice dato che devo tenere conto di che hardware si dispone e di che tipo di richiesta abbiamo da parte dell'utilizzatore. Quindi le specifiche da rispettare sono:
 - Decidere hardware
 - Decidere che sistema usare
 - Obiettivi dell'utilizzatore
 - Obiettivi del sistema (es obiettivo dell'utilizzatore = far terminare i programmi nel minor tempo possibile, obiettivo del sistema = non lasciare il processore inutilizzato)
 - Separazione delle politiche (se ho un server servo il primo client e non l'ultimo che ha fatto una richiesta) dai meccanismi (es come si accede al disco)
-
 I moderni sistemi operativi sono scritti in linguaggi come C e C++ (non più Assembler) perché ciò mi garantisce:
 - Facilità di sviluppo e manutenzione
 - Compattezza
 - Portabilità
 Inoltre sono linguaggi più efficienti di linguaggi interpretati come Python (computer non sono fatti per mandare avanti il sistema operativo, ma per far partire programmi di sistema). Alcune sezioni critiche che richiedono altissima efficienza sono scritte in Assembler.
+###### Struttura del sistema operativo
+**Sistemi monolitici (Non sono divisi in moduli):** MS-DOS o UNIX tradizionale sono sistemi monolitici complessi e scritti tramite molte funzioni. Il kernel di UNIX tradizionale ha un'interfaccia verso l'hardware per la gestione delle chiamate di sistema (questo all'interno del kernel che gestisce segnali I/O, file system, driver, dispositivi di archiviazione e scheduling)
 
-***Struttura del sistema operativo:***
-**Sistemi monolitici** (Non sono divisi in moduli):
-MS-DOS o UNIX tradizionale sono sistemi monolitici complessi e scritti tramite molte funzioni. Il kernel di UNIX tradizionale ha un'interfaccia verso l'hardware per la gestione delle chiamate di sistema (questo all'interno del kernel che gestisce segnali I/O, file system, driver, dispositivi di archiviazione e scheduling)
-
-**Sistemi stratificati:**
-Ogni layer (strato) è l'implementazione di un oggetto astratto fatto di dati e operazioni per manipolarli. Ogni strato nasconde i dettagli dell'implementazione agli strati superiori.
+**Sistemi stratificati:** Ogni layer (strato) è l'implementazione di un oggetto astratto fatto di dati e operazioni per manipolarli. Ogni strato nasconde i dettagli dell'implementazione agli strati superiori.
 - *Vantaggi* = semplicità di scrittura, aggiornamento, debugging e portabilità
 - *Svantaggi* = difficoltà nel definire gli strati e overhead
 
-**Microkernel:**
-Sono sistemi monolitici che facciano il minimo necessario. Il resto è trasferito a livello-utente (server). Le richieste di servizi avvengano tramite scambio di messaggi tra client e server.
+**Microkernel:** Sono sistemi monolitici che facciano il minimo necessario. Il resto è trasferito a livello-utente (server). Le richieste di servizi avvengano tramite scambio di messaggi tra client e server.
 - *Vantaggi* = semplicità di aggiornamento e debugging, portabilità e affidabilità
 - *Svantaggi* = overhead (il kernel affida più compiti ai programmi e per questo c'è bisogno di un maggiore tempo di esecuzione)
 
@@ -266,14 +244,11 @@ Non c'è differenza dal punto di vista del sistema tra questi programmi, ma ogni
   </div>
 </div>
 
-**Debugging:**
-Per il fatto che i SO sono sistemi complessi, ci possono essere degli errori e per questo nella loro progettazione e gestione c'è il problema del debugging. Gli errori, però, si possono presentare in situazioni particolari (difficili da individuare), considerando che il SO deve fare il suo compito nel minor tempo possibile. Quindi valutare le prestazioni di un SO (e per monitorare il comportamento del sistema) richiede una lunga sperimentazione tramite anche la generazione di file di log che registrano il comportamento del sistema e *core dump*
+**Debugging:** Per il fatto che i SO sono sistemi complessi, ci possono essere degli errori e per questo nella loro progettazione e gestione c'è il problema del debugging. Gli errori, però, si possono presentare in situazioni particolari (difficili da individuare), considerando che il SO deve fare il suo compito nel minor tempo possibile. Quindi valutare le prestazioni di un SO (e per monitorare il comportamento del sistema) richiede una lunga sperimentazione tramite anche la generazione di file di log che registrano il comportamento del sistema e *core dump*
 
-**Generazione sistema operativo:**
-Scritto il codice sorgente del sistema $\rightarrow$ va compilato e configurato per il sistema su sui verrà eseguito $\rightarrow$ poi si istalla il sistema $\rightarrow$ avvia il computer e il nuovo sistema operativo. La configurazione può realizzarsi modificando il codice prima della compilazione in base al sistema su cui lo vado a installare, oppure tramite la selezione di tabelle e moduli precompilati da collegare al momento dell'installazione, oppure tramite un sistema guidato da tabelle di dati che guidano il sistema in base all'hardware.<u> Per far partire il sistema l'esecuzione inizia in un predefinito indirizzo della ROM (parte di memoria non modificabile nemmeno a computer spento = *read only memory*) che contiene il *bootstrap loader*. Questo contiene le istruzioni necessarie a caricare il *bootstrap program* che a sua volta carica il kernel e avvia l'esecuzione del sistema</u>
-
-***Processi***
-**Def:**<u> un processo (o job) è un programma (lista di istruzioni con riferimenti a delle locazioni di memoria) in esecuzione</u>. Gli elementi del processo sono:
+**Generazione sistema operativo:** Scritto il codice sorgente del sistema $\rightarrow$ va compilato e configurato per il sistema su sui verrà eseguito $\rightarrow$ poi si istalla il sistema $\rightarrow$ avvia il computer e il nuovo sistema operativo. La configurazione può realizzarsi modificando il codice prima della compilazione in base al sistema su cui lo vado a installare, oppure tramite la selezione di tabelle e moduli precompilati da collegare al momento dell'installazione, oppure tramite un sistema guidato da tabelle di dati che guidano il sistema in base all'hardware.<u> Per far partire il sistema l'esecuzione inizia in un predefinito indirizzo della ROM (parte di memoria non modificabile nemmeno a computer spento = *read only memory*) che contiene il *bootstrap loader*. Questo contiene le istruzioni necessarie a caricare il *bootstrap program* che a sua volta carica il kernel e avvia l'esecuzione del sistema</u>
+###### Processi
+**Definizione:**<u> un processo (o job) è un programma (lista di istruzioni con riferimenti a delle locazioni di memoria) in esecuzione</u>. Gli elementi del processo sono:
 - Program counter (indirizzo istruzione da eseguire) e contenuto dei registri (immagine del processore)
 - Stack che contiene variabili locali, indirizzi di return o parametri delle funzioni
 - Sezione testo (programma)
@@ -303,8 +278,7 @@ Scritto il codice sorgente del sistema $\rightarrow$ va compilato e configurato 
   </div>
 </div>
 
-**PCB (descrittore di processo):**
-A ogni processo è associata una struttura dati detta descrittore di processo o PCB (*process control block*) contenente tutte le informazioni relative al processo:
+**PCB (descrittore di processo):** A ogni processo è associata una struttura dati detta descrittore di processo o PCB (*process control block*) contenente tutte le informazioni relative al processo:
 - Stato del processo
 - Program counter
 - Registri CPU (immagine processore)
@@ -328,9 +302,7 @@ Il sistema ha bisogno di conoscere la situazione dei vari processi e per questo 
 - Coda di job che contiene tutti i processi 
 - Coda di ready che contiene tutti i processi pronti a partire (quelli tra i quali il processore deve decidere a chi assegnare le risorse)
 - Coda dei dispositivi (una per dispositivo) che contiene i processi in attesa di interagire con quel dispositivo (il dispositivo genera una nuova interruzione)
----
-### 26-03-11
-***Schedulatori***
+###### Schedulatori e fasi del processo
 Il sistema operativo deve decidere a quali processi assegnare il processore e per fare ciò ci sono diversi schedulatori:
 - **Schedulatore a breve termine (CPU scheduler):** Prende i processi dalla coda ready e gli assegna un processore. Siccome deve essere eseguito con grande frequenza, deve essere molto veloce (i processi running vengono anche messi in coda ready proprio perché lo scheduler assegna la CPU a un processo, poi la toglie a quello per assegnarla ad un altro, così da far avanzare più processi contemporaneamente).
 - **Schedulatore a lungo termine:** Seleziona tra i processi nuovi quali fa passare in coda ready, ma non è opportuno che i processi finiscano tutti in questa coda. Per questo esiste il *job scheduler*: Seleziona i processi da inserire in coda ready e per fare ciò controlla il grado di multiprogrammazione, cioè i programmi eseguiti contemporaneamente. Non viene eseguito con frequenza, per questo può applicare procedure più complesse. Ci sono ad esempio processi CPU-bound, ovvero processi che non rilasciano mai a meno che non forzati la CPU a loro assegnata 
@@ -341,7 +313,6 @@ Il sistema operativo deve decidere a quali processi assegnare il processore e pe
 > È bene avere entrambi i tipi di processi in quanto ci potrebbero essere o processi che non possono avanzare o processi che richiedono troppe risorse se ci fosse una prevalenza dei due
 
 - **Schedulatore a medio termine:** Determina con che velocità avanzano i processi nel sistema. Si occupa di assegnare o revocare la memoria ai processi (*swapping*). Quando i processi non hanno bisogno di memoria, gli viene revocata la RAM e la memoria del processo viene copiata su disco rigido. La memoria liberata viene occupata da un nuovo processo. 
-
 La schedulazione realizza delle politiche per l'assegnazione della CPU. Generalmente distingue tra:
 - Processi *I/O bound*
 - *Processi CPU bound*
@@ -350,7 +321,7 @@ Oltre a questo c'è un problema di overhead (risorse accessorie sono ridondanti 
 - Numero registri del processore
 - Istruzioni speciali (riservate al kernel)
 
-***Creazione del processo***
+**Creazione del processo**
 Il sistema operativo fornisce meccanismi per creazione/terminazione dei processi. Generalmente un processo genitore chiede al kernel di creare un processo figlio che a sua volta può creare altri processi (*albero dei processi*). Ogni processo è identificato da un numero detto *identificatore di processo (pid)* $\rightarrow$ su linux è il primo numero che vedo quando scrivo `ps` nel terminale. Quando un processo termina, viene eliminato dall'albero.
 
 **Assegnazione delle risorse ad un processo figlio**
@@ -367,7 +338,7 @@ Genitore e figlio possono essere eseguiti concorrentemente mentre il genitore at
 > - **Maggiore di 0 (Positivo):** Indica che il processo corrente è il **processo padre** e il valore corrisponde al PID del figlio.
 > - **-1 (Negativo):** Indica che la `fork()` è fallita e nessun processo figlio è stato creato.
 
-***Terminazione del processo***
+**Terminazione del processo**
 Il processo termina con la syscall *exit ()*, così:
 - Restituisce un valore di stato al processo genitore, via *wait ()*
 - Le risorse sono deallocate dal sistema operativo
@@ -377,8 +348,7 @@ Il genitore può terminare l'esecuzione del figlio con la syscall *abort ()* e q
 La terminazione di un processo figlio fa si che vengano terminati anche i figli del processo terminato (terminazione a cascata). Dolo dopo il wait () del genitore viene deallocato il pid: 
 - il pid però non scompare subito e il processo rimane in stato di zombie e scompare solo dopo che il genitore ha eseguito il wait ()
 - il genitore termini senza che vengano terminati i suoi processi figli, in tal caso quei processi si dicono orfani.
-
-##### **Threads**
+###### **Threads**
 I processi sono caratterizzati da:
 - **Risorse allocate:** spazio di indirizzamento virtuale (immagine in memoria), la traccia di esecuzione, RAM, dispositivi I/O, file
 - **Scheduling:** traccia di esecuzione (alternata con altri processi), stati e priorità
@@ -391,7 +361,7 @@ Si parla di multithreading la capacità di un SO di permettere più tracce di es
 | -------------------------------------------------------- | -------------------------------------------------------------- |
 | Un processo, un thread (MD-DOS)                          | Un processo, più thread (Java run-time)                        |
 | Più processi, un thread per ciascuno (UNIX tradizionale) | Più processi, ciascuno con più thread (Windows, Solaris, UNIX) |
-**Def:** in un ambiente multi-thread, il processo è l'unità di allocazione delle risorse e un'unità di protezione (nessun altro può accedere alle risorse assegnate al processo). Associati al processo ci sono:
+**Definizione:** in un ambiente multi-thread, il processo è l'unità di allocazione delle risorse e un'unità di protezione (nessun altro può accedere alle risorse assegnate al processo). Associati al processo ci sono:
 - Spazio di indirizzamento virtuale (contiene immagine del processo)
 - Accesso protetto al processore, ad altri processi (IPC), files, dispositivi I/O
 - Uno o più thread
@@ -402,8 +372,9 @@ Associati al thread ci sono:
 - Spazio di memoria statico per le variabili locali
 - Accesso a memoria e risorse del processo, condivise con gli altri thread del processo
 Questo genera un problema: due thread che accedono agli stessi dati/stessa memoria (magari uno vuole incrementare e l'altro decrementare la stessa variabile)
-
-![[Screenshot From 2026-03-12 19-20-44.png|400]]
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-12 19-20-44.png" width="300">
+</div>
 I benefici del multithreading sono:
 - La creazione di un thread è più rapida della creazione di un processo
 - La teminazione di un thread è più rapida della terminazione di un processo (no questione di protezione della memoria)
@@ -415,30 +386,25 @@ In un sistema a utente singolo:
 - Velocità di esecuzione
 - Struttura modulare dei programmi
 
-**OSS:** Si nota che la schedulazione è gestita principalmente nel thread, ma non la sospensione e la terminazione del processo.
+**Osservazione:** Si nota che la schedulazione è gestita principalmente nel thread, ma non la sospensione e la terminazione del processo.
 
 Gli stati del thread sono gli stessi dei processi (in esecuzione, pronto e in attesa), così come le operazioni (creazione, block/sospensione, unblock/riattivazione, terminazione).
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-12 19-24-20.png" width="300">
+</div>
 
-![[Screenshot From 2026-03-12 19-24-20.png|400]]
+**Sincronizzazione dei thread:** I thread di un processo condividono spazio di indirizzamento e altre risorse. Ogni modifica simultanea di un dato da parte di due thread può corrompere il dato stesso. Per questi motivi è necessario sincronizzare l'accesso dei thread alle risorse
 
-**Sincronizzazione dei thread**
-I thread di un processo condividono spazio di indirizzamento e altre risorse. Ogni modifica simultanea di un dato da parte di due thread può corrompere il dato stesso. Per questi motivi è necessario sincronizzare l'accesso dei thread alle risorse
-
----
-### 26-03-12
-**Thread a livello utente:**
-La gestione dei thread è fatta dall'applicazione e il kernel non sa dell'esistenza dei thread.
+**Thread a livello utente:** La gestione dei thread è fatta dall'applicazione e il kernel non sa dell'esistenza dei thread.
 - *Vantaggi*: lo scambio di thread non richiede privilegi della modalità kernel, la schedulazione può essere specifica per l'applicazione e portabilità.
 - *Svantaggi:* le chiamate di sistema sono bloccanti per l'intero processo e non ci sono vantaggi dai multiprocessori
 - *Contromisure:* programmare le applicazioni in processi multipli e *jacketing* (trasforma una chiamata di sistema bloccante in una non bloccante)
 
-**Thread a livello kernel:**
-La gestione dei thread è fatta dal kernel e l'applicazione usa un'API per la gestione dei thread. Il kernel gestisce i PCB dei processi e dei thread e inoltre la schedulazione del processore sulla base dei thread.
+**Thread a livello kernel:** La gestione dei thread è fatta dal kernel e l'applicazione usa un'API per la gestione dei thread. Il kernel gestisce i PCB dei processi e dei thread e inoltre la schedulazione del processore sulla base dei thread.
 - *Vantaggi:* possibilità di eseguire thread differenti su diversi processori, il blocco di un thread non blocca il processo e anche le routine del kernel possono essere gestite in multithreading
 - *Svantaggi:* i cambi di modalità (utente/kernel) producono overhead
 
-**Approcci misti**
-- Creazione dei thread, schedulazione e sincronizzazione nello spazio utente
+**Approcci misti:** - Creazione dei thread, schedulazione e sincronizzazione nello spazio utente
 - Thread modalità utente mappati su thread modalità kernel (in numero minore o uguale)
 - Permette esecuzione parallela dei thread e il blocco di un thread non blocca il processo (come solaris)
 
@@ -449,27 +415,24 @@ La gestione dei thread è fatta dal kernel e l'applicazione usa un'API per la ge
 | 1: M     | Un thread può migrare dall'ambiente di un processo all'ambiente di un altro processo. Ciò permette al thread di muoversi facilmente tra sistemi distinti |
 | M: N     | Combina gli attributi di 1: M e M: 1                                                                                                                       |
 
-***Multicore e multithreading***
-**Legge di Amdahl:** $\text{speedup} = \frac{\text{tempo di esecuzione su un processore}}{\text{tempo di esecuzione su N processori}} = \frac{1}{(1-f)+ \frac{f}{n}}$
+**Multicore e multithreading:** **Legge di Amdahl:** $\text{speedup} = \frac{\text{tempo di esecuzione su un processore}}{\text{tempo di esecuzione su N processori}} = \frac{1}{(1-f)+ \frac{f}{n}}$
 Il vantaggio lo hanno:
 - Applicazioni multithread native (pochi processi e molti thread)
 - Applicazioni multiprocesso (molti processi single-thread)
 - Applicazioni Java (JVM è un processo multithread e assicura schedulazione e gestione della memoria per le aplllicazioni Java)
 - Multiple istanze di un'applicazione
 
-**Threads in UNIX**
+**Threads in UNIX:**
 - Il kernel non distingue tra processi e thread
 - Per ogni task (processo o thread) c'è un *task control block* (TCB) con fork ()
 - Fork () crea una nuova task, con una copia del task control block
 - Clone () crea una nuova task, ma nel suo TCB ci sono puntatori ai campi di quello del genitore (in base ai parametri passati a clone ()
 
-***Mutua esclusione***
- I processi possono interferire tra di loro in maniera positiva o negativa, negativa ad esempio quando sottrae risorse ad altri processi, in maniera positiva quando due o più processi interagiscono e ci permettono di realizzare un’attività che sfrutta l’uso di diversi processi in un’unica applicazione. La gestione dei processi può avvenire tramite: 
+**Mutua esclusione:** I processi possono interferire tra di loro in maniera positiva o negativa, negativa ad esempio quando sottrae risorse ad altri processi, in maniera positiva quando due o più processi interagiscono e ci permettono di realizzare un’attività che sfrutta l’uso di diversi processi in un’unica applicazione. La gestione dei processi può avvenire tramite: 
  - Multiprogrammazione: molti processi con un singolo processore, i processi avanzano attendendo che il processore si liberi; 
  - Multiprocessing: molti processi gestiti da un multiprocessore; 
  - Processi distribuiti: molti processi, gestiti da molti processori distribuiti (*cluster*), con memorie distribuite, rende le cose più complicate da gestire, ma sicuramente più veloci. 
  I differenti processi hanno bisogno di risorse che tipicamente vengono condivise tra i vari processi, si crea quindi una *concorrenza*:
-
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  - Nelle applicazioni multiple, o nelle applicazioni strutturate (con più processi o threads che devono accedere a delle risorse)

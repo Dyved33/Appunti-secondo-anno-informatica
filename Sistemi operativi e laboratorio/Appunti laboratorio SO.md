@@ -1,12 +1,11 @@
-### 26-02-27 
-**Cenni Storici e Famiglie di Sistemi Operativi**
-=>*Unix*
+###### Cenni Storici e Famiglie di Sistemi Operativi
+*Unix*
 * **Unix** è una "famiglia" di sistemi operativi **multitasking** e **multiuser** che deriva dall'originale AT&T Unix.
 * Lo sviluppo di AT&T Unix è iniziato nel 1969 al Bell Labs research center, principalmente ad opera di **Ken Thompson**, **Dennis Ritchie** e altri collaboratori.
 * Inizialmente si è assistito a una forte frammentazione dove "ognuno si fece il suo", dando vita a varianti come BSD (UC Berkeley), Xenix (Microsoft), SunOS/Solaris (Sun Microsystems), HP-UX (HP), e AIX (IBM).
 * Nel corso del tempo, sono stati fatti sforzi per standardizzare le varie release e varianti attraverso iniziative come **POSIX**, **SUS**, e **The OpenGroup**.
 
-=>*(GNU/)Linux*
+*(GNU/)Linux*
 * **Linux** è un discendente o derivato di Unix, definibile come **Unix-like**.
 * È una "famiglia" **open-source** di sistemi operativi Unix-like.
 * Si basa sul kernel Linux, rilasciato per la prima volta nel **1991** da **Linus Torvalds**.
@@ -14,20 +13,19 @@
 * È un sistema **POSIX compatibile**, seppur non ufficialmente POSIX-certified.
 * Esistono varie **distribuzioni** (o "distro"), tra cui Debian, SUSE, RedHat, Fedora, Ubuntu e Mint.
 
-=>*macOS*
+*macOS*
 * Rappresenta un gruppo di sistemi operativi proprietari di casa **Apple**.
 * Sono sistemi Unix-like e, soprattutto, **Unix certified** (certificati da The Open Group).
 * Hanno attraversato diverse transizioni di **processori**: inizialmente PowerPC, poi dal 2006 sono passati ad Intel, e dal 2020 utilizzano processori 64-bit ARM-based come l'Apple M1 (seguiti da M2, M3, ecc.).
 * Ad Ottobre 2024, Apple ha presentato il chip **M4**.
 
-=>*Android*
+*Android*
 * Sistema basato su un **kernel Linux modificato**.
 * Originariamente sviluppato dalla Open Handset Alliance, la sua versione più diffusa è oggi sviluppata principalmente da **Google**.
 * Il resto del sistema, inclusi software vari e utilities, è scritto principalmente in **Java**.
 * È specificamente pensato per sistemi **touchscreen mobile**, come telefoni e tablet.
-
-**Concetti Base dei Sistemi Unix**
-=>*Struttura e Architettura*
+###### Concetti Base dei Sistemi Unix
+**Struttura e Architettura:**
 * Sistemi **multitasking e multiuser**.
 * **Modularità**: Unix non è un sistema monolitico.
     * Il **kernel** fornisce i servizi fondamentali del sistema.
@@ -38,19 +36,19 @@
 * I device e i vari strumenti per l'IPC (Inter-Process Communication) sono trattati e mostrati dal sistema come se fossero dei semplici **file**.
 * Il formato di memorizzazione dei file è volutamente semplice (**plain text**).
 
- =>*Autenticazione e Utenti*
+ **Autenticazione e Utenti:**
 * Essendo multiutente, ogni utente possiede una **login**, una **password** e una **home directory** (uno spazio disco personale dove salvare i propri file).
 * Esiste un utente privilegiato, chiamato **root**, che funge da amministratore del sistema.
 * Ogni utente gestisce in autonomia i permessi di accesso sulle proprie cartelle e sui propri file.
 * Gli utenti possono essere aggregati in **gruppi** per definire e semplificare privilegi comuni.
 
 **Terminale, Console e BASH**
-=>*Definizioni*
+**Definizioni:**
 * **Terminal**: Un ambiente di input e output testuale. Una finestra di terminale (o emulatore di terminale) è una finestra di solo testo che emula una console all'interno di una GUI (Graphical User Interface).
 * **Console**: Un terminale fisico; un pannello della strumentazione contenente i controlli del computer. Una console è quindi un tipo specifico di terminale.
 * **Shell**: È l'interfaccia vera e propria tra il sistema operativo e l'utente. Permette di eseguire programmi e offre funzionalità simili a un linguaggio di programmazione per automatizzare operazioni. Può essere a riga di comando (Bash, csh, ksh) o grafica (GNOME, KDE).
 
-=>*BASH (Bourne Again Shell)*
+**BASH (Bourne Again Shell):**
 * È un interprete interattivo di comandi per sistemi Unix-like.
 * È stata creata nel **1989** da **Brian Fox** per il progetto GNU, nata come alternativa ed estensione della preesistente sh (Bourne shell).
 * È la shell di default in moltissime distribuzioni Linux ed è stata la default shell di macOS prima del 2019.
@@ -66,8 +64,7 @@
 > * **/usr/lib/binfmt.d**: path corrente della directory di default in quel momento.
 > * **$**: livello di privilegio dell'utente (il carattere `#` indica l'utente root, mentre `$` indica gli altri utenti).
 
-=>*Perché usare una shell testuale?*
-Anche se esistono le interfacce grafiche, la shell testuale si usa perché:
+**Perché usare una shell testuale?** Anche se esistono le interfacce grafiche, la shell testuale si usa perché:
 * Aiuta a capire come funziona il sistema "sotto".
 * Offre il massimo controllo sui comandi e sulle loro opzioni.
 * Permette di configurare le distribuzioni in modo preciso.
@@ -76,32 +73,27 @@ Anche se esistono le interfacce grafiche, la shell testuale si usa perché:
 * Sono estremamente veloci e facilmente accessibili da remoto.
 * Funzionano sempre, anche in caso di problemi all'interfaccia grafica o con hardware obsoleto e poco performante.
 
-**Il Filesystem**
-Il filesystem è una struttura ad albero al cui interno sono memorizzati tutti i dati del sistema operativo.
+**Il Filesystem:** Il filesystem è una struttura ad albero al cui interno sono memorizzati tutti i dati del sistema operativo.
 * È organizzato in **File** e **Directory** (o cartelle).
 * L'albero ha un'unica radice detta **root**, identificata dal path `/`. A differenza di Windows (che ha `C:`, `D:`, ecc.), in Unix tutti i dati convergono in quest'unico albero, indipendentemente dal numero di dischi o partizioni fisiche. 
 
-**Navigazione e Pathnames**
-Ogni processo nel sistema ha, in ogni singolo istante, una "directory corrente".
+**Navigazione e Pathnames:** Ogni processo nel sistema ha, in ogni singolo istante, una "directory corrente".
 * **Pathname assoluto**: È il percorso che parte dalla radice root e porta all'oggetto. Comincia sempre con la barra `/` (es. `/etc/hosts` o `/home/fabio/Desktop`).
 * **Pathname relativo**: È il percorso che porta all'oggetto partendo dalla directory corrente o da un punto specifico che non è la radice. Non inizia mai con `/` (es. `log/apache`).
 * **Simboli speciali nei path**:
     * `.` (punto): indica la directory corrente.
     * `..` (due punti): indica la directory "padre", ovvero quella che contiene la directory corrente.
 
-**Link e Device Files**
-* Nel filesystem possono essere presenti file speciali chiamati **link**, che fungono da puntatori/collegamenti ad altri oggetti (in modo analogo ai collegamenti di Windows). Compiere un'operazione su un link significa implicitamente compierla sull'oggetto a cui esso punta.
-* Sono presenti anche **special files** o **device files**: espongono un dispositivo hardware all'interno del filesystem come se fosse un normale file. Questo fornisce un'interfacversale verso l'hardware, permettendo alle system calls di eseguire operazioni dicia uni Input/Output in modo standardizzato.
-
-**Primi Comandi BASH**
+**Link e Device Files:** Nel filesystem possono essere presenti file speciali chiamati **link**, che fungono da puntatori/collegamenti ad altri oggetti (in modo analogo ai collegamenti di Windows). Compiere un'operazione su un link significa implicitamente compierla sull'oggetto a cui esso punta.
+* Sono presenti anche **special files** o **device files**: espongono un dispositivo hardware all'interno del filesystem come se fosse un normale file. Questo fornisce un'interfaccia verso l'hardware, permettendo alle system calls di eseguire operazioni di Input/Output in modo standardizzato.
+###### Primi Comandi BASH e variabili:
 I comandi BASH hanno tipicamente questa sintassi: `nome_comando <opzioni> <argomenti>`. 
 Le **opzioni** iniziano tipicamente con il carattere `-` e modificano il comportamento del comando; possono essere accorpate (es. `ls -ltra` equivale a `ls -l -t -r -a`) e a volte richiedono argomenti aggiuntivi. Ogni comando restituisce un valore di ritorno che informa sull'esito, dove solitamente `0` indica che è andato tutto a buon fine.
 
-**Comandi Interni vs Esterni**
-* **Comandi Esterni**: Sono veri e propri eseguibili registrati nei supporti di memorizzazione. La shell li cerca all'interno dei percorsi di filesystem specificati nella variabile di ambiente `$PATH`. Il comando `which` permette di scoprire dove è memorizzato l'eseguibile di un comando esterno.
+**Comandi Interni vs Esterni:** **Comandi Esterni**: Sono veri e propri eseguibili registrati nei supporti di memorizzazione. La shell li cerca all'interno dei percorsi di filesystem specificati nella variabile di ambiente `$PATH`. Il comando `which` permette di scoprire dove è memorizzato l'eseguibile di un comando esterno.
 * **Comandi Interni**: Sono riconosciuti ed eseguiti direttamente dalla shell stessa (es. i costrutti per lo scripting o il comando `cd`). È possibile vederne la lista utilizzando il comando interno `help`.
 
-***Operazioni sul Filesystem***
+**Operazioni sul Filesystem**
 
 | Comando        | Descrizione                                                                                                              |
 | :------------- | :----------------------------------------------------------------------------------------------------------------------- |
@@ -121,8 +113,7 @@ Le **opzioni** iniziano tipicamente con il carattere `-` e modificano il comport
 | **`tail`**     | Visualizza le ultime "n" linee di un file.                                                                               |
 | **`head`**     | Visualizza le prime "n" linee di un file.                                                                                |
 | **echo**       | Stampa nel terminale cosa gli passo (sia stringa che variabile)                                                          |
-**Opzioni più Comuni per `ls`**
-* `-l`: Formato lungo (long format), mostra informazioni aggiuntive sui file.
+**Opzioni più Comuni per `ls`:** `-l`: Formato lungo (long format), mostra informazioni aggiuntive sui file.
 * `-a`: Elenca tutti i file, compresi quelli "nascosti" (quelli che iniziano col carattere `.`).
 * `-t`: Ordina i file mostrati in base alla data di ultima modifica (dal più recente al meno recente).
 * `-r`: Inverte il senso dell'ordinamento.
@@ -131,25 +122,20 @@ Le **opzioni** iniziano tipicamente con il carattere `-` e modificano il comport
 > [!EXAMPLE] Esempio combinato
 > Il comando `ls -lrta` elenca tutti i file e le cartelle (compresi i nascosti), ordinandoli in base al tempo di ultima modifica (dal meno recente al più recente) formattandoli in modalità lunga.
 
-**Opzioni più Comuni per CANCELLARE o COPIARE Cartelle**
-* `rm -r cartella`: Rimuove ricorsivamente una cartella e tutto il ramo di file/cartelle non vuote in essa contenute.
+**Opzioni più Comuni per CANCELLARE o COPIARE Cartelle:** `rm -r cartella`: Rimuove ricorsivamente una cartella e tutto il ramo di file/cartelle non vuote in essa contenute.
 * `cp -ar dir1 dir2`: Copia ricorsivamente (`-r`) tutto l'albero sottostante `dir1` dentro `dir2`, preservando (`-a`) gli attributi originari dei file come la data di modifica.
 
- **Differenza nella creazione dei Link (`ln`)**
-* **Hard Link** (`ln pippo link1`): Crea una vera e propria copia che occupa spazio fisico sul disco. Se il file originario "pippo" viene cancellato, il file "link1" e il suo contenuto rimangono inalterati.
+ **Differenza nella creazione dei Link (`ln`):** **Hard Link** (`ln pippo link1`): Crea una vera e propria copia che occupa spazio fisico sul disco. Se il file originario "pippo" viene cancellato, il file "link1" e il suo contenuto rimangono inalterati.
 * **Symbolic Link** (`ln -s pippo link1`): Crea un collegamento simbolico (occupazione minimale su disco). "link1" contiene solo una stringa col percorso di "pippo". Se il file "pippo" originario viene cancellato, "link1" diventa semplicemente un collegamento non valido o rotto.
 
-**Ottenere Aiuto e Documentazione**
-Per imparare le funzioni e le opzioni dei comandi, ci sono diverse utility fondamentali:
+**Ottenere Aiuto e Documentazione:** Per imparare le funzioni e le opzioni dei comandi, ci sono diverse utility fondamentali:
 * **`man <nome_comando>`**: Apre il manuale in linea completo del comando specificato.
 * **`apropos <stringa>`**: Cerca e lista i comandi che contengono la stringa specificata all'interno della loro descrizione sintetica.
 * **`whatis <comando>`**: Fornisce una descrizione estremamente sintetica del comando passato.
 * **`locate <stringa>`**: Ricerca velocemente tutti i file aventi un path che contiene la stringa specificata, interrogando un database interno costruito tramite il tool `updatedb`.
 * **`Switch di aiuto rapido`**: Generalmente ogni comando BASH, se invocato aggiungendo lo switch `-h` oppure `--help`, è in grado di stampare a terminale una rapida e sintetica descrizione delle proprie funzionalità.
----
-### 26-03-03 
-***Variabile $PATH:***
-Se voglio vedere dove è memorizzato l'eseguibile che corrisponde ad un comando (esterno) uso il comando **which**. Uso la variabile d'ambiente $**PATH** per dire al terminale dove cercare i programmi (sono una serie di cartelle). Quindi, quando si desidera eseguire un programma, è sufficiente digitare il nome del file eseguibile e il terminale cercherà nelle cartelle specificate in PATH se è presente un file di programma eseguibile denominato in quel modo.
+
+**Variabile $PATH:** Se voglio vedere dove è memorizzato l'eseguibile che corrisponde ad un comando (esterno) uso il comando **which**. Uso la variabile d'ambiente $**PATH** per dire al terminale dove cercare i programmi (sono una serie di cartelle). Quindi, quando si desidera eseguire un programma, è sufficiente digitare il nome del file eseguibile e il terminale cercherà nelle cartelle specificate in PATH se è presente un file di programma eseguibile denominato in quel modo.
 
 > [!info] Con il comando help variables vedo nome e significato di alcune delle shell variables
 
@@ -161,8 +147,7 @@ Se voglio vedere dove è memorizzato l'eseguibile che corrisponde ad un comando 
 > - Sudo è il comando che mi permette di richiedere i permessi da utente root.
 > - I software vengono distribuiti in Linux sotto forma di pacchetti. 
 > - cd senza argomenti mi riporta alla home directory
-
-***Attributi del file/cartella (bash)*** 
+###### Attributi del file/cartella (bash)
 Quando eseguo il comando *ls -l*, nella prima colonna, compare un carattere che mi identifica il tipo di file:
 
 | Simbolo | Tipologia          |
@@ -223,9 +208,7 @@ Per cambiare proprietario e permessi:
 > - cambia solo owner: chown utente file
 > - cambia solo gruppo: chown :gruppo file
 > - cambia entrambi: chown utente:gruppo file
-
----
-### 26-03-06
+###### System call, wrappers e accesso ai file
 Le system calls sono l'interfaccia per il programmatore ai servizi del sistema operativo (chiamata diretta al sistema). Vi si accede generalmente attraverso un API/linguaggi che la supportino. Ce ne sono vari tipi (accesso ai file, gestione di processi, IPC, semafori,...) e richiedono un "cambio di contesto": da *kernel mode* a *user mode* e viceversa.
 - Kernel mode = accesso senza limitazioni alle risorse HW/SW del sistema (memoria, dispositivi I/O, registri, codice del SO,...). Un errore in kernel mode può provocare un arresto del sistema
 - User mode = accesso limitato alle risorse di sistema (es. Memoria). Un errore in user mode può provocare il blocco del solo processo utente
@@ -238,38 +221,11 @@ Le system calls sono invocate non direttamente ma tramite funzioni *wrappers* de
 - Le *wrappers* hanno di solito lo stesso nome della corrispondente *system call* sottostante
 - Ove possibile è  preferibile chiamare le funzioni *wrappers* piuttosto che direttamente la *system call*. Questo perché spesso si limitano a fare poco altro in più rispetto alle *system call*, ma in altri casi compiono anche altre operazioni come controllo degli argomenti inseriti dal programmatore,... 
 
-***Accesso ai files:***
-Per l'accesso ai  file ci sono due possibilità:
+**Accesso ai files:** Per l'accesso ai  file ci sono due possibilità:
 - System calls come open, write,... (o meglio i corrispondenti wrappers)
 - Standard I/O library come fopen, fwrite,... 
 
 **System calls per i file:** 
-**write**
-`ssize_t write(int fd, const void *buf, size_t count);`
-Scrive i primi count byte contenuti in buf nel file aperto identificato da fd (file descriptor ritornato da open (2)). Ritorna il numero di byte scritti (che può anche essere inferiore a count se, per esempio, il device di scrittura si è riempito) o -1 in caso di errore (errno settata)
-
-**read**
-`ssize_t read(int fd, void *buf, size_t count);`
-Legge count byte dal file identificato da fd (file descriptor ritornato da open (2)) e li memorizza in buf. Ritorna il numero di byte letti (che può anche essere inferiore a count se c'erano a disposizione nel device di lettura meno byte) o -1 in caso di errore (errno settata). Il valore di ritorno 0 significa EOF (end of file).
-
-> [!info] le operazioni di lettura/scrittura sono eseguite a partire dalla posizione corrente (puntatore, cursore o file offset) nel file
-
-**lseek**
-`off_t lseek(int fd, off_t offset, int whence);`
-Riposiziona il puntatore nel file. A seconda dei seguenti valori di whence il puntatore è posizionato: 
-- SEEK_SET: a offset byte dall'inizio 
-- SEEK_CUR: a offset byte dalla posizione corrente 
-- SEEK_END: a offset byte dopo la fine del file 
-Ritorna la nuova posizione (distanza in byte) da inizio file o -1 in caso di errore (setta errno)
-
-**dup, dup 2**: 
-`int dup(int oldfd);`
-`int dup2(int oldfd, int newfd);` 
-- Dup () torna una copia di oldfd usando il primo file descriptor libero 
-- Dup 2 () torna una copia di oldfd ma usa newfd come file descriptor copia. 
-N.B.: Se c'era già un file aperto con descrittore pari a newfd viene chiuso 
-- Dopo la duplicazione i due file descriptor possono essere usati indifferentemente, ma si riferiscono alla stessa entry nella tabella di sistema che elenca i file aperti e quindi, per esempio, condividono la posizione corrente nel file (se viene modificata tramite uno dei due la modifica vale anche per l'altro) 
-- Ritornano il nuovo file descriptor copia; o -1 in caso di errore (errno settata)
 
 | Nome                | Cosa fa                                                                        |
 | ------------------- | ------------------------------------------------------------------------------ |
@@ -288,8 +244,7 @@ N.B.: Se c'era già un file aperto con descrittore pari a newfd viene chiuso
 | mkdir | Crea una directory                |
 | rmdir | Cancella una directory (se vuota) |
 | chdir | Cambia la directory corrente      |
-**Open**
-` #include int open(const char *pathname, int flags, mode_t mode)`
+**Open:** ` #include int open(const char *pathname, int flags, mode_t mode)`
 - Apre il file specificato da *pathname*
 - *flags* deve includere uno tra `O_RDONLY, O_WRONLY o O_RDWR`
 - *mode* specifica i permessi da applicare al file in caso di creazione (permessi che vengono stabiliti anche in base a `UMASK`). La creazione può essere richiesta specificando `O_CREAT` tra i flags, altrimenti mode viene ignorato e può essere omesso
@@ -330,30 +285,19 @@ Questa system call ha due valori di ritorno possibili:
 | Man 2 open   | Mostra la pagina del manuale per la system call *open* |
 | Man 3 stdio  | Funzioni I/O                                           |
 
----
-### 26-03-10
-Sempre attraverso `#include <unisrd.h>` posso usare anche syscall (wrapped) come write, read,...
-**write**
-`ssize_t write(int fd, const void *buf, size_t count);`
-<u>Scrive i primi count (numero di byte da scrivere) byte contenuti in buf (puntatore alla memoria che contiene i dati da scrivere) nel file aperto identificato da fd </u>(file descriptor ritornato da open(2)). Ritorna il numero di byte scritti (che può anche essere inferiore a count se, per esempio, il device di scrittura si è riempito) o -1 in caso di errore (errno settata). 
+**write:** `ssize_t write(int fd, const void *buf, size_t count);` <u>Scrive i primi count (numero di byte da scrivere) byte contenuti in buf (puntatore alla memoria che contiene i dati da scrivere) nel file aperto identificato da fd </u>(file descriptor ritornato da open(2)). Ritorna il numero di byte scritti (che può anche essere inferiore a count se, per esempio, il device di scrittura si è riempito) o -1 in caso di errore (errno settata). 
 
-**read**
-`ssize_t read(int fd, void *buf, size_t count);`
-<u>Legge count (numero massimo di byte da leggere) byte dal file identificato da fd (file descriptor ritornato da open(2)) e li memorizza in buf (buffer dove mette i dati letti)</u>. Ritorna il numero di byte letti (che può anche essere inferiore a count se c'erano a disposizione nel device di lettura meno byte) o -1 in caso di errore (errno settata). Il valore di ritorno 0 significa EOF (end of file).
+**read:** `ssize_t read(int fd, void *buf, size_t count);` <u>Legge count (numero massimo di byte da leggere) byte dal file identificato da fd (file descriptor ritornato da open(2)) e li memorizza in buf (buffer dove mette i dati letti)</u>. Ritorna il numero di byte letti (che può anche essere inferiore a count se c'erano a disposizione nel device di lettura meno byte) o -1 in caso di errore (errno settata). Il valore di ritorno 0 significa EOF (end of file).
 
 > [!info] le operazioni di lettura/scrittura sono eseguite a partire dalla posizione corrente (puntatore, cursore o file offset) nel file
 
-**lseek**
-`off_t lseek(int fd, off_t offset, int whence);`
-riposiziona il puntatore nel file. A seconda dei seguenti valori di whence il puntatore è posizionato: 
+**lseek:** `off_t lseek(int fd, off_t offset, int whence);` Riposiziona il puntatore nel file. A seconda dei seguenti valori di whence il puntatore è posizionato: 
 - SEEK_SET: a offset byte dall'inizio 
 - SEEK_CUR: a offset byte dalla posizione corrente 
 - SEEK_END: a offset byte dopo la fine del file 
 Ritorna la nuova posizione (distanza in byte) da inizio file o -1 in caso di errore (setta errno)
 
-**dup, dup 2**: 
-`int dup(int oldfd);`
-`int dup2(int oldfd, int newfd);` 
+**dup, dup 2**: `int dup(int oldfd);` `int dup2(int oldfd, int newfd);` 
 - dup() torna una copia di oldfd usando il primo file descriptor libero 
 - dup2() torna una copia di oldfd ma usa newfd come file descriptor copia. 
 N.B.: Se c'era già un file aperto con descrittore pari a newfd viene chiuso 
@@ -433,7 +377,7 @@ int main(int argc, char *argv[]) //sono gli unici due parametri che può prender
 //se eseguo il programma con strace ./nomeProgramma vedo tutto il percorso delle varie syscalls
 ```
 
-***Standard I/O library***
+###### Standard I/O library
 È un insieme di funzioni per accesso ai file, agli *streams* standard, etc che astraggono le operazioni di input-output sotto forma di streams. Le operazioni sono bufferizzate in spazio utente e ciò riduce il numero di chiamate alle sottostanti syscall e i relativi cambi di contesto ottimizzando le prestazioni. Forniscono un'interfaccia verso il SO di più alto livello rispetto alle syscall
 
 | Syscall (no bufferizzazione nello spazio utante) | StdIO library (bufferizzazione nello spazio utente)                                                         |
@@ -443,7 +387,7 @@ int main(int argc, char *argv[]) //sono gli unici due parametri che può prender
 | Read/write                                       | getchar/putchar, getc/putc, fgetc/fputc, fread/fwrite, gets/puts, fgets/fputs, scanf/printf, fscanf/fprintf |
 | Lseek                                            | Fseek                                                                                                       |
 | Richiedono cambio contesto user-kernel           | Tipicamente più efficaci e più veloci                                                                       |
-***Bash: standard streams***
+**Bash: standard streams**
 - Ogni processo ha dei canali predefiniti di comunicazione con il mondo esterno
 - MANCA QUALCOSA??????
 - *stdin*,*stdout* e *stderr* possono essere collegati ad altro con la redirezione e il carattere pipe (|) per esempio a dei file
@@ -451,7 +395,7 @@ int main(int argc, char *argv[]) //sono gli unici due parametri che può prender
 DEVI CAPIRE BENE LA DIFFERENZA TRA USARE O MENO IL SIMBOLO < OPPURE >
 MANCA UNA SBREGA DI ROBA
 
-***Pipeline***
+**Pipeline**
 Vari comandi separati da | (pipe) stdout di cmd1
 
 Command-line completion
