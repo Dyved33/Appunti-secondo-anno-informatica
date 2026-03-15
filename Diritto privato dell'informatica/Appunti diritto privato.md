@@ -2,6 +2,7 @@
 **Norme giuridiche:** Le norme giuridiche sono regole di condotta obbligatorie imposte dallo Stato per disciplinare la convivenza sociale, la cui inosservanza comporta una sanzione. Nel caso in cui due leggi si sovrappongano si controlla l'autorità di ciascuna:
  - *Abrogazione = se due leggi di eguale autorità sono in conflitto, la più recente abroga la precedente (se le due sono incompatibili)
  - *Subordinazione* = se due leggi di autorità diversa sono in conflitto, la più autorevole viene applicata al posto della meno autorevole se le due sono incompatibili
+
 Nell'ordinamento italiano le norme scritte sono di diritto positivo (positum = posto)
 
 **Parlamento e promulgazione leggi:** L'autorità italiana nell'ambito della promulgazione delle leggi è il Parlamento (potere conferito dalla costituzione). Per approvare una legge, entrambe le camere (Camera dei Deputati e Senato) devono approvarla. Se non la approvano entrambe per 2 volte si va al referendum (confermativo). Viceversa, se la legge viene approvata, questa viene mandata al Presidente della repubblica, che è garante della costituzione e ha la possibilità di (diritto di voto contro le leggi ritenute anticostituzionali) rimandare alle camere una legge ritenuta non conforme alle norme presenti nella costituzione. Se le camere rimandano al Presidente della Repubblica la stessa legge senza modifiche, questo è costretto a promulgarla (firmarla). Esistono altri 2 tipi di referendum che ai quali il popolo può essere chiamato a votare:
@@ -25,6 +26,7 @@ Il codice civile è un regio decreto perché deriva da quello precedente e ha la
 **Libro 1 (riguarda le persone e la famiglia):** Quando parla di persone si riferisce sia a persone fisiche che giuridiche (soggetti di diritto). Un soggetto di diritto è un individuo cui può essere imputata una situazione giuridica soggettiva. Il soggetto di diritto acquisisce la capacità giuridica alla nascita. Non viene detto quando la persona fisica nasce perché quando venne scritto c'erano le leggi razziali in vigore (alcune persone fisiche non avevano la capacità giuridica a causa della razza). Il codice deriva dal diritto romano. In questo contesto la persona era colui che indossava una maschera (a teatro). L'ordinamento considera persona tutte le persone fisiche (non importa chi ci sia dietro la maschera).
 
 **Regolamentazione IA:** L'intelligenza artificiale può essere un soggetto di diritto? Solo se l'ordinamento la ammetterà tra i soggetti di diritto. Ad ora non è così dato che l'intelligenza artificiale è visto come uno strumento usato dall'uomo.
+
 >[!info] Per i giuristi i terzi sono coloro che sono estranei al rapporto di base
 
 >[!info] L'intelligenza artificiale può causare danni anche all'utilizzatore (es vettura a guida autonoma va a sbattere o investe qualcuno)
@@ -39,6 +41,7 @@ Il codice civile è un regio decreto perché deriva da quello precedente e ha la
 **Diritto patrimoniale d'autore:** Diritto di fare propri i risultati economici dell'opera. Si può rinunciare a tale diritto (es. open source). In Italia il pubblico dominio di un'opera si ottiene dopo 70 anni dalla morte dell'autore (cessa il diritto patrimoniale di autore, non ci posso più guadagnare, per i 70 anni i guadagni sono degli eredi). 
 
 **Altri ordinamenti:** In altri ordinamenti non esiste il diritto d'autore ma il copyright (es USA dove il copyright è solo patrimoniale). Per acquistarlo c'è bisogno di un accertamento dell'originalità. In Italia si depone alla SIAE (es blockchain può provare l'originalità di un contratto). La SIAE controlla l'utilizzo di licenze. In USA il copy right vale per 75 anni (95 con il Micky mouse act per le opere dal 1922 al 1978) 
+
 >[!example] topolino può essere usato nella sua versione originale. Il logo Disney non scade finché viene pagato. Un marchio copre un simbolo/prodotto che agisce sul mercato 
 
 >[!example] software per internet è open source
@@ -56,6 +59,7 @@ Il codice civile è un regio decreto perché deriva da quello precedente e ha la
   2. Sono inalienabili, cioè non è possibile che il titolare di un diritto si spogli di tale diritto (questi diritti sono indisponibili). 
   
 **Contratto:** È l'incontro tra due o più parti per costituire o regolare un rapporto giuridico patrimoniale (esempio di atto indisponibile poiché non posso rescindere un contratto concordato). 
+
  >[!example] diritto dell'integrità fisica: se decido di donare un organo non posso farlo se ciò comporta che io muoia (se lede la mia integrità fisica). Se sono in vita non posso donare un organo come il cuore, da morto non sono più una persona ma un cadavere e si potrebbe espiantare l'organo in questione.
 
 >[!example] un altro diritto indisponibile è il diritto all'immagine (spetta a chi viene fotografato) e la diffusione della mia immagine deve avvenire solo con il mio consenso
@@ -77,6 +81,7 @@ Il codice civile è un regio decreto perché deriva da quello precedente e ha la
 **Regolamentazione dati:** L'articolo 5 definisce come fare il trattamento dei dati personali.I dati personali sono: trattati in modo lecito, corretto e trasparente nei confronti dell'interessato («liceità, correttezza e trasparenza») e raccolti per finalità determinate, esplicite e legittime, e successivamente trattati in modo che non sia incompatibile con tali finalità. L'articolo 6 tratta la liceità del trattamento.
 ###### Diritti dei minori
 **Tutori di minori:** I soggetti che rappresentano la figura di genitore o di tutore legale di un minore ne assumono le veci durante le funzioni legali e ne amministrano i beni. I minori non hanno la facoltà di firmare per dei beni (anche se posseduti es il nonno mi passa in eredità dei beni). 
+
 >[!example] Se un minore che vende una proprietà, tale contratto può essere rescisso dai genitori (oppure entro 5 anni dal raggiungimento della maggiore età).
 
 >[!info] per ricevere in donazione non basta la firma dei genitori ma serve l'autorizzazione del giudice tutelare (amministrazione straordinaria). Quando la donazione viene ricevuta potrebbe portare con se un danno (es ci sono delle clausole o pendenze giudiziarie)
@@ -86,6 +91,7 @@ Il codice civile è un regio decreto perché deriva da quello precedente e ha la
 **Potestà:** È il diritto dell'esercizio di un potere. Si tratta del potere attribuito dall'ordinamento a un soggetto per la realizzazione di un interesse oggettivo della legge. C'è un controllo sulla potestà genitoriale e se l'interesse oggettivo viene meno la potestà può essere revocata/limitata/sospesa e successivamente ripristinata. Nei primi casi viene nominato un tutore legale che esercita la potestà sul minore (disciplinato dagli articoli 330-333 del codice civile).
 
 **Articolo 30:** È dovere di un genitore prendersi cura, educare,... un figlio nato anche fuori dal matrimonio (diritto per i figli). Quando i genitori esercitano diritti/doveri devono tenere conto dell'inclinazione personale del figlio (interesse superiore del minore). Ci sono delle norme che tutelano il minore a prescindere dalla volontà dei genitori. 
+
 >[!example] La minore che vuole interrompere la gravidanza (all'insaputa dei genitori o contro l'opinione dei genitori) può rivolgersi ad un giudice che deve valutare il danno (psico-fisica) che il parto potrebbe causare alla minore in questione (articolo 126 del codice civile degli anni '70). Si tratta, in questo caso, di un diritto in quanto è un'interpretazione del diritto fondamentale alla salute psico-fisica. La donna minorenne può ricevere la prescrizione del consultorio per accedere a metodi contraccettivi gratuitamente. Il consultorio deve rispettare il diritto alla riservatezza della donna anche con la famiglia (non può dare questo tipo di informazioni alla famiglia)
 
 >[!example] Un minore che viene trovato sotto effetto di stupefacenti può decidere di intraprendere un percorso di disintossicazione anche senza interpellare i genitori
@@ -106,15 +112,18 @@ Il codice civile è un regio decreto perché deriva da quello precedente e ha la
 **Parental control:** Il parental control può limitare ciò che è accessibile ai minorenni. Il problema sorge nel momento in cui una piattaforma della quale mi sono fidato presenta dei contenuti che non sono appropriati per il range di età indicato. 
 
 **Sharenting:** Si tratta della pratica di condividere informazioni relative al proprio figlio online. Ciò comporta il rischio che dei malintenzionati si avvicinino e ottengano la fiducia del figlio sulla base delle informazioni che sono state condivise. Per tale comportamento il foglio potrebbe richiedere un risarcimento (oltre alla cancellazione dei contenuti suddetti).
+
 >[!info] Esiste un decreto del 2021 che fa si ci siano dei blocchi automatici ai contenuti (classificati come dannosi) cui si accede con una sim intestata ad un minore.
 ###### Protezione dati
 **Evoluzione Storica e Principi della Protezione dei Dati:** La Dichiarazione Universale dei Diritti dell'Uomo sancisce, all'Articolo 12, il diritto alla protezione della corrispondenza. 
+
 > [!INFO] Elencare i casi in cui la legge consente di controllare la posta o la corrispondenza (es. indagini penali, specifiche tutele sul luogo di lavoro).
 
 Nel contesto odierno, un esempio di corrispondenza privata moderna è rappresentato dalla messaggistica istantanea, come i messaggi su WhatsApp. Il bilanciamento tra la libertà di informazione e la protezione dei dati si fonda su tre caratteristiche/limiti fondamentali (diritto di cronaca):
 1. **Verità/Verosimiglianza:** la notizia deve corrispondere al vero o essere seriamente accertata.
 2. **Continenza:** la forma dell'esposizione deve essere corretta, utilizzando termini non intrinsecamente ingiuriosi.
 3. **Pertinenza:** le informazioni divulgate devono essere strettamente necessarie per realizzare la finalità del contenuto. 
+
 >[!example] Esempio: Se un minore è coinvolto in una notizia, i suoi **Dati personali** possono essere diffusi solo se sussiste un preminente interesse pubblico o del minore stesso.
 
 > [!info] Carta di Treviso: stabilisce i doveri deontologici dei giornalisti per la tutela dei minori. Molti di questi principi sono stati successivamente integrati in norme e leggi vincolanti.
@@ -125,6 +134,7 @@ Va ricordato che i diritti legati alla privacy non sono assoluti, ma subiscono l
 ###### Beni e contratti
 **I Beni e i Requisiti Essenziali del Contratto:** Nel diritto civile, i beni sono definiti come le "cose che possono formare oggetto di diritti" (Art. 810 c.c.). 
 Il codice civile distingue ulteriormente i beni all'Art. 812 c.c. (beni immobili e beni mobili) e all'Art. 814 c.c., che equipara ai beni mobili le energie naturali che hanno un valore economico. Non tutti i beni sono necessariamente "cose" materiali. Il legislatore prevede requisiti di forma specifici (es. forma scritta a pena di nullità) per documentare il trasferimento di determinati beni.
+
 > [!INFO] Differenza giuridica: il furto consiste nell'appropriazione indebita di un *bene mobile*, mentre l'occupazione è un reato che si configura su un *bene immobile*.
 
 L'Art. 1321 c.c. definisce il **Contratto** come "l'accordo di due o più parti per costituire, regolare o estinguere tra loro un rapporto giuridico patrimoniale".Affinché sia valido, l'Art. 1325 c.c. impone i seguenti requisiti essenziali:
@@ -134,6 +144,7 @@ L'Art. 1321 c.c. definisce il **Contratto** come "l'accordo di due o più parti 
 - La forma (quando prescritta dalla legge sotto pena di nullità).
 
 **Oggetto del Contratto e Rilevanza dell'Errore:** L'oggetto del contratto non coincide necessariamente con un bene materiale. Ad esempio, nella compravendita, l'oggetto è il trasferimento del diritto di proprietà sulla cosa (a fronte di un prezzo assunto come corrispettivo), non la cosa in sé.
+
 > [!example] Esempio: il Patto di non concorrenza è un contratto il cui oggetto non attiene a una cosa materiale, ma a un'obbligazione di "non fare".
 
 L'errore è causa di annullamento del contratto (Art. 1428 c.c.) quando è **essenziale** e **riconoscibile** dall'altro contraente. Secondo l'Art. 1429 c.c., l'errore è essenziale quando cade:
@@ -141,11 +152,13 @@ L'errore è causa di annullamento del contratto (Art. 1428 c.c.) quando è **ess
 2. Sull'identità dell'oggetto della prestazione o sopra una qualità dello stesso che, secondo il comune apprezzamento e in relazione alle circostanze, deve ritenersi determinante del Consenso.
 
 **Dati Personali come Controprestazione e Modello Pay-or-Consent:** La legislazione recente ha iniziato a riconoscere il valore economico dei Dati Personali all'interno dei contratti digitali, introducendo tutele specifiche.
+
 > [!info] Capo I-bis dei contratti di fornitura di contenuto digitale e di servizi digitali (D.Lgs. 173/2021) - Art. 135-octies: disciplina gli aspetti dei contratti tra consumatore e professionista, inclusa la conformità del servizio, i rimedi in caso di difetto e le modalità di modifica del contenuto.
 
 > [!info] Art. 135-octies, comma 4: Le disposizioni si applicano anche quando il professionista fornisce un servizio digitale e il consumatore fornisce (o si obbliga a fornire) Dati Personali al professionista, tranne se i dati sono trattati *esclusivamente* per fornire il servizio o per assolvere obblighi di legge, senza scopi ulteriori.
 
 Questa impostazione è supportata anche dalla giurisprudenza di merito, che evidenzia la natura di scambio in questi rapporti. Affinché il trattamento sia lecito, il Consenso dell'utente deve sempre essere revocabile.
+
 > [!info] Tribunale di Bologna, ordinanza 10 marzo 2021: L'utente, ogni volta che consente l'utilizzo e la diffusione dei propri dati a scopo commerciale, fornisce al gestore del servizio digitale, con un atto negoziale dispositivo, una controprestazione patrimonialmente valutabile. Questo evidenzia il carattere oneroso del rapporto negoziale, fondato su un evidente sinallagma: alla prestazione del servizio corrisponde l'interesse del gestore a utilizzare dati e reti di relazioni a fini di raccolta pubblicitaria.
 
 **Le Linee Guida EDPB sul modello "Consenti o Paga":** Il dibattito sull'uso dei dati come controprestazione si è acceso con l'introduzione dei modelli *Pay-or-Consent* (consenti o paga) da parte delle grandi piattaforme online (es. per la pubblicità comportamentale). Alcune Autorità di Controllo (Garante Privacy) hanno richiesto all'EDPB (European Data Protection Board) un parere (ispirato anche dalla sentenza della CGUE C-252/21) per stabilire se e quando queste scelte costituiscano un Consenso valido e liberamente prestato. 
@@ -162,6 +175,7 @@ I punti chiave (rif. della prof):
 - Disponibilità => Assicura che i sistemi e i dati siano accessibili agli utenti autorizzati quando necessario. Include manutenzione, ridondanza e piani di ripristino in caso di attacchi (es. DDoS).
 
 **Cyber-security nel diritto:** <u>Il rischio è una parola chiave in questo ambito e si definisce come un qualcosa che si frappone tra me e l'ottenimento di un obiettivo futuro </u>(Ricorda: $R = P*D$). Per questo motivo vanno considerati i rischi, la probabilità che tale fatto si possa avverare e la gravità di quanto accade. Non potendo prevedere il futuro quindi devo fare affidamento sull'esperienza (qualcosa che è già successo). In ambito informatico non ci sono computer sicuri. 
+
 >[!quote] I rischi per i diritti e le libertà delle persone fisiche, aventi probabilità e gravità diverse, possono derivare da trattamenti di dati personali suscettibili di cagionare un danno fisico,materiale o immateriale
 
 Ci possono essere molte combinazioni di situazioni: 
@@ -205,14 +219,17 @@ Se viene lesa l'identità di un defunto si può agire contro chi produce tale of
 **Rapporto con il GDPR:** Di tutto ciò non si occupa il GDPR (si occupa del rapporto tra chi da i propri dati personali e chi ne trae vantaggio). 
 - Cons. 27: gli stati possono disciplinare il trattamento dei dati personali di persone decedute
 - Art. 6, co. 1, lett. f: trattamento legittimo per il "perseguimento del legittimo interesse" del titolare o di terzi (es. Cartella clinica, dati pensionistici, dati bancari)
+
 In Italia, per adattarci al GDPR (che è del 2016 ma è entrato in vigore nel 2018), abbiamo modificato l'art. 2 (in vigore precedentemente)che afferma:
 1. I diritti di cui agli articoli da 15 a 22 del regolamento riferiti ai dati personali concernenti persone decedute possono essere esercitati da chi ha un interesse proprio, o agisce a tutela dell'interessato, in qualità di suo mandatario, o per ragioni familiari meritevoli di protezione
 2. L'esercizio dei diritti di cui al comma 1 non è ammesso nei casi previsti dalla legge o quanto, limitatamente all'offerta diretta di servizi della società dell'informazione, l'interessato lo ha espressamente vietato con dichiarazione scritta presentata al titolare del trattamento o a quest'ultimo comunicata (lascio scritto che vieto ai miei eredi di poter accedere ai miei contenuti online oppure che i suddetti contenuti siano oscurati/cancellati)
+
 > [!example] Posso decidere che le foto con l'amante nel cloud vanno all'amante, il resto agli eredi legittimi oppure posso anche decidere chi accede al wallet digitale. 
 
 3. Le volontà dell'interessato di vietare l'esercizio dei diritti di cui al comma 1 deve risultare in modo non equivoco e deve essere specifica, libera e informata; il divieto può riguardare l'esercizio soltanto di alcuni dei diritti di cui al predetto comma
 4. L'interessato ha in ogni momento il diritto di revocare o modificare il divieto di cui ai commi 2 e 3
 5. In ogni caso, il divieto non può produrre effetti pregiudizievoli per l'esercizio da parte dei terzi dei diritti patrimoniali che derivano dalla morte dell'interessato nonché del diritto di difendere in giudizio i propri interessi
+
 > [!info] Gli eredi possono richiedere l'autorizzazione all'accesso ai dati del defunto (anche per interessi patrimoniali) e tale diritto non può essere loro negato.
 >> [!example] una signora afferma di essere figlia di un signore che non la vuole riconoscere. Per questo avvia un giudizio per fare la prova di paternità (rifiuto può essere inteso come conferma). Nel corso del processo il signore muore e nomina come erede un altra persona (che ha interesse affinché la signora non sia riconosciuta come figlia così da non doverle dare la quota di riserva) => decide di cremare il sospetto padre della signora (dato che questo non aveva eredi). Alla fine la signora si ricorda che il padre è morto di tumore e nell'ospedale si era conservata una parte di tessuto (il defunto aveva firmato un documento a riguardo). Fa una richiesta alla bio banca di avere questo campione. L'erede voleva impedirlo per via della privacy, ma non poteva ledere al diritto di proteggere i propri interessi della signora => la signora accede al campione, dimostra che il signore era il padre ed eredita tutta l'eredità
 
@@ -225,24 +242,30 @@ In Italia, per adattarci al GDPR (che è del 2016 ma è entrato in vigore nel 20
 | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | Approccio personalistico: persistenza di interessi giuridicamente tutelabili in capo a chi agisce | Approccio patrimonialistico: principio di universalità della successione |
 ###### Danno e responsabilità reati
-Nell'ordinamento italiano, il danno risarcibile si divide principalmente in **patrimoniale** (lesione del patrimonio) e **non patrimoniale** (lesione di interessi costituzionalmente garantiti non economici). Le voci chiave includono il danno emergente e lucro cessante (patrimoniale), mentre il non patrimoniale racchiude il danno biologico (salute), morale (sofferenza) ed esistenziale (vita relazionale).
-1. Danno Patrimoniale (Art. 2043 c.c.) = Consiste nella perdita economica subita dal danneggiato. Si compone di due elementi: 
- - **Danno Emergente:** La perdita economica diretta e immediata (es. spese mediche, riparazione auto).
- - **Lucro Cessante:** Il mancato guadagno, ovvero la ricchezza che il danneggiato avrebbe prodotto e che non ha realizzato a causa dell'illecito
-2. Danno Non Patrimoniale (Art. 2059 c.c.) = Riguarda il pregiudizio alle emozioni, alla salute o alla vita quotidiana, risarcibile nei casi previsti dalla legge (es. fatto reato) o per lesione di diritti inviolabili. È un "danno alla persona" e si articola in: 
+Nell'ordinamento italiano, il danno risarcibile si divide principalmente in **patrimoniale** (lesione del patrimonio) e **non patrimoniale** (lesione di interessi costituzionalmente garantiti non economici). Le voci chiave del danno patrimoniale includono il danno emergente e lucro cessante, mentre il non patrimoniale racchiude il danno biologico (salute), morale (sofferenza) ed esistenziale (vita relazionale).
+1. **Danno Patrimoniale (Art. 2043 c.c.):** Consiste nella perdita economica subita dal danneggiato. Si compone di due elementi: 
+ - *Danno Emergente:* La perdita economica diretta e immediata (es. spese mediche, riparazione auto).
+ - *Lucro Cessante:* Il mancato guadagno, ovvero la ricchezza che il danneggiato avrebbe prodotto e che non ha realizzato a causa dell'illecito
+1. **Danno Non Patrimoniale (Art. 2059 c.c.):** Riguarda il pregiudizio alle emozioni, alla salute o alla vita quotidiana, risarcibile nei casi previsti dalla legge (es. fatto reato) o per lesione di diritti inviolabili. È un "danno alla persona" e si articola in: 
  - *Danno Biologico:* Lesione temporanea o permanente dell'integrità psico-fisica, accertabile medico-legalmente, a prescindere dalla capacità di produrre reddito.
  - *Danno Morale:* Sofferenza interiore, turbamento dell'animo, dolore e vergogna patiti (patema d'animo).
- - *Danno Esistenziale:* (o Dinamico-Relazionale):* Peggioramento oggettivo delle condizioni di vita, alterazione delle abitudini e della vita di relazione. Sebbene a volte contestato come categoria autonoma, la giurisprudenza lo riconosce come parte del danno non patrimoniale
+ - *Danno Esistenziale (o Dinamico-Relazionale):* Peggioramento oggettivo delle condizioni di vita, alterazione delle abitudini e della vita di relazione. Sebbene a volte contestato come categoria autonoma, la giurisprudenza lo riconosce come parte del danno non patrimoniale
+
 Altre tipologie di danno
 - *Danno all'Onore/Reputazione:* Lesione della dignità personale o professionale.
 - *Danno da Ritardo:* Interessi e rivalutazione monetaria per il tempo trascorso prima del risarcimento.
 - *Danni Punitivi:* Sebbene tradizionalmente estranei, vengono talvolta riconosciuti in casi limitati di comportamenti particolarmente gravi. 
+
 Per la quantificazione del danno biologico e non patrimoniale, si utilizzano le *Tabelle del Tribunale di Milano (o di Roma)*, ampiamente riconosciute come parametro nazionale per garantire l'uniformità.
-La legislazione europea (art. 16, comma, direttiva del 2003) stabilisce che le piattaforme sono responsabili (insieme all'autore) dell'illecito $\iff$ è venuta a conoscenza dell'illecito e non si è adoperata tempestivamente per oscurarlo o per rimuoverlo (*notice and take down*). Secondo la cassazione l'illiceità deve essere manifesta (deve essere facilmente distinguibile, sentenza del 2019). Altrimenti se il prestatore del servizio ritiene che l'illiceità non sia manifesta, deve segnalarlo alle autorità competenti. art 16-17, decreto legislativo del 2016. Questo decreto è stato abrogato e sostituito da un regolamento del 2022 (*digital services act*) di armonizzazione: le piattaforme sono responsabili se non si mobilitano a limitare l'accesso ad un contenuto illecito.
+
+**Danni/reati nelle piattaforme:** La legislazione europea (art. 16, comma, direttiva del 2003) stabilisce che le piattaforme sono responsabili (insieme all'autore) dell'illecito $\iff$ è venuta a conoscenza dell'illecito e non si è adoperata tempestivamente per oscurarlo o per rimuoverlo (*notice and take down*). Secondo la cassazione l'illiceità deve essere manifesta (deve essere facilmente distinguibile, sentenza del 2019). Altrimenti se il prestatore del servizio ritiene che l'illiceità non sia manifesta, deve segnalarlo alle autorità competenti. art 16-17, decreto legislativo del 2016. Questo decreto è stato abrogato e sostituito da un regolamento del 2022 (*digital services act*) di armonizzazione: le piattaforme sono responsabili se non si mobilitano a limitare l'accesso ad un contenuto illecito.
+
 > [!example] Amazon prende una percentuale della vendite. Se viene venduto un articolo contraffatto (*violazione del marchio*), amazon stesso ne deve rispondere (oltre al venditore) dato che ha avuto un guadagno dalla vendita 
 
 Responsabilità contrattuale ed extra-contrattuale: 
 - La responsabilità contrattuale (art. 1218 c.c.) deriva dall'inadempimento di un'obbligazione preesistente tra le parti. 
 - La responsabilità extracontrattuale o "aquiliana" (art. 2043 c.c.) sorge dal mancato rispetto del dovere generale di non danneggiare altri (_neminem laedere_), anche in assenza di un contratto. 
+
 Le differenze principali riguardano l'onere della prova, i termini di prescrizione (10 vs 5 anni) e l'entità del risarcimento.
-Perché spesso si da la colpa alla piattaforma? Perché magari l'utente ha fatto un danno e ha usufruito di strumenti come le VPN per non farsi trovare. Servendo un responsabile di un atto illecito si sanziona la piattaforma. Per quanto riguardo il risarcimento del danno c'è la possibilità di avere tutto il pagamento o dalla piattaforma o da chi ha perpetrato l'illecito. Nello specifico la piattaforma può pagare i danni provocati dall'illecito (successivi a questo) e poi si avvale del diritto di recesso 
+
+**Perché spesso si da la colpa alla piattaforma?** Perché magari l'utente ha fatto un danno e ha usufruito di strumenti come le VPN per non farsi trovare. Servendo un responsabile di un atto illecito si sanziona la piattaforma. Per quanto riguardo il risarcimento del danno c'è la possibilità di avere tutto il pagamento o dalla piattaforma o da chi ha perpetrato l'illecito. Nello specifico la piattaforma può pagare i danni provocati dall'illecito (successivi a questo) e poi si avvale del diritto di recesso 

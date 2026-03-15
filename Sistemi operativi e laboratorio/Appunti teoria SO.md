@@ -51,7 +51,7 @@ Il **Time-sharing** (condivisione del tempo) è un paradigma sviluppato per supp
 * Permette a calcolatori potenti di supportare più utenti contemporaneamente sulla stessa macchina.
 * Il processore viene condiviso in modo fluido tra tutti gli utenti attivi.
 * L'accesso avviene simultaneamente attraverso l'uso di terminali.
-* Il sistema operativo alterna rapidamente l'esecuzione di ciascun programma utente assegnando un **quanto di elaborazione** (un breve periodo di tempo).
+* Il sistema operativo alterna raPIDamente l'esecuzione di ciascun programma utente assegnando un **quanto di elaborazione** (un breve periodo di tempo).
 * Esempio storico notevole: il sistema **CTSS** (Compatible Time-Sharing System).
 
 **Multiprogrammazione vs Time-Sharing**
@@ -75,9 +75,10 @@ Pur condividendo principi di esecuzione concorrente, hanno finalità diverse:
 > [!NOTE] Nuovi Dispositivi
 > I moderni sistemi operativi mobili devono tenere costantemente conto dell'energia utilizzata, dei forti limiti della **memoria** a disposizione e della presenza di innumerevoli componenti hardware aggiuntive, come i **sensori**, che richiedono driver e gestioni specifiche.
 ###### Funzionamento di un sistema di elaborazione
-- CPU = costituita dai registri (es. Program counter che contiene l'indirizzo dell'istruzione successiva da eseguire o l'instruction register che contiene l'istruzione da eseguire,...)
-- Memoria principale = vengono caricati i programmi che sono costituiti da istruzioni (quelli che la CPU può eseguire) e dati (locazioni di memoria in cui mettiamo le nostre informazioni). 
-- Moduli I/O = relativi a tastiera, monitor e dischi
+- *CPU:* costituita dai registri (es. Program counter che contiene l'indirizzo dell'istruzione successiva da eseguire o l'instruction register che contiene l'istruzione da eseguire,...)
+- *Memoria principale:* vengono caricati i programmi che sono costituiti da istruzioni (quelli che la CPU può eseguire) e dati (locazioni di memoria in cui mettiamo le nostre informazioni). 
+- *Moduli I/O:* relativi a tastiera, monitor e dischi
+
 Nei sistemi moderni ci sono più processori (cores) su un singolo chip (socket) . Ognuno di questi può svolgere contemporaneamente agli altri delle istruzioni/programmi. Meno si accede alla memoria principale e più è veloce la computazione => per questo esiste la memoria cache (unità di memoria piccola così da essere veloce e poco costosa) dalla quale la CPU prende un piccolo numero di dati e informazioni. I dati contenuti nella cache sono quelli usati di recente (molto probabilmente li riuseremo). Poi di solito c'è un processore grafico (GPU). Questo è in grado di applicare la stessa istruzione a tutti i dati di un array (in un tempo ridotto). Usati principalmente per aspetti grafici (es. Pixel). La tecnica usata è la *Single-instruction multiple-data* (SIMD) e si può usare anche per applicazioni che non sono grafiche. Esiste poi un processore di segnale digitale (DSP) che codifica/decodifica segnali audio e video e garantisce un supporto crittografico. Ad oggi tutto ciò si può trovare su un solo chip (Soc) => funzionale per i cellulari
 
 **Ciclo di estrazione ed esecuzione:**
@@ -103,7 +104,7 @@ L'istruzione viene estratta, viene eseguita e, se il processo è terminato, si t
     <img src="Screenshot From 2026-03-04 17-58-44.png" style="width: 100%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
-  Quindi il procedimento è: estrazione istruzione -> esecuzione istruzione -> check delle interruzioni. Se c'è l'interruzione se ne guarda il tipo si compie un salto all'indirizzo al quale inizia il programma per la gestione delle interruzioni (*interrupt handler*) e successivamente si salta ad un'altra istruzione. Una volta che il gestore delle interruzioni ha finito di gestire il problema legato ad un'interruzione, questa viene eseguita. 
+  Quindi il procedimento è: estrazione istruzione -> esecuzione istruzione -> check delle interruzioni. Se c'è l'interruzione se ne guarda il tipo si compie un salto all'indirizzo al quale inizia il programma per la gestione delle interruzioni (<i>interrupt handler</i>) e successivamente si salta ad un'altra istruzione. Una volta che il gestore delle interruzioni ha finito di gestire il problema legato ad un'interruzione, questa viene eseguita. 
   </div>
 </div>
 
@@ -124,6 +125,7 @@ Se avviene un'interruzione durante la gestione di un'interruzione ci sono almeno
 - Multiprocessing simmetrico
 - Sistemi operativi distribuiti
 - Architettura orientata agli oggetti
+
 Il sistema operativo può realizzare una macchina virtuale. Cioè il sistema operativo crea una macchina che abbia una sua memoria e un suo sistema operativo. Esiste un virtual machine monitor (VMM)  che viene eseguito sul sistema operativo e gestisce le comunicazioni tra i singoli sistemi operativi virtuali e il processore
 
 **Servizi del sistema operativo:**
@@ -135,6 +137,7 @@ Il sistema operativo può realizzare una macchina virtuale. Cioè il sistema ope
 - Accounting (verifica chi usa il sistema e per quanto tempo)
 - Sicurezza e protezione
 - Riconoscimento degli errori (nell'esecuzione dei programmi)
+
 Queste funzioni sono utilizzate attraverso le chiamate di sistema = interruzioni richieste dall'utente stesso. Si accede al sistema tramite delle interfacce:
 - GUI
 - Batch (file di istruzioni che vengono eseguite una dietro l'altra)
@@ -198,6 +201,7 @@ Le system call sono un'interfaccia per il programmatore ai servizi del SO. Vi si
  - Controllo degli accessi alle risorse
  - Visualizzazione e impostazione dei permessi
  - Autorizzazione e divieto di accesso all'utente
+
 Un sistema operativo è fatto anche di programmi detti *utilities* che servono a realizzare l'ambiente utile per lo sviluppo e l'esecuzione dei programmi. Ce ne sono diverse categorie:
 - Gestione files
 - Informazione di stato
@@ -214,10 +218,12 @@ Non è semplice dato che devo tenere conto di che hardware si dispone e di che t
 - Obiettivi dell'utilizzatore
 - Obiettivi del sistema (es obiettivo dell'utilizzatore = far terminare i programmi nel minor tempo possibile, obiettivo del sistema = non lasciare il processore inutilizzato)
 - Separazione delle politiche (se ho un server servo il primo client e non l'ultimo che ha fatto una richiesta) dai meccanismi (es come si accede al disco)
+
 I moderni sistemi operativi sono scritti in linguaggi come C e C++ (non più Assembler) perché ciò mi garantisce:
 - Facilità di sviluppo e manutenzione
 - Compattezza
 - Portabilità
+
 Inoltre sono linguaggi più efficienti di linguaggi interpretati come Python (computer non sono fatti per mandare avanti il sistema operativo, ma per far partire programmi di sistema). Alcune sezioni critiche che richiedono altissima efficienza sono scritte in Assembler.
 ###### Struttura del sistema operativo
 **Sistemi monolitici (Non sono divisi in moduli):** MS-DOS o UNIX tradizionale sono sistemi monolitici complessi e scritti tramite molte funzioni. Il kernel di UNIX tradizionale ha un'interfaccia verso l'hardware per la gestione delle chiamate di sistema (questo all'interno del kernel che gestisce segnali I/O, file system, driver, dispositivi di archiviazione e scheduling)
@@ -231,7 +237,7 @@ Inoltre sono linguaggi più efficienti di linguaggi interpretati come Python (co
 - *Svantaggi* = overhead (il kernel affida più compiti ai programmi e per questo c'è bisogno di un maggiore tempo di esecuzione)
 
 > [!example]
-> ![[Screenshot From 2026-03-05 12-31-03.png|300]]
+> ![[Screenshot From 2026-03-05 12-31-03.png|200]]
 
 Non c'è differenza dal punto di vista del sistema tra questi programmi, ma ogni volta che un programma applicativo deve accedere a un file o un dispositivo invierà una richiesta tramite messaggio che sarà svolta un un altro programma che è il gestore del dispositivo e non dal kernel, dato che questo contiene solo le funzioni fondamentali (altre funzionalità sono in moduli, ogni modulo nasconde i dettagli di implementazione agli altri moduli)
 
@@ -246,8 +252,8 @@ Non c'è differenza dal punto di vista del sistema tra questi programmi, ma ogni
 
 **Debugging:** Per il fatto che i SO sono sistemi complessi, ci possono essere degli errori e per questo nella loro progettazione e gestione c'è il problema del debugging. Gli errori, però, si possono presentare in situazioni particolari (difficili da individuare), considerando che il SO deve fare il suo compito nel minor tempo possibile. Quindi valutare le prestazioni di un SO (e per monitorare il comportamento del sistema) richiede una lunga sperimentazione tramite anche la generazione di file di log che registrano il comportamento del sistema e *core dump*
 
-**Generazione sistema operativo:** Scritto il codice sorgente del sistema $\rightarrow$ va compilato e configurato per il sistema su sui verrà eseguito $\rightarrow$ poi si istalla il sistema $\rightarrow$ avvia il computer e il nuovo sistema operativo. La configurazione può realizzarsi modificando il codice prima della compilazione in base al sistema su cui lo vado a installare, oppure tramite la selezione di tabelle e moduli precompilati da collegare al momento dell'installazione, oppure tramite un sistema guidato da tabelle di dati che guidano il sistema in base all'hardware.<u> Per far partire il sistema l'esecuzione inizia in un predefinito indirizzo della ROM (parte di memoria non modificabile nemmeno a computer spento = *read only memory*) che contiene il *bootstrap loader*. Questo contiene le istruzioni necessarie a caricare il *bootstrap program* che a sua volta carica il kernel e avvia l'esecuzione del sistema</u>
-###### Processi
+**Generazione sistema operativo:** Scritto il codice sorgente del sistema $\rightarrow$ va compilato e configurato per il sistema su sui verrà eseguito $\rightarrow$ poi si istalla il sistema $\rightarrow$ avvia il computer e il nuovo sistema operativo. La configurazione può realizzarsi modificando il codice prima della compilazione in base al sistema su cui lo vado a installare, oppure tramite la selezione di tabelle e moduli precompilati da collegare al momento dell'installazione, oppure tramite un sistema guidato da tabelle di dati che guidano il sistema in base all'hardware.<u> Per far partire il sistema l'esecuzione inizia in un predefinito indirizzo della ROM (parte di memoria non modificabile nemmeno a computer spento = <i>read only memory</i>) che contiene il <i>bootstrap loader</i>. Questo contiene le istruzioni necessarie a caricare il <i>bootstrap program</i> che a sua volta carica il kernel e avvia l'esecuzione del sistema</u>
+###### Processi 
 **Definizione:**<u> un processo (o job) è un programma (lista di istruzioni con riferimenti a delle locazioni di memoria) in esecuzione</u>. Gli elementi del processo sono:
 - Program counter (indirizzo istruzione da eseguire) e contenuto dei registri (immagine del processore)
 - Stack che contiene variabili locali, indirizzi di return o parametri delle funzioni
@@ -255,11 +261,12 @@ Non c'è differenza dal punto di vista del sistema tra questi programmi, ma ogni
 - Sezione dati che contiene i valori delle variabili locali
 - Heap per l'allocazione dinamica
 
-| Programma                        | Processo                                                   |
-| -------------------------------- | ---------------------------------------------------------- |
-| Entità passiva / file eseguibile | Entità che esegue le istruzioni e usa le risorse associate |
+| Programma                                                                                                         | Processo                                                       |
+| ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Entità passiva su disco / file eseguibile                                                                         | Entità che esegue le istruzioni e usa le risorse associate     |
+| Sono istruzioni che non cambiano finché non avviene una modifica e non ha memoria allocata né stato di esecuzione | Possiede risorse proprie ed evolve attraverso stati successivi |
 > [!tip] Ricorda
->  - Un programma può essere associato a più processi
+>  - Un programma può essere associato a più processi attraverso il multitasking = situazione in cui il SO permette di avviare lo stesso codice eseguibile più volte, assegnando a ciascuna istanza uno spazio in memoria, un PID e delle risorse
 >  - nella memoria il processo occupa un certo spazio occupato dal codice, i dati, l'heap e lo stack dove vengono eseguite le procedure (la heap si allarga verso l'alto e lo stack verso il basso e bisogna fare attenzione affinché non collidano)
 
 **Stati del processo:**
@@ -286,6 +293,7 @@ Non c'è differenza dal punto di vista del sistema tra questi programmi, ma ogni
 - Informazioni per la gestione della memoria
 - Informazioni di accounting per sistemi multiutente
 - Informazioni su I/O
+
 Un processo può avere multiple sequenze di istruzioni (*threads*) che possono essere eseguite in parallelo (anche su core differenti) per la realizzazione di task differenti. In tal caso il PCB include informazioni su ciascun thread.
 
 **Salvataggio del PCB:**
@@ -294,7 +302,7 @@ Un processo può avere multiple sequenze di istruzioni (*threads*) che possono e
     <img src="Screenshot From 2026-03-05 13-28-52.png" style="width: 100%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
-    Supponiamo che venga creato il processo P 0 che è in stato di running. Ad un certo punto si verifica un'interruzione e tutte le informazioni del processo vengono salvate nel PCB 0. Queste saranno ricaricate dal sistema di gestione delle interruzioni dopo che il processore avrà terminato un altro processo P 1 (ricaricato da PCB 1 quando magari P 1 era stato interrotto precedentemente). A questo punto può accadere una nuova interruzione, si salva lo stato di P 1 dentro a PCB 1 e si ricarica lo stato contenuto in PCB 0 (si riprende esecuzione di P 0). Questo ci permette di usare il sistema in maniera efficiente purché le operazioni di salvataggio e ricarica degli stati del processore siano eseguite in maniera efficiente.
+    Supponiamo che venga creato il processo P0 che è in stato di running. Ad un certo punto si verifica un'interruzione e tutte le informazioni del processo vengono salvate nel PCB0. Queste saranno ricaricate dal sistema di gestione delle interruzioni dopo che il processore avrà terminato un altro processo P1 (ricaricato da PCB1 quando magari P1 era stato interrotto precedentemente). A questo punto può accadere una nuova interruzione, si salva lo stato di P1 dentro a PCB1 e si ricarica lo stato contenuto in PCB0 (si riprende esecuzione di P0). Questo ci permette di usare il sistema in maniera efficiente purché le operazioni di salvataggio e ricarica degli stati del processore siano eseguite in maniera efficiente.
   </div>
 </div>
 
@@ -305,7 +313,7 @@ Il sistema ha bisogno di conoscere la situazione dei vari processi e per questo 
 ###### Schedulatori e fasi del processo
 Il sistema operativo deve decidere a quali processi assegnare il processore e per fare ciò ci sono diversi schedulatori:
 - **Schedulatore a breve termine (CPU scheduler):** Prende i processi dalla coda ready e gli assegna un processore. Siccome deve essere eseguito con grande frequenza, deve essere molto veloce (i processi running vengono anche messi in coda ready proprio perché lo scheduler assegna la CPU a un processo, poi la toglie a quello per assegnarla ad un altro, così da far avanzare più processi contemporaneamente).
-- **Schedulatore a lungo termine:** Seleziona tra i processi nuovi quali fa passare in coda ready, ma non è opportuno che i processi finiscano tutti in questa coda. Per questo esiste il *job scheduler*: Seleziona i processi da inserire in coda ready e per fare ciò controlla il grado di multiprogrammazione, cioè i programmi eseguiti contemporaneamente. Non viene eseguito con frequenza, per questo può applicare procedure più complesse. Ci sono ad esempio processi CPU-bound, ovvero processi che non rilasciano mai a meno che non forzati la CPU a loro assegnata 
+- **Schedulatore a lungo termine:** Seleziona tra i processi nuovi quali fa passare in coda ready, ma non è opportuno che i processi finiscano tutti in questa coda. Per questo esiste il *job scheduler*. Seleziona i processi da inserire in coda ready e per fare ciò controlla il grado di multiprogrammazione, cioè i programmi eseguiti contemporaneamente. Non viene eseguito con frequenza, per questo può applicare procedure più complesse. Ci sono ad esempio processi CPU-bound, ovvero processi che non rilasciano mai la CPU a loro assegnata a meno che non siano forzati 
 
 > [!example]
 > - I/O bound processi che interagiscono con input e output
@@ -313,16 +321,18 @@ Il sistema operativo deve decidere a quali processi assegnare il processore e pe
 > È bene avere entrambi i tipi di processi in quanto ci potrebbero essere o processi che non possono avanzare o processi che richiedono troppe risorse se ci fosse una prevalenza dei due
 
 - **Schedulatore a medio termine:** Determina con che velocità avanzano i processi nel sistema. Si occupa di assegnare o revocare la memoria ai processi (*swapping*). Quando i processi non hanno bisogno di memoria, gli viene revocata la RAM e la memoria del processo viene copiata su disco rigido. La memoria liberata viene occupata da un nuovo processo. 
+
 La schedulazione realizza delle politiche per l'assegnazione della CPU. Generalmente distingue tra:
 - Processi *I/O bound*
 - *Processi CPU bound*
+
 Oltre a questo c'è un problema di overhead (risorse accessorie sono ridondanti rispetto a quelle necessarie) nel cambio dei contesto, il quale varia in funzione di:
 - Velocità della memoria
 - Numero registri del processore
 - Istruzioni speciali (riservate al kernel)
 
 **Creazione del processo**
-Il sistema operativo fornisce meccanismi per creazione/terminazione dei processi. Generalmente un processo genitore chiede al kernel di creare un processo figlio che a sua volta può creare altri processi (*albero dei processi*). Ogni processo è identificato da un numero detto *identificatore di processo (pid)* $\rightarrow$ su linux è il primo numero che vedo quando scrivo `ps` nel terminale. Quando un processo termina, viene eliminato dall'albero.
+Il sistema operativo fornisce meccanismi per creazione/terminazione dei processi. Generalmente un processo genitore chiede al kernel di creare un processo figlio che a sua volta può creare altri processi (*albero dei processi*). Ogni processo è identificato da un numero detto *identificatore di processo (PID)* $\rightarrow$ su linux è il primo numero che vedo quando scrivo `ps` nel terminale. Quando un processo termina, viene eliminato dall'albero.
 
 **Assegnazione delle risorse ad un processo figlio**
 Avviene in base al tipo di sistema operativo:
@@ -333,28 +343,32 @@ Avviene in base al tipo di sistema operativo:
 
 Genitore e figlio possono essere eseguiti concorrentemente mentre il genitore attende la terminazione del figlio. Per quanto riguarda la memoria il processo figlio può avere un duplicato di memoria del genitore e quindi avere lo stesso programma, oppure può averne uno nuovo.
 
-> [!info] La funzione `fork` è una syscall che crea una copia esatta del processo e restituisce al padre il pid del figlio:
+> [!info] La funzione `fork` è una syscall che crea una copia esatta del processo e restituisce al padre il PID del figlio:
 > - **0 (Zero):** Indica che il processo corrente è il **processo figlio** appena creato.
-> - **Maggiore di 0 (Positivo):** Indica che il processo corrente è il **processo padre** e il valore corrisponde al PID del figlio.
+> - **Maggiore di 0 (Positivo):** Indica che il processo corrente è il **processo padre** e ritorna il valore corrisponde al PID del figlio.
 > - **-1 (Negativo):** Indica che la `fork()` è fallita e nessun processo figlio è stato creato.
 
 **Terminazione del processo**
-Il processo termina con la syscall *exit ()*, così:
-- Restituisce un valore di stato al processo genitore, via *wait ()*
+Il processo termina con la syscall *exit()*, così:
+- Restituisce un valore di stato al processo genitore, via *wait()*
 - Le risorse sono deallocate dal sistema operativo
-Il genitore può terminare l'esecuzione del figlio con la syscall *abort ()* e questo per varie motivazioni:
+
+Il genitore può terminare l'esecuzione del figlio con la syscall *abort()* e questo per varie motivazioni:
 - Eccesso di risorse allocate
 - Compito non più richiesto
-La terminazione di un processo figlio fa si che vengano terminati anche i figli del processo terminato (terminazione a cascata). Dolo dopo il wait () del genitore viene deallocato il pid: 
-- il pid però non scompare subito e il processo rimane in stato di zombie e scompare solo dopo che il genitore ha eseguito il wait ()
-- il genitore termini senza che vengano terminati i suoi processi figli, in tal caso quei processi si dicono orfani.
+
+La terminazione di un processo figlio fa si che vengano terminati anche i figli del processo terminato (terminazione a cascata). Solo dopo il wait() del genitore viene deallocato il PID: 
+- Il PID però non scompare subito e il processo rimane in stato di zombie e scompare solo dopo che il genitore ha eseguito il wait()
+- Il genitore termina senza che vengano terminati i suoi processi figli, in tal caso quei processi si dicono orfani.
 ###### **Threads**
 I processi sono caratterizzati da:
 - **Risorse allocate:** spazio di indirizzamento virtuale (immagine in memoria), la traccia di esecuzione, RAM, dispositivi I/O, file
 - **Scheduling:** traccia di esecuzione (alternata con altri processi), stati e priorità
+
 Ma le due caratteristiche potrebbero essere trattate in maniera indipendente:
 - **Processo (o task):** possiede le risorse
-- **Thread (o processo leggero):** unità che viene assegnata al processore. 
+- **Thread (o processo leggero):** unità di lavoro all’interno di un processo. 
+
 Si parla di multithreading la capacità di un SO di permettere più tracce di esecuzione concorrenti in un singolo processo (quindi ad un processo o più processi vengono assegnati più di un singolo thread ciascuno)
 
 | Single-threading                                         | Multi-threading                                                |
@@ -362,24 +376,29 @@ Si parla di multithreading la capacità di un SO di permettere più tracce di es
 | Un processo, un thread (MD-DOS)                          | Un processo, più thread (Java run-time)                        |
 | Più processi, un thread per ciascuno (UNIX tradizionale) | Più processi, ciascuno con più thread (Windows, Solaris, UNIX) |
 **Definizione:** in un ambiente multi-thread, il processo è l'unità di allocazione delle risorse e un'unità di protezione (nessun altro può accedere alle risorse assegnate al processo). Associati al processo ci sono:
-- Spazio di indirizzamento virtuale (contiene immagine del processo)
+- Spazio di indirizzamento virtuale (contiene immagine del processo = è l'insieme completo e strutturato dei dati che definiscono lo stato di un programma in esecuzione, includendo il codice, i dati in RAM, lo stack e i registri)
 - Accesso protetto al processore, ad altri processi (IPC), files, dispositivi I/O
 - Uno o più thread
+
 Associati al thread ci sono:
 - Stato = pronto, in attesa, in esecuzione
-- Contesto del thread (immagine del processore). Viene salvata quando non è in esecuzione
+- Contesto del thread (immagine del processo), viene salvata quando non è in esecuzione
 - Stack di esecuzione
 - Spazio di memoria statico per le variabili locali
 - Accesso a memoria e risorse del processo, condivise con gli altri thread del processo
+
 Questo genera un problema: due thread che accedono agli stessi dati/stessa memoria (magari uno vuole incrementare e l'altro decrementare la stessa variabile)
+
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-12 19-20-44.png" width="300">
+  <img src="Screenshot From 2026-03-12 19-20-44.png" width="200">
 </div>
+
 I benefici del multithreading sono:
 - La creazione di un thread è più rapida della creazione di un processo
-- La teminazione di un thread è più rapida della terminazione di un processo (no questione di protezione della memoria)
+- La terminazione di un thread è più rapida della terminazione di un processo (no questione di protezione della memoria)
 - Lo switch tra due thread del medesimo processo è più rapida dello switch tra due processi (sempre per via della memoria)
-- Efficianza della comunicazione fra programmi (eseguiti da thread dello stesso processo)
+- Efficienza della comunicazione fra programmi (eseguiti da thread dello stesso processo)
+
 In un sistema a utente singolo:
 - Esecuzione in foreground e background
 - Elaborazione asincrona
@@ -390,7 +409,7 @@ In un sistema a utente singolo:
 
 Gli stati del thread sono gli stessi dei processi (in esecuzione, pronto e in attesa), così come le operazioni (creazione, block/sospensione, unblock/riattivazione, terminazione).
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-12 19-24-20.png" width="300">
+  <img src="Screenshot From 2026-03-12 19-24-20.png" width="200">
 </div>
 
 **Sincronizzazione dei thread:** I thread di un processo condividono spazio di indirizzamento e altre risorse. Ogni modifica simultanea di un dato da parte di due thread può corrompere il dato stesso. Per questi motivi è necessario sincronizzare l'accesso dei thread alle risorse
@@ -416,22 +435,26 @@ Gli stati del thread sono gli stessi dei processi (in esecuzione, pronto e in at
 | M: N     | Combina gli attributi di 1: M e M: 1                                                                                                                       |
 
 **Multicore e multithreading:** **Legge di Amdahl:** $\text{speedup} = \frac{\text{tempo di esecuzione su un processore}}{\text{tempo di esecuzione su N processori}} = \frac{1}{(1-f)+ \frac{f}{n}}$
+La legge di Amdahl stabilisce che il miglioramento massimo delle prestazioni di un sistema, grazie alla parallelizzazione (uso di più processori), è limitato dalla parte del software che non può essere parallelizzata. In breve: l'algoritmo, non il numero di processori, determina il limite massimo di velocità.
+
 Il vantaggio lo hanno:
 - Applicazioni multithread native (pochi processi e molti thread)
 - Applicazioni multiprocesso (molti processi single-thread)
-- Applicazioni Java (JVM è un processo multithread e assicura schedulazione e gestione della memoria per le aplllicazioni Java)
+- Applicazioni Java (JVM è un processo multithread e assicura schedulazione e gestione della memoria per le applicazioni Java)
 - Multiple istanze di un'applicazione
 
 **Threads in UNIX:**
 - Il kernel non distingue tra processi e thread
-- Per ogni task (processo o thread) c'è un *task control block* (TCB) con fork ()
-- Fork () crea una nuova task, con una copia del task control block
-- Clone () crea una nuova task, ma nel suo TCB ci sono puntatori ai campi di quello del genitore (in base ai parametri passati a clone ()
+- Per ogni task (processo o thread) c'è un *task control block* (TCB) con fork()
+- Fork() crea una nuova task, con una copia del task control block
+- Clone() crea una nuova task, ma nel suo TCB ci sono puntatori ai campi di quello del genitore (in base ai parametri passati a clone()
 
-**Mutua esclusione:** I processi possono interferire tra di loro in maniera positiva o negativa, negativa ad esempio quando sottrae risorse ad altri processi, in maniera positiva quando due o più processi interagiscono e ci permettono di realizzare un’attività che sfrutta l’uso di diversi processi in un’unica applicazione. La gestione dei processi può avvenire tramite: 
+###### Mutua esclusione
+I processi possono interferire tra di loro in maniera positiva o negativa, negativa ad esempio quando sottrae risorse ad altri processi, in maniera positiva quando due o più processi interagiscono e ci permettono di realizzare un’attività che sfrutta l’uso di diversi processi in un’unica applicazione. La gestione dei processi può avvenire tramite: 
  - Multiprogrammazione: molti processi con un singolo processore, i processi avanzano attendendo che il processore si liberi; 
  - Multiprocessing: molti processi gestiti da un multiprocessore; 
  - Processi distribuiti: molti processi, gestiti da molti processori distribuiti (*cluster*), con memorie distribuite, rende le cose più complicate da gestire, ma sicuramente più veloci. 
+ 
  I differenti processi hanno bisogno di risorse che tipicamente vengono condivise tra i vari processi, si crea quindi una *concorrenza*:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

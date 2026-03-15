@@ -1,0 +1,17 @@
+.side-by-side {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.side-by-side img {
+  max-width: 100%;
+}
+
+.side-by-side-left {
+  flex: 1;
+}
+
+.side-by-side-right {
+  flex: 1.5;
+}

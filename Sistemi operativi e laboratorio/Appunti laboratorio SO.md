@@ -85,12 +85,13 @@
     * `..` (due punti): indica la directory "padre", ovvero quella che contiene la directory corrente.
 
 **Link e Device Files:** Nel filesystem possono essere presenti file speciali chiamati **link**, che fungono da puntatori/collegamenti ad altri oggetti (in modo analogo ai collegamenti di Windows). Compiere un'operazione su un link significa implicitamente compierla sull'oggetto a cui esso punta.
-* Sono presenti anche **special files** o **device files**: espongono un dispositivo hardware all'interno del filesystem come se fosse un normale file. Questo fornisce un'interfaccia verso l'hardware, permettendo alle system calls di eseguire operazioni di Input/Output in modo standardizzato.
+* Sono presenti anche **special files** o **device files**: espongono un dispositivo hardware all'interno del fylesystem come se fosse un normale file. Questo fornisce un'interfaccia verso l'hardware, permettendo alle system calls di eseguire operazioni di Input/Output in modo standardizzato.
 ###### Primi Comandi BASH e variabili:
 I comandi BASH hanno tipicamente questa sintassi: `nome_comando <opzioni> <argomenti>`. 
 Le **opzioni** iniziano tipicamente con il carattere `-` e modificano il comportamento del comando; possono essere accorpate (es. `ls -ltra` equivale a `ls -l -t -r -a`) e a volte richiedono argomenti aggiuntivi. Ogni comando restituisce un valore di ritorno che informa sull'esito, dove solitamente `0` indica che è andato tutto a buon fine.
 
-**Comandi Interni vs Esterni:** **Comandi Esterni**: Sono veri e propri eseguibili registrati nei supporti di memorizzazione. La shell li cerca all'interno dei percorsi di filesystem specificati nella variabile di ambiente `$PATH`. Il comando `which` permette di scoprire dove è memorizzato l'eseguibile di un comando esterno.
+**Comandi Interni vs Esterni:** 
+- **Comandi Esterni**: Sono veri e propri eseguibili registrati nei supporti di memorizzazione. La shell li cerca all'interno dei percorsi di filesystem specificati nella variabile di ambiente `$PATH`. Il comando `which` permette di scoprire dove è memorizzato l'eseguibile di un comando esterno.
 * **Comandi Interni**: Sono riconosciuti ed eseguiti direttamente dalla shell stessa (es. i costrutti per lo scripting o il comando `cd`). È possibile vederne la lista utilizzando il comando interno `help`.
 
 **Operazioni sul Filesystem**
@@ -135,7 +136,7 @@ Le **opzioni** iniziano tipicamente con il carattere `-` e modificano il comport
 * **`locate <stringa>`**: Ricerca velocemente tutti i file aventi un path che contiene la stringa specificata, interrogando un database interno costruito tramite il tool `updatedb`.
 * **`Switch di aiuto rapido`**: Generalmente ogni comando BASH, se invocato aggiungendo lo switch `-h` oppure `--help`, è in grado di stampare a terminale una rapida e sintetica descrizione delle proprie funzionalità.
 
-**Variabile $PATH:** Se voglio vedere dove è memorizzato l'eseguibile che corrisponde ad un comando (esterno) uso il comando **which**. Uso la variabile d'ambiente $**PATH** per dire al terminale dove cercare i programmi (sono una serie di cartelle). Quindi, quando si desidera eseguire un programma, è sufficiente digitare il nome del file eseguibile e il terminale cercherà nelle cartelle specificate in PATH se è presente un file di programma eseguibile denominato in quel modo.
+**Variabile $PATH:** Se voglio vedere dove è memorizzato l'eseguibile che corrisponde ad un comando (esterno) uso il comando **which**. Uso la variabile d'ambiente $**PATH** per dire al terminale dove cercare i programmi (è un elenco di directory in cui il sistema operativo cerca i programmi eseguibili quando digiti un comando nel terminale. Essa permette di avviare applicazioni da qualsiasi posizione senza dover digitare l'intero percorso del file). Quindi, quando si desidera eseguire un programma, è sufficiente digitare il nome del file eseguibile e il terminale cercherà nelle cartelle specificate in PATH se è presente un file di programma eseguibile denominato in quel modo.
 
 > [!info] Con il comando help variables vedo nome e significato di alcune delle shell variables
 
@@ -212,6 +213,7 @@ Per cambiare proprietario e permessi:
 Le system calls sono l'interfaccia per il programmatore ai servizi del sistema operativo (chiamata diretta al sistema). Vi si accede generalmente attraverso un API/linguaggi che la supportino. Ce ne sono vari tipi (accesso ai file, gestione di processi, IPC, semafori,...) e richiedono un "cambio di contesto": da *kernel mode* a *user mode* e viceversa.
 - Kernel mode = accesso senza limitazioni alle risorse HW/SW del sistema (memoria, dispositivi I/O, registri, codice del SO,...). Un errore in kernel mode può provocare un arresto del sistema
 - User mode = accesso limitato alle risorse di sistema (es. Memoria). Un errore in user mode può provocare il blocco del solo processo utente
+
 Quando si passa da un mode ad un altro il SO cambia il contesto di esecuzione del processore. Ciò implica un certo consumo di risorse di sistema (tempo di CPU, salvataggio e ripristino del processo e del contesto precedente,...)
 
 **Funzioni wrappers: Glibc**
@@ -236,7 +238,7 @@ Le system calls sono invocate non direttamente ma tramite funzioni *wrappers* de
 | lseek               | Sposta il puntatore di lettura/scrittura ad una determinata posizione nel file |
 | unlink              | Rimuove una entry di un file nel filesystem                                    |
 | stat (fstat, Istat) | Fornisce informazioni sugli attributi di un file                               |
-| dup, dup 2, dup 3   | Duplicano un file descriptor                                                   |
+| dup, dup2, dup3     | Duplicano un file descriptor                                                   |
 **System calls per le directory:**
 
 | Nome  | Cosa fa                           |
@@ -244,7 +246,7 @@ Le system calls sono invocate non direttamente ma tramite funzioni *wrappers* de
 | mkdir | Crea una directory                |
 | rmdir | Cancella una directory (se vuota) |
 | chdir | Cambia la directory corrente      |
-**Open:** ` #include int open(const char *pathname, int flags, mode_t mode)`
+**Open:** ` #include <unistd.h> int open(const char *pathname, int flags, mode_t mode)`
 - Apre il file specificato da *pathname*
 - *flags* deve includere uno tra `O_RDONLY, O_WRONLY o O_RDWR`
 - *mode* specifica i permessi da applicare al file in caso di creazione (permessi che vengono stabiliti anche in base a `UMASK`). La creazione può essere richiesta specificando `O_CREAT` tra i flags, altrimenti mode viene ignorato e può essere omesso
@@ -263,7 +265,7 @@ Questa system call ha due valori di ritorno possibili:
 > - il file offset è la posizione corrente dentro al file, alla quale il prossimo read o write avverrà (è simile ad un cursore dentro al file)
 > - di default il puntatore (file offset) nel file è posizionato all'inizio (a meno che non si specifichi O_APPEND)
 > - i file aperti andrebbero chiusi prima di terminare il programma con `#include int close(int fd)`, dove fd è il file descriptor ritornato da open () 
-> - l'apertura di un file crea una nuova entry nella tabella di sistema dei file aperti. Quando un file descriptor viene duplicato (con dup 2 o simili), questo si riferisce alla stessa *open file description* del descrittore del file originale $\implies$  i due file descriptors condividono lo stesso *file offset* e le stesse *file status flags*
+> - l'apertura di un file crea una nuova entry nella tabella di sistema dei file aperti. Quando un file descriptor viene duplicato (con dup2 o simili), questo si riferisce alla stessa *open file description* del descrittore del file originale $\implies$  i due file descriptors condividono lo stesso *file offset* e le stesse *file status flags*
 > - su Linux si può usare l'operazione kcmp (2) KCMP_FILE per testare se due file descriptors si riferiscono alla stessa open file description
  
 > [!tip] 
@@ -275,7 +277,7 @@ Questa system call ha due valori di ritorno possibili:
 > - 0 = stdin
 > - 1 = stdout
 > - 2 = stderr
-> - 3 =primo file aperto dal programma
+> - 3 = primo file aperto dal programma
 
 | Comando      | Contenuto                                              |
 | ------------ | ------------------------------------------------------ |
@@ -285,7 +287,7 @@ Questa system call ha due valori di ritorno possibili:
 | Man 2 open   | Mostra la pagina del manuale per la system call *open* |
 | Man 3 stdio  | Funzioni I/O                                           |
 
-**write:** `ssize_t write(int fd, const void *buf, size_t count);` <u>Scrive i primi count (numero di byte da scrivere) byte contenuti in buf (puntatore alla memoria che contiene i dati da scrivere) nel file aperto identificato da fd </u>(file descriptor ritornato da open(2)). Ritorna il numero di byte scritti (che può anche essere inferiore a count se, per esempio, il device di scrittura si è riempito) o -1 in caso di errore (errno settata). 
+**write:** `ssize_t write(int fd, const void *buf, size_t count);` <u>Scrive i primi count (numero di byte da scrivere) byte contenuti in buf (puntatore alla memoria che contiene i dati da scrivere) nel file aperto identificato da fd </u>(file descriptor ritornato da open(2)). Ritorna il numero di byte scritti (che può anche essere inferiore a count se, per esempio, il device di scrittura si è riempito) o -1 in caso di errore (se errno settata). 
 
 **read:** `ssize_t read(int fd, void *buf, size_t count);` <u>Legge count (numero massimo di byte da leggere) byte dal file identificato da fd (file descriptor ritornato da open(2)) e li memorizza in buf (buffer dove mette i dati letti)</u>. Ritorna il numero di byte letti (che può anche essere inferiore a count se c'erano a disposizione nel device di lettura meno byte) o -1 in caso di errore (errno settata). Il valore di ritorno 0 significa EOF (end of file).
 
@@ -295,6 +297,7 @@ Questa system call ha due valori di ritorno possibili:
 - SEEK_SET: a offset byte dall'inizio 
 - SEEK_CUR: a offset byte dalla posizione corrente 
 - SEEK_END: a offset byte dopo la fine del file 
+
 Ritorna la nuova posizione (distanza in byte) da inizio file o -1 in caso di errore (setta errno)
 
 **dup, dup 2**: `int dup(int oldfd);` `int dup2(int oldfd, int newfd);` 
@@ -380,13 +383,14 @@ int main(int argc, char *argv[]) //sono gli unici due parametri che può prender
 ###### Standard I/O library
 È un insieme di funzioni per accesso ai file, agli *streams* standard, etc che astraggono le operazioni di input-output sotto forma di streams. Le operazioni sono bufferizzate in spazio utente e ciò riduce il numero di chiamate alle sottostanti syscall e i relativi cambi di contesto ottimizzando le prestazioni. Forniscono un'interfaccia verso il SO di più alto livello rispetto alle syscall
 
-| Syscall (no bufferizzazione nello spazio utante) | StdIO library (bufferizzazione nello spazio utente)                                                         |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
-| Open                                             | Fopen                                                                                                       |
-| Close                                            | Fclose                                                                                                      |
-| Read/write                                       | getchar/putchar, getc/putc, fgetc/fputc, fread/fwrite, gets/puts, fgets/fputs, scanf/printf, fscanf/fprintf |
-| Lseek                                            | Fseek                                                                                                       |
-| Richiedono cambio contesto user-kernel           | Tipicamente più efficaci e più veloci                                                                       |
+| Syscall (no bufferizzazione nello spazio utante)         | StdIO library (bufferizzazione nello spazio utente)                                                         |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Open                                                     | Fopen                                                                                                       |
+| Close                                                    | Fclose                                                                                                      |
+| Read/write                                               | getchar/putchar, getc/putc, fgetc/fputc, fread/fwrite, gets/puts, fgets/fputs, scanf/printf, fscanf/fprintf |
+| Lseek                                                    | Fseek                                                                                                       |
+| Richiedono cambio contesto user-kernel ad ogni carattere | Tipicamente più efficaci e più veloci                                                                       |
+```
 **Bash: standard streams**
 - Ogni processo ha dei canali predefiniti di comunicazione con il mondo esterno
 - MANCA QUALCOSA??????
@@ -399,3 +403,4 @@ MANCA UNA SBREGA DI ROBA
 Vari comandi separati da | (pipe) stdout di cmd1
 
 Command-line completion
+```

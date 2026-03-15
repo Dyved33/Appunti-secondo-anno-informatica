@@ -2,6 +2,7 @@
 La traduzione del codice sorgente in un linguaggio comprensibile dalla macchina può avvenire in modalità differenti (è anche possibile la traduzione da un linguaggio di programmazione a un altro):
 * **Compilatore:** Esegue la traduzione in blocco *prima* dell'esecuzione. Prende in input il **codice sorgente** e, tramite il traduttore, restituisce il **codice oggetto** (oppure delle notifiche di errore).
 * **Interprete:** Esegue la traduzione *istruzione per istruzione*, simultaneamente all'esecuzione del programma. Prende in input sia il **codice sorgente** sia l'**input** dell'utente, producendo direttamente l'**output**.
+
 Esistono compilatori Ibridi (Es. Java) che combinano i due approcci:
 1. Traduttore analizza il codice sorgente e lo traduce in un **programma intermedio** (ad esempio, il *Java bytecode*).
 2. Successivamente, una **macchina virtuale** (ad esempio, la JVM) riceve gli input dell'utente e *interpreta* il codice intermedio per produrre l'output finale.
@@ -9,6 +10,7 @@ Esistono compilatori Ibridi (Es. Java) che combinano i due approcci:
 La compilazione si divide concettualmente in due macro-fasi principali:
 * **Fase Analitica (Analisi):** Riguarda la comprensione del codice in ingresso. Ha lo scopo di costruire l'**Albero Sintattico Astratto (AST)** partendo dal codice sorgente.
 * **Fase Sintetica (Sintesi):** Riguarda la generazione dell'output. Si occupa di produrre il codice oggetto finale a partire dall'AST generato.
+
 **Le 8 Fasi del Sistema di Compilazione**
 Il passaggio dal codice sorgente al codice macchina attraversa stadi sequenziali, che comunicano tra loro avvalendosi di strutture condivise come la **tabella dei simboli** e il modulo di **gestione degli errori**.
 
@@ -64,6 +66,7 @@ Per descrivere qualsiasi cosa, che sia la Divina Commedia o il codice genetico u
 In informatica teorica, un **linguaggio è definito come un insieme di parole**.
 * **Linguaggi Finiti:** Se un linguaggio è finito, la sua descrizione è banale poiché è possibile elencarne tutti gli elementi uno per uno. Un esempio è $L=\{a,ab,abb,abbb\}$.
 * **Linguaggi Infiniti:** Il problema sorge quando cerchiamo di descrivere linguaggi con infinite parole.
+
 Il **Teorema di Cantor** ci pone un limite matematico insuperabile: non esiste una funzione iniettiva dall'insieme delle parti $\mathcal{P}(\Sigma^{*})$ all'insieme delle parole $\Sigma^{*}$. Di conseguenza, non è possibile associare a *ciascun* linguaggio possibile una parola univoca (la sua "descrizione") che lo caratterizzi in modo perfetto. In altre parole, non possiamo inventare una "parola descrittiva" univoca per tutti i possibili linguaggi infiniti esistenti (linguaggio infinito non può essere descritto da una descrizione finita).
 > [!NOTE] L'approccio Informatico
 > Nonostante il Teorema di Cantor, in informatica non abbiamo bisogno di descrivere *tutti* i linguaggi infiniti. È comunque possibile fornire **descrizioni finite** per *alcuni* linguaggi infiniti che ci sono particolarmente utili. Ad esempio, possiamo usare una regola descrittiva semplice come "tutte le parole sull'alfabeto $\{a,b\}$ di lunghezza dispari", oppure la notazione formale $\{a^{n}b^{n}|n\ge0\}$.
@@ -98,6 +101,7 @@ Per poter costruire delle regole rigorose, dobbiamo prima definire matematicamen
 1.  I nomi sono separati da virgola, tranne gli ultimi due che sono separati dalla congiunzione 'e'.
 2.  Sono ammesse ripetizioni di nomi (es. "Aldo, Bianca, Aldo...").
 3.  Non c'è alcun limite alla lunghezza della lista.
+
 Per istruire una macchina, dobbiamo usare dei **segnaposto** (come i termini "nome" o "frase") ed eseguire sostituzioni meccaniche secondo regole predefinite. 
 > [!IMPORTANT] Il Problema delle Regole Globali vs Locali
 > Un primo tentativo di creare queste regole umane includerebbe una direttiva del tipo: "prima di terminare, se sono presenti virgole, l'ultima va sostituita con la congiunzione e".
@@ -172,6 +176,7 @@ Ci si arresta solo quando i segnaposto non compaiono più. <u>Il concetto chiave
 * $\langle listaNomi \rangle \rightarrow \langle nome \rangle$
 * $\langle listaNomi \rangle \rightarrow \langle nome \rangle, \langle listaNomi \rangle$
 * $\langle nome \rangle \langle fineLista \rangle \rightarrow e \langle nome \rangle$
+
 Le grammatiche mi permettono di definire dei linguaggi (anche infiniti). Questa è una definizione operativa: la descrizione mi permette di derivare tutte le parole del linguaggio. 
  
 **Grammatiche equivalenti:** 
@@ -183,9 +188,11 @@ Capire se una parola appartiene a un linguaggio (ricognizione) è molto importan
 2. **Problema di parsing (come è stata generata la parola?):** Prende come input una grammatica, una parola del linguaggio generato, e vuole trovare una derivazione della parola, cioè una sequenza di forme sentenziali ognuna conseguenza diretta della precedente, in maniera tale che partendo dal simbolo iniziale si ottenga la nostra parola.
  - *Input:* una grammatica (linguaggio) $G = (V, \Sigma, P,S)$ e una parola *w* $\in$ $L(G)$
  - *Output:* una derivazione *S*  => $\alpha_1$ => $\alpha_2$ => ... => $\alpha_n$ => *w* di *w* in *G*
+
 Non esiste un algoritmo che risolva questi problemi in caso generale (c'è una perdita di efficienza). Occorre quindi restringersi a classi particolari di grammatiche (restringere la forma delle produzioni). Se questa forma, però, è troppo stretta non posso generare linguaggi complessi, per questo occorre bilanciare:
 - Efficienza algoritmi
 - Espressività delle grammatiche
+
 La strategia è quindi quella di classificare (**gerarchia di Chomsky**) le nostre grammatiche in base alla forma delle produzioni: produzioni con una forma particolarmente semplice avranno algoritmi di ricognizione e parsing => semplici e veloci ma non in grado di generare linguaggi espressivi. Altri tipi di grammatiche con produzioni di forma più generale avranno la capacità di produrre linguaggi molto espressivi, ma avranno algoritmi di ricognizione e di parsing molto inefficienti o inesistenti.
 ###### Gerarchia di Chomsky e tipi di linguaggio
 Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più complessi ai più semplici)
@@ -238,6 +245,7 @@ Un automa è un dispositivo che può raggiungere un certo numero finito di confi
 - Legge il contenuto di una cella
 - Passa in un nuovo stato (dipende esclusivamente dallo stato precedente e dal contenuto della cella letta)
 - Passa a esaminare la cella successiva
+
 Terminata la lettura del nastro, in base allo stato raggiunto (se è uno stato accettante o meno) , accetta o rifiuta la parola letta. Le parole accettate costituiscono un linguaggio di tipo 3 che, a sua volta, è sempre accettato da un automa a stati finiti. Questo algoritmo è lineare e in tempo reale, perché ad ogni cella letta so se tutto ciò che è venuto prima è stato accettato o meno.
 
 **Definizione:** un *automa a stati finiti deterministico* è una quintupla $A = (Q, \Sigma, \delta, q_0, F)$ ove:
@@ -251,6 +259,7 @@ Terminata la lettura del nastro, in base allo stato raggiunto (se è uno stato a
 **Funzione di transizione estesa:** La funzione $\delta$ , affinché non lavori solo con le coppie stato-lettera ma anche con le coppie stato-parola, si estende a $\hat{\delta}$: $Q \times \Sigma^* \to Q$ ponendo:
 - $\hat{\delta}(q, \epsilon) = q$, $\forall q \in Q$ 
 - $\hat{\delta}(q,va) = \delta(\hat{\delta}(q,v),a)$, $\forall q \in Q$, $v \in \Sigma^*$, $a \in \Sigma$
+
 Per ogni $q \in Q, u, v \in \Sigma^*$,  si ha $\hat{\delta}(q,uv) = \hat{\delta}(\hat{\delta}(q,u),v)$  
 > [!example] ![[Screenshot From 2026-03-05 21-47-18.png|300]]
 
@@ -287,11 +296,13 @@ Se da questa definizione togliessi l'aspetto degli archi otterrei: una maggiore 
 - $\delta: Q \times \Sigma \to \wp(Q)$ è la funzione di transizione
 - $q_0 \in Q$ è lo stato iniziale
 - $F \subseteq Q$ è l'insieme degli stati finali
+
 In sostanza vuol dire che nel grafo, nel quale non c’è più il limite al numero di frecce che escono da uno stato, c’è un cammino che ha come etichetta $w$, che parte da uno stato iniziale e arriva in uno stato finale. Una parola $w = a_1, a_2,...,a_n, (a_1,...a_n \in \Sigma, n \geq 0)$ è *accettata* da $A$ se esistono stati $q_1, q_2,...,q_n \in Q$ tali che $q_i \in \delta(q_{i-1}, a_i), 1 \leq i \leq n, q_n \in F$. L'insieme delle parole accettate da $A$ si dice *linguaggio accettato (o riconosciuto)* da $A$ e si denota con $L(A)$. A ogni automa non-deterministico $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ associamo un grafo diretto con frecce etichettate:
 - I vertici sono gli stati
 - Le frecce sono le triple $(q,a,p)$ con $q \in Q$, $a \in \Sigma$, $p \in \delta(q,a)$
 - Lo stato iniziale è denotato da una freccia entrante
 - Gli stati finali sono identificati dal doppio bordo
+
 Ci si convince facilmente a questo punto che:
 - Una parola *w* può essere etichetta di molti cammini uscenti dallo stato iniziale, o anche nessuno
 - La parola *w* è accettata $\iff$ c'è un cammino dallo stato iniziale a uno stato finale con etichetta *w*
@@ -353,6 +364,7 @@ Un automa a stati finiti non deterministico con $\epsilon$-transizioni è una qu
 - Le frecce sono le triple $(q,a,p)$ con $q \in Q$, $a \in \Sigma \cup \{\epsilon\}$, $p \in \delta(q,a)$ 
 - Lo stato iniziale è denotato da una freccia entrante
 - Gli stati finali sono identificati dal bordo doppio
+
 Ci si convince facilmente a questo punto che:
 - Una parola *w* può essere etichetta di molti cammini uscenti dallo stato iniziale, o anche nessuno
 - La parola *w* è accettata $\iff$ c'è un cammino dallo stato iniziale a uno stato finale con etichetta *w*
@@ -367,6 +379,7 @@ Ci si convince facilmente a questo punto che:
 **Definizione:** sia $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ un automa a stati finiti non deterministico con $\epsilon$-transizioni, la $\epsilon$-chiusura di uno stato $q \in Q$ è il più piccolo sottoinsieme $C_{\epsilon}(q)$ di $Q$ tale che:
 - $q \in C_{\epsilon}(q)$
 - Per ogni $p \in C_{\epsilon}(q)$, $\delta(p,\epsilon) \subseteq C_{\epsilon}(q)$
+
 La $\epsilon$ -chiusura di un insieme di stati $S \subseteq Q$ è l'unione delle $\epsilon$ chiusure dei singoli stati di $S: C_{\epsilon}(S) = \bigcup_{q \in S} C_{\epsilon}(q)$.  In altre parole la ε-chiusura di uno stato è l’insieme degli stati che da questo si possono raggiungere utilizzando solo ε- transizioni.
 > [!example] ![[Screenshot From 2026-03-12 10-31-58.png|300]]
 
@@ -394,12 +407,14 @@ return R
 - $\hat{\delta'}(s_0,w)$ contiene uno stato di $F$
 - $\hat{\delta'}(s_0,w) \in F'$
 - $w$ è accettata da $A'$
+
 Quindi $L(A) = L(A')$
 Sostanzialmente  è sempre possibile costruire un automa deterministico che accetta il medesimo linguaggio, ed esiste inoltre un algoritmo che mi permette di trovare questo automa deterministico equivalente
 
 **Algoritmo di determinazione:** 
 - *Input*: un automa non deterministico con $\epsilon$ transizioni $A = \langle Q,\Sigma, \delta, q_0, F \rangle$
 - *Output*: un automa deterministico equivalente $A' = \langle Q',\Sigma, \delta', q_0, F' \rangle$
+
 n ← 1  // numero degli stati  
 j ← 0  
 $s_0 \leftarrow C_{\epsilon}(q_0)$  
@@ -489,6 +504,7 @@ Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
 - $Q = Q_1 \cup Q_2 \cup \{i,f\}$ ove $i,f$ sono due nuovi stati
 - $i,f$ sono rispettivamente lo stato iniziale e l'unico stato finale
 - Le frecce del grafo di $A$ sono le frecce dei grafi di $A_1$ e $A_2$ e, inoltre, $(i,\epsilon,i_1), (i,\epsilon,i_2), (f_1,\epsilon, f), (f_2,\epsilon, f)$
+
 Allora $A$ accetta il linguaggio denotato da $(E+F)$
 > [!example] ![[Screenshot From 2026-03-13 11-13-32.png|300]]
 
@@ -502,6 +518,7 @@ Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
 - $Q = Q_1 \cup Q_2$
 - Lo stato iniziale è quello di $A_1$ e quello finale è quello di $A_2$
 - Le frecce del grafo di $A$ sono le frecce dei grafi di $A_1$ e $A_2$ con l'aggiunta della freccia $f_1, \epsilon, i_2$
+
 Allora $A$ accetta il linguaggio denotato da $(EF)$
 > [!example] 
 > ![[Screenshot From 2026-03-13 11-17-52.png|300]]
@@ -516,6 +533,7 @@ Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
 - $Q = Q_1 \cup \{i,f\}$ ove $i,f$ sono due nuovi stati
 - $i,f$ sono rispettivamente lo stato iniziale e l'unico stato finale
 - Le frecce del grafo di $A$ sono le frecce del grafo di $A_1$ e, inoltre, $(i,\epsilon,i_1), (i,\epsilon,i_2), (f_1,\epsilon, f), (f_2,\epsilon, f)$
+
 Allora $A$ accetta il linguaggio denotato da $E^*$
 > [!example]
 > ![[Pasted image 20260313112221.png|300]]
