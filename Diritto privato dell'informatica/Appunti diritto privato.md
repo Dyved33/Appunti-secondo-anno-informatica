@@ -269,3 +269,35 @@ Responsabilità contrattuale ed extra-contrattuale:
 Le differenze principali riguardano l'onere della prova, i termini di prescrizione (10 vs 5 anni) e l'entità del risarcimento.
 
 **Perché spesso si da la colpa alla piattaforma?** Perché magari l'utente ha fatto un danno e ha usufruito di strumenti come le VPN per non farsi trovare. Servendo un responsabile di un atto illecito si sanziona la piattaforma. Per quanto riguardo il risarcimento del danno c'è la possibilità di avere tutto il pagamento o dalla piattaforma o da chi ha perpetrato l'illecito. Nello specifico la piattaforma può pagare i danni provocati dall'illecito (successivi a questo) e poi si avvale del diritto di recesso 
+###### Codice di procedura civile e responsabilità civile
+Codice che riguarda la procedura processuale in ambito civile. In ambito civile, la richiesta di risarcimento del danno per un trattamento dei dati non adeguato segue regole procedurali rigorose. Il giudice valuta esclusivamente la fattispecie sottoposta alla sua attenzione, non adottando una visione "ampia" ma limitandosi alla cornice dettata dalle parti. Il processo civile è un processo di parti, cioè ci sono 2 parti private contrapposte. Queste discutono riguardo la violazione o meno di un diritto. Le parti del processo sono:
+- L’attore = colui che intenta la causa del processo
+- Il convenuto = colui che è chiamato in processo (deve rispondere della pretesa dell’attore)
+- Chiamata in causa = coinvolgimento di ulteriori soggetti terzi da parte del convenuto
+- Petitum = la domanda specifica rivolta al giudice (ciò che si chiede)
+- Causa petendi = la spiegazione delle ragioni di fatto e di diritto che giustificano il petitum
+
+> [!INFO] La corretta individuazione di *petitum* e *causa petendi* è il pilastro su cui si incardina l'intero impianto accusatorio per la violazione dei dati personali.
+
+> [!quote] Art. 82 GDPR: chiunque (attore che afferma di essere stato danneggiato) subisca un danno materiale o immateriale a causa di violazioni delle prescrizioni del Regolamento ha diritto di ottenerne il risarcimento dal titolare e/o dal responsabile del trattamento, i quali sono esonerati da responsabilità qualora dimostrino che l’evento dannoso non è a loro in alcun modo imputabile
+
+> [!info] 
+> - Il risarcimento in forma specifica (art. 2058 c.c.) è la riparazione del danno attraverso il ripristino materiale della situazione preesistente all'illecito, anziché mediante il pagamento di una somma di denaro (equivalente). Mira a rimediare direttamente al danno, per esempio riparando un’auto o ricostruendo un muro
+> - Il risarcimento per danno materiale (patrimoniale) e immateriale (non patrimoniale/morale) va richiesto quando si subisce un illecito che provoca una perdita economica, una sofferenza psicofisica, un danno all'immagine o alla privacy. È necessario dimostrare il nesso di causa-effetto tra l'evento lesivo e il danno subito. L'art. 82 GDPR consente il risarcimento per violazione dati, anche solo per il timore di abusi futuri, purché il danno sia provato.
+
+> [!example] Qualche anno fa c’è stato il caso in cui l’attore era il possessore di un conto che ha subito un tentativo di phishing e ha intentato causa contro le poste italiane (perché l’accesso era dato in base solo a nome utente e password)
+
+Ai sensi del GDPR, l'interessato è definito come la **persona fisica identificata o identificabile** a cui si riferiscono i dati personali oggetto di trattamento. Deve essere una persona fisica, escludendo persone giuridiche (società, enti). Esempi includono clienti, dipendenti, utenti web o visitatori. L'interessato gode di diritti (art. 15-22), come l'accesso, la rettifica, la portabilità, la limitazione e la cancellazione dei dati.
+
+Il responsabile del trattamento (o _data processor_) secondo il GDPR (art. 4) è la persona fisica, giuridica, PA o ente che elabora dati personali **per conto del titolare del trattamento**. Opera su istruzione di quest'ultimo, svolgendo attività esterne come gestione buste paga, servizi IT, cloud o marketing. Deve essere nominato per iscritto e garantire standard di sicurezza elevati. Questo paga per un danno causato solo se va oltre le modalità e indicazioni del trattamento imposte dal titolare (es come gestire i dati personali) => in tal caso il responsabile del trattamento diventa il titolare e deve rispondere del danno
+
+**Responsabilità civile:** il comportamento contrario ai codici di condotta di settore fonda responsabilità civile e diritto al risarcimento del danno (art. 24 GDPR e art. 20 d.lgs. 101/2018)
+
+**Regole deontologiche relative all’attività giornalistica:**
+Un ambito di forte scontro tra diritto alla riservatezza e altri diritti costituzionali (come la libertà di stampa) riguarda l'informazione giornalistica, soprattutto inerente alla salute.
+
+> [!INFO] Il bilanciamento tra il diritto di cronaca e la Data Protection impone il divieto di divulgazione di dettagli clinici esuberanti rispetto alla finalità puramente informativa della notizia.
+
+**Prova contraria:** La prova contraria nel processo civile è lo strumento per contestare i fatti allegati dalla controparte, distinguendosi in diretta e indiretta. La prova contraria diretta mira a smentire i testimoni avversari sui medesimi fatti, mentre l'indiretta introduce nuovi elementi incompatibili.
+
+ 

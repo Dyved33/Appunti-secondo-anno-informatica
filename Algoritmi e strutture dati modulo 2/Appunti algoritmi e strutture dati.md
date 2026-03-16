@@ -495,3 +495,14 @@ BFS(G,s)
   <li> $O(E)$ perché ogni vertice è estratto dalla coda al massimo una volta e l'arco $(u,v)$ è esaminato solo quando $u$ è estratto dalla coda. In questo modo ogni arco viene esaminato al massimo 1 volta se orientato, al massimo 2 volte se non orientato
   </div>
 </div>
+
+Per stampare i vertici del cammino più corto da $s$ a $v$:
+```
+if v == s
+	print s
+elseif v.parent == NIL
+	print "no path from" s "to" v "exists"
+else PRINT-PATH(G,s,v.parent)
+	print v
+```
+
