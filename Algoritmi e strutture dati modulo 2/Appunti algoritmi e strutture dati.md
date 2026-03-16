@@ -447,9 +447,13 @@ Dato un grafo $G = (V,E)$, in pseudocodice si rappresenta il set di vertici con 
    - Tempo: per determinare se $(u,v) \in E : \Theta(1)$
 Per quanto riguarda l'espressione del tempo di esecuzione di un algoritmo, è spesso in termini sia di $|V|$ sia di $|E|$ (cardinalità).
 
-**Breadth-first search:** In input ho un grafo $G = (V,E)$, sia orientato che non orientato, e un vertice sorgente $s \in V$. In output ho:
-- $v.d$ = distanza (numero di archi più piccolo) da $s$ a $v$ per ogni $v \in V$
-- $v.\pi$ = è il predecessore di $v$ nel cammino più breve da $s$. $(u,v)$ è l'ultimo arco nel cammino più breve $s \rightsquigarrow v$. Il sotto-grafo predecessore contiene gli archi $(u,v)$ tali che $v.\pi = u$. Il sotto-grafo predecessore forma un albero chiamato *breadth-first tree*. *Intuizione*: i breadth-first tree espandono la frontiera tra i vertici scoperti e non scoperti uniformemente attraverso l'ampiezza della frontiera. A partire da $s$ vengono scoperti i vertici in ondate
+**Breadth-first search:**
+- In input ho un grafo $G = (V,E)$, sia orientato che non orientato, e un vertice sorgente $s \in V$. 
+- In output ho:
+	- $v.d$ = distanza (numero di archi più piccolo) da $s$ a $v$ per ogni $v \in V$
+	- $v.\pi$ = è il predecessore di $v$ nel cammino più breve da $s$. $(u,v)$ è l'ultimo arco nel cammino più breve $s \rightsquigarrow v$. Il sotto-grafo predecessore contiene gli archi $(u,v)$ tali che $v.\pi = u$. Il sotto-grafo predecessore forma un albero chiamato *breadth-first tree*.
+
+*Intuizione*: i breadth-first tree espandono la frontiera tra i vertici scoperti e non scoperti uniformemente attraverso l'ampiezza della frontiera. A partire da $s$ vengono scoperti i vertici in ondate
 - Prima visita tutti i vertici distanti 1 arco da $s$
 - Da qui visita tutti i vertici distanti 2 archi da $s$
 - Etc.
@@ -497,7 +501,7 @@ BFS(G,s)
 </div>
 
 Per stampare i vertici del cammino più corto da $s$ a $v$:
-```
+```Pseudocode
 if v == s
 	print s
 elseif v.parent == NIL
@@ -506,3 +510,69 @@ else PRINT-PATH(G,s,v.parent)
 	print v
 ```
 
+**Depth-first search:** 
+- *Input:* un grafo $G = (V,E)$ sia ordinato che non ordinato. Non viene dato nessun vertice sorgente
+- *Output:*
+	- 2 marcatori del tempo su ogni vertice utili per algoritmi che vedremo poi:
+		- $v.d =$ momento della scoperta del vertice 
+		- $v.f =$ tempo finale
+	- $v.\pi$ è il predecessore di $v$ nella **depth-first forest** con più di un **detpth-first tree**. Se $u = u.\pi$ allora $(u,v)$ è un ramo dell’albero
+
+Questo algoritmo esplora ogni arco e inizia da vertici diversi se necessario. Appena viene scoperto un vertice inizia ad esplorare da questo (diversamente dal BFS che mette un vertice in coda così che venga esplorato successivamente). Man mano che il DFS progredisce, ogni vertice ottiene un colore:
+- Bianco = vertice ancora non scoperto
+- Grigio = vertice scoperto ma non finito (non si è finito di esplorare da quel vertice)
+- Nero = vertice finito (è stato trovato tutto ciò che era raggiungibile da tale vertice)
+
+Tempi di scoperta e di fine:
+- Interi unici da 1 a $2|V|$
+- Per ogni $v,v.d < v.f$
+
+In altre parole $1 \leq v.d < v.f \leq 2|V|$
+
+```Pseudocode
+DFS(G)
+	for each vertex u in G.V
+		u.color = WHITE
+		u.parent = NIL
+	time = 0
+	for each vertex u in G.V
+		if u.color == WHITE
+			DFS-Visit(G,u)
+la ricerca globale fa partire una ricerca locale su ogni vertice per esplorare tutto il grafo
+```
+
+```Pseudocode
+DFS-Visit
+	time = time +1
+	u.d = time
+	u.color = GRAY
+	for each vertex v in G.Adj[u]
+		if v.color == WHITE
+			v.parent = u
+			DFS-Visit(G,v)
+	time = time +1
+	u.f = time
+	u.color = BLACK
+```
+
+> [!example] ![[Screenshot From 2026-03-16 19-15-31.png|200]]
+> Tempo = $\Theta(V+E)$
+> - l’analisi è simile a quella per il BFS
+> - $\Theta$ e non solo $O$ siccome è garantito che venga esaminato ogni vertice e ogni arco
+
+Ogni depth-first tree è fatto da archi $(u, v)$ così che $u$ sia grigio e $v$ sia bianco quando $(u, v)$ è esplorato
+
+**Teorema (delle parentesi):** per ogni $u,v$ vale esattamente una delle seguenti:
+1. $u.d < u.f <v.d < v.f$ oppure $v.d < v.f < u.d < u.f$ (cioè gli intervalli $[u.d, u.f]$ e $[v.d,v.f]$ sono disgiunti) e ne $u$, ne $v$ è discendente dall’altro
+2. $u.d < v.d <v.f < u.f$ e $v$ è discendente da $u$ ($v$ è scoperto dopo e finito prima di $u$)
+3. $v.d < u.d < u.f < v.f$ e $u$ è discendente da $v$ ($u$ è scoperto dopo e finito prima di $v$)
+
+Cioè $u.d < v.d <u.f < v.f$ non può accadere ($v$ è sia scoperto che finito dopo $u$)
+
+**Classificazione degli archi:**
+- **Tree edge:** dentro la depth-first forest, trovato esplorando $(u,v)$
+- **Back edge:** $(u,v)$ con $u$ discendente da $v$
+- **Forward edge:** $(u,v)$ con $v$ discendente da $u$, ma non è un tree edge
+- **Cross edge:** ogni altro arco. Può andare in mezzo ai vertici dello stesso depth-first tree o in depth-first tree diversi
+
+In un grafo non orientato, ci possono essere delle ambiguità siccome $(u,v)$ e $(v,u)$ sono lo stesso arco. Si classifica in base al primo tipo sopra descritto corrispondente
