@@ -464,22 +464,22 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 **Bash:Pipeline:** `cmd1 | cmd2 | ... | cmdN`. Posso scrivere ed eseguire vari comandi separati solo dal carattere `|` (pipe). La pipe collega direttamente lo Standard Output di un comando allo Standard Input di quello successivo. Al posto del carattere `|` posso anche utilizzare solo `|&` con cui stdout e stderr del comando precedente vengono entrambi connessi all’input del comando successivo. Ogni comando è eseguito in un processo differente (*subshell*)
 > [!example] `sort /etc/passwd | less`: Il file `/etc/passwd` viene ordinato da `sort` , l'output prodotto non viene stampato a video ma passato a `less` , che permette di consultarlo pagina per pagina.
 
-###### Creazione processi: *fork()*
-`include <unistd.h> pid_t fork();`
-È una syscall che non vuole argomenti. Questo metodo ritorna -1 difficilmente (non fallisce mai).
-- Crea un nuovo processo duplicando il chiamante tuttavia alcuni attributi non sono duplicati: PID, memory locks, segnali pendenti, timer, etc,
-- Il nuovo processo  è detto *child*, 
+###### System calls per i processi
+**fork():** `include <unistd.h> pid_t fork();`
+
+È una syscall che non vuole argomenti. Questo metodo ritorna -1 difficilmente (il *child* non viene creato e errno viene settata).
+- Crea un nuovo processo duplicando il chiamante, tuttavia alcuni attributi non sono duplicati: PID, memory locks, segnali pendenti, timer, etc,
+- Il nuovo processo  è detto *child*, il processo chiamante è detto *parent*
+- Lo spazio di indirizzamento del nuovo processo è un duplicato di quello del *parent* (sono separati, ognuno ha il proprio)
 
 > [!info] 
-> - fork() nel *child* torna 0, mentre nel *parent* torna un valore > 0. In questo modo si può differenziare il codice tra i due CONTROLLA QUESTO CHE NON MI è CHIARO
+> - fork() nel *child* torna 0, mentre nel *parent* torna il valore del PIDdel *child* (valore > 0). In questo modo si può differenziare il codice tra i due
 > - con `fprintf()` posso decidere su quale descrittore andare a stampare 
 
-**PID e PPID:** ``
-- getpid() torna il process ID
-- getppid() torna il parent process ID 
-
-Queste due funzioni hanno sempre successo
-
+I due processi (child e parent) sono eseguiti concorrentemente. Il child eredita una copia della *tabella dei descrittori* aperti dal padre ma ogni copia di un file descriptor si riferisce alla stessa voce nella tabella dei file aperti (di sistema) cui si riferisce il descrittore originale. Originale e copia condividono:
+- I flag di stato del file
+- Il puntatore alla locazione corrente di ogni file
+- Etc. (vedi *man open (2) e man fork (2))
 ```C
 #include <sys/wait.h>
 #include <stdio.h>
@@ -488,66 +488,86 @@ int main()
 {
 pid_t pid;
 /* fork a child process */
-pid = fork();
-if (pid < 0) { /* error occurred */
+PID= fork();
+if (PID< 0) { /* error occurred */
 fprintf(stderr, "Fork Failed");
 return 1;
 }
-else if (pid == 0) { /* child process */
-printf("Child: my pid = %d, parent pid = %d\n", getpid(), getppid());//execlp("/bin/ls","ls",NULL);
+else if (PID== 0) { /* child process */
+printf("Child: my PID= %d, parent PID= %d\n", getpid(), getppid());//execlp("/bin/ls","ls",NULL);
 //sleep(10); //mette il processo in attesa passiva (no consumo risorse) per 10 secondi
 _exit(0); //termina il processo figlio senza eseguire le operazioni di pulizia del processo (come la chiusura dei file //aperti)
 }
 else { /* parent process */
 /* parent will wait for the child to complete */
 wait(NULL);
-printf("Parent: my PID = %d, parent pid = %d. Pid del child %d\n",getpid(),getppid(),pid );
+printf("Parent: my PID= %d, parent PID= %d. PIDdel child %d\n",getpid(),getppid(),PID);
 //sleep(10);
 }
 sleep(10);
 return 0;
 }
 ```
+**PIDe PPID:** `include <unistd.h> pid_t getpid(void); pid_t getppid(void)`
 
-**wait () e waitpid ():** 
+- getpid() torna il process ID
+- getppid() torna il parent process ID 
 
+Queste due funzioni hanno sempre successo
 
+> [!info] esiste anche `getpgrp()` che ritorna il *process group ID*
 
-Watch esegue un programma ogni tot ***==arguardece==***
+**wait () e waitPID():** `#include <sys/wait.h> pid_t wait(int *wstatus); pid_t waitpid(pid_t pid, int *wstatus, int options)`
 
-Quando un parent chiude 
+- *wait()* sospende il chiamante finché un *child* termina
+- *waitpid()* sospende il chiamante finché un *child* cambia stato (terminato; stoppato da un *signal*; ha ripreso dopo un *signal*), dipende da *options*
 
-Prima riga = quale interprete deve interpretare i comandi: shabang
-Non ho capito perché non bisogna mettere spazi
+Permettono di rilasciare le risorse assegnate al *child*. Se un *child* termina e una *wait* non viene eseguita il *child* rimane nello stato di *zombie* (*man wait(2)*). Questi metodi ritornano il PIDdel processo il cui stato è cambiato (*waitpid()* può tornare 0 in certe circostanze) oppure -1 in caso di errore. Se un/il *child* è terminato/ha già cambiato stato tornano immediatamente. Tra i valori che possiamo dare a PIDci sono i seguenti:
+- -1: attende per un cambiamento di stato di uno qualsiasi dei child
+- >0: attende per un cambiamento di stato del child il cui process ID è uguale a pid
+- Etc
 
-```
+*waitpid(-1, &wstatus, 0)* è equivalente a *wait(&wstatus)*. Se *&wstatus* non è NULL riceve informazioni sul *child*. Queste informazioni possono essere evinte con delle macro:
+- WIFEXITED(wstatus) torna true se il child è terminato normalmente (exit() o return) 
+- WEXITSTATUS(wstatus) ritorna il codice di uscita del child 
+- Etc. (man 2 wait)
+
+> [!info] Il comando `watch` in bash esegue ripetutamente un comando specifico a intervalli regolari (di default ogni 2 secondi), mostrando l'output nel terminale. È fondamentale per monitorare in tempo reale le modifiche all'output di un comando senza doverlo rieseguire manualmente, aggiornando la visualizzazione. Con `-n` imposto l’intervallo di tempo e con `-d` evidenzia le differenze tra l’esecuzione precedente e l’attuale
+
+**System calls per i processi**
+
+| Nome              | Cosa fa                                          |
+| ----------------- | ------------------------------------------------ |
+| Fork              | Crea un nuovo processo                           |
+| Wait              | Attende finché uno dei child termina             |
+| WaitPID          | Attende finché un determinato child cambia stato |
+| Waitid            | Maggiore controllo su quali child attendere      |
+| _exit(2), exit(3) | Terminano il chiamante                           |
+| Execvve(2)        | Esegue un programma che rimpiazza il chiamante   |
+| Exec*(3)          | Wrappers per execve(2) (sono 6)                  |
+###### File Bash
+```C
+// Prima riga = quale interprete deve interpretare i comandi: shabang
 LABEL="fork" #non mettere spazi tra le parole, altrimenti da errore
-
-  
 
 gcc -o $LABEL $LABEL.c
 
 RET=$? #ciò che gcc ritorna alla shell ce lo ho in $?
 
-  
-
 if test $RET -eq 0 #-eq significa equal e si usa per i valori numerici
 
 then
 
-  
-
 ./$LABEL
 
-  
+echo "PIDdello script = $$"
 
-echo "Pid dello script = $$"
-
-echo "Pid della bash = $BASHPID"
+echo "PIDdella bash = $BASHPID"
 
 fi #fine if
 
-  
-
 exit $RET
 ```
+
+> [!attention] Nei file bash (e nella shell in generale), non bisogna mettere spazi attorno al segno di uguale quando si definisce una variabile perché **bash usa gli spazi per separare i comandi dai loro argomenti** (nome variabile verrebbe interpretato come nome di un comando da eseguire e `=` e il `valore` della variabile verrebbero interpretati come argomenti di questo comando)
+

@@ -581,3 +581,57 @@ In un grafo non orientato, ci possono essere delle ambiguità siccome $(u,v)$ e 
 - $a > b$ e $b > c$ $\implies$ $a > c$
 - Ma potrebbe avere $a$ e $b$ tali che ne $a > b$ ne $b > c$
 
+Si può sempre ottenere un ordine totale da un ordine parziale (o $a>b$ o $b>a$ per ogni $a\neq b$). Difatti questo è ciò che fa un topological sort.
+
+**Dag:** è un grafo orientato e aciclico. Un grafo $G$ è aciclico $\iff$ un DFS di $G$ non produce un arco nero (prova alla slide 21)
+
+**Topological sort di un dag:** ordina linearmente i vertici così che se $(u,v) \in E$ allora $u$ appare da qualche parte prima di $v$:
+1. Chiama DFS (G) per valutare i tempi di fine $v.f$ per ogni vertice $v$
+2. Quando ogni vertice è finito, lo inserisce all’inizio della linked list
+3. Ritorna la linked list dei vertici
+
+Non necessita di ordinare in funzione dei tempi di fine:
+- Può far uscire i vertici appena sono finiti e capisce che voglio il *reverse* della lista
+- Oppure mette i vertici all’inizio della linked list appena sono finiti. Appena finito la lista contiene i vertici ordinati con ordine topologico 
+
+**Tempo:** $\Theta(V+E)$
+> [!example] ![[Screenshot From 2026-03-17 23-15-57.png|200]]
+
+**Correttezza:** è necessario mostrare che se $(u,v) \in E$ allora $v.f < u.f$. Quando l’arco $(u,v)$ è esplorato, di che colore sono $u$ e $v$?
+- $u$ è grigio
+- Anche $v$ è grigio? No, perché in tal caso $v$ sarebbe “antenato” di $u$ $\implies (u,v)$ è un arco nero $\implies$ contraddizione del lemma precedente (i dag non hanno archi neri) 
+- $v$ è bianco? In tal caso diventa “discendente” di $u$. In base al teorema delle parentesi $u.d < v.d<v.f<u.f$
+- $v$ è nero? In tal caso $v$ sarebbe già finito. Siccome sto esplorando $(u,v)$. $u$ non è ancora finito, quindi $v.f<u.f$
+
+**Componenti fortemente connesse:** dato un grafo ordinato $G=(V,E)$, una componente fortemente connessa (*SCC*) di $G$ è il set massimale di vertici $C \subseteq V$ così che per ogni $u, v \in C$, $u \rightsquigarrow v$ e $v \rightsquigarrow u$ 
+> [!example] ![[Screenshot From 2026-03-17 23-27-30.png|200]]
+
+*Nell’esempio:* L’algoritmo usa $G^T$=trasposta di $G$:
+- $G^T = (V,E^T), E^T = \{(u,v) : (v,u) \in E\}$
+- $G^T$ è $G$ con tutti gli archi invertiti
+> [!info] posso creare $G^T$ in $\Theta(V+E)$ di tempo se uso le liste di adiacenza
+
+**Osservazione:** $G$ e $G^T$ hanno gli stessi SCC ($U$ e $v$ sono raggiungibili l’uno dall’altro in $G$ se e solo so sono raggiungibili l’uno dall’altro in $G^T$)
+- $G^{SCC} = (V^{SCC},E^{SCC})$ 
+- $V^{SCC}$ ha un vertice per ogni SCC in $G$
+- $E^{SCC}$ ha un arco se c’è un arco tra  i corrispondenti SCC in $G$
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Screenshot From 2026-03-17 23-35-16.png" style="width: 190%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+Nel nostro esempio
+  </div>
+</div>
+
+**Lemma:** $G^{SCC}$ è un dag. Più formalmente, siano $C$ e $C'$ due SCC distinti in $G$, siano $u,v \in C$, $u',v' \in C'$ e si supponga che ci sia un cammino $u \rightsquigarrow u'$  in $G$. Allora non ci potrà essere un cammino $v' \rightsquigarrow v$  in $G$
+
+```Pseudocode
+SCC(G)
+	chiama DFS(G) per calcolare i tempi di fine u.f per ogni vertice u
+	crea G^T
+	chiama DFS(G^T), ma nel loop principale considera i vertici in ordine decrescente di u.f (come valutato nel primo DFS)
+	restituisce i vertici in ogni albero del depth-first tree formato  nel secondo DFS come un SCC separato
+(?)esegue DFS in G (?)
+```
