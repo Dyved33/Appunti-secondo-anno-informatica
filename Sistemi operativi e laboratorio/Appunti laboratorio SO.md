@@ -390,91 +390,164 @@ int main(int argc, char *argv[]) //sono gli unici due parametri che può prender
 | Read/write                                               | getchar/putchar, getc/putc, fgetc/fputc, fread/fwrite, gets/puts, fgets/fputs, scanf/printf, fscanf/fprintf |
 | Lseek                                                    | Fseek                                                                                                       |
 | Richiedono cambio contesto user-kernel ad ogni carattere | Tipicamente più efficaci e più veloci                                                                       |
+###### Bash: standard stream e redirezioni
+**command-line completion:** *bash* ha la funzione di completamento delle linee di comando premendo il tasto *TAB*. Premendo una volta il tasto *TAB* ottengo:
+1. se c'è una sola possibilità il comando viene completato 
+2. altrimenti il comando viene eventualmente completato fin dove è possibile farlo in modo univoco e viene emesso un segnale sonoro
 
-# BASH: Standard Stream e Redirezioni
+Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scelte possibili
 
-## 1. I Flussi Standard (Standard Streams)
-In un sistema Unix-like, ogni processo all'avvio ha tre flussi di dati (file descriptor) predefiniti aperti. Questi flussi permettono al comando di interagire con l'ambiente esterno (tastiera, terminale, file).
+**Gestione della history:** *bash* tiene nota degli ultimi *n* comandi dati alla shell. *n* dipende dalle variabili *HISTFILESIZE* e *HISTSIZE* (*man bash*)
 
-* **0 (stdin):** Standard Input. Tipicamente collegato alla **tastiera**.
-* **1 (stdout):** Standard Output. Tipicamente collegato al **terminale** (monitor).
-* **2 (stderr):** Standard Error. Tipicamente collegato al **terminale**, usato per i messaggi di errore.
+| Comando (interno) | Descrizione                                                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| history           | visualizza gli ultimi n comandi eseguiti (il numero di comandi visualizzato e memorizzato dipende dalle variabili HISTSIZE e HISTFILESIZE) |
+| !a                | esegue l’ultimo comando nella history che inizia per ‘a’                                                                                   |
+| !68               | esegue il comando numero 68 della history                                                                                                  |
+| !!                | ripete l’ultimo comando eseguito                                                                                                           |
+**Bash: Metacaratteri:** si tratta di caratteri che separano le parole. Un metacarattere può essere: spazio, tab, newline, `|`, `&`,`;`,`(`, `)`, `<`, `>` (da *Bash Reference Manual*). Questi caratteri hanno un significato per la shell, come anche i caratteri `*`, `?`, `Ctrl + d (EOF)`, `Ctrl + c`, `'`,…
+> [!IMPORTANT]
+> Se si desidera usare questi caratteri come testo normale, devono essere racchiusi tra **apici** (quoting) per evitare che la Bash li interpreti.
+
+**Bash: standard streams:** In un sistema Unix-like, ogni processo all'avvio ha tre flussi di dati (file descriptor) predefiniti aperti. Questi flussi permettono al comando di interagire con l'ambiente esterno (tastiera, terminale, file) tramite anche la redirezione e il comando pipe (`|`).
+* **0 (stdin):** Standard Input. Tipicamente collegato alla **tastiera**, è utilizzato come sorgente da cui prendere i dati da elaborare.
+* **1 (stdout):** Standard Output. Tipicamente collegato al **terminale** (monitor), è utilizzato per mostrare i risultati della computazione.
+* **2 (stderr):** Standard Error. Tipicamente collegato al **terminale**, è utilizzato per comunicare informazioni addizionali sullo stato della computazione come i messaggi di errore.
 * **3+ (stdfile):** Descrittori di file aggiuntivi definiti dall'utente o dal sistema.
 
 > [!NOTE] Nota del Prof
 > Se esegui un comando come `sort` senza alcun parametro, la Bash "apre lo 0": invece di leggere da un file, resta in attesa di input direttamente dalla tastiera finché non viene inviato un segnale di EOF (Ctrl+D).
 
----
+**Bash: redirezione dell’input:** La redirezione dell'input in Bash permette di inviare il contenuto di un file (o altro input) a un comando, sostituendo la tastiera standard (stdin, descrittore file 0) con l'operatore `<`: `comando [n] < filename`. 
+- Il descrittore *n* è associato a *filename* che viene aperto in lettura
+- Se *n* è omesso, lo *standard input* (*n* = 0) è associato al file, cioè il comando legge l’input dal file
 
-## 2. Redirezione dell'Input ( `<` )
-La redirezione dell'input permette di istruire un comando a leggere i dati da un file invece che dalla tastiera.
-
-**Sintassi:** `[n]< filename` (se `n` non è specificato, il default è **0**).
-
-* **Esempio:** `sort < /etc/hosts`
-    * Collega il descrittore 0 (stdin) al file specificato. Il comando `sort` leggerà il contenuto di `/etc/hosts` come se fosse digitato dall'utente.
-* **Esempio con `cat` :** `cat /percorso/file` . Se non viene specificato un file, `cat` apre il descrittore 0 (la tastiera nel terminale).
+> [!example] 
+> - `sort < /etc/hosts`: Collega il descrittore 0 (stdin) al file specificato. Il comando `sort` leggerà il contenuto di `/etc/hosts` come se fosse digitato dall'utente. 
+> - `cat /percorso-file` . Se non viene specificato un file, `cat` apre il descrittore 0 (la tastiera nel terminale). 
 
 > [!IMPORTANT] Differenza Tecnica
 > C'è una sottile differenza tra l'uso di un comando con `<` e senza:
 > * **Senza `<` :** Il comando gestisce l'apertura del file internamente (spesso usando il descrittore **3**).
 > * **Con `<` :** È la Shell (Bash) ad aprire il file e collegarlo allo **0** prima di lanciare il comando.
 
----
+> [!info] Posso avere anche le modalità seguenti:
+> - **Here Document (`<<`):** permette di passare blocchi di testo come input
+> - **Here String (`<<<`):** passa una singola stringa come input
+>> [!example] `grep "cerca" <<< "$variabile"`
 
-## 3. Redirezione dell'Output ( `>` e `>>` )
-I simboli `>` e `>>` permettono di deviare l'output di un comando (che normalmente andrebbe a video) verso un file.
+**Bash: redirezione dell'Output:** I simboli `>` e `>>` permettono di deviare/salvare l'output di un comando (che normalmente andrebbe a video) verso un file (sovrascrivendolo). `comando [n] > filename`
+- Il descrittore *n* è associato a *filename* che viene aperto in scrittura
+- Se *n* è omesso lo *standard output* (*n* = 1) è associato al file, cioè il comando scrive sul file l’output
+> [!example] `ls -l > lista.txt`: Salva la lista dei file in `lista.txt`, sovrascrivendolo.
 
-### 3.1 Operatore di sovrascrittura ( `>` )
-**Sintassi:** `[n]> filename` (default `n=1` ).
-* **Esempio:** `cat /etc/hosts > file.out`
-    * Il contenuto di `/etc/hosts` viene scritto in `file.out` . Se il file esiste, viene sovrascritto.
-* **Redirezione Errori:** `ls cartella_inesistente 2> errori.log`
-    * Invia solo i messaggi d'errore al file `errori.log` .
+**BASH: redirezione di stderr:** `comando [n]> filename` (default `n=1`), reindirizza solo lo standard error in un file
+> [!example] 
+> - `cat /etc/hosts > file.out`: Il contenuto di `/etc/hosts` viene scritto in `file.out` . Se il file esiste, viene sovrascritto.
+> - **Redirezione Errori:** `ls cartella_inesistente 2> errori.log` Invia solo i messaggi d'errore al file `errori.log` .
 
-### 3.2 Operatore di append ( `>>` )
-**Sintassi:** `[n]>> filename` .
-* **Esempio:** `echo "nuova riga" >> scan.txt`
-    * Il testo viene aggiunto in coda al file senza cancellare il contenuto precedente.
+**BASH: redirezione dell'output in append:** `comando >> file` viene aggiunto l’output in coda al file senza sovrascriverlo
+> [!example] `echo "nuova riga" >> scan.txt`: Il testo viene aggiunto in coda al file senza cancellare il contenuto precedente.
 
----
-
-## 4. Manipolazione dei File Descriptor
-È possibile duplicare o spostare i descrittori di file per operazioni avanzate.
-
-**Sintassi:** `n<&m` oppure `n>&m` (duplica il descrittore `m` nel descrittore `n` ).
-
-* **Esempio:** `3< /percorso/file comando 0<&3`
-    * Viene aperto il file sul descrittore 3, poi il comando (es. `cat` ) viene istruito a leggere dallo 0 che è stato duplicato dal 3 (simile alla system call `dup2` ).
+**BASH: reindirizzare/duplicare uno stream:** È possibile duplicare o spostare i descrittori di file per operazioni avanzate con gli operatori della redirezione.
+- `[n]<&x`: duplica il file descriptor in input x, nel senso che n fa riferimento allo stesso device/file cui si riferisce x. Se n è omesso viene assunto 0 (stdin). x deve essere un descrittore aperto in input altrimenti viene restituito un errore
+- `[n]>&x`: duplica il file descriptor di output x. Se n è omesso viene assunto 1 (stdout). x deve essere un descrittore aperto in output altrimenti viene restituito un errore
+> [!example] `3< /percorso-file comando 0<&3`:  Viene aperto il file sul descrittore 3, poi il comando (es. `cat` ) viene istruito a leggere dallo 0 che è stato duplicato dal 3 (simile alla system call `dup2` ).
 
 > [!NOTE] Nota del Prof
 > La funzione di sistema `read` torna sempre il numero di byte effettivamente letti. Per analizzare queste operazioni a basso livello, si può usare il comando `strace` , che mostra tutte le **system call** eseguite da un comando.
 
----
+**BASH: redirezione simultanea di stdout e stderr:** 
+- Esistono due possibili sintassi: `comando &> filename` oppure  `comando >& filename`. La prima delle due è preferibile e semanticamente equivale a`comando > filename 2>&1`. 
+- Analogamente si realizza l’append:`comando &>> filename`, che semanticamente equivale a `comando >> filename 2>&1`
 
-## 5. Pipeline ( `|` )
-La pipe collega direttamente lo Standard Output di un comando allo Standard Input di quello successivo.
+**Bash:Pipeline:** `cmd1 | cmd2 | ... | cmdN`. Posso scrivere ed eseguire vari comandi separati solo dal carattere `|` (pipe). La pipe collega direttamente lo Standard Output di un comando allo Standard Input di quello successivo. Al posto del carattere `|` posso anche utilizzare solo `|&` con cui stdout e stderr del comando precedente vengono entrambi connessi all’input del comando successivo. Ogni comando è eseguito in un processo differente (*subshell*)
+> [!example] `sort /etc/passwd | less`: Il file `/etc/passwd` viene ordinato da `sort` , l'output prodotto non viene stampato a video ma passato a `less` , che permette di consultarlo pagina per pagina.
 
-**Sintassi:** `cmd1 | cmd2 | ... | cmdn`
+###### Creazione processi: *fork()*
+`include <unistd.h> pid_t fork();`
+È una syscall che non vuole argomenti. Questo metodo ritorna -1 difficilmente (non fallisce mai).
+- Crea un nuovo processo duplicando il chiamante tuttavia alcuni attributi non sono duplicati: PID, memory locks, segnali pendenti, timer, etc,
+- Il nuovo processo  è detto *child*, 
 
-* **Esempio:** `sort /etc/passwd | less`
-    * Il file `/etc/passwd` viene ordinato da `sort` , l'output prodotto non viene stampato a video ma passato a `less` , che permette di consultarlo pagina per pagina.
+> [!info] 
+> - fork() nel *child* torna 0, mentre nel *parent* torna un valore > 0. In questo modo si può differenziare il codice tra i due CONTROLLA QUESTO CHE NON MI è CHIARO
+> - con `fprintf()` posso decidere su quale descrittore andare a stampare 
 
----
+**PID e PPID:** ``
+- getpid() torna il process ID
+- getppid() torna il parent process ID 
 
-## 6. Comandi Utili e Metacaratteri
+Queste due funzioni hanno sempre successo
 
-### 6.1 Bash History (Scorciatoie)
-La shell mantiene una cronologia dei comandi eseguiti:
-* `!!` : Esegue l'ultimo comando inserito.
-* `!n` : Esegue il comando numero *n* della cronologia.
-* `!a` : Esegue l'ultimo comando che inizia con la lettera "a".
-* `!aa` : Esegue l'ultimo comando che inizia con "aa".
+```C
+#include <sys/wait.h>
+#include <stdio.h>
+#include <unistd.h>
+int main()
+{
+pid_t pid;
+/* fork a child process */
+pid = fork();
+if (pid < 0) { /* error occurred */
+fprintf(stderr, "Fork Failed");
+return 1;
+}
+else if (pid == 0) { /* child process */
+printf("Child: my pid = %d, parent pid = %d\n", getpid(), getppid());//execlp("/bin/ls","ls",NULL);
+//sleep(10); //mette il processo in attesa passiva (no consumo risorse) per 10 secondi
+_exit(0); //termina il processo figlio senza eseguire le operazioni di pulizia del processo (come la chiusura dei file //aperti)
+}
+else { /* parent process */
+/* parent will wait for the child to complete */
+wait(NULL);
+printf("Parent: my PID = %d, parent pid = %d. Pid del child %d\n",getpid(),getppid(),pid );
+//sleep(10);
+}
+sleep(10);
+return 0;
+}
+```
 
-### 6.2 Metacaratteri
-I metacaratteri sono simboli con significati speciali per la Shell (es. `*` , `?` , `|` , `<` , `>` ). 
-> [!IMPORTANT]
-> Se si desidera usare questi caratteri come testo normale, devono essere racchiusi tra **apici** (quoting) per evitare che la Bash li interpreti.
+**wait () e waitpid ():** 
 
-### 6.3 Command Line Completion
-L'uso del tasto **Tab** permette il completamento automatico di comandi e percorsi, riducendo errori di battitura e velocizzando il lavoro nel terminale.
+
+
+Watch esegue un programma ogni tot ***==arguardece==***
+
+Quando un parent chiude 
+
+Prima riga = quale interprete deve interpretare i comandi: shabang
+Non ho capito perché non bisogna mettere spazi
+
+```
+LABEL="fork" #non mettere spazi tra le parole, altrimenti da errore
+
+  
+
+gcc -o $LABEL $LABEL.c
+
+RET=$? #ciò che gcc ritorna alla shell ce lo ho in $?
+
+  
+
+if test $RET -eq 0 #-eq significa equal e si usa per i valori numerici
+
+then
+
+  
+
+./$LABEL
+
+  
+
+echo "Pid dello script = $$"
+
+echo "Pid della bash = $BASHPID"
+
+fi #fine if
+
+  
+
+exit $RET
+```

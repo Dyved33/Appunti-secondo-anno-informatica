@@ -576,3 +576,8 @@ Cioè $u.d < v.d <u.f < v.f$ non può accadere ($v$ è sia scoperto che finito d
 - **Cross edge:** ogni altro arco. Può andare in mezzo ai vertici dello stesso depth-first tree o in depth-first tree diversi
 
 In un grafo non orientato, ci possono essere delle ambiguità siccome $(u,v)$ e $(v,u)$ sono lo stesso arco. Si classifica in base al primo tipo sopra descritto corrispondente
+
+**Topological sort:** Un grafo orientato e senza cicli è buono per modellare i processi e le strutture che hanno un ordine particolare:
+- $a > b$ e $b > c$ $\implies$ $a > c$
+- Ma potrebbe avere $a$ e $b$ tali che ne $a > b$ ne $b > c$
+

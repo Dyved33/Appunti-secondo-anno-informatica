@@ -126,7 +126,8 @@ Ci si arresta solo quando i segnaposto non compaiono più. <u>Il concetto chiave
 * **$S$ (Simbolo Iniziale o Assioma):** È il punto di partenza del processo generativo ($S\in N$).
 * **$N$ (Variabili):** Le lettere dell'insieme $N=V\backslash\Sigma$ si dicono variabili (i nostri "segnaposto").
 
-**Convenzioni Notazionali:** Variabili ($N$): Si indicano con lettere maiuscole come A, B, C, X, Y, Z.
+**Convenzioni Notazionali:** 
+- Variabili ($N$): Si indicano con lettere maiuscole come A, B, C, X, Y, Z.
 * Simboli Terminali ($\Sigma$): Si indicano con lettere minuscole come a, b, c.
 * Parole sull'alfabeto $V$: Si indicano con lettere greche come $\alpha, \beta, \gamma$.
 * Parole sui terminali $\Sigma$: Si indicano con $u, v, w$.
@@ -150,7 +151,7 @@ Ci si arresta solo quando i segnaposto non compaiono più. <u>Il concetto chiave
 | **Assioma**                   | $S$                                  | Il simbolo iniziale da cui parte ogni derivazione.                |
 | **Conseguenza Diretta**       | $\alpha \Rightarrow \beta$           | Trasformazione di $\alpha$ in $\beta$ tramite **una** produzione. |
 | **Conseguenza Derivazione**   | $\alpha \Rightarrow^* \beta$         | Trasformazione tramite **zero o più** passaggi.                   |
-| **Lunghezza**                 | $                                    | w                                                                 |
+| **Lunghezza**                 | $\|u\|$                              | Lunghezza finita di una parola                                    |
 | **Linguaggio generato**       | $L(G)$                               | Insieme delle parole terminali derivabili da $S$.                 |
 
 **Il nostro esempio: Formalizzazione della Grammatica:** Applicando le definizioni formali alla lista di nomi generata nei passaggi precedenti, definiamo i parametri esatti della nostra grammatica:
@@ -200,7 +201,7 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
 **Linguaggi di tipo 0:** 
 **Definizione:** le grammatiche a struttura di frase (in base alle loro regolo possono scrivere intere frasi e non solo singoli caratteri) si dicono anche *grammatiche di tipo 0*. I linguaggi generati da grammatiche di tipo 0 si dicono *linguaggi di tipo 0* oppure *linguaggi ricorsivamente numerabili*. Fanno parte di questo livello le grammatiche a struttura di frase. Queste grammatiche hanno la massima espressività possibile: <u>se io ho una procedura effettiva infinita che mi genera una lista di parole, quella lista di parole è un linguaggio di tipo 0.</u>
 > [!example] 
-> ![[Screenshot From 2026-03-05 10-15-42.png|300]]
+> ![[Screenshot From 2026-03-05 10-15-42.png|200]]
 
 **Linguaggi di tipo 1 (grammatiche sensibili al contesto / contestuali):**
 **Definizione:** una grammatica a struttura di frase si dice sensibile al contesto se le produzioni hanno la forma: $\alpha_1X\alpha_2 \to \alpha_1\beta\alpha_2$, con $X \in N$, $\alpha_1, \alpha_2, \beta \in V^*$ , $\beta \neq \epsilon$.  Ciò significa che le produzioni di queste grammatiche hanno il lato sx che contiene una variabile, mentre il lato dx si ottiene sostituendo quella variabile con una parola qualsiasi purché non vuota. Quindi mentre prima potevamo sostituire una parola con una parola, qui possiamo sostituire solo una lettera all'interno di una parola con una parola, che per di più non deve essere vuota (posso sostituire una variabile solo se è contenuta in un  contesto). I linguaggi generati da grammatiche di tipo *q* si dicono *linguaggi di tipo 1*  o anche *sensibili al contesto*.  A differenza dei linguaggi di tipo 0, per questo tipo di linguaggi esistono algoritmi che risolvono i problemi di parsing e ricognizione, ma sono molto costosi.
@@ -209,18 +210,18 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
     <img src="Screenshot From 2026-03-05 10-22-40.png" style="width: 100%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
-  VN / VU è possibile $\iff$ V è seguita da N / U (per questo dipende da contesto)
+  VN / VU è possibile se e solo so V è seguita da N / U (per questo dipende da contesto)
   </div>
 </div>
 > [!example]
-> ![[Screenshot From 2026-03-05 10-22-40.png|300]]
+> ![[Screenshot From 2026-03-05 10-22-40.png|200]]
 
 **Grammatiche monotone (sempre di tipo 1):**
 **Definizione:** una grammatica si dice *monotona* se tutte le produzioni hanno la forma: $\alpha \to \beta$ con $|\alpha| \leq |\beta|$ . Cioè una grammatica in cui tutte le produzioni hanno il lato dx che ha lunghezza maggiore o uguale a quella del lato sx. Quindi non c’è più l’obbligo di sostituire singole variabili, ma c’è la sola regola che il lato dx non può essere più corto di quello sx. Inoltre: 
 - Le grammatiche sensibili al contesto sono monotone, perché in esse si sostituisce (all'interno del contesto) una variabile con qualcosa che non è vuoto, quindi quello che otterremo sarà qualcosa di più lungo o al massimo della stessa lunghezza di quello che già abbiamo.
 - Non tutte le grammatiche monotone sono sensibili al contesto
 - Ogni grammatica monotona è equivalente a una grammatica sensibile al contesto (che genera lo stesso linguaggio)
-> [!example] ![[Screenshot From 2026-03-05 10-26-52.png|300]]
+> [!example] ![[Screenshot From 2026-03-05 10-26-52.png|200]]
 
 **Sintesi:**
 1. I linguaggi di tipo 1 costituiscono una sottoclasse propria dei linguaggi di tipo 0
@@ -229,7 +230,7 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
 
 **Linguaggi di tipo 2 (Grammatiche non contestuali):** Una grammatica a struttura di frase si dice *non contestuale* o di *tipo 2* se le produzioni hanno la forma: $X \to \beta$, con $X \in N$, $\beta \in V^*$. Dunque una grammatica a struttura di frase si dice non contestuale se le produzioni hanno a sx una singola variabile. I linguaggi generati da grammatiche di tipo 2 si dicono *linguaggi di tipo 2* o anche *non contestuali*. Sono non contestuali perché la variabile può essere sostituita indipendentemente dal contesto in cui appare.
 > [!example]
-> ![[Screenshot From 2026-03-05 10-33-04.png|300]]
+> ![[Screenshot From 2026-03-05 10-33-04.png|200]]
 
 I linguaggi di tipo 2 costituiscono una sottoclasse propria dei linguaggi di tipo 1. Per esempio $L = \{ a^{n}b^{n}c^{n} | n > 0\}$ è un linguaggio di tipo 1 ma non è di tipo 2.
 Gli algoritmi di ricognizione e parsing per le grammatiche di tipo 2 si comportano abbastanza bene, alcuni sono moderatamente efficienti . La maggior parte dei linguaggi di programmazione sono generati da una grammatica non contestuale.
@@ -237,7 +238,7 @@ Gli algoritmi di ricognizione e parsing per le grammatiche di tipo 2 si comporta
 **Linguaggi di tipo 3 Grammatiche regolari):** 
 **Definizione:** una grammatica a struttura di frase si dice *regolare* o di *tipo 3* se le produzioni hanno la forma $X \to aY$ oppure $X \to a$, con $X,Y \in N$, $a \in \Sigma$. Dunque Le produzioni hanno una forma ancora più semplice: a sx sempre una variabile, come nelle grammatiche di tipo 2, ma a dx ho un terminale da solo o un terminale seguito da una variabile. I linguaggi generati da grammatiche di tipo 3 si dicono *linguaggi di tipo 3* o anche *regolari*. I linguaggi di tipo 3 costituiscono una sottoclasse dei linguaggi di tipo 2 perché le produzioni a sx hanno una singola variabile. Quindi un linguaggio generato da una grammatica di tipo 3, è anche un linguaggio generato da una grammatica di tipo 2. Anche in questo caso, però, ci sono linguaggi di tipo 2 che non sono linguaggi di tipo 3.
 > [!example]
-> ![[Pasted image 20260305103801.png|300]]
+> ![[Pasted image 20260305103801.png|200]]
 
 > [!info] Gli algoritmi di ricognizione per i linguaggi di tipo 3 esistono e sono estremamente efficienti, sono molto importanti per l’analisi lessicale ovvero l’analisi di token che costituiscono il nostro codice. Questo si ottiene attraverso la Teoria degli Automi a Stati Finiti.
 ###### Automi a stati finiti deterministici
@@ -254,14 +255,14 @@ Terminata la lettura del nastro, in base allo stato raggiunto (se è uno stato a
 - $\delta$: $Q \times \Sigma \to Q$ è la funzione di transizione  = legge con cui i nostri stati cambiano in base ad uno stato precedente e alla lettera scritta sul nastro
 - $q_0 \in Q$ è lo stato iniziale
 - $F \subseteq Q$ è l'insieme degli stati finiti = se al termine della computazione, il dispositivo si trova in uno stato che è compreso nell'insieme degli stati finali, la parola viene accettata
-> [!example] ![[Screenshot From 2026-03-05 21-44-54.png|300]]
+> [!example] ![[Screenshot From 2026-03-05 21-44-54.png|200]]
 
-**Funzione di transizione estesa:** La funzione $\delta$ , affinché non lavori solo con le coppie stato-lettera ma anche con le coppie stato-parola, si estende a $\hat{\delta}$: $Q \times \Sigma^* \to Q$ ponendo:
+**Funzione di transizione estesa:** La funzione $\delta$ , affinché non lavori solo con le coppie *stato-lettera* ma anche con le coppie *stato-parola*, si estende a $\hat{\delta}$: $Q \times \Sigma^* \to Q$ ponendo:
 - $\hat{\delta}(q, \epsilon) = q$, $\forall q \in Q$ 
 - $\hat{\delta}(q,va) = \delta(\hat{\delta}(q,v),a)$, $\forall q \in Q$, $v \in \Sigma^*$, $a \in \Sigma$
 
 Per ogni $q \in Q, u, v \in \Sigma^*$,  si ha $\hat{\delta}(q,uv) = \hat{\delta}(\hat{\delta}(q,u),v)$  
-> [!example] ![[Screenshot From 2026-03-05 21-47-18.png|300]]
+> [!example] ![[Screenshot From 2026-03-05 21-47-18.png|200]]
 
 **Linguaggio accettato:**
 **Definizione:** una parola $w \in \Sigma^*$ è accettata da $A$ se $\hat{\delta}(q_0, w) \in F$. L'insieme delle parole accettate da $A$ si dice linguaggio riconosciuto (o accettato) da $A$ e si denota come $L(A) = \{w \in \Sigma^* | \hat{\delta}(q_0,w) \in F\}$ 
@@ -271,19 +272,19 @@ Per ogni $q \in Q, u, v \in \Sigma^*$,  si ha $\hat{\delta}(q,uv) = \hat{\delta}
 - Le frecce sono le triple ($q, a, \delta (q, a)$) con $q \in Q , a \in \Sigma$ 
 - Lo stato iniziale è denotato da una freccia entrante
 - Gli stati finali sono identificati dal bordo doppio
-> [!example] ![[Screenshot From 2026-03-05 21-53-02.png|300]]
+> [!example] ![[Screenshot From 2026-03-05 21-53-02.png|200]]
 
 - Per ogni stato $q$ e ogni lettera $a$ c'è esattamente una freccia con etichetta $a$ che esce da $q$
 - C'è un cammino da uno stato $p$ a uno stato $q$ con etichetta $w$ $\iff$ $q = \hat{\delta}(p,w)$
 - Le parole accettate dall'automa sono esattamente le etichette dei cammini da $q_0$ a uno stato finale
-> [!example] ![[Screenshot From 2026-03-05 21-54-11.png|300]]
+> [!example] ![[Screenshot From 2026-03-05 21-54-11.png|200]]
 > 
-> - ![[Screenshot From 2026-03-06 10-06-15.png|300]]
-> - ![[Screenshot From 2026-03-06 10-06-27.png|300]]
-> - ![[Screenshot From 2026-03-06 10-06-39.png|300]]
+> - ![[Screenshot From 2026-03-06 10-06-15.png|200]]
+> - ![[Screenshot From 2026-03-06 10-06-27.png|200]]
+> - ![[Screenshot From 2026-03-06 10-06-39.png|200]]
 ###### Automi a stati finiti non deterministici
 Abbiamo detto che un automa è rappresentato da un grafo e che per ogni stato $q$ e ogni lettera $a$ esiste esattamente un arco uscente da $q$ con etichetta $a$. Le parole accettate da $A$ sono le etichette dei cammini dallo stato iniziale a uno stato finale.
-Se da questa definizione togliessi l'aspetto degli archi otterrei: una maggiore libertà nella progettazione ma avrei più difficoltà a verificare se una parola è accettata o meno. La soluzione a ciò è un modello non-deterministico che mi permette di fare una conversione automatica al modello deterministico.  Il modello non-deterministico:
+Se da questa definizione togliessi l'aspetto degli archi (cioè che da ogni vertice può uscire un solo arco) otterrei: una maggiore libertà nella progettazione ma avrei più difficoltà a verificare se una parola è accettata o meno. La soluzione a ciò è un modello non-deterministico che mi permette di fare una conversione automatica al modello deterministico.  Il modello non-deterministico:
 - A ogni passo il dispositivo esegue una fra le transizioni possibili (purché esista)
 - L'input è accettato se almeno una delle possibili computazioni ha successo (termina in uno stato finale)
 - L'input è rifiutato se tutte le possibili computazioni falliscono (terminano in uno stato non finale o prima che il nastro sia esaurito)
@@ -308,14 +309,14 @@ Ci si convince facilmente a questo punto che:
 - La parola *w* è accettata $\iff$ c'è un cammino dallo stato iniziale a uno stato finale con etichetta *w*
 - Questo non esclude però che vi possano essere altri cammini con etichetta *w* che partono dallo stato iniziale e terminano in uno stato non finale
 > [!example] 
-> ![[Screenshot From 2026-03-06 11-03-22.png|300]]
-> ![[Screenshot From 2026-03-06 11-03-35.png|300]]
-  >![[Pasted image 20260306110549.png|300]]
+> ![[Screenshot From 2026-03-06 11-03-22.png|200]]
+> ![[Screenshot From 2026-03-06 11-03-35.png|200]]
+  >![[Pasted image 20260306110549.png|200]]
   > 
 > Questa computazione non è accettata perché non finisce in uno stato finale, ma questo non significa che la parola non sia accettata perché possono esserci altre computazioni (come la verde) che terminano in uno stato finale
 
 Apparentemente questo tipo di progettazione non ci da nessun vantaggio, perché le computazioni da fare diventerebbero troppe. Supponiamo infatti di avere 2 cammini possibili per ogni scelta, e dovessimo leggere una parola di lunghezza 10, questo vorrebbe dire che dovremmo fare 210 computazioni. Proviamo però a ragionare come segue: se mi trovo in q0 e il mio input è $a$, posso andare o in q0 o in q1, ecc… Se mi trovo in q1 e l’input è $b$, andrò in q2,… Quindi ad ogni passo, in base alla colonna che avevo al passo precedente, e alla lettera di input, produco una colonna nuova. Questo procedimento è praticamente uguale a quello di un automa a stati deterministico, perché in base alla configurazione del mio dispositivo e alla lettera di input, determina la configurazione successiva. In questo caso la differenza è che abbiamo delle colonnine di stati.
-> [!info] ![[Pasted image 20260306110859.png|300]]
+> [!example] ![[Pasted image 20260306110859.png|200]]
 
 **Teorema:** Sia $A$ un automa a stati finiti non deterministico, esiste effettivamente un equivalente automa a stati finiti deterministico $A’$ tale che $L (A) = L (A’)$, cioè esiste l’automa deterministico e l’algoritmo per costruire questo automa a partire dall'automa non deterministico. Quindi, prima andremo a disegnare l’automa a stati non deterministico (prima immagine con più percorsi in verde e rosso), cosa che risulta molto più facile rispetto al crearne uno deterministico, e poi sapremo che esiste l’algoritmo in grado di trasformare quel grafo nel grafo di un automa a stati deterministico (seconda immagine con colonne). 
 **Dimostrazione:** Gli stati dell’automa deterministico registreranno l’insieme gli stati raggiungibili dalle computazioni dell’automa non deterministico sul medesimo input $\rightarrow$ Accetto se fra questi ce n’è uno finale
@@ -333,12 +334,13 @@ Apparentemente questo tipo di progettazione non ci da nessun vantaggio, perché 
 - $w \ \text{è accettata da} \ A'$
 $\implies L(A) = L(A')$ 
 
-Come abbiamo accennato precedentemente, però, sarebbero presenti troppi stati da controllare (se $Q=n$, allora $Q’=2^n$). Per fortuna non tutti questi stati sono necessari: possiamo definire uno stato necessario/accessibile come un cammino nel grafo dell’automa che, dallo stato iniziale, mi porta a $q$. Tutti gli altri stati si dicono inaccessibili.
+Come abbiamo accennato precedentemente, però, sarebbero presenti troppi stati da controllare (se $Q=n$, allora $Q’=2^n$). Per fortuna <u>non tutti questi stati sono necessari: possiamo definire uno stato necessario/accessibile come un cammino nel grafo dell’automa che, dallo stato iniziale, mi porta a $q$. Tutti gli altri stati si dicono inaccessibili.</u>
 
 **Definizione:** sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ un automa a stati finiti deterministico. Uno stato $q \in Q$ si dice *accessibile* se $q = \hat{\delta}(q_0,w)$ per qualche $w \in \Sigma^*$.
 Se io elimino tutti questi stati inaccessibili e restringo la funzione di transizione (delta cappello) solo agli stati accessibili, ottengo un automa con un numero di stati più piccolo, equivalente a quello di partenza, che accetta lo stesso linguaggio di quello di partenza.
 > [!example] 
-> ![[Screenshot From 2026-03-06 11-26-56.png|300]]
+> ![[Screenshot From 2026-03-06 11-26-56.png|200]] 
+> 
 > Nell’esempio vediamo come lo stato q1 è stato eliminato perché, iniziando da q0 (stato di partenza), non c’è nessun cammino che mi porta in q1.
 
 **Algoritmo di determinizzazione (per prevedere solo gli stati accessibili):**
@@ -348,16 +350,16 @@ Se io elimino tutti questi stati inaccessibili e restringo la funzione di transi
 4. Se $s$ non è nella lista degli stati allora lo aggiungo alla lista degli stati. 
 5. Se $s$ contiene uno stato finale di $A$, aggiungo $s$ alla lista degli stati finali. 
 > [!example] 
-> ![[Screenshot From 2026-03-06 11-32-20.png|300]]
-> ![[Screenshot From 2026-03-06 11-32-32.png|300]]
-> ![[Screenshot From 2026-03-06 11-33-08.png|300]]
+> ![[Screenshot From 2026-03-06 11-32-20.png|200]]
+> ![[Screenshot From 2026-03-06 11-32-32.png|200]]
+> ![[Screenshot From 2026-03-06 11-33-08.png|200]]
 > 
 > Come possiamo notare, l’automa deterministico ha più stati rispetto a quelli che avevamo trovato noi manualmente nel primo esempio abac (pag.11), successivamente vedremo infatti un altro algoritmo in grado di trovare partendo da un automa non deterministico, un automa deterministico con il minimo numero di stati possibile (automa minimo).
 
 > [!info] Caso difficile:
-> ![[Pasted image 20260308174311.png|300]]
+> ![[Pasted image 20260308174311.png|200]]
 ###### Automa a stati finiti non deterministico con epsilon-transizioni
-Un automa a stati finiti non deterministico con $\epsilon$-transizioni è una quintupla $A = \langle Q,\Sigma, \delta, q_0, F \rangle$, dove $Q,\Sigma, q_0, F$ sono come nell'automa deterministico, mentre la funzione $\delta: Q \times (\Sigma \cup \{\epsilon\}) \rightarrow \wp(Q)$ è la funzione di transizione, che ora non è definita solo sulle coppie stato-lettera, ma anche sulle coppie stato-parolaVuota, e restituisce un insieme di stati (potrebbe essere anche vuoto). Questo modello mi permette di saltare da uno stato all'altro senza leggere il nastro di input (anche per questo modello c'è un algoritmo che mi permette di passare da un automa di questo tipo ad un automa a stati finiti deterministico). Una parola $w \in \Sigma^*$ è *accettata* da $A$ se esistono $n\geq 0$, $a_1,...,a_n \in \Sigma \cup \{\epsilon\}$ e $q_1,..q_n \in Q$ tali che $w = a_1a_2...a_n$, $q_i \in \delta(q_{i-1},a_i)$, $1 \leq i \leq n$, $q_n \in F$ . In altre parole la parola è accettata dall'automa se esiste un cammino dallo stato iniziale a uno finale nel grafo con etichetta $w$, e se $w$ può essere scritta come una sequenza di lettere e parole vuote. L'insieme delle parole accettate da $A$ si dice *linguaggio accettato (o riconosciuto)* da $A$ e si denota con $L(A)$.
+Un automa a stati finiti non deterministico con $\epsilon$-transizioni è una quintupla $A = \langle Q,\Sigma, \delta, q_0, F \rangle$, dove $Q,\Sigma, q_0, F$ sono come nell'automa deterministico, mentre la funzione $\delta: Q \times (\Sigma \cup \{\epsilon\}) \rightarrow \wp(Q)$ è la funzione di transizione, che ora non è definita solo sulle coppie *stato-lettera*, ma anche sulle coppie *stato-parolaVuota*, e restituisce un insieme di stati (potrebbe essere anche vuoto). Questo modello mi permette di saltare da uno stato all'altro senza leggere il nastro di input (anche per questo modello c'è un algoritmo che mi permette di passare da un automa di questo tipo ad un automa a stati finiti deterministico). Una parola $w \in \Sigma^*$ è *accettata* da $A$ se esistono $n\geq 0$, $a_1,...,a_n \in \Sigma \cup \{\epsilon\}$ e $q_1,..q_n \in Q$ tali che $w = a_1a_2...a_n$, $q_i \in \delta(q_{i-1},a_i)$, $1 \leq i \leq n$, $q_n \in F$ . In altre parole la parola è accettata dall'automa se esiste un cammino dallo stato iniziale a uno finale nel grafo con etichetta $w$, e se $w$ può essere scritta come una sequenza di lettere e parole vuote. L'insieme delle parole accettate da $A$ si dice *linguaggio accettato (o riconosciuto)* da $A$ e si denota con $L(A)$.
 
 **Grafo dell'automa:** A ogni automa non deterministico con $\epsilon$-transizioni $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ associamo un grafo diretto con frecce etichettate:
 - I vertici sono gli stati
@@ -369,19 +371,23 @@ Ci si convince facilmente a questo punto che:
 - Una parola *w* può essere etichetta di molti cammini uscenti dallo stato iniziale, o anche nessuno
 - La parola *w* è accettata $\iff$ c'è un cammino dallo stato iniziale a uno stato finale con etichetta *w*
 - Questo non esclude però che vi possano essere altri cammini con etichetta *w* che partono dallo stato iniziale e terminano in uno stato non finale
-> [!example] ![[Screenshot From 2026-03-12 10-16-28.png|300]]
+> [!example] ![[Screenshot From 2026-03-12 10-16-28.png|200]]
 > Nota che tra le colonne ora appare anche $\epsilon$, cosa che prima non era contemplata
 
 **Teorema:** Sia $A$ un automa a stati finiti non deterministico con $\epsilon$-transizioni. Esiste effettivamente un automa a stati finiti deterministico $A'$ tale che $L(A) = L(A')$ (accetta lo stesso linguaggio)
+
 **Dimostrazione:** Gli stati dell’automa deterministico registreranno l’insieme degli stati raggiungibili dalle computazioni dell’automa non deterministico sul medesimo input. Accetto la parola se fra questi ce uno finale
 
-**$\epsilon$-chiusura:** Se però con l’automa a stati finiti non deterministico le nostre computazioni si limitavano alla potenza-numero-di- lettere della parola, ora teoricamente posso avere anche infinite ε-transizioni (la concatenazione di un miliardo di ε, è sempre una parola vuota). Quindi bisogna utilizzare una tecnica per trattare queste ε-transizioni: la ε-chiusura di uno stato. 
+**$\epsilon$-chiusura:** Se però con l’automa a stati finiti non deterministico le nostre computazioni si limitavano alla potenza-numero-di-lettere della parola, ora teoricamente posso avere anche infinite ε-transizioni (la concatenazione di un miliardo di ε, è sempre una parola vuota). Quindi bisogna utilizzare una tecnica per trattare queste ε-transizioni: la ε-chiusura di uno stato. 
+
 **Definizione:** sia $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ un automa a stati finiti non deterministico con $\epsilon$-transizioni, la $\epsilon$-chiusura di uno stato $q \in Q$ è il più piccolo sottoinsieme $C_{\epsilon}(q)$ di $Q$ tale che:
 - $q \in C_{\epsilon}(q)$
 - Per ogni $p \in C_{\epsilon}(q)$, $\delta(p,\epsilon) \subseteq C_{\epsilon}(q)$
 
-La $\epsilon$ -chiusura di un insieme di stati $S \subseteq Q$ è l'unione delle $\epsilon$ chiusure dei singoli stati di $S: C_{\epsilon}(S) = \bigcup_{q \in S} C_{\epsilon}(q)$.  In altre parole la ε-chiusura di uno stato è l’insieme degli stati che da questo si possono raggiungere utilizzando solo ε- transizioni.
-> [!example] ![[Screenshot From 2026-03-12 10-31-58.png|300]]
+La $\epsilon$-chiusura di un insieme di stati $S \subseteq Q$ è l'unione delle $\epsilon$ chiusure dei singoli stati di $S: C_{\epsilon}(S) = \bigcup_{q \in S} C_{\epsilon}(q)$.  In altre parole la ε-chiusura di uno stato è l’insieme degli stati che da questo si possono raggiungere utilizzando solo ε- transizioni (questo insieme deve contenere lo stato stesso).
+> [!example] ![[Screenshot From 2026-03-12 10-31-58.png|200]]
+> - $C_{\epsilon}(q_0)$ deve contenere $q_3$ perché con $\epsilon$-transizioni vado in $q_3$
+> - $C_{\epsilon}(\{q_0,q_1\})$ è la $\epsilon$-chiusura della coppia di stati $q_0,q_1$ che si ottiene facendo l’unione delle chiusure dei due stati
 
 **Calcolo della $\epsilon$-chiusura:**
 - *Input*: un automa non deterministico con $\epsilon$-transizioni $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ e uno stato $q \in Q$
@@ -394,7 +400,7 @@ while p != NIL   // Prendiamo tutti gli elementi che si ottengono partendo dal p
 	 p <- successivo(p) // passo all'elemento successivo
 return R
 ```
-> [!example] ![[Screenshot From 2026-03-12 10-35-50.png|300]]
+> [!example] ![[Screenshot From 2026-03-12 10-35-50.png|200]]
 
 **Costruzione:** Sia $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ l'automa non deterministico con $\epsilon$-transizioni, definisco l'automa deterministico $A' = \langle Q',\Sigma, \delta', q_0, F' \rangle$ come segue:
 - L'insieme degli stati è l'insieme $Q' = \wp(Q)$ costituito dai sottoinsiemi di $Q$ (cioè uno stato di $A'$  è un insieme di stati di $A$ )
@@ -431,41 +437,52 @@ while $j < n$
 	         if $s \cap F \neq \emptyset$ then $F' \leftarrow F \cup \{n\}$
 	         $n \leftarrow n+1$
 	$j \leftarrow j+1$
+	
 > [!example] 
-> ![[Screenshot From 2026-03-12 11-25-10.png|300]]
-> ![[Screenshot From 2026-03-12 11-25-29.png|300]]
-> ![[Screenshot From 2026-03-12 11-29-04.png|300]]
+> - valuto le chiusure di ogni stato
+> ![[Screenshot From 2026-03-12 11-25-10.png|200]]
+> - valuto la funzione $\delta$ su questo automa
+> ![[Screenshot From 2026-03-12 11-25-29.png|200]]
+> 
+> Il grafo dell’esempio sarà quindi:
+> ![[Screenshot From 2026-03-12 11-29-04.png|200]]
 ###### Espressioni regolari
-**Operazioni sui linguaggi:** Le operazioni principali che posso fare con i linguaggi sono: 
-1. unione, intersezione e completamento
-2. Concatenazione: $L_1L_2 = \{uv | u \in L_1, v \in L_2\}$. Esempio:
+La teoria dei linguaggi formali può essere vista come l’arte di rappresentare degli oggetti infiniti con una descrizione finita. Per costruire nuovi linguaggi partendo da linguaggi noti, possiamo applicare delle operazioni: 
+1. unione
+2. intersezione 
+3. completamento
+4. Concatenazione: $L_1L_2 = \{uv | u \in L_1, v \in L_2\}$. Esempio:
 <div style="display: flex; justify-content: center;">
   <img src="Screenshot From 2026-03-14 16-48-13.png" width="400">
 </div>
-3. Potenza: $L^n = LL...L$ (n volte). Esempio:
+5. Potenza: $L^n = LL...L$ (n volte). concatenazione di *n* copie di un linguaggio con se stesso. Esempio:
 <div style="display: flex; justify-content: center;">
   <img src="Screenshot From 2026-03-14 16-50-51.png" width="400">
 </div>
-4. Chiusura di Kleene: $L^* = \bigcup\limits_{n \geq 0}L^n = \{u_1u_2...u_n | n \geq 0, u_1,...,u_n \in L\}$. Esempio:
+6. Chiusura di Kleene: $L^* = \bigcup\limits_{n \geq 0}L^n = \{u_1u_2...u_n | n \geq 0, u_1,...,u_n \in L\}$. Prendo tutte le potenze di un linguaggio e ne faccio l’unione. A differenza delle prime 3 operazioni che se applicate a insiemi finiti mi ridanno insiemi finiti, la chiusura di Kleene mi dà un insieme infinito, a meno che l’insieme di partenza non sia o l’insieme vuoto, o l’insieme che contiene la sola parola vuota. Conterrà quindi tutte le parole che posso ottenere concatenando un numero arbitrario di parole di L. Esempio:
 <div style="display: flex; justify-content: center;">
   <img src="Screenshot From 2026-03-14 16-51-56.png" width="400">
 </div>
 
 **Osservazione:** unione, concatenazione e chiusura di Kleene sono dette operazioni regolari
 
-**Definizione:** sia $\hat\Sigma$ l'alfabeto ottenuto aggiungendo a $\Sigma$ le lettere $\emptyset, +, *, (,), . \implies$ si dicono *espressioni regolari* sull'alfabeto $\Sigma$ le parola sull'alfabeto $\hat\Sigma$ ch e si ottengono applicando un numero finito di volte le regole seguenti:
+Quindi, i linguaggi finiti li sappiamo definire facendo una semplice lista delle parole; con questi linguaggi finiti posso poi fare le operazioni di unione e concatenazione ed ottenere nuovi linguaggi finiti, e con la chiusura di Kleene ottengo nuovi linguaggi infiniti. Con questi linguaggi infiniti posso fare altre operazioni di unione e concatenazione, ottenendo altri linguaggi sempre più complessi. Questo vuol dire che posso scrivere la definizione dei linguaggi infiniti semplicemente indicando le operazioni che eseguo per ottenerli: ovvero le espressioni regolari. <u>Le espressioni sono parole che costruisco partendo dalle lettere dell’alfabeto e dal simbolo ∅, seguendo le regole.</u> Rappresentano quindi una sequenza di operazioni fatte a partire dall’alfabeto iniziale. 
+
+**Definizione:** sia $\hat\Sigma$ l'alfabeto ottenuto aggiungendo a $\Sigma$ le lettere $\emptyset, +, *, (,), . \implies$ si dicono *espressioni regolari* sull'alfabeto $\Sigma$ le parole sull'alfabeto $\hat\Sigma$ che si ottengono applicando un numero finito di volte le regole seguenti regole:
 1. Ogni lettera $a \in \Sigma$ è un'espressione regolare, $\emptyset$ è un'espressione regolare
 2. Se $E$ e $F$ sono espressioni regolari, allora $(E+F), (EF)$ e $E^*$ sono espressioni regolari.
 
-A ogni espressione regolare è associato un linguaggio, detto linguaggio denotato dall'espressione regolare  e definito dalle regole seguenti:
+A ogni espressione regolare è associato un linguaggio, detto *linguaggio denotato dall'espressione regolare* e definito dalle regole seguenti:
 1. Per ogni $a \in \Sigma$, l'espressione regolare $a$ denota il linguaggio $\{a\}$; l'espressione regolare $\emptyset$ denota il linguaggio vuoto
 2. Detti $L_E$ e $L_F$ i linguaggi denotati dalle espressioni regolari $E$ e $F$, i linguaggi denotati dalle espressioni regolari $E+F, (EF), E^*$ sono, rispettivamente, $L_E \cup L_F, L_EL_F, L_{E^*}$
 
-**Definizione:** i linguaggi denotati da espressioni regolari si dicono *linguaggi regolari*
+**Definizione:** i linguaggi denotati da espressioni regolari si dicono *linguaggi regolari* (i linguaggi di tipo 0 sono detti anche linguaggi regolari)
 
 **Osservazione:** la classe dei linguaggi regolari è la più piccola famiglia di linguaggi che:
 - Contiene i linguaggi finiti
 - è chiusa per le operazioni regolari
+
+Perché se due linguaggi sono denotati da espressioni regolari, la loro unione sarà denotata anche lei da un’espressione regolare. Lo stesso per la concatenazione. La chiusura di Kleene sarà denotata dall’espressione regolare del linguaggio con la * vicino
 
 **Osservazione:** possiamo omettere qualche parentesi, rispettando la priorità:
 - Chiusura di Kleene
@@ -482,21 +499,36 @@ A ogni espressione regolare è associato un linguaggio, detto linguaggio denotat
 > - $(a+b+c)^*abac (a+b+c)^*$:
 > - $((a+b+c),)^*(a+b+c) \& (a+b+c)+a+b+c$
 
-**Teorema di Kleene:** un linguaggi è regolare $\iff$ è riconosciuto da un automa a stati finiti. Esiste una procedura effettiva che:
+**Teorema di Kleene:** un linguaggio è regolare $\iff$ è riconosciuto da un automa a stati finiti. 
+
+Esiste una procedura effettiva che:
 - Data un'espressione regolare, produce un automa a stati finiti che accetta il linguaggio denotato da tale espressione (*sintesi*)
 - Dato un'automa a stati finiti, produce un'espressione regolare che denota il linguaggio accettato da tale  automa (*analisi*)
+
+Utilizzeremo esclusivamente automi non deterministici con 𝜀-transizioni con un unico stato finale (non restrittivo)
+
+Un’espressione regolare, dove E e F sono espressioni regolari, può essere:
+
  <div style="display: flex; align-items: flex-start; gap: 20px;">
    <div style="flex: 1;">
-     <img src="Screenshot From 2026-03-13 11-02-19.png" style="width: 100%; border-radius: 8px;">
+     <img src="Screenshot From 2026-03-13 11-05-00.png" style="width: 100%; border-radius: 8px;">
    </div>
   <div style="flex: 1.5;">
-   Utilizzeremo esclusivamente automi non deterministici con 𝜀-transizioni con un unico stato finale (non restrittivo)
+<li>una lettera, un insieme vuoto o una parola vuota (che corrisponde alla chiusura di Kleene dell’insieme vuoto)</li>
+<li>(E+F), cioè l’unione</li>
+<li>(EF), cioè la concatenazione</li>
+<li>E^*, cioè la chiusura di Kleene</li>
    </div>
  </div>
  
-![[Screenshot From 2026-03-13 11-05-00.png|300]] base
-![[Screenshot From 2026-03-13 11-05-15.png|300]] unione
-![[Screenshot From 2026-03-13 11-05-38.png|300]] unione
+ <div style="display: flex; align-items: flex-start; gap: 20px;">
+   <div style="flex: 1;">
+     <img src="Screenshot From 2026-03-13 11-05-38.png" style="width: 100%; border-radius: 8px;">
+   </div>
+  <div style="flex: 1.5;">
+<b>Unione:</b> avendo già costruito gli automi di E e F (gli ovali nella figura), si aggiunge un nuovo stato iniziale e un nuovo stato finale, e due ε transizioni che mi portano dallo stato iniziale nuovo agli stati iniziali vecchi, e due ε transizioni che mi portano dagli stati finali vecchi allo stato finale nuovo. Questo nuovo automa accetta l’unione dei linguaggi, accettati dai due automi E e F. Quindi tutti i cammini riusciti dallo stato iniziale a quello finale, avranno come etichetta (l’ovale) una parola accettata dall’automa E o F.
+   </div>
+ </div>
 
 Siano $A_1 = \langle Q_1,\Sigma,\delta_1, i_1, \{f_1\}\rangle$ e $A_2 = \langle Q_2,\Sigma,\delta_2, i_2, \{f_2\}\rangle$ gli automi che riconoscono i linguaggi denotati dalle espressioni regolari $E$ e $F$. 
 Supponiamo $Q_1 \cap Q_2 = \emptyset$. 
@@ -506,11 +538,16 @@ Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
 - Le frecce del grafo di $A$ sono le frecce dei grafi di $A_1$ e $A_2$ e, inoltre, $(i,\epsilon,i_1), (i,\epsilon,i_2), (f_1,\epsilon, f), (f_2,\epsilon, f)$
 
 Allora $A$ accetta il linguaggio denotato da $(E+F)$
-> [!example] ![[Screenshot From 2026-03-13 11-13-32.png|300]]
+> [!example] ![[Screenshot From 2026-03-13 11-13-32.png|200]]
 
-> [!info] concatenazione
-> ![[Screenshot From 2026-03-13 11-14-50.png|300]]
-> ![[Screenshot From 2026-03-13 11-14-59.png|300]]
+ <div style="display: flex; align-items: flex-start; gap: 20px;">
+   <div style="flex: 1;">
+     <img src="Screenshot From 2026-03-13 11-14-59.png" style="width: 100%; border-radius: 8px;">
+   </div>
+  <div style="flex: 1.5;">
+<b>Concatenazione:</b> si connette con una ε-transizione lo stato finale del primo automa con lo stato iniziale del secondo automa. Lo stato iniziale del nuovo automa sarà quello del primo automa, mentre il suo stato finale sarà quello del secondo automa.
+   </div>
+ </div>
 
 Siano $A_1 = \langle Q_1,\Sigma,\delta_1, i_1, \{f_1\}\rangle$ e $A_2 = \langle Q_2,\Sigma,\delta_2, i_2, \{f_2\}\rangle$ gli automi che riconoscono i linguaggi denotati dalle espressioni regolari $E$ e $F$. 
 Supponiamo $Q_1 \cap Q_2 = \emptyset$. 
@@ -521,12 +558,16 @@ Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
 
 Allora $A$ accetta il linguaggio denotato da $(EF)$
 > [!example] 
-> ![[Screenshot From 2026-03-13 11-17-52.png|300]]
+> ![[Screenshot From 2026-03-13 11-17-52.png|200]]
 
-Chiusura di kleene
-> [!info] 
-> ![[Screenshot From 2026-03-13 11-18-28.png|300]]
-> ![[Screenshot From 2026-03-13 11-18-53.png|300]]
+ <div style="display: flex; align-items: flex-start; gap: 20px;">
+   <div style="flex: 1;">
+     <img src="Screenshot From 2026-03-13 11-18-53.png" style="width: 100%; border-radius: 8px;">
+   </div>
+  <div style="flex: 1.5;">
+<b>Chiusura di Kleene:</b> abbiamo l’automa E che riconosce una certa espressione, e poi il nuovo automa che riconosce la chiusura di Kleene del linguaggio accettato da questo, ovvero che accetti tutte le parole che si ottengono concatenando 0 o più parole accettate dall’automa di partenza. Aggiungo una ε transizione che dallo stato finale mi riporta a quello iniziale: così da accettare tutte le parole che si ottengono concatenando una o più parole dell’automa di partenza. Mi manca però il riconoscimento della parola vuota, quindi aggiungo un nuovo stato iniziale e un nuovo stato finale e poi una ε-transizione dallo stato iniziale nuovo a quello vecchio, una ε-transizione dallo stato finale vecchio a quello nuovo, e una ε-transizione dallo stato iniziale nuovo allo stato finale nuovo.
+   </div>
+ </div>
 
 Siano $A_1 = \langle Q_1,\Sigma,\delta_1, i_1, \{f_1\}\rangle$ l'automa che riconosce il linguaggio denotato dall'espressione regolare $E$. 
 Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
@@ -536,7 +577,7 @@ Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
 
 Allora $A$ accetta il linguaggio denotato da $E^*$
 > [!example]
-> ![[Pasted image 20260313112221.png|300]]
+> ![[Pasted image 20260313112221.png|200]]
 
 **L'algoritmo di sintesi**
 **Proposizione:** data un'espressione regolare $G$, si può effettivamente costruire un'automa a stati finiti che riconosce il linguaggio denotato da $G$:
@@ -545,4 +586,4 @@ Allora $A$ accetta il linguaggio denotato da $E^*$
 3. se $G = (EF)$, allora calcolo gli automi $A_1$ e $A_2$ corrispondenti a $E$ e $F$; costruisco l’automa dell’espressione $(EF)$; 
 4. se $G = E^*$ , allora calcolo l’automa $A_1$ corrispondente a $E$; costruisco l’automa dell’espressione $E^*$;
 
-ESEMPIO
+Esempio completo nelle slide del prof

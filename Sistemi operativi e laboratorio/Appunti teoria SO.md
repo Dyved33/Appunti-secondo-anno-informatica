@@ -423,7 +423,7 @@ Gli stati del thread sono gli stessi dei processi (in esecuzione, pronto e in at
 - *Vantaggi:* possibilità di eseguire thread differenti su diversi processori, il blocco di un thread non blocca il processo e anche le routine del kernel possono essere gestite in multithreading
 - *Svantaggi:* i cambi di modalità (utente/kernel) producono overhead
 
-**Approcci misti:** - Creazione dei thread, schedulazione e sincronizzazione nello spazio utente
+**Approcci misti:** Creazione dei thread, schedulazione e sincronizzazione nello spazio utente
 - Thread modalità utente mappati su thread modalità kernel (in numero minore o uguale)
 - Permette esecuzione parallela dei thread e il blocco di un thread non blocca il processo (come solaris)
 
@@ -448,7 +448,6 @@ Il vantaggio lo hanno:
 - Per ogni task (processo o thread) c'è un *task control block* (TCB) con fork()
 - Fork() crea una nuova task, con una copia del task control block
 - Clone() crea una nuova task, ma nel suo TCB ci sono puntatori ai campi di quello del genitore (in base ai parametri passati a clone()
-
 ###### Mutua esclusione
 I processi possono interferire tra di loro in maniera positiva o negativa, negativa ad esempio quando sottrae risorse ad altri processi, in maniera positiva quando due o più processi interagiscono e ci permettono di realizzare un’attività che sfrutta l’uso di diversi processi in un’unica applicazione. La gestione dei processi può avvenire tramite: 
  - Multiprogrammazione: molti processi con un singolo processore, i processi avanzano attendendo che il processore si liberi; 
