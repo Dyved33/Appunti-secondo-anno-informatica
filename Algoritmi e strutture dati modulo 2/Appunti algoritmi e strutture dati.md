@@ -635,3 +635,30 @@ SCC(G)
 	restituisce i vertici in ogni albero del depth-first tree formato  nel secondo DFS come un SCC separato
 (?)esegue DFS in G (?)
 ```
+
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-18 23-33-34.png" width="300">
+</div>
+
+> [!example] 
+> Eseguo DFS: ![[Pasted image 20260318233449.png|200]]
+> Prendo $G^T$: ![[Screenshot From 2026-03-18 23-35-19.png|200]]
+> DFS in $G^T$: ![[Screenshot From 2026-03-18 23-36-09.png|200]]
+> 
+> Tempo: $\Theta(V+E)$, ogni top level della DFS-Visit scoprirà il suo componente
+
+**Come può funzionare?** considerando i vertici nel secondo DFS in ordine decrescente di tempi di fine (presi dal primo DFS), visitando i vertici del grafo del componente in ordine topologico. Per provare che ciò funziona affrontiamo 2 problemi notazionali saranno:
+1. Discutere di $u.d$ e $u.f$, questi si riferiranno sempre al primo DFS
+2. Estendere la notazione per $d$ e $f$ per i set di vertici $U \subseteq V$:
+	- $d(U) = \min\{u.d:u \in U\}$ (il primo discovery time in U) 
+	- $f(U) = \max\{u.f:u \in U\}$ (l’ultimo finish time in U) 
+
+**Lemma:** sia $C$ e $C'$ due SCC distinti in $G = (V,E)$. Si supponga che ci sia un arco $(u,v) \in E$ tale che $u \in C$ e $v \in C' \implies f(C) > f(C')$
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-18 23-44-41.png" width="200">
+</div>
+Ogni radice scelta dal secondo DFS può raggiungere solo:
+- I vertici nel proprio SCC
+- I vertici nei SCC già visitati nel secondo DFS
+
+Visitando i vertici di $(G^T)^{SCC}$ in ordine inverso rispetto all’ordinamento topologico

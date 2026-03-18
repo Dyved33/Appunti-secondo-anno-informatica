@@ -450,9 +450,9 @@ Il vantaggio lo hanno:
 - Clone() crea una nuova task, ma nel suo TCB ci sono puntatori ai campi di quello del genitore (in base ai parametri passati a clone()
 ###### Mutua esclusione
 I processi possono interferire tra di loro in maniera positiva o negativa, negativa ad esempio quando sottrae risorse ad altri processi, in maniera positiva quando due o più processi interagiscono e ci permettono di realizzare un’attività che sfrutta l’uso di diversi processi in un’unica applicazione. La gestione dei processi può avvenire tramite: 
- - Multiprogrammazione: molti processi con un singolo processore, i processi avanzano attendendo che il processore si liberi; 
- - Multiprocessing: molti processi gestiti da un multiprocessore; 
- - Processi distribuiti: molti processi, gestiti da molti processori distribuiti (*cluster*), con memorie distribuite, rende le cose più complicate da gestire, ma sicuramente più veloci. 
+ - **Multiprogrammazione**: molti processi con un singolo processore, i processi avanzano attendendo che il processore si liberi; 
+ - **Multiprocessing**: molti processi gestiti da un multiprocessore; 
+ - **Processi distribuiti**: molti processi, gestiti da molti processori distribuiti (**cluster**), con memorie distribuite, rende le cose più complicate da gestire, ma sicuramente più veloci. 
  
  I differenti processi hanno bisogno di risorse che tipicamente vengono condivise tra i vari processi, si crea quindi una *concorrenza*:
  - Nelle applicazioni multiple, o nelle applicazioni strutturate (con più processi o threads che devono accedere a delle risorse)
@@ -460,9 +460,10 @@ I processi possono interferire tra di loro in maniera positiva o negativa, negat
  - Nella struttura del sistema operativo.
 
 **Principi della concorrenza**
-- Nell'uniprocessore multiprogrammato, le esecuzioni dei processi si alternano
+- Nell'uniprocessore multiprogrammato, le esecuzioni dei processi si alternano, interrompendo certi processi e riprendendone altri
 - Nel multiprocessore, le esecuzioni dei processi si alternano e si sovrappongono
-- In entrambi i casi, la velocità relativa di esecuzione dei processi non è prevedibile. Dipende da:
+
+Questi processi detti *concorrenti* potrebbero dover accedere ad una risorsa e non si può prevedere quale processo specifico entrerà per primo nella risorsa, poiché la velocità relativa di esecuzione dei processi non è prevedibile. Dipende da:
  - Attività degli altri processi
  - Gestione delle interruzioni
  - Politiche di schedulazione
@@ -470,15 +471,20 @@ I processi possono interferire tra di loro in maniera positiva o negativa, negat
 Vengono generate le seguenti difficoltà:
 - Condivisione di risorse globali
 - Allocazione ottimale delle risorse
-- Debugging 
+- Debugging (può comparire un errore specifico dovuto a una serie di eventi sfortunati che si verifica raramente e sarà difficile da ri-individuare)
 
-È necessario proteggere le variabili condivise e si deve controllare il codice che accede alla variabile.
+> [!info] L’uniprocessore prende il processo P1, esegue chin=getchar(), sospende l’esecuzione di P1 passando a P2, rifà getchar() e cambia chin, stampa chout, poi si ritorna al processo P1, dove chout = chin, ma chin è stato cambiato da P2, perciò verrà stampato nuovamente il secondo carattere. Se un solo processo alla volta potesse eseguire la procedura P2 va in stato di block perchè la risorsa (in questo caso la procedura) non è disponibile poiché usata da un altro processo. La computazione va avanti finché viene ripreso P1, viene conclusa la procedura e si ritorna a P2 con la risorsa ora disponibile, i due caratteri ora sono stampati in ordine. Anche nel multiprocessore ci sarebbe questo problema.
+> ![[Screenshot From 2026-03-18 19-47-13.png|200]]
+> ![[Screenshot From 2026-03-18 19-47-24.png|200]]
+> ![[Screenshot From 2026-03-18 19-48-41.png|200]] > 
 
-**Race condition:** si verifica quando più processi o threads leggono e scrivono dati in modo che il risultato finale dipende dall'ordine di esecuzione delle istruzioni dei processi
+È necessario pertanto proteggere le variabili condivise e si deve controllare il codice che accede alla variabile.
+
+**Race condition:** si verifica quando più processi o threads leggono e scrivono dati in modo che il risultato finale dipenda dall'ordine di esecuzione delle istruzioni dei processi
 
 > [!example] I processi P1 e P2 assegnano rispettivamente 1 e 2 alla variabile condivisa a. Il valore finale sarà quello del ‘secondo arrivato’. I processi P1 e P2 condividono le variabili b e c con valori iniziali b = 1, c = 2. P1 esegue b = b + c, P2 esegue c = b + c. Se arriva primo P1, avremo b = 3; c = 5. Nel caso opposto, b = 4; c = 3
 
-**Compiti del SO:**
+**Compiti del SO:** La concorrenza quindi può portare a problemi, è compito del sistema operativo fare in modo che la concorrenza si svolga nella maniera corretta:
 - Tenere traccia dei processi (PCB)
 - Allocare e deallocare le risorse per i processi attivi (tempo di elaborazione, memoria, files, dispositivi I/O)
 - Proteggere dati e le risorse di ogni processo da interferenze involontarie di altri processi
@@ -489,12 +495,12 @@ Vengono generate le seguenti difficoltà:
 | Processi non consapevoli degli altri                                                                                        | Competizione                       | <ul><li>I risultati di un processo indipendente dall’azione degli altri</li><li>I tempi del processo potrebbero subire variazioni.</li></ul>                             | <ul><li>Mutua esclusione</li><li>Deadlock (risorsa rinnovabile)</li><li>Starvation</li></ul>        |
 | Processi consapevoli indirettamente degli altri (cioè oggetti condivisi)                                                    | Cooperazione tramite condivisione  | <ul><li>I risultati di un processo potrebbero dipendere dale informazioni ottenute da altri</li><li>I tempi del processo potrebbero subire variazioni.</li></ul>         | <ul><li>Mutua esclusione</li><li>Deadlock (risorsa rinnovabile)</li><li>Coerenza dei dati</li></ul> |
 | Processi consapevoli direttamente degli altri (hanno a disposizione<br>strumenti di comunicazione<br>primitivi<br>per loro) | Cooperazione tramite comunicazione | <br><ul><li>I risultati di un processo potrebbero dipendere dale informazioni ottenute da altri</li><li>I tempi del processo potrebbero subire variazioni.</li></ul><br> | <ul><li>Deadlock (risorsa rinnovabile)</li><li>Starvation</li></ul>                                 |
-**Competizione per le risorse:** Processi concorrenti sono in conflitto per l'uso delle risorse. I problemi sono:
-- Mutua esclusione (risorsa critica e sezione critica): MANCA
-- Stallo (*deadlock*): due processi hanno bisogno delle risorse MANCA
-- Starvation: un processo MANCA 
+**Competizione per le risorse:** Cosa cambia quindi quando abbiamo processi indipendenti e processi cooperanti? La relazione più semplice è la competizione. I processi non sanno nulla (unaware) degli altri processi in corso e il risultato di un processo deve quindi essere indipendente dall’azione degli altri. Il tempo di elaborazione, però, potrebbe essere influenzato poiché una risorsa potrebbe non essere disponibile (come prima quando si blocca l’accesso a una procedura già usata) e si deve attendere che si liberi. I problemi di controllo possibili possono essere:
+- Mutua esclusione (risorsa critica e sezione critica): cioè si impedisce l’accesso alla stessa risorsa da parte di più di un processo
+- Stallo (*deadlock*): cioè tanti processi bloccati perché richiedono le stesse risorse già usate da altri processi e quindi al momento inaccessibili
+- Starvation: un processo ha bisogno di una risorsa, ma gli altri processi la prendono prima di lui e esso non riesce mai ad accedere alla risorsa.  
 
-```Mutua esclusione
+```Mutua_esclusione
 /* PROCESS 1 */ 
 void P1 { 
 	while (true) { 
@@ -518,35 +524,24 @@ void P2 {
 }
 ```
 
-**Cooperazione per condivisione:** 
-- Processi che interagiscono senza conoscersi
-- Usano e modificano dati condivisi
-- Devono cooperare per la corretta gestione dei dati condivisi
-- Il meccanismo di controllo deve assicurare l’integrità dei dati
-- Si presentano i problemi di mutua esclusione, stallo, starvation (le operazioni di lettura non richiedono mutua esclusione)
+**Collaborazione tramite la condivisione di risorse:** in questo caso i processi interagiscono senza conoscersi, ma usano e modificano i dati condivisi. Il risultato di un processo può dipendere dalle azioni di un altro e anche qui i tempi di elaborazione ne sono influenzati. I problemi sono sempre gli stessi, la mutua esclusione, poiché il meccanismo di controllo deve assicurare l’integrità dei dati (tranne per le operazioni di lettura), la deadlock e la starvation, ma anche un problema di data coherence. I processi modificano dei dati condivisi e se uno dei processi sbaglia a modificare i dati essi diventano incoerenti e portano a errori anche gli altri processi.
 
 > [!example] 
 > P1: a = a + 1, b = b + 1
 > P2: b = 2 * b, a = 2 * b
 > Posso ottenere situazioni come: a = a + 1, b = 2 * b, b = b + 1, a = 2 * b $\implies$ due risultati diversi
 
-**Condivisione per scambio di messaggi:** un processo che ha bisogno di una risorsa manda un messaggio al gestore di risorse (come client-server) e questo gli “risponde”. Questo scambio di messaggi è gestita dal kernel
-- I processi collaborano per un obiettivo comune
-- La comunicazione permette di sincronizzarsi e coordinarsi
-- Primitive per invio e ricezione di messaggi sono fornite dal kernel o dal linguaggio di programmazione
-- Non richiede mutua esclusione
-- Può determinare stallo o starvation
+**Collaborazione per condivisione (condivisione per scambio di messaggi):** in questo caso i processi collaborano per un obiettivo comune e la comunicazione permette di sincronizzarsi e coordinarsi. Ci sono delle primitive che consentono a un processo di mandare informazioni a un altro processo o di riceverle fornite dal kernel o dal linguaggio di programmazione. In questo caso il risultato è sicuramente influenzato da ciò che il processo riceve, così come il tempo di elaborazione che è limitato a quando il processo riceve l’informazione necessaria. In questo caso non c’è problema di mutua esclusione poiché i processi non condividono dati, si hanno però sempre problemi di deadlock e starvation.
 
-**Requisiti della mutua esclusione:**
+**Requisiti della mutua esclusione:** Quindi per la mutua esclusione dobbiamo far sì che: 
 - Un solo processo alla volta è ammesso alla sezione critica per ciascuna risorsa condivisa
-- Un processo ch si ferma fuori dalla sua sezione critica non deve interferire con gli altri processi
+- Un processo che si ferma fuori dalla sua sezione critica non deve interferire con gli altri processi
 - Si deve evitare deadlock e stravation
 - Se nessun processo è nella  sezione critica deve essere concesso a ogni processo di entrare senza ritardo
 - Nessuna ipotesi sulla velocità relativa dei processi e sul numero dei processori
 - Un processo resa nella sezione critica per un tempo finito
 
-**Mutua esclusione con supporto harware:** posso disabilitare le interruzioni:
-- Su uniprocessore assicura che la sezione critica sia portata a termine senza istruzioni
+**Mutua esclusione con supporto harware:** Per assicurare che un processore non possa uscire da una sezione critica di un processo su uniprocessore si possono disabilitare le interruzioni tramite delle primitive definite dal kernel, ciò però rallenta il sistema ed è inapplicabile per multiprocessori:
 ```
 while(true){
 	//disabilita interruzioni
@@ -555,17 +550,12 @@ while(true){
 	//resto del programma
 }
 ```
-- Primitive definite dal nucleo
-- Rallenta il sistema
-- Inapplicabile con multiprocessore
-
-> [!info] se disabilito interruzioni si possono creare problemi MANCA
 
 È anche possibile utilizzare una serie di istruzioni speciali:
 - Un solo processore alla volta può accedere a una locazione di memoria 
 - Speciali istruzioni macchina eseguono due operazioni su un dato in maniera atomica
 
-Ci sono degli hardware con delle istruzioni come *compare and swap* in un’unica operazione
+Ci sono degli hardware con delle istruzioni come *compare and swap* in un’unica operazione:
 ```
 in compare_and_swap(int *word, int testval, int newval){
 	int oldval;
@@ -573,76 +563,117 @@ in compare_and_swap(int *word, int testval, int newval){
 	if (oldval == testval) *word = newval;
 	return oldval
 }
-```
 
+<<<<<<< HEAD
 
 Program mutual exclusio
+=======
+>>>>>>> f44791e2cab6e26ffe727e063453d12aa29cd4ad
 /* program mutualexclusion */ 
 const int n = /* number of processes */; 
 int bolt; 
 void P( int i) { 
 	while (true) { 
-		while (compare_and_swap(bolt, 0, 1) == 1) /* do nothing */; 
-- Modifica di file (text editor)
-- Supporto alla programmazione (compilatore, debugger, linker,...)
-- Caricamento ed esecuzione dei programmi
-- Comunicazioni
-- Servizi in background
-- Programmi applicativi
-Progettazione di un sistema operativo
-Non è semplice dato che devo tenere conto di che hardware si dispone e di che tipo di richiesta abbiamo da parte dell'utilizzatore. Quindi le specifiche da rispettare sono:
-- Decidere hardware
-- Decidere che sistema usare
-- Obiettivi dell'utilizzatore
-- Obiettivi del sistema (es obiettivo dell'utilizzatore = far terminare i programmi nel minor tempo possibile, obiettivo del sistema = non lasciare il processore inutilizzato)
-- Separazione delle politiche (se ho un server servo il primo client e non l'ultimo che ha fatto una richiesta) dai meccanismi (es come si accede al disco)
+		while (compare_and_swap(bolt, 0, 1) == 1) 
+			/* do nothing */;
+		/* critical section */; 
+		bolt = 0; 
+		/* remainder */; 
+	}
+} 
 
-I moderni sistemi operativi sono scritti in linguaggi come C e C++ (non più Assembler) perché ciò mi garantisce:
-- Facilità di sviluppo e manutenzione
-- Compattezza
-- Portabilità
+void main() { 
+	bolt = 0; 
+	parbegin (P(1), P(2), ... ,P(n)); 
+}
+```
+Un altro tipo di istruzione speciale è la *exchange*, una procedura che scambia il valore di 2 variabili.
+```
+/* program mutualexclusion */ 
+int const n = /* number of processes */; 
+int bolt; 
+void P( int i) { 
+	int keyi = 1; 
+	while (true) { 
+		do exchange (&keyi, &bolt) 
+		while (keyi != 0); 
+			/* critical section */; 
+			bolt = 0; 
+			/* remainder */; 
+	}
+} 
 
-Inoltre sono linguaggi più efficienti di linguaggi interpretati come Python (computer non sono fatti per mandare avanti il sistema operativo, ma per far partire programmi di sistema). Alcune sezioni critiche che richiedono altissima efficienza sono scritte in Assembler.
-Struttura del sistema operativo
-Sistemi monolitici (Non sono divisi in moduli): MS-DOS o UNIX tradizionale sono sistemi monolitici complessi e scritti tramite molte funzioni. Il kernel di UNIX tradizionale ha un'interfaccia verso l'hardware per la gestione delle chiamate di sistema (questo all'interno del kernel che gestisce segnali I/O, file system, driver, dispositivi di archiviazione e scheduling)
+void main() { 
+	bolt = 0; 
+	parbegin (P(1), P(2), ..., P(n)); 
+}
+```
 
-Sistemi stratificati: Ogni layer (strato) è l'implementazione di un oggetto astratto fatto di dati e operazioni per manipolarli. Ogni strato nasconde i dettagli dell'implementazione agli strati superiori.
-- Vantaggi = semplicità di scrittura, aggiornamento, debugging e portabilità
-- Svantaggi = difficoltà nel definire gli strati e overhead
+*Vantaggi:* 
+- Applicabile a qualsiasi numero di processi su uniprocessore o multiprocessore 
+- Semplicità 
+- Può supportare multiple sezioni critiche
 
-Microkernel: Sono sistemi monolitici che facciano il minimo necessario. Il resto è trasferito a livello-utente (server). Le richieste di servizi avvengano tramite scambio di messaggi tra client e server.
-- Vantaggi = semplicità di aggiornamento e debugging, portabilità e affidabilità
-- Svantaggi = overhead (il kernel affida più compiti ai programmi e per questo c'è bisogno di un maggiore tempo di esecuzione)
+*Svantaggi:*
+- Attesa attiva (*busy-waiting*) 
+- Possibilità di stallo 
+- Possibilità di starvation
+###### Algoritmo di Dekker
+L’obiettivo è quello di avere un protocollo che permetta a due processi di assicurare la mutua esclusione:
+- Senza supporto hardware (salvo impossibilità di accesso simultaneo al medesimo indirizzo di memoria)
+- Senza stallo
+- Senza starvation
 
+1. Primo tentativo: Apparentemente questo primo approccio funziona, c’è però un problema, supponiamo che il processo 0 esegua la sua sezione critica e che poi setti turn = 1, ma poi process 0 va in attesa, magari si vuole eseguire la sezione critica solo una volta, ma così le esecuzioni dei due processi si alternano.
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-18 22-22-37.png" width="200">
+</div>
+2. Secondo tentativo: Si usano due flag che dovrebbero segnalare che la sezione critica sta venendo eseguita da uno dei due processi, questo non funziona poiché se i due processi arrivano quasi contemporaneamente con entrambe le flag false, entrano entrambi nella sezione critica poiché pensano che essa sia libera. 
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-18 23-28-57.png" width="200">
+</div>
+3. Terzo tentativo: Scambiamo l’ordine delle operazioni di scrittura e lettura, prima occupo, poi aspetto che l’altra sia liberata, ma anche qui se i due processi partissero quasi insieme le due variabili sarebbero inizializzate entrambe a true, così entrambi i loop while sarebbero infiniti e i due processi non avanzeranno mai, è un esempio palese di stallo.
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-18 23-29-45.png" width="200">
+</div>
+4. Quarto tentativo: Se un processo rileva che un altro processo ha flag true blocca se stesso, poi fa un delay che permette all’altro processo di avanzare e di entrare nella sezione critica per poi impostare flag a false. 
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-18 23-30-23.png" width="200">
+</div>
 
-
-Non c'è differenza dal punto di vista del sistema tra questi programmi, ma ogni volta che un programma applicativo deve accedere a un file o un dispositivo invierà una richiesta tramite messaggio che sarà svolta un un altro programma che è il gestore del dispositivo e non dal kernel, dato che questo contiene solo le funzioni fondamentali (altre funzionalità sono in moduli, ogni modulo nasconde i dettagli di implementazione agli altri moduli)
-
-
-
-Debugging: Per il fatto che i SO sono sistemi complessi, ci possono essere degli errori e per questo nella loro progettazione e gestione c'è il problema del debugging. Gli errori, però, si possono presentare in situazioni particolari (difficili da individuare), considerando che il SO deve fare il suo compito nel minor tempo possibile. Quindi valutare le prestazioni di un SO (e per monitorare il comportamento del sistema) richiede una lunga sperimentazione tramite anche la generazione di file di log che registrano il comportamento del sistema e core dump
-
-Generazione sistema operativo: Scritto il codice sorgente del sistema  va compilato e configurato per il sistema su sui verrà eseguito  poi si istalla il sistema  avvia il computer e il nuovo sistema operativo. La configurazione può realizzarsi modificando il codice prima della compilazione in base al sistema su cui lo vado a installare, oppure tramite la selezione di tabelle e moduli precompilati da collegare al momento dell'installazione, oppure tramite un sistema guidato da tabelle di dati che guidano il sistema in base all'hardware.
-Processi 
-Definizione:. Gli elementi del processo sono:
-- Program counter (indirizzo istruzione da eseguire) e contenuto dei registri (immagine del processore)
-- Stack che contiene variabili locali, indirizzi di return o parametri delle funzioni
-- Sezione testo (programma)
-- Sezione dati che contiene i valori delle variabili locali
-- Heap per l'allocazione dinamica
-
-
-
-
-Stati del processo:
-- Nuovo = in fase di creazione
-- In esecuzione = il processore sta eseguendo le istruzioni
-- In attesa = il processo attende un evento
-- Pronto = il processo attende la disponibilità di un processore
-- Terminato = il processo ha terminato l'esecuzione
-
-
-
-PCB (descrittore di processo): A ogni processo è associata una struttura dati detta descrittore di processo o PCB (process control block) contenente tutte le informazioni relative al processo:
-- Stato del processo
-- Program counter
+La soluzione corretta:
+```Algoritmo_di_Dekker
+boolean flag [2]; 
+int turn; 
+void P0() { 
+	while (true) {
+		flag [0] = true; 
+		while (flag [1]) { 
+			if (turn == 1) { 
+				flag [0] = false; 
+				while (turn == 1) /* do nothing */; 
+				flag [0] = true; 
+			} 
+		} 
+		/* critical section */; 
+		turn = 1; 
+		flag [0] = false; 
+		/* remainder */; 
+	} 
+}
+```
+Con questa soluzione però paghiamo l’attesa attiva che è un costo non indifferente. L’algoritmo di Dekker si può scrivere in maniera più elegante con l’algoritmo di Peterson: 
+```Algoritmo_di_Peterson
+boolean flag [2]; 
+int turn; 
+void P0() { 
+	while (true) { 
+		flag [0] = true; 
+		turn = 1; 
+		while (flag [1] && turn == 1) /* do nothing */;
+		/* critical section */; 
+		flag [0] = false; 
+		/* remainder */; 
+	} 
+}
+```
