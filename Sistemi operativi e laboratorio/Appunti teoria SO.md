@@ -476,7 +476,7 @@ Vengono generate le seguenti difficoltà:
 
 **Race condition:** si verifica quando più processi o threads leggono e scrivono dati in modo che il risultato finale dipende dall'ordine di esecuzione delle istruzioni dei processi
 
-ESEMPIO
+> [!example] I processi P1 e P2 assegnano rispettivamente 1 e 2 alla variabile condivisa a. Il valore finale sarà quello del ‘secondo arrivato’. I processi P1 e P2 condividono le variabili b e c con valori iniziali b = 1, c = 2. P1 esegue b = b + c, P2 esegue c = b + c. Se arriva primo P1, avremo b = 3; c = 5. Nel caso opposto, b = 4; c = 3
 
 **Compiti del SO:**
 - Tenere traccia dei processi (PCB)
@@ -484,25 +484,37 @@ ESEMPIO
 - Proteggere dati e le risorse di ogni processo da interferenze involontarie di altri processi
 - Il risultato di ogni processo deve essere indipendente dalla susa velocità relativa a quella dei processi concorrenti (salvo l'interazione voluta tra questi processi)
 
-| Grado di consapevolezza              | Relazione    | Influenza che un processo ha su un altro                          | Potenziali problemi di controllo |
-| ------------------------------------ | ------------ | ----------------------------------------------------------------- | -------------------------------- |
-| Processo non consapevole degli altri | Competizione | - I risultati di un processo indipendente dall’azione degli altri |                                  |
-|                                      |              |                                                                   |                                  |
-|                                      |              |                                                                   |                                  |
+| Grado di consapevolezza                                                                                                     | Relazione                          | Influenza che un processo ha su un altro                                                                                                                                 | Potenziali problemi di controllo                                                                    |
+| --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| Processi non consapevoli degli altri                                                                                        | Competizione                       | <ul><li>I risultati di un processo indipendente dall’azione degli altri</li><li>I tempi del processo potrebbero subire variazioni.</li></ul>                             | <ul><li>Mutua esclusione</li><li>Deadlock (risorsa rinnovabile)</li><li>Starvation</li></ul>        |
+| Processi consapevoli indirettamente degli altri (cioè oggetti condivisi)                                                    | Cooperazione tramite condivisione  | <ul><li>I risultati di un processo potrebbero dipendere dale informazioni ottenute da altri</li><li>I tempi del processo potrebbero subire variazioni.</li></ul>         | <ul><li>Mutua esclusione</li><li>Deadlock (risorsa rinnovabile)</li><li>Coerenza dei dati</li></ul> |
+| Processi consapevoli direttamente degli altri (hanno a disposizione<br>strumenti di comunicazione<br>primitivi<br>per loro) | Cooperazione tramite comunicazione | <br><ul><li>I risultati di un processo potrebbero dipendere dale informazioni ottenute da altri</li><li>I tempi del processo potrebbero subire variazioni.</li></ul><br> | <ul><li>Deadlock (risorsa rinnovabile)</li><li>Starvation</li></ul>                                 |
 **Competizione per le risorse:** Processi concorrenti sono in conflitto per l'uso delle risorse. I problemi sono:
 - Mutua esclusione (risorsa critica e sezione critica): MANCA
 - Stallo (*deadlock*): due processi hanno bisogno delle risorse MANCA
 - Starvation: un processo MANCA 
 
-```
-void P1{
-	while(true){
-		//preceding code
-		entercritical(Ra)
-		//critical section 
-		exitcritical(Ra) 
-		//following code
+```Mutua esclusione
+/* PROCESS 1 */ 
+void P1 { 
+	while (true) { 
+		/* preceding code */; 
+		entercritical (Ra); 
+		/*critical section */; 
+		exitcritical (Ra);
+		/* following code */;
 	}
+}
+
+/* PROCESS 2 */ 
+void P2 { 
+	while (true) { 
+		/* preceding code */; 
+		entercritical (Ra);  
+		/*critical section */; 
+		exitcritical (Ra); 
+		/* following code */; 
+	} 
 }
 ```
 
@@ -536,11 +548,12 @@ void P1{
 **Mutua esclusione con supporto harware:** posso disabilitare le interruzioni:
 - Su uniprocessore assicura che la sezione critica sia portata a termine senza istruzioni
 ```
-while(true)
+while(true){
 	//disabilita interruzioni
 	//sezione critica
 	//abilita interruzioni
 	//resto del programma
+}
 ```
 - Primitive definite dal nucleo
 - Rallenta il sistema
@@ -562,46 +575,74 @@ in compare_and_swap(int *word, int testval, int newval){
 }
 ```
 
-CAPISCI SE DEVI FARE L’ANALISI DEI PEZZI DI CODICE
-
-*Vantaggi:* 
-- Applicabile a qualsiasi numero di processi su uniporcessore o multiprocessore
-- Semplicità
-- Può supportare multiple sezioni critiche
-
-*Svantaggi:* 
-- attesa attiva (*busy-waiting*)
-- Possibilità di stallo
-- Possibilità di starvation
-
-**Algoritmo di Dekker:** l’obiettivo è quello di trovare un protocollo a due processi di assicurare la mutua esclusione:
-- Senza supporto hardware MANCA
-- MANCA
-- MANCA
-
-CAPISCI SE VA MESSO QUALCOSA QUI
-
 ```
-boolean flag [2]
-int turn;
-void P0{
-	while(true){
-		flag[0]
-		MANCA
-	}
-}
-```
+Program mutual exclusio
+/* program mutualexclusion */ 
+const int n = /* number of processes */; 
+int bolt; 
+void P( int i) { 
+	while (true) { 
+		while (compare_and_swap(bolt, 0, 1) == 1) /* do nothing */; 
+- Modifica di file (text editor)
+- Supporto alla programmazione (compilatore, debugger, linker,...)
+- Caricamento ed esecuzione dei programmi
+- Comunicazioni
+- Servizi in background
+- Programmi applicativi
+Progettazione di un sistema operativo
+Non è semplice dato che devo tenere conto di che hardware si dispone e di che tipo di richiesta abbiamo da parte dell'utilizzatore. Quindi le specifiche da rispettare sono:
+- Decidere hardware
+- Decidere che sistema usare
+- Obiettivi dell'utilizzatore
+- Obiettivi del sistema (es obiettivo dell'utilizzatore = far terminare i programmi nel minor tempo possibile, obiettivo del sistema = non lasciare il processore inutilizzato)
+- Separazione delle politiche (se ho un server servo il primo client e non l'ultimo che ha fatto una richiesta) dai meccanismi (es come si accede al disco)
 
-```Algoritmo di Peterson
-boolean flag [2]
-int turn;
-void P0{
-	while(true){
-		flag[0] = true;
-		turn = 1;
-		while(flag[1] && turn == 1) //non fa nulla
-	}
-}
-```
+I moderni sistemi operativi sono scritti in linguaggi come C e C++ (non più Assembler) perché ciò mi garantisce:
+- Facilità di sviluppo e manutenzione
+- Compattezza
+- Portabilità
 
-MANCA
+Inoltre sono linguaggi più efficienti di linguaggi interpretati come Python (computer non sono fatti per mandare avanti il sistema operativo, ma per far partire programmi di sistema). Alcune sezioni critiche che richiedono altissima efficienza sono scritte in Assembler.
+Struttura del sistema operativo
+Sistemi monolitici (Non sono divisi in moduli): MS-DOS o UNIX tradizionale sono sistemi monolitici complessi e scritti tramite molte funzioni. Il kernel di UNIX tradizionale ha un'interfaccia verso l'hardware per la gestione delle chiamate di sistema (questo all'interno del kernel che gestisce segnali I/O, file system, driver, dispositivi di archiviazione e scheduling)
+
+Sistemi stratificati: Ogni layer (strato) è l'implementazione di un oggetto astratto fatto di dati e operazioni per manipolarli. Ogni strato nasconde i dettagli dell'implementazione agli strati superiori.
+- Vantaggi = semplicità di scrittura, aggiornamento, debugging e portabilità
+- Svantaggi = difficoltà nel definire gli strati e overhead
+
+Microkernel: Sono sistemi monolitici che facciano il minimo necessario. Il resto è trasferito a livello-utente (server). Le richieste di servizi avvengano tramite scambio di messaggi tra client e server.
+- Vantaggi = semplicità di aggiornamento e debugging, portabilità e affidabilità
+- Svantaggi = overhead (il kernel affida più compiti ai programmi e per questo c'è bisogno di un maggiore tempo di esecuzione)
+
+
+
+Non c'è differenza dal punto di vista del sistema tra questi programmi, ma ogni volta che un programma applicativo deve accedere a un file o un dispositivo invierà una richiesta tramite messaggio che sarà svolta un un altro programma che è il gestore del dispositivo e non dal kernel, dato che questo contiene solo le funzioni fondamentali (altre funzionalità sono in moduli, ogni modulo nasconde i dettagli di implementazione agli altri moduli)
+
+
+
+Debugging: Per il fatto che i SO sono sistemi complessi, ci possono essere degli errori e per questo nella loro progettazione e gestione c'è il problema del debugging. Gli errori, però, si possono presentare in situazioni particolari (difficili da individuare), considerando che il SO deve fare il suo compito nel minor tempo possibile. Quindi valutare le prestazioni di un SO (e per monitorare il comportamento del sistema) richiede una lunga sperimentazione tramite anche la generazione di file di log che registrano il comportamento del sistema e core dump
+
+Generazione sistema operativo: Scritto il codice sorgente del sistema  va compilato e configurato per il sistema su sui verrà eseguito  poi si istalla il sistema  avvia il computer e il nuovo sistema operativo. La configurazione può realizzarsi modificando il codice prima della compilazione in base al sistema su cui lo vado a installare, oppure tramite la selezione di tabelle e moduli precompilati da collegare al momento dell'installazione, oppure tramite un sistema guidato da tabelle di dati che guidano il sistema in base all'hardware.
+Processi 
+Definizione:. Gli elementi del processo sono:
+- Program counter (indirizzo istruzione da eseguire) e contenuto dei registri (immagine del processore)
+- Stack che contiene variabili locali, indirizzi di return o parametri delle funzioni
+- Sezione testo (programma)
+- Sezione dati che contiene i valori delle variabili locali
+- Heap per l'allocazione dinamica
+
+
+
+
+Stati del processo:
+- Nuovo = in fase di creazione
+- In esecuzione = il processore sta eseguendo le istruzioni
+- In attesa = il processo attende un evento
+- Pronto = il processo attende la disponibilità di un processore
+- Terminato = il processo ha terminato l'esecuzione
+
+
+
+PCB (descrittore di processo): A ogni processo è associata una struttura dati detta descrittore di processo o PCB (process control block) contenente tutte le informazioni relative al processo:
+- Stato del processo
+- Program counter
