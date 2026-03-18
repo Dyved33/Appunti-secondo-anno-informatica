@@ -837,3 +837,248 @@ L’idea è avere un livello di dettaglio sufficiente per:
 - preparare i diagrammi successivi (sequence, activity... ).
 
 > [!example] ![[Screenshot From 2026-03-12 15-40-44.png|200]]
+
+**Da use case a domain model:** Nella lezione precedente abbiamo visto: 
+- attori esterni al sistema; 
+- casi d’uso come obiettivi significativi; 
+- relazioni include/extend e generalizzazioni. 
+
+Il diagramma dei casi d’uso risponde alla domanda: «Chi usa il sistema e per quali obiettivi?» Oggi cambiamo prospettiva: non più “chi usa il sistema”, ma “che cosa esiste nel mondo del sistema”.
+
+Requisiti, user stories e casi d’uso contengono storie: 
+- «Lo studente si iscrive a un appello.» 
+- «Il docente registra un voto.» 
+- «La segreteria crea un appello.» 
+
+Da queste storie possiamo estrarre le entità concettuali del dominio: Studente, Docente, Corso, Appello, Iscrizione, Voto…
+
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-18 14-54-16.png" width="300">
+</div>
+
+**Domain model:** È una rappresentazione concettuale del dominio del problema. Mostra: 
+- i concetti rilevanti (entità, oggetti, ruoli); 
+- le relazioni tra questi concetti; 
+- alcuni attributi essenziali che li caratterizzano. 
+
+È una fotografia del mondo a cui il sistema si riferisce: 
+- non contiene dettagli tecnici; 
+- non parla di database, API, interfacce grafiche; 
+- non contiene metodi o algoritmi.
+
+Non è:
+1. un diagramma delle classi implementativo: 
+	- non rappresenta direttamente il codice Java/C++/Python; 
+	- non specifica metodi, eccezioni, pattern di design. 
+2. il modello del database: 
+	- non specifica chiavi primarie, indici, tabelle tecniche; 
+	- non è ottimizzato per performance o storage. 
+3. un diagramma dei casi d’uso: 
+	- non descrive scenari o obiettivi, 
+	- ma gli oggetti coinvolti in quegli scenari.
+
+Aiuta a capire il problema prima di pensare alla soluzione. È un linguaggio condiviso tra: 
+- sviluppatori, 
+- analisti, 
+- domain expert, 
+- stakeholder non tecnici. 
+
+È un termometro della comprensione del dominio: 
+- se il modello è confuso, probabilmente non abbiamo capito bene il problema; 
+- se è chiaro e coerente, il passaggio alla progettazione sarà più semplice.
+
+Punto di partenza: descrizioni testuali, requisiti, casi d’uso:
+- evidenziare i sostantivi significativi (candidati concetti); 
+- evidenziare i verbi principali (candidati per associazioni o responsabilità); 
+- discutere con gli stakeholder cosa è davvero importante. 
+
+Domanda guida: «Se togliamo questo concetto, capiamo ancora il dominio?»
+
+Un concetto è un buon candidato se: 
+- è nominato spesso nei requisiti; 
+- ha regole di business proprie; 
+- gli stakeholder lo riconoscono come entità reale del loro mondo; 
+- può cambiare nel tempo e queste modifiche sono importanti. 
+
+**Attributi essenziali:** Gli attributi descrivono informazioni importanti su un concetto. Dovrebbero essere: 
+- pochi (minimalismo); 
+- stabili nel tempo; 
+- non derivabili facilmente da altri; 
+- rilevanti per le regole di business. 
+
+> [!example] Esempio:
+> - Studente: matricola, nome, cognome; 
+> - meno adatti come attributi nel Domain Model: colore preferito, ultima data di login.
+
+**Errori frequenti degli attributi:**
+- Confondere il Domain Model con il database: inserire id tecnici, timestamp di audit, campi di log…
+- Aggiungere attributi troppo tecnici: flag di caching, token di sessione, dettagli di autenticazione. 
+- Inserire attributi derivabili: numero di esami superati (derivabile dalle iscrizioni e dai voti) o media voti (derivabile dai singoli voti).
+
+**Associazioni tra concetti:** Le associazioni rappresentano legami concettuali tra elementi del modello. Rispondono alla domanda: «Questi due concetti hanno una relazione significativa nel dominio?» 
+
+> [!example] Esempi: 
+> - uno Studente è iscritto a un Appello; 
+> - un Appello appartiene a un Corso; 
+> - un Docente tiene un Corso.
+
+**Molteplicità:** La molteplicità esprime quante istanze di un concetto possono essere collegate a un altro. Lettura rapida: 
+- 1: esattamente una; 
+- 0..1: opzionale; 
+- 0..*: zero o molte; 
+- 1..*: almeno una
+
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-18 15-05-46.png" width="200">
+</div>
+
+Nelle associazioni, spesso ci interessa la molteplicità: 
+- uno studente può avere molte iscrizioni; 
+- un appello riguarda un solo corso; 
+- un corso può avere più appelli. 
+
+Le molteplicità non sono numerini casuali: 
+- esprimono vincoli reali del dominio; 
+- aiutano a scoprire regole di business nascoste.
+
+> [!tip] A partire dalle lezioni precedenti, possiamo individuare alcuni concetti chiave: 
+> - Studente 
+> - Docente 
+> - Corso 
+> - Appello 
+> - Iscrizione 
+> - (eventualmente) Voto, Carriera, Piano di studi…
+> 
+> Ogni concetto cattura un nucleo di significato del dominio universitario.
+
+> [!example] Rappresentazione concettuale del dominio di UniManager: 
+> - concetti principali, attributi essenziali, relazioni e molteplicità; 
+> - nessun dettaglio di implementazione (tipi, metodi, framework…)
+> ![[Screenshot From 2026-03-18 15-09-32.png|200]]
+
+**Domain model come strumento di verifica:** Possiamo usare il Domain Model per fare domande al domain expert: 
+- «Esistono appelli senza corso?»; 
+- «Uno studente può iscriversi più volte allo stesso appello?»; 
+- «Può esistere un corso senza docente associato?». 
+
+Ogni risposta può portare a correggere o raffinare il modello:
+- aggiungere o rimuovere un concetto; 
+- modificare una molteplicità; • introdurre una nuova associazione.
+
+**Da domain model a class diagram:** Il Domain Model è concettuale e indipendente dalla tecnologia. Il Class Diagram inizia a guardare verso il software: 
+- introduce il concetto di classe; 
+- prepara il terreno per attributi e metodi; 
+- sarà la base per codice e architettura. 
+
+Domain Model: 
+- concetti del mondo reale; 
+- attributi essenziali per capire il problema; 
+- relazioni concettuali tra entità. 
+
+Class Diagram: 
+- classi del sistema software; 
+- attributi che saranno effettivamente memorizzati; 
+- relazioni che guideranno la struttura del codice. 
+
+Spesso i nomi coincidono, ma il punto di vista è diverso.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-18 15-13-44.png" width="200">
+</div>
+ 
+ Il class diagram ci aiuta a non fissare troppo presto una soluzione tecnica. Mantiene un livello di astrazione sufficientemente alto, ma già orientato al software. Permette di: 
+ - verificare la struttura del dominio; 
+ - discutere con il team prima di scrivere codice; 
+ - cambiare idea senza riscrivere tutto.
+
+**Da domain model alle classi: checklist:** Cosa portiamo nel primo Class Diagram: 
+- il nome (chiaro e significativo); 
+- gli attributi essenziali del dominio; 
+- le relazioni con altre classi (ispirate al Domain Model).
+
+Cosa lasciamo fuori in questa fase: 
+- metodi e logica di dettaglio; 
+- classi tecniche (Repository, DAO = Data Access Object, Controller, helper…); 
+- Repository/DAO: accesso e persistenza dei dati; Controller: coordinamento tra input e logica applicativa;
+- dettagli legati a framework specifici. 
+
+Obiettivo: restare vicini al dominio, ma con una struttura già utile al design software.
+
+**Notazione UML: visibilità degli attributi:** In un Class Diagram possiamo indicare la visibilità: 
+- + public — visibile a tutti 
+- private — visibile solo all’oggetto stesso  
+- `#` protected — visibile a classe e sottoclassi 
+- ~ package — visibile all’interno del package
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260318151844.png" width="200">
+</div>
+
+**Attributo derivato:** Un attributo è derivato se può essere calcolato da altri dati. Notazione: si usa il simbolo / davanti al nome.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-18 15-19-42.png" width="200">
+</div>
+
+**Attributo statico:** La notazione UML prevede attributi di classe (statici). Notazione: nome sottolineato.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-18 15-20-50.png" width="200">
+</div>
+
+**Ereditarietà:** La generalizzazione si indica con una freccia a triangolo vuoto verso la superclasse. Le sottoclassi ereditano attributi e operazioni.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-18 15-22-00.png" width="200">
+</div>
+
+**Aggregazione e composizione:** Sono due tipi particolari di associazione UML. In entrambi i casi c’è un rapporto tra un tutto e una parte. •
+- *Aggregazione* (rombo vuoto): la parte può esistere anche senza quel tutto. 
+- *Composizione* (rombo pieno): la parte dipende dal tutto per esistere.
+
+*Aggregazione:* la parte resta indipendente dal tutto. 
+- nell’esempio: Corso (lato con rombo) è il tutto, Docente è la parte aggregata; 
+- In breve: se elimino un Corso, il Docente resta.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260318152430.png" width="200">
+</div>
+
+*Composizione:* la parte dipende dal tutto. 
+- nell’esempio: Appello (lato con rombo pieno) è il tutto, Iscrizione è la parte contenuta; 
+- In breve: se elimino un Appello, l’Iscrizione non esiste più.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-18 15-25-22.png" width="200">
+</div>
+
+**Class diagram di *Unimanager*:** Traduzione del Domain Model in una rappresentazione orientata al software: 
+- classi con attributi tipizzati; 
+- relazioni che suggeriscono i futuri collegamenti tra oggetti; 
+- in questo diagramma mostriamo solo associazioni.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260318152700.png" width="200">
+</div>
+
+**Errori tipici nel passaggio a class diagram:** Aggiungere subito: 
+- metodi per ogni scenario immaginabile; 
+- classi per ogni schermata dell’interfaccia grafica; 
+- dettagli di persistenza (DB, ORM, ecc.). •
+- ORM: meccanismo per mappare oggetti ↔ database;
+
+Confondere classi del dominio con: 
+- classi di infrastruttura, 
+- classi di supporto (logger, helper, utility…). 
+
+Dimenticare che il Class Diagram deve essere ancora vicino al dominio, non al framework.
+
+**Struittura statica vs comportamento dinamico:** Il Domain Model e il Class Diagram descrivono la struttura statica: 
+- quali entità esistono; 
+- come sono collegate; 
+- quali informazioni portano con sé. 
+
+Non dicono ancora: 
+- come gli oggetti collaborano; 
+- quali messaggi si scambiano; 
+- in che ordine avvengono le operazioni. 

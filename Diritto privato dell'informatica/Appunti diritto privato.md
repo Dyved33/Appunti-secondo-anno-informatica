@@ -299,5 +299,28 @@ Un ambito di forte scontro tra diritto alla riservatezza e altri diritti costitu
 > [!INFO] Il bilanciamento tra il diritto di cronaca e la Data Protection impone il divieto di divulgazione di dettagli clinici esuberanti rispetto alla finalità puramente informativa della notizia.
 
 **Prova contraria:** La prova contraria nel processo civile è lo strumento per contestare i fatti allegati dalla controparte, distinguendosi in diretta e indiretta. La prova contraria diretta mira a smentire i testimoni avversari sui medesimi fatti, mentre l'indiretta introduce nuovi elementi incompatibili.
+###### Guerra ibrida
+Nella scelta di obiettivi militari del 28-02-2026 si è usata l’intelligenza artificiale (troppe informazioni da elaborare per un umano)
 
- 
+**AI:** si dice ai qualsiasi modo di simulare co nu computer processi mentali umani come: apprendimento, ragionamento, risoluzione di problemi, percezione, processi decisionali, linguaggio,… . L’origine si  confonde con la nascita dei computer stessi:
+- Anni 60: reti neurali artificiali
+- Anni 80: sistemi esperti
+- Anni 2000: big data, deep learning (supercomputer e reti neurali)
+- Anni 2010: transformer e LLM 
+
+> [!info] non esiste e nessuno sa come realizzare un’intelligenza artificiale generale (AGI)
+
+**6 principi di sicurezza delle informazioni:**
+- Confidentiality: impedire che l’informazione venga letta da chi non può
+- Integrity: impedire la manomissione delle informazioni
+- Availability: accessibilità agli utenti autorizzati
+- Authenticity: bisogna poter identificare l’autore di un informazione
+- Non-repudiability: un destinatario non può negare di aver ricevuto un’informazione e il mittente non può negare di averla mandata
+- Authorization: il sistema deve assegnare ad ogni utente il livello di accesso appropriato
+
+**Cosa fa un LLM:** il produttore dell’LLM fornisce un set di istruzioni nascoste (system prompt). L’interfaccia utente è quasi sempre sotto forma di chatbot. Noi inseriamo un prompt e l’LLM mi risponde in chat seguendo il system prompt. Non esistono istruzioni o input (no distinzione tra codice e dati): system prompt, il nostro prompt e input esterni finiscono tutti in un grande testo. Un LLM non ragiona, ma si limita a continuare l’unico grande testo con altro testo statisticamente plausibile  (considerando tutti i parametri passati dall’analisi testuale). Un LLM non ricorda, gran parte dell’intera sessione viene conservato e passato di nascosto come parte dell’input (*context window*). Non si possono separare i due input (system prompt e window context) e tutte le parti dell’input hanno lo stesso valore $\implies$ prompt injection e prompt esterno trattato come system prompt
+
+**Pericoli legati ad agenti basati su LLM:** 
+- Accesso a dati privati
+- Abilità di comunicare all’esterno 
+- Esposizione a contenuti non affidabili

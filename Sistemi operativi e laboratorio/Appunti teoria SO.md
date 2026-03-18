@@ -455,8 +455,6 @@ I processi possono interferire tra di loro in maniera positiva o negativa, negat
  - Processi distribuiti: molti processi, gestiti da molti processori distribuiti (*cluster*), con memorie distribuite, rende le cose più complicate da gestire, ma sicuramente più veloci. 
  
  I differenti processi hanno bisogno di risorse che tipicamente vengono condivise tra i vari processi, si crea quindi una *concorrenza*:
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  - Nelle applicazioni multiple, o nelle applicazioni strutturate (con più processi o threads che devono accedere a delle risorse)
  - La modifica dei dati disponibili da parte di un processo influenza l’andamento di un altro processo
  - Nella struttura del sistema operativo.
@@ -468,22 +466,142 @@ I processi possono interferire tra di loro in maniera positiva o negativa, negat
  - Attività degli altri processi
  - Gestione delle interruzioni
  - Politiche di schedulazione
+
 Vengono generate le seguenti difficoltà:
 - Condivisione di risorse globali
 - Allocazione ottimale delle risorse
 - Debugging 
 
 È necessario proteggere le variabili condivise e si deve controllare il codice che accede alla variabile.
+
 **Race condition:** si verifica quando più processi o threads leggono e scrivono dati in modo che il risultato finale dipende dall'ordine di esecuzione delle istruzioni dei processi
 
-Compiti del SO:
+ESEMPIO
+
+**Compiti del SO:**
 - Tenere traccia dei processi (PCB)
 - Allocare e deallocare le risorse per i processi attivi (tempo di elaborazione, memoria, files, dispositivi I/O)
 - Proteggere dati e le risorse di ogni processo da interferenze involontarie di altri processi
 - Il risultato di ogni processo deve essere indipendente dalla susa velocità relativa a quella dei processi concorrenti (salvo l'interazione voluta tra questi processi)
 
-Processi concorrenti sono in conflitto per l'uso delle risorse. I problemi sono:
-- Mutua esclusione (risorsa critica e sezione critica)
-- Stallo (*deadlock*)
-- Starvation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| Grado di consapevolezza              | Relazione    | Influenza che un processo ha su un altro                          | Potenziali problemi di controllo |
+| ------------------------------------ | ------------ | ----------------------------------------------------------------- | -------------------------------- |
+| Processo non consapevole degli altri | Competizione | - I risultati di un processo indipendente dall’azione degli altri |                                  |
+|                                      |              |                                                                   |                                  |
+|                                      |              |                                                                   |                                  |
+**Competizione per le risorse:** Processi concorrenti sono in conflitto per l'uso delle risorse. I problemi sono:
+- Mutua esclusione (risorsa critica e sezione critica): MANCA
+- Stallo (*deadlock*): due processi hanno bisogno delle risorse MANCA
+- Starvation: un processo MANCA 
+
+```
+void P1{
+	while(true){
+		//preceding code
+		entercritical(Ra)
+		//critical section 
+		exitcritical(Ra) 
+		//following code
+	}
+}
+```
+
+**Cooperazione per condivisione:** 
+- Processi che interagiscono senza conoscersi
+- Usano e modificano dati condivisi
+- Devono cooperare per la corretta gestione dei dati condivisi
+- Il meccanismo di controllo deve assicurare l’integrità dei dati
+- Si presentano i problemi di mutua esclusione, stallo, starvation (le operazioni di lettura non richiedono mutua esclusione)
+
+> [!example] 
+> P1: a = a + 1, b = b + 1
+> P2: b = 2 * b, a = 2 * b
+> Posso ottenere situazioni come: a = a + 1, b = 2 * b, b = b + 1, a = 2 * b $\implies$ due risultati diversi
+
+**Condivisione per scambio di messaggi:** un processo che ha bisogno di una risorsa manda un messaggio al gestore di risorse (come client-server) e questo gli “risponde”. Questo scambio di messaggi è gestita dal kernel
+- I processi collaborano per un obiettivo comune
+- La comunicazione permette di sincronizzarsi e coordinarsi
+- Primitive per invio e ricezione di messaggi sono fornite dal kernel o dal linguaggio di programmazione
+- Non richiede mutua esclusione
+- Può determinare stallo o starvation
+
+**Requisiti della mutua esclusione:**
+- Un solo processo alla volta è ammesso alla sezione critica per ciascuna risorsa condivisa
+- Un processo ch si ferma fuori dalla sua sezione critica non deve interferire con gli altri processi
+- Si deve evitare deadlock e stravation
+- Se nessun processo è nella  sezione critica deve essere concesso a ogni processo di entrare senza ritardo
+- Nessuna ipotesi sulla velocità relativa dei processi e sul numero dei processori
+- Un processo resa nella sezione critica per un tempo finito
+
+**Mutua esclusione con supporto harware:** posso disabilitare le interruzioni:
+- Su uniprocessore assicura che la sezione critica sia portata a termine senza istruzioni
+```
+while(true)
+	//disabilita interruzioni
+	//sezione critica
+	//abilita interruzioni
+	//resto del programma
+```
+- Primitive definite dal nucleo
+- Rallenta il sistema
+- Inapplicabile con multiprocessore
+
+> [!info] se disabilito interruzioni si possono creare problemi MANCA
+
+È anche possibile utilizzare una serie di istruzioni speciali:
+- Un solo processore alla volta può accedere a una locazione di memoria 
+- Speciali istruzioni macchina eseguono due operazioni su un dato in maniera atomica
+
+Ci sono degli hardware con delle istruzioni come *compare and swap* in un’unica operazione
+```
+in compare_and_swap(int *word, int testval, int newval){
+	int oldval;
+	oldval = *word;
+	if (oldval == testval) *word = newval;
+	return oldval
+}
+```
+
+CAPISCI SE DEVI FARE L’ANALISI DEI PEZZI DI CODICE
+
+*Vantaggi:* 
+- Applicabile a qualsiasi numero di processi su uniporcessore o multiprocessore
+- Semplicità
+- Può supportare multiple sezioni critiche
+
+*Svantaggi:* 
+- attesa attiva (*busy-waiting*)
+- Possibilità di stallo
+- Possibilità di starvation
+
+**Algoritmo di Dekker:** l’obiettivo è quello di trovare un protocollo a due processi di assicurare la mutua esclusione:
+- Senza supporto hardware MANCA
+- MANCA
+- MANCA
+
+CAPISCI SE VA MESSO QUALCOSA QUI
+
+```
+boolean flag [2]
+int turn;
+void P0{
+	while(true){
+		flag[0]
+		MANCA
+	}
+}
+```
+
+```Algoritmo di Peterson
+boolean flag [2]
+int turn;
+void P0{
+	while(true){
+		flag[0] = true;
+		turn = 1;
+		while(flag[1] && turn == 1) //non fa nulla
+	}
+}
+```
+
+MANCA
