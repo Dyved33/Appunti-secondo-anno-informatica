@@ -575,7 +575,7 @@ in compare_and_swap(int *word, int testval, int newval){
 }
 ```
 
-```
+
 Program mutual exclusio
 /* program mutualexclusion */ 
 const int n = /* number of processes */; 
