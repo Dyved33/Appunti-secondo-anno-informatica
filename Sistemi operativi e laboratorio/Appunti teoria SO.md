@@ -675,14 +675,16 @@ void P0() {
 ```
 
 ###### Semafori
-Una variabile con valore intero, una coda e tre operazioni:
+I semafori sono i meccanismi utilizzati per sincronizzare l’accesso alle sezioni critiche dei processi. Sono formati da una variabile con valore intero, una coda e tre operazioni:
 - Inizializzazione a un valore non negativo 
-- *semWait* decrementa il calore del semaforo. Se il valore diventa negativo, il processo è sospeso e inserito nella coda
-- *semSignal* incrementa il valore del semaforo. Se il valore non diventa positivo, uno dei processi della coda è riattivato
+- *semWait:* decrementa il calore del semaforo. Se il valore diventa negativo, il processo è sospeso e inserito nella coda
+- *semSignal:* incrementa il valore del semaforo. Se il valore non diventa positivo, uno dei processi della coda è riattivato
+
+> [!info] Per la situazione di prima potremo utilizzare un semaforo inizializzato a 1, con la prima semWait il valore diventa 0, così tutti gli altri processi che tenteranno di accedere facendo la semWait renderanno il valore -1, sospendendo il processo e inserendolo nella coda, quando il processo iniziale manderà un semSignal si tornerà a un valore positivo e il valore precedentemente in coda entrerà nella sezione critica. In pratica quando la variabile è positiva si indica quanta disponibilità c’è, quanti processi possono accedere, quando è negativo mi dice quanti processi sono in coda in attesa di entrare nella sezione critica.
 
 **Osservazione:** il processo non ha modo di sapere in anticipo:
 - Se con l’esecuzione di *semWait* sarà sospeso
-- Se c’è un porcesso che attende l’esecuzione di *semSignal*
+- Se c’è un processo che attende l’esecuzione di *semSignal*
 - Quale fra i processi in attesa sarà riattivato da *semSignal*
 
 ```Semaforo_generico
@@ -708,12 +710,12 @@ void semSignal(semaphore s) {
 }
 ```
 
-**Semaforo binario:** una variabile con valore binario (o 0 o 1), una coda e tre operazioni:
+**Semaforo binario:** la variabile ora è un valore binario (o 0 o 1), poi ho una coda e tre operazioni:
 - Inizializzazione a 0 o 1
 - *semWaitB* verifica il valore del semaforo. Se il valore è 1 allora è portato a 0, nel caso contrario, il processo è sospeso e inserito nella coda
 - *semSignalB* verifica se ci sono processi in attesa nella coda. In caso affermativo, uno dei processi della coda è riattivato, nel caso opposto, il valore del semaforo è portato a 1
 
-**Gestione della coda:** 
+**Gestione della coda:** (ora non posso dire che ci sono X programmi running e X in coda)
 - Deve evitare la starvation
 - Generalmente FIFO (*semaforo forte*)
 
@@ -742,7 +744,8 @@ void semSignalB(semaphore s) {
 }
 ```
 
-> [!example] ![[Pasted image 20260319122744.png|200]]
+> [!info] come funziona un semaforo
+>  ![[Pasted image 20260319122744.png|200]]
 
 ```Mutua_esclusione
 /* program mutualexclusion */ 
@@ -763,45 +766,30 @@ void main() {
 }
 ```
 
+Si usa nella programmazione parallela:
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260319123611.png" width="200">
 </div>
 
 **Implementazione:** *semWait* e *semSignal* devono essere primitive atomiche
-- hardware o firmware
-- con istruzioni speciali
-- con l’algoritmo di Peterson
+- Con soluzioni hardware o firmware
+- Con istruzioni speciali
+- Con l’algoritmo di Peterson
 
-**Messaggi:** nell’interazione fra processi sono necessarie:
-1. *Sincronizzazione:* per la realizzare la mutua esclusione
-2. *Comunicazione:* per lo scambio di informazioni
-3. *Scambio di messaggi:* permette di realizzare entrambe
-	- Naturale nei sistemi distribuiti
-	- Utile anche nei sistemi con memoria condivisa
-4. *Due primitive:* 
-	- *Send (destination, message):* un processo invia informazioni in forma di messaggio a un altro processo designato come destinatario
-	- *Receive (source, message):* un processo riceve informazioni indicando il mittente e l’indirizzo in cui salvare il messaggio
+L’alternativa alla condivisione di dati è lo scambio di messaggi, un meccanismo molto più sicuro poiché i processi non accedono allo spazio degli altri processi.
 
-**Caratteristiche dei sistemi di messaggistica:** 
-1. *Sincronizzazione:* 
-	- Send: può essere o bloccante (finché il destinatario non esegue la receive, il processo che ha eseguito la send si blocca) o non bloccante
-	- Receive: può essere bloccante o non bloccante. In alternativa viene fatto un test di presenza messaggi (se ci sono viene lanciata una receive ?????)
+###### Messaggi
+Anche il meccanismo dei messaggi consente la sincronizzazione per realizzare la mutua esclusione e la comunicazione per lo scambio di informazioni tra processi. Perché utilizzare i messaggi invece della condivisione di memoria? In sistemi distribuiti i processi hanno difficoltà a leggere la memoria di altri processi in sistemi diversi, perciò il loro utilizzo è naturale nei sistemi distribuiti, ma anche nei sistemi a memoria condivisa questo meccanismo è utile. Hanno 2 primitive:
+- *Send (destination, message):* un processo invia informazioni in forma di messaggio a un altro processo designato come destinatario
+- *Receive (source, message):* un processo riceve informazioni indicando il mittente e l’indirizzo in cui salvare il messaggio
 
-> [!info] ci sono situazioni in cui sia la send che la receive sono bloccanti
-
-2. *Indirizzamento:*
-	- Diretto: sia per la send che per la receive (esplicito o implicito). 
-	- Indiretto: statico o dinamico
-3. *Formato:*
-	- Contenuto
-	- Lunghezza (fissa o variabile)
-4. *Organizzazione delle code:* se ci sono più messaggi, vanno organizzati
-	- FIFO (cioè in code)
-	- Priorità
+**Caratteristiche dei sistemi di messaggistica:** La sincronizzazione per la send è bloccante se il processo a cui si vuole mandare non attende un messaggio, quindi si blocca l’esecuzione del send, è non bloccante quando il messaggio viene mandato correttamente. Il receive allo stesso modo è bloccante quando si tenta di ricevere un messaggio indiretto senza che sia stato ancora mandato, non bloccante quando il messaggio già c’è, oppure si testa per la presenza di messaggi (Ci sono situazioni in cui sia la send che la receive sono bloccanti). Per la send tipicamente l’indirizzamento è diretto, il processo specifica a quale processo inviare il messaggio, la receive può avere un indirizzamento esplicito (dal processo X prelevo il messaggio) o implicito. Quando il processo esegue una receive, se c’è un messaggio per questo processo, prende il messaggio e l’identificativo del processo che l’ha mandato. Il formato dei messaggi può essere di lunghezza fissa o variabile, inoltre l’organizzazione delle code dei messaggi è FIFO, oppure può esserci una gestione tramite priorità.
 
 **Sincronizzazione:** il destinatario non può ricevere il messaggio prima che questo sia stato inviato. Quando si esegue la receive:
 - Se è presente un messaggio, il processo lo riceve e continua l’esecuzione
-- In caso contrario ci sono due possibilità: o si sospende finché il messaggio non è inviato oppure si continua l’esecuzione senza più ricevere il messaggio
+- In caso contrario ci sono due possibilità: 
+	1. Si sospende finché il messaggio non è inviato 
+	2. Si continua l’esecuzione senza più ricevere il messaggio
 
 | Tipo di send e receive                 | Comportamento                                                                                                                                                                                                                                                                     |
 | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -809,27 +797,26 @@ void main() {
 | Send non bloccante e receive bloccante | <ul><li>Il mittente procede ma il destinatario è bloccato fino alla ricezione del messaggio</li><li>Combinazione più comune</li><li>Il mittente invia più messaggi a tanti destinatari senza perdita di tempo (es. Processo server che fornisce servizi a più processi)</li></ul> |
 | Send e receive NON bloccanti           | <ul><li>Nessuno dei due processi attende</li></ul>                                                                                                                                                                                                                                |
 **Indirizzamento:** 
-1. *Indirizzamento diretto:* 
+1. *Diretto:* 
 	- La primitiva send include l’identificatore del processo destinatario
-	- La primitiva receive può avere sia l’indirizzamento esplicito (destinatario designato esplicitamente, è utile per processi concorrenti cooperanti) che quello implicito (sender è un parametro che restituisce l’identificatore del mittente)
-2. *Indirizzamento indiretto:*
+	- La primitiva receive può o specificare il mittente (utile per processi concorrenti cooperanti), oppure può usare l’indirizzamento implicito, quindi ricevere un messaggio in generale e il parametro sender conterrà l’identificatore del mittente.
+2. *Indiretto:*
 	- Messaggi inviati a una struttura dati condivisa consistente in code che contengono temporaneamente i messaggi (mailbox)
 	- Il mittente invia un messaggio a una mailbox
 	- Il destinatario preleva un messaggio dalla mailbox
 	- Flessibilità
 
 > [!info] Indirizzamento indiretto 
-> ![[Pasted image 20260319132049.png|200]]
+> ![[Pasted image 20260319132049.png]]
 
 **Formato del messaggio:** 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260319132443.png" width="200">
 </div>
 
-**Gestione delle code:** 
-- FIFO
-- Priorità (per tipo di messaggio o designata dal mittente)
-- Il destinatario può ispezionare la coda e scegliere il messaggio
+**Gestione delle code:** Il meccanismo più semplice è il FIFO, il primo messaggio in coda viene trasmesso, oppure si può fare una coda prioritaria per tipo di messaggio o designata dal mittente, alternativamente il destinatario potrebbe ispezionare la coda e scegliere un messaggio particolare. 
+
+Avendo quindi a disposizione una receive bloccante, la mutua esclusione diventa molto più semplice degli algoritmi visti in precedenza, si crea una mailbox e si inviano ad essa dei messaggi, i processi prima di iniziare la sezione critica eseguono un receive, se c’è il messaggio nella mailbox entrano nella sezione critica e terminata la sezione mandano un messaggio alla mailbox, se un processo esegue la receive mentre l’altro processo è nella sezione critica troverà la mailbox vuota e perciò si bloccherà finché l’altro processo non uscirà dalla sezione critica e manderà un messaggio nella mailbox.
 
 ```Mutua_esclusione
 /* program mutualexclusion */ 
@@ -851,15 +838,9 @@ void main() {
 }
 ```
 
-**Problema produttore/conduttore:** Condizioni:
-- Uno o più produttori inseriscono dati in buffer
-- Un consumatore estrae i dati dal buffer, uno alla volta
-- Un solo produttore o consumatore alla volta accede al buffer
+**Problema produttore/conduttore:** Ci sono processi che consumano e processi che producono, ho uno o più produttori che inseriscono dati in un buffer, mentre un consumatore estrae i dati dal buffer, uno alla volta, un solo produttore o consumatore alla volta può accedere al buffer. 
 
-Il problema è che:
-- Assicurare la mutua esclusione
-- Evitare che un produttore aggiunga dati a un buffer pieno
-- Evitare cue il consumatore cerchi di estrarre dati da un buffer vuoto
+Bisogna quindi assicurare la mutua esclusione ed evitare che un produttore aggiunga dati a un buffer pieno e che un consumatore cerchi di estrarre dati da un buffer vuoto.
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260319133107.png" width="200">

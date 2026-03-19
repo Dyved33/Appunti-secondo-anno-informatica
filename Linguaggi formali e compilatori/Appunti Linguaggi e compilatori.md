@@ -592,43 +592,53 @@ Esempio completo nelle slide del prof
 - Gli stati sono $q_1, q_2,…q_n$
 - Lo stato iniziale è $q_1$
 
-Per ogni $i, j, k$ con $0 \leq k < i, j \leq n$ consideriamo l’insieme $L_{ijk}$ contenente le seguenti parole: *le etichette dei cammini nel grafo di $A$ che iniziano in $q_i$, terminano in $q_j$, e attraversano solo stati di indice $\leq k$*.
+> [!tip] Avendo un automa A, vogliamo che: 
+> abbia un unico stato finale e, per semplicità, non abbia frecce che entrano nello stato iniziale né frecce che escono dallo stato finale. Questo implica che un percorso uscito dallo stato iniziale non potrà più rientrarci (perché non ci sono frecce entranti in esso) così come non potrà passare per lo stato finale se non all’ultimo (perché non ci sono frecce uscenti da esso). Aggiungo quindi delle $\epsilon$ transizioni che mi portano dal nuovo stato iniziale al vecchio stato iniziale, e dai vecchi stati finali al nuovo stato finale. Questo nuovo automa accetterà le stesse parole dell’automa vecchio.
+> Inoltre, supponiamo anche di dare dei nomi ai vari stati del nostro automa: $q_1$, $q_2$, …, $q_n$, dove lo stato
+> iniziale corrisponde al $q_{n-1}$ (quindi al penultimo stato) e lo stato finale a $q_n$. Prendiamo dei linguaggi che in qualche modo approssimano il linguaggio che vogliamo cercare e cerchiamo delle espressioni regolari per questi linguaggi.
+> 
+>![[Pasted image 20260319171718.png|300]]
+
+Per ogni $i, j, k$ con $0 \leq k < i, j \leq n$ (indici i e j compresi tra 1 e n, mentre k compreso tra 0 e n) consideriamo l’insieme $L_{ijk}$ contenente le seguenti parole: *le etichette dei cammini nel grafo di $A$ che iniziano in $q_i$, terminano in $q_j$, e attraversano solo stati di indice $\leq k$* (che attraversi soltanto, non che parta o arrivi in uno di questi stati)
 
 **Osservazione:** $L(A)= \bigcup\limits_{q_j \in F} L_{1jn}$. Quindi, se riesco a trovare espressioni regolari per tutti gli $L_{ijk}$, avrò anche un’espressione regolare di $L(A)$
 
 > [!example] ![[Pasted image 20260319110515.png|200]]
+> - $q_4$ stato finale
+> - $q_5$ stato finale
+> - quindi devo prendere tutti i cammini che partono da $q_2$, che arrivano in $q_5$ e che attraversano soltanto $q_1 \implies L(A) = L_{n-1 \ n \ n-2}$ dato dal cammino $q_2 \xrightarrow[]{b} q_1 \xrightarrow[]{c} q_5$
 
-Quindi l’obiettivo è quello di trovare espressioni regolari per gli $L_{ijk}$ e la strategia adottata consiste nel procedere per induzione su $k$.
+Se riesco a trovare un’espressione regolare per tutti gli $L_{ijk}$, avrò un’espressione regolare per $L_{n-1 \ n \ n-2}$, che
+è proprio il linguaggio accettato dall’automa. Ho quindi ottenuto l’espressione regolare corrispondente al
+Linguaggio. Quello che dobbiamo mostrare è un meccanismo che ci permetta di determinare delle espressioni regolari che denotano questi linguaggi $L_{ijk}$ Per ottenere tutti questi $L_{ijk}$, si procede per induzione su $k$.
 
-Il linguaggio $L_{ij0}$ è denotato dall’espressione regolare $E_{ij0}$ ottenuta come segue:
+Il linguaggio $L_{ij0}$ è denotato dall’espressione regolare $E_{ij0}$ ottenuta come segue (supponendo $k = 0$):
 - La somma delle etichette delle frecce da $q_i$ a $q_j$, se ne esistono e $i\neq j$ 
 - La somma delle etichette delle frecce da $q_i$ a $q_j$ più $\epsilon$ se ne esistono e $i = j$
 - $\epsilon$ se non ci sono frecce da $q_i$ a $q_j$ e $i = j$
 
 > [!example] ![[Screenshot From 2026-03-19 11-07-41.png|200]]
+> Dato che $k \leq 0$ ciò significa che i cammini devono attraversare 0 stati (cioè si tratta di frecce dirette)
 
-Supponiamo $k\geq 1$. Supponiamo nel grafo $A$ con origine in $q_i$, termine in $q_j$ e che attraversano esclusivamente stati di indice $\leq k$, si possono ripartire in due categorie:
-1. Cammini da $q_i$ a $q_j$ che attraversano solo stati di indice $\leq k-1$ 
-2. I cammini costituiti dalla concatenazioni di:
-	- Un segmento da $q_i$ a $q_k$ 
-	- Zero o più cammini con origine e termine in $q_k$
-	- Un segmento finale con origine da $q_k$ a $q_j$
+Supponiamo $k\geq 1$. I cammini nel grafo $A$ con origine in $q_i$, termine in $q_j$ e che attraversano esclusivamente stati di indice $\leq k$, si possono ripartire in due categorie:
+1. Cammini da $q_i$ a $q_j$ che attraversano solo stati di indice $\leq k-1$. Questi cammini per $q_k$ potrebbero no passare proprio, oppure possono passare per $q_1,q_2,...,q_{k-1}$. Per questi l’espressione regolare già l’abbiamo
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319173347.png" width="200">
+</div>
+2. I cammini costituiti dalla concatenazioni di (cioè i cammini che passano una o più volte per $k$):
+	- Un segmento da $q_i$ a $q_k$ (segmento dallo stato iniziale fino a $q_k$)
+	- Zero o più cammini con origine e termine in $q_k$ (dei cammini che da $q_k$ arrivano al secondo passaggio con $q_k$, e così via, fino all’ultimo passaggio con $q_k$)
+	- Un segmento finale con origine da $q_k$ a $q_j$ (un ultimo segmento che da $q_k$ arriva allo stato finale)
 
 Tutti che attraversano solo stati di indice $\leq k-1$
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-19 11-09-44.png" width="200">
+  <img src="Pasted image 20260319174122.png" width="200">
 </div>
 
-**Passo induttivo:** Le espressioni regolari $E_{ijk}$ che denotano i linguaggi $L_{ijk}$ devono soddisfare le relazioni ricorsive $E_{ijk} = E_{ijk−1} + (E_{ikk−1})(Ek k k−1)(E_{kjk−1}), 1 \leq k < i, j \leq n$. Un’espressione regolare di $L(A)$ è data dalla somma delle $E_{1jn}$ con $q_j$ stato finale
-<div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-19 11-11-05.png" width="200">
-</div>
+**Passo induttivo:** ora dobbiamo trovare l’espressione $E_{ijk}$, cioè l’espressione per il linguaggio costituito dalle etichette di tutti i cammini delle forme precederti. Innanzitutto facciamo  l’unione dei cammini del primo punto con i cammini del secondo punto. I cammini del secondo gruppo saranno a loro volta riportati come la concatenazione del primo segmento con i segmenti intermedi (concatenazione di 0 o più coppi[]()e di un 0 espressione utilizzando la chiusura di Kleene) e l’ultimo segmento. In sostanza le espressioni regolari $E_{ijk}$ che denotano i linguaggi $L_{ijk}$ devono soddisfare le relazioni ricorsive $E_{ijk} = E_{ijk−1} + (E_{ikk−1})(Ek k k−1)(E_{kjk−1}), \ 1 \leq k < i, j \leq n$. Un’espressione regolare di $L(A)$ è data dalla somma delle $E_{1jn}$ con $q_j$ stato finale. In questo mode è possibile calcolare tutte le espressioni regolari, compresa $E_{n-1 \ n \ n-2}$ che denota il linguaggio accettato dall’automa (esempio nelle slide 8-11)
 
-> [!example] ![[Screenshot From 2026-03-19 11-15-21.png|200]]
-> RESTO DELL’ESEMPIO NELLE SLIDE
-
-**Regola pratica:** 
+**Regola pratica:** Per fare tutto ciò utilizzeremo il Metodo di eliminazione degli stati partendo dal nostro automa che corrisponde ad un grafo sulle cui etichette delle frecce ci sono espressioni particolari che possono essere o lettere, o ε o somma di lettere.
 1. ci riduciamo al caso in cui:
 	- $A$ ha un unico stato finale 
 	- Nel grafo di $A$ non ci sono frecce che entrano nello stato iniziale, ne frecce che escono dallo stato finale
@@ -640,16 +650,11 @@ Tutti che attraversano solo stati di indice $\leq k-1$
 4. Ripetiamo il passo precedente fino a ottenere un automa con due stati e una sola freccia; 
 5. L’etichetta di tale freccia è l’espressione regolare cercata.
 
-> [!example] ![[Pasted image 20260319111755.png|200]]
-> CI SONO ALTRI ESEMPI, CAPISCI SE CONVIENE METTERLI
-
-**Pattern matching:** 
-![[Pasted image 20260319112309.png|200]]
-
+> [!example] > ![[Pasted image 20260319181524.png]]
 ###### Operazioni booleane
-**Proposizione:** la classe dei linguaggi regolari è un’algebra Booleana
+**Proposizione:** la classe dei linguaggi regolari è un’algebra Booleana (altra conseguenza del teorema di Kleene)
 
-**Dimostrazione:** 
+**Dimostrazione:** Ci sono delle operazioni che sono naturali sulle espressioni regolari e altre operazioni che sono naturali sugli automi a stati finiti. Come abbiamo detto in precedenza, infatti, la famiglia dei linguaggi regolari è chiusa per le operazioni di unione, concatenazione e chiusura di Kleene. È anche chiusa per complemento ed intersezione, quindi per tutte le operazioni booleane.
 - *Unione:* L’unione dei linguaggi denotati dalle espressioni $E$ e $F$ è denotato dall’espressione $E$ + $F$. 
 - *Complemento:* Per il Teorema di Kleene, un linguaggio regolare è accettato da un automa a stati finiti deterministico. Il complemento è accettato dall’automa ottenuto scambiando stati finali e non. Quindi, per il Teorema di Kleene, è regolare 
 - *Intersezione:* L’intersezione si esprime per mezzo di unione e complemento: $L \cap M = \Sigma^* - ((\Sigma^* -L) \cup (\Sigma^* - M))$
