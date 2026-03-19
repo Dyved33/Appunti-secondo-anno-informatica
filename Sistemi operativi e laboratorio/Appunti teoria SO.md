@@ -564,11 +564,6 @@ in compare_and_swap(int *word, int testval, int newval){
 	return oldval
 }
 
-<<<<<<< HEAD
-
-Program mutual exclusio
-=======
->>>>>>> f44791e2cab6e26ffe727e063453d12aa29cd4ad
 /* program mutualexclusion */ 
 const int n = /* number of processes */; 
 int bolt; 

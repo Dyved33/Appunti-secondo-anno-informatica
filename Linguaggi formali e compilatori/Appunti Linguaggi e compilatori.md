@@ -587,3 +587,82 @@ Allora $A$ accetta il linguaggio denotato da $E^*$
 4. se $G = E^*$ , allora calcolo l’automa $A_1$ corrispondente a $E$; costruisco l’automa dell’espressione $E^*$;
 
 Esempio completo nelle slide del prof
+
+**Dall’automa a stati finiti all’espressione regolare:** sia $A$ un automa a stati finiti e per semplicità supporremo che:
+- Gli stati sono $q_1, q_2,…q_n$
+- Lo stato iniziale è $q_1$
+
+Per ogni $i, j, k$ con $0 \leq k < i, j \leq n$ consideriamo l’insieme $L_{ijk}$ contenente le seguenti parole: *le etichette dei cammini nel grafo di $A$ che iniziano in $q_i$, terminano in $q_j$, e attraversano solo stati di indice $\leq k$*.
+
+**Osservazione:** $L(A)= \bigcup\limits_{q_j \in F} L_{1jn}$. Quindi, se riesco a trovare espressioni regolari per tutti gli $L_{ijk}$, avrò anche un’espressione regolare di $L(A)$
+
+> [!example] ![[Pasted image 20260319110515.png|200]]
+
+Quindi l’obiettivo è quello di trovare espressioni regolari per gli $L_{ijk}$ e la strategia adottata consiste nel procedere per induzione su $k$.
+
+Il linguaggio $L_{ij0}$ è denotato dall’espressione regolare $E_{ij0}$ ottenuta come segue:
+- La somma delle etichette delle frecce da $q_i$ a $q_j$, se ne esistono e $i\neq j$ 
+- La somma delle etichette delle frecce da $q_i$ a $q_j$ più $\epsilon$ se ne esistono e $i = j$
+- $\epsilon$ se non ci sono frecce da $q_i$ a $q_j$ e $i = j$
+
+> [!example] ![[Screenshot From 2026-03-19 11-07-41.png|200]]
+
+Supponiamo $k\geq 1$. Supponiamo nel grafo $A$ con origine in $q_i$, termine in $q_j$ e che attraversano esclusivamente stati di indice $\leq k$, si possono ripartire in due categorie:
+1. Cammini da $q_i$ a $q_j$ che attraversano solo stati di indice $\leq k-1$ 
+2. I cammini costituiti dalla concatenazioni di:
+	- Un segmento da $q_i$ a $q_k$ 
+	- Zero o più cammini con origine e termine in $q_k$
+	- Un segmento finale con origine da $q_k$ a $q_j$
+
+Tutti che attraversano solo stati di indice $\leq k-1$
+
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-19 11-09-44.png" width="200">
+</div>
+
+**Passo induttivo:** Le espressioni regolari $E_{ijk}$ che denotano i linguaggi $L_{ijk}$ devono soddisfare le relazioni ricorsive $E_{ijk} = E_{ijk−1} + (E_{ikk−1})(Ek k k−1)(E_{kjk−1}), 1 \leq k < i, j \leq n$. Un’espressione regolare di $L(A)$ è data dalla somma delle $E_{1jn}$ con $q_j$ stato finale
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-19 11-11-05.png" width="200">
+</div>
+
+> [!example] ![[Screenshot From 2026-03-19 11-15-21.png|200]]
+> RESTO DELL’ESEMPIO NELLE SLIDE
+
+**Regola pratica:** 
+1. ci riduciamo al caso in cui:
+	- $A$ ha un unico stato finale 
+	- Nel grafo di $A$ non ci sono frecce che entrano nello stato iniziale, ne frecce che escono dallo stato finale
+2. Sostituiamo le etichette multiple con la loro somma 
+3. Selezioniamo uno stato $q_k$ che non sia né iniziale né finale; per ogni freccia $q_i \xrightarrow[]{E_{ik}} q_k$ che entra nello stato $q_k$ e ogni freccia $q_k \xrightarrow[]{E_{kj}} q_j$ che esce da tale stato $(i, j \neq k)$ 
+	- Rimpiazziamo l’etichetta della freccia $q_i \xrightarrow[]{E_{ij}} q_j$ con $E_{ij} + E_{ik}E_{kk}^*E_{kj}$ (o $E_{ij} + E_{ik}E_{kj}$ qualora manchi la freccia da $q_k$ a $q_k$); 
+	- se tale freccia è assente, la creiamo (con etichetta $E_{ik}E_{kk}^*E_{kj}$ , ovvero $E_{ik}E_{kj}$ ); 
+	- rimuoviamo lo stato $q_k$ e tutte le frecce che entrano o escono da esso; 
+4. Ripetiamo il passo precedente fino a ottenere un automa con due stati e una sola freccia; 
+5. L’etichetta di tale freccia è l’espressione regolare cercata.
+
+> [!example] ![[Pasted image 20260319111755.png|200]]
+> CI SONO ALTRI ESEMPI, CAPISCI SE CONVIENE METTERLI
+
+**Pattern matching:** 
+![[Pasted image 20260319112309.png|200]]
+
+###### Operazioni booleane
+**Proposizione:** la classe dei linguaggi regolari è un’algebra Booleana
+
+**Dimostrazione:** 
+- *Unione:* L’unione dei linguaggi denotati dalle espressioni $E$ e $F$ è denotato dall’espressione $E$ + $F$. 
+- *Complemento:* Per il Teorema di Kleene, un linguaggio regolare è accettato da un automa a stati finiti deterministico. Il complemento è accettato dall’automa ottenuto scambiando stati finali e non. Quindi, per il Teorema di Kleene, è regolare 
+- *Intersezione:* L’intersezione si esprime per mezzo di unione e complemento: $L \cap M = \Sigma^* - ((\Sigma^* -L) \cup (\Sigma^* - M))$
+
+**Osservazione:** anche la differenza insiemistica si esprime per messo di unione e completamento: $L - M = \Sigma^* - ((\Sigma^* -L) \cup M)$ 
+
+**Osservazione:** Date due espressioni regolari, posso effettivamente trovare espressioni regolari per l’unione, l’intersezione e i complementi dei linguaggi da esse denotati.
+
+**Equivalenza di espressioni regolari:** $a^* + (a^*ba^*)^* = (a+b)^*$. Date due espressioni regolari ho il problema di decidere se queste sono equivalenti o meno
+
+**Osservazioni:** dati due insiemi $X,Y$ sono uguali se e solo se $(X-Y) \cup (Y-X) = \emptyset$ 
+
+La soluzione al mio problema è: date le espressioni regolari $E,F$
+1. Calcolare automi deterministici che accettano i linguaggi $L_E$ e $L_F$ denotati da $E$ e $F$, rispettivamente; 
+2. Calcolare un automa deterministico che accetta $(L_E − L_F ) \cup (L_F − L_E )$; 
+3. Verificare se tutti gli stati finali sono inaccessibili.
