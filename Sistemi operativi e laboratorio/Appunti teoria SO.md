@@ -434,7 +434,8 @@ Gli stati del thread sono gli stessi dei processi (in esecuzione, pronto e in at
 | 1: M     | Un thread può migrare dall'ambiente di un processo all'ambiente di un altro processo. Ciò permette al thread di muoversi facilmente tra sistemi distinti |
 | M: N     | Combina gli attributi di 1: M e M: 1                                                                                                                       |
 
-**Multicore e multithreading:** **Legge di Amdahl:** $\text{speedup} = \frac{\text{tempo di esecuzione su un processore}}{\text{tempo di esecuzione su N processori}} = \frac{1}{(1-f)+ \frac{f}{n}}$
+###### Legge di Amdahl
+$\text{speedup} = \frac{\text{tempo di esecuzione su un processore}}{\text{tempo di esecuzione su N processori}} = \frac{1}{(1-f)+ \frac{f}{n}}$
 La legge di Amdahl stabilisce che il miglioramento massimo delle prestazioni di un sistema, grazie alla parallelizzazione (uso di più processori), è limitato dalla parte del software che non può essere parallelizzata. In breve: l'algoritmo, non il numero di processori, determina il limite massimo di velocità.
 
 Il vantaggio lo hanno:
@@ -672,3 +673,194 @@ void P0() {
 	} 
 }
 ```
+
+###### Semafori
+Una variabile con valore intero, una coda e tre operazioni:
+- Inizializzazione a un valore non negativo 
+- *semWait* decrementa il calore del semaforo. Se il valore diventa negativo, il processo è sospeso e inserito nella coda
+- *semSignal* incrementa il valore del semaforo. Se il valore non diventa positivo, uno dei processi della coda è riattivato
+
+**Osservazione:** il processo non ha modo di sapere in anticipo:
+- Se con l’esecuzione di *semWait* sarà sospeso
+- Se c’è un porcesso che attende l’esecuzione di *semSignal*
+- Quale fra i processi in attesa sarà riattivato da *semSignal*
+
+```Semaforo_generico
+struct semaphore { 
+	int count; 
+	queueType queue; 
+};
+
+void semWait(semaphore s) { 
+	s.count--; 
+	if (s.count < 0) { 
+		/* place this process in s.queue */; 
+		/* block this process */; 
+	}
+}
+
+void semSignal(semaphore s) { 
+	s.count++; 
+	if (s.count<= 0) { 
+		/* remove a process P from s.queue */; 
+		/* place process P on ready list */; 
+	}
+}
+```
+
+**Semaforo binario:** una variabile con valore binario (o 0 o 1), una coda e tre operazioni:
+- Inizializzazione a 0 o 1
+- *semWaitB* verifica il valore del semaforo. Se il valore è 1 allora è portato a 0, nel caso contrario, il processo è sospeso e inserito nella coda
+- *semSignalB* verifica se ci sono processi in attesa nella coda. In caso affermativo, uno dei processi della coda è riattivato, nel caso opposto, il valore del semaforo è portato a 1
+
+**Gestione della coda:** 
+- Deve evitare la starvation
+- Generalmente FIFO (*semaforo forte*)
+
+```Semaforo_binario
+struct binary_semaphore { 
+	enum {zero, one} value; 
+	queueType queue; 
+}; 
+
+void semWaitB(binary_semaphore s) { 
+	if (s.value == one) 
+		s.value = zero; 
+	else { 
+		/* place this process in s.queue */; 
+		/* block this process */; 
+	}
+}
+
+void semSignalB(semaphore s) { 
+	if (s.queue is empty()) 
+		s.value = one; 
+	else { 
+		/* remove a process P from s.queue */;
+		/* place process P on ready list */; 
+	}
+}
+```
+
+> [!example] ![[Pasted image 20260319122744.png|200]]
+
+```Mutua_esclusione
+/* program mutualexclusion */ 
+const int n = /* number of processes */; 
+semaphore s = 1; 
+
+void P(int i) {
+	 while (true) { 
+	 	semWait(s); 
+	 	/* critical section */; 
+	 	semSignal(s); 
+	 	/* remainder */; 
+	 } 
+} 
+
+void main() { 
+	parbegin (P(1), P(2), ..., P(n)); 
+}
+```
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319123611.png" width="200">
+</div>
+
+**Implementazione:** *semWait* e *semSignal* devono essere primitive atomiche
+- hardware o firmware
+- con istruzioni speciali
+- con l’algoritmo di Peterson
+
+**Messaggi:** nell’interazione fra processi sono necessarie:
+1. *Sincronizzazione:* per la realizzare la mutua esclusione
+2. *Comunicazione:* per lo scambio di informazioni
+3. *Scambio di messaggi:* permette di realizzare entrambe
+	- Naturale nei sistemi distribuiti
+	- Utile anche nei sistemi con memoria condivisa
+4. *Due primitive:* 
+	- *Send (destination, message):* un processo invia informazioni in forma di messaggio a un altro processo designato come destinatario
+	- *Receive (source, message):* un processo riceve informazioni indicando il mittente e l’indirizzo in cui salvare il messaggio
+
+**Caratteristiche dei sistemi di messaggistica:** 
+1. *Sincronizzazione:* 
+	- Send: può essere o bloccante (finché il destinatario non esegue la receive, il processo che ha eseguito la send si blocca) o non bloccante
+	- Receive: può essere bloccante o non bloccante. In alternativa viene fatto un test di presenza messaggi (se ci sono viene lanciata una receive ?????)
+
+> [!info] ci sono situazioni in cui sia la send che la receive sono bloccanti
+
+2. *Indirizzamento:*
+	- Diretto: sia per la send che per la receive (esplicito o implicito). 
+	- Indiretto: statico o dinamico
+3. *Formato:*
+	- Contenuto
+	- Lunghezza (fissa o variabile)
+4. *Organizzazione delle code:* se ci sono più messaggi, vanno organizzati
+	- FIFO (cioè in code)
+	- Priorità
+
+**Sincronizzazione:** il destinatario non può ricevere il messaggio prima che questo sia stato inviato. Quando si esegue la receive:
+- Se è presente un messaggio, il processo lo riceve e continua l’esecuzione
+- In caso contrario ci sono due possibilità: o si sospende finché il messaggio non è inviato oppure si continua l’esecuzione senza più ricevere il messaggio
+
+| Tipo di send e receive                 | Comportamento                                                                                                                                                                                                                                                                     |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Send e receive bloccanti               | <ul><li>Mittente e destinatario bloccati fino al completamento dell’operazione</li><li>Rendez-vous</li><li>Permette la sincronizzazione dei processi</li></ul>                                                                                                                    |
+| Send non bloccante e receive bloccante | <ul><li>Il mittente procede ma il destinatario è bloccato fino alla ricezione del messaggio</li><li>Combinazione più comune</li><li>Il mittente invia più messaggi a tanti destinatari senza perdita di tempo (es. Processo server che fornisce servizi a più processi)</li></ul> |
+| Send e receive NON bloccanti           | <ul><li>Nessuno dei due processi attende</li></ul>                                                                                                                                                                                                                                |
+**Indirizzamento:** 
+1. *Indirizzamento diretto:* 
+	- La primitiva send include l’identificatore del processo destinatario
+	- La primitiva receive può avere sia l’indirizzamento esplicito (destinatario designato esplicitamente, è utile per processi concorrenti cooperanti) che quello implicito (sender è un parametro che restituisce l’identificatore del mittente)
+2. *Indirizzamento indiretto:*
+	- Messaggi inviati a una struttura dati condivisa consistente in code che contengono temporaneamente i messaggi (mailbox)
+	- Il mittente invia un messaggio a una mailbox
+	- Il destinatario preleva un messaggio dalla mailbox
+	- Flessibilità
+
+> [!info] Indirizzamento indiretto 
+> ![[Pasted image 20260319132049.png|200]]
+
+**Formato del messaggio:** 
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319132443.png" width="200">
+</div>
+
+**Gestione delle code:** 
+- FIFO
+- Priorità (per tipo di messaggio o designata dal mittente)
+- Il destinatario può ispezionare la coda e scegliere il messaggio
+
+```Mutua_esclusione
+/* program mutualexclusion */ 
+const int n = /* number of process */; 
+void P(int i) { 
+	message msg; 
+	while (true) { 
+		receive (box, msg); 
+		/* critical section */; 
+		send (box, msg); 
+		/* remainder */; 
+	} 
+} 
+
+void main() { 
+	create mailbox (box); 
+	send (box, null); 
+	parbegin (P(1), P(2),..., P(n)); 
+}
+```
+
+**Problema produttore/conduttore:** Condizioni:
+- Uno o più produttori inseriscono dati in buffer
+- Un consumatore estrae i dati dal buffer, uno alla volta
+- Un solo produttore o consumatore alla volta accede al buffer
+
+Il problema è che:
+- Assicurare la mutua esclusione
+- Evitare che un produttore aggiunga dati a un buffer pieno
+- Evitare cue il consumatore cerchi di estrarre dati da un buffer vuoto
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319133107.png" width="200">
+</div>
