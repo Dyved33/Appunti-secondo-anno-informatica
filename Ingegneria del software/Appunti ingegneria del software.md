@@ -1082,3 +1082,276 @@ Non dicono ancora:
 - come gli oggetti collaborano; 
 - quali messaggi si scambiano; 
 - in che ordine avvengono le operazioni. 
+
+###### Sequence diagram e activity diagram
+Nella lezione precedente abbiamo definito la struttura del sistema: 
+- **Domain Model**: concetti del dominio e relazioni principali;
+- **Class Diagram**: classi software e legami tra classi. 
+
+Oggi passiamo al livello dinamico: 
+- come gli oggetti collaborano durante uno scenario; 
+- in quale ordine avvengono azioni e decisioni. 
+
+Useremo due viste complementari: 
+- **Sequence Diagram** per le interazioni tra partecipanti; 
+- **Activity Diagram** per il flusso del processo.
+
+###### Sequence diagram
+Si utilizza per chiarire come uno scenario viene eseguito nel tempo. Risponde a tre domande operative: 
+- chi interagisce con chi; 
+- in quale ordine avvengono i messaggi; 
+- chi prende in carico ogni responsabilità. 
+
+È particolarmente utile per scenari di caso d’uso con esito positivo e varianti di errore. Non è il diagramma migliore per descrivere l’intero processo: quello è il ruolo degli Activity Diagram
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319145158.png" width="200">
+</div>
+
+**Lettura:** La lettura corretta segue due assi: 
+- verticale: il tempo scorre dall’alto verso il basso; 
+- orizzontale: partecipanti diversi coinvolti nello scenario. 
+
+Ogni freccia rappresenta un messaggio tra lifeline e quindi un passo osservabile del comportamento. La lettura consigliata interpreta il diagramma come una traccia esecutiva: 
+- primo messaggio, eventuale risposta, passo successivo; 
+- in presenza di rami, capire quale condizione seleziona il percorso. 
+
+Obiettivo didattico: raccontare lo scenario guardando ordine e contenuto dei messaggi
+
+**Lifeline:** Le lifeline identificano i partecipanti coinvolti nello scenario. Qui distinguiamo attore, interfaccia e servizio: ruoli diversi, responsabilità diverse. L’obiettivo è rendere esplicito chi partecipa prima di parlare dei dettagli dei messaggi. Quando usarlo: all’inizio, per fissare i confini dello scenario. Errore tipico: introdurre partecipanti non necessari al caso in esame.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319145433.png" width="200">
+</div>
+
+**Attivazione:** La barra di attivazione indica il periodo in cui il partecipante sta eseguendo lavoro. Nel diagramma si vede chiaramente quando *svc:AppelloService* è attivo e quando restituisce il controllo a *ui:Portale*. La freccia tratteggiata *esito(OK)* è un return message: rappresenta la risposta alla chiamata, non un messaggio asincrono. Serve a leggere meglio durata logica e nidificazione delle chiamate. Quando usarlo: quando la durata logica del lavoro è rilevante. Errore tipico: disegnare attivazioni ovunque senza valore informativo.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319145618.png" width="200">
+</div>
+
+**Messaggio sincrono:** Il chiamante invia il messaggio e attende il completamento. Nel nostro esempio *ui:Portale* invia la richiesta a *svc:AppelloService* e resta in attesa dell’esito. Il messaggio sincrono rappresenta una dipendenza temporale immediata tra chiamata e risultato. Quando usarlo: per chiamate con dipendenza immediata dal risultato. Errore tipico: usare sync anche per notifiche/eventi che non bloccano.
+
+**Messaggio asincrono:** Il chiamante invia il messaggio ma prosegue senza blocco. Nel nostro esempio *svc:AppelloService* invia una notifica a *noti:Notifier* senza attendere risposta immediata. Qui il focus è la disaccoppiata temporale tra chi invia e chi riceve. Quando usarlo: in integrazioni event-driven o code di messaggi. Errore tipico: usare async senza chiarire chi gestisce l’esito.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319145841.png" width="200">
+</div>
+
+**Return message:** La freccia tratteggiata rappresenta il risultato della richiesta. Qui *svc:AppelloService* restituisce a *ui:Portale* l’esito della richiesta (OK/errore). Nelle slide useremo il return solo quando porta informazione utile. Quando usarlo: se il valore di ritorno guida una decisione successiva. Errore tipico: mostrare tutti i return e appesantire il diagramma.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319145618.png" width="200">
+</div>
+
+**Create:** Mostra che un oggetto nasce durante l’interazione, non esiste dall’inizio. In UniManager, *svc:AppelloService* crea una nuova *iscr:Iscrizione* quando i vincoli sono soddisfatti. Questo chiarisce ownership e momento di istanziazione. Quando usarlo: se il momento di creazione è parte del comportamento. Errore tipico: creare oggetti tecnici ovunque invece di riusarli.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319150059.png" width="200">
+</div>
+
+**Destroy:** Rappresenta la fine del ciclo di vita di un oggetto temporaneo. In UniManager, *svc:AppelloService* può eliminare una *bozza:Iscrizione* scaduta/non confermata. Utile per risorse effimere e cleanup esplicito. Quando usarlo: per risorse temporanee con fine vita esplicita. Errore tipico: distruggere entità che dovrebbero restare persistenti.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319150212.png" width="200">
+</div>
+
+**Self-call:** Un partecipante può invocare una propria operazione interna. In UniManager, *svc:AppelloService* richiama internamente *validaVincoliIscrizione()* prima di proseguire. Evitiamo eccesso di self-call: solo quelle che chiariscono il comportamento. Quando usarlo: per evidenziare una sotto-fase interna significativa. Errore tipico: dettagliare micro-metodi irrilevanti per lo scenario.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319150320.png" width="200">
+</div>
+
+**Frammento alt:** `alt` modella rami alternativi mutuamente esclusivi. • Nel nostro esempio, *svc: AppelloService* sceglie il ramo in base ai prerequisiti dello studente. È la forma naturale per success/failure nello stesso scenario. Quando usarlo: per rami alternativi che non possono coesistere. Errore tipico: guardie sovrapposte o non mutuamente esclusive.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319150439.png" width="200">
+</div>
+
+**Frammento opt:** `opt` esprime un comportamento opzionale (if senza else). Il flusso principale resta valido anche senza il blocco opzionale. Tipico per notifiche, log o passi accessori. Quando usarlo: per comportamenti accessori non sempre presenti. Errore tipico: usare opt per passi in realtà obbligatori.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319150545.png" width="200">
+</div>
+
+**Frammento loop:** `loop` rappresenta una ripetizione controllata da condizione. Qui la stessa operazione si applica a più elementi. Il blocco rappresenta lo stesso micro-flusso ripetuto secondo un criterio esplicito. Quando usarlo: su operazioni ripetute con criterio esplicito. Errore tipico: loop senza condizione chiara o troppo generica.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319150650.png" width="200">
+</div>
+
+**Frammento break:** `break` interrompe il normale scenario in caso eccezionale. Quando il break scatta, il resto del flusso principale non prosegue. Utile per errori critici e stop immediato dell’operazione. Quando usarlo: per uscita anticipata in condizioni eccezionali. Errore tipico: usarlo al posto di un normale ramo alt.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319150855.png" width="200">
+</div>
+
+**Frammento jar:** `par` descrive rami concorrenti eseguibili in parallelo. Nel mini-esempio salvataggio e notifica sono indipendenti. Aiuta a discutere latenza e sincronizzazione senza entrare nel codice. Quando usarlo: per attività indipendenti eseguibili in parallelo. Errore tipico: segnare par su rami che in realtà si bloccano.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319151013.png" width="200">
+</div>
+
+**Frammento critical:** `critical` delimita una sezione che non deve essere interrotta da altre interazioni concorrenti. Serve per proteggere aggiornamenti sensibili da interferenze. Lo usiamo per mettere in evidenza vincoli di mutua esclusione. Quando usarlo: su sezioni che richiedono mutua esclusione. Errore tipico: marcare blocchi lunghi senza reale criticità.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319151148.png" width="200">
+</div>
+
+**Frammento  ref:** `ref` rimanda a un’interazione definita altrove, in modo analogo alla chiamata di una funzione. Riduce duplicazione quando lo stesso sotto-scenario ricorre spesso. Mantiene il diagramma principale leggibile e modulare. Quando usarlo: per riuso di sotto-scenari comuni. Errore tipico: nascondere dentro ref passaggi fondamentali del caso.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319151259.png" width="200">
+</div>
+
+**Frammento assert:** `assert` indica una traccia che deve valere obbligatoriamente. Nel diagramma usiamo un blocco etichettato assert per evidenziare il vincolo. È utile per evidenziare protocolli o vincoli forti. Se la traccia reale diverge, siamo fuori specifica. Quando usarlo: per specificare sequenze obbligatorie di protocollo. Errore tipico: usarlo senza una regola verificabile a supporto.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319151417.png" width="200">
+</div>
+
+**Frammento neg:** `neg` rappresenta una traccia vietata. Nel diagramma usiamo un blocco etichettato neg per evidenziare il contro-esempio. Qui evidenziamo un comportamento che il sistema non deve ammettere. È didatticamente utile per discutere contro-esempi. Quando usarlo: per rendere espliciti comportamenti vietati. Errore tipico: confondere neg con un ramo alternativo valido.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319151532.png" width="200">
+</div>
+
+**Frammenti strict vs seq:** 
+- `strict`: ordine globale totale tra eventi (no interleaving). 
+- `seq`: ordine parziale (weak); preserva solo i vincoli locali. Con `seq` è possibile interleaving tra lifeline diverse. `seq` è il comportamento di default nei diagrammi UML. 
+
+Uso: 
+- `strict`: protocolli o scenari con ordine rigidamente definito. 
+- `seq`: sistemi concorrenti, per evitare over-constraining. 
+
+Errore tipico: usare strict quando basta seq, irrigidendo il modello.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319151725.png" width="200">
+</div>
+
+###### Activity diagram
+Con i Sequence Diagram abbiamo visto chi parla con chi e in quale ordine. Ora cambiamo punto di vista: 
+- non più il dettaglio dei messaggi tra oggetti; 
+- ma il flusso complessivo del processo. 
+
+L’Activity Diagram è utile per analizzare: 
+- passi operativi end-to-end; 
+- decisioni e guardie; 
+- parallelismi e sincronizzazioni
+
+Uso l’activity diagram: 
+- Per descrivere flussi di attività e regole decisionali
+- Focus sul  processo, non sui singoli messaggi
+
+**Lettura di base:** 
+- Nodo iniziale/finale, azioni e archi
+- Decisioni con guardie, parallelismo con fork/join
+
+**Initial e final:** Ogni Activity parte da un nodo iniziale e termina in uno finale. Notazione grafica: 
+- nodo iniziale: cerchio pieno (nero); 
+- nodo finale: cerchio pieno con bordo esterno (bersaglio).
+
+Questa cornice minima definisce inizio e fine del processo. Anche negli esempi semplici è bene mantenerla esplicita. Quando usarlo: sempre, per delimitare chiaramente il processo. Errore tipico: final implicito che lascia il flusso ambiguo.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319152240.png" width="200">
+</div>
+
+**Action e control flow:** Le azioni sono i passi di lavoro; gli archi definiscono l’ordine. Notazione grafica: 
+- azione: rettangolo con angoli arrotondati; 
+- control flow: freccia piena tra un’azione e la successiva.
+
+Qui il flusso è lineare: un passo prepara il successivo. È la base su cui poi aggiungiamo decisioni e parallelismo. Quando usarlo: per modellare la sequenza operativa principale. Errore tipico: azioni troppo grandi che nascondono decisioni
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319152431.png" width="200">
+</div>
+
+**Decision e merge:** Decision separa i rami; merge li ricompone. Notazione grafica: 
+- decision: rombo con un ingresso e più uscite; 
+- merge: rombo con più ingressi e una sola uscita. 
+
+Le guardie devono essere chiare e possibilmente mutualmente esclusive. Nel diagramma si vede il classico esito positivo/negativo. Quando usarlo: quando un punto del processo biforca i casi. Errore tipico: dimenticare il merge e lasciare rami scollegati
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319152602.png" width="200">
+</div>
+
+**Guardie:** Le guardie esplicitano la condizione logica su ogni ramo. Notazione grafica: 
+- ogni uscita dal nodo decision ha una condizione tra parentesi quadre, ad esempio (posti > 0); 
+- le guardie devono coprire i casi rilevanti e non sovrapporsi. 
+
+Etichette come (posti > 0) evitano ambiguità interpretative. Sono fondamentali per verificare completezza dei casi. Quando usarlo: per esplicitare condizioni precise sui rami. Errore tipico: guardie vaghe (es. ’ok’) non verificabili.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319152729.png" width="200">
+</div>
+
+**Fork e join:** Fork apre esecuzioni concorrenti; join le sincronizza. Notazione grafica: 
+- fork: barra nera spessa con un ingresso e più uscite; 
+- join: barra nera spessa con più ingressi e una sola uscita. 
+
+Utile quando due attività sono indipendenti ma devono convergere. Qui salvataggio e notifica procedono in parallelo. Quando usarlo: per parallelismo reale con sincronizzazione finale. Errore tipico: fork senza join quando la convergenza è richiesta.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319152844.png" width="200">
+</div>
+
+**Swimlane:** Le swimlane assegnano responsabilità organizzative ai passi. Notazione grafica:
+- il diagramma è diviso in partizioni (corsie) etichettate;
+- ogni azione è collocata nella corsia del ruolo/sistema responsabile. 
+
+Si capisce subito chi fa cosa (studente vs sistema). Ottimo strumento di comunicazione con stakeholder non tecnici. Quando usarlo: per chiarire ownership tra ruoli/sistemi. Errore tipico: cambiare lane senza criterio di responsabilità.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319152956.png" width="200">
+</div>
+
+**Send signal:** L’attività emette un segnale verso l’esterno. Notazione grafica: azione di invio evento, con flusso che prosegue senza attesa di risposta immediata. È un punto di integrazione event-driven nel processo. Qui l’evento comunica che gli esiti sono disponibili. Quando usarlo: quando il processo pubblica un evento esterno. Errore tipico: usare send signal per normali chiamate sincrone.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319153053.png" width="200">
+</div>
+
+**Receive signal:** Il flusso resta in attesa di un segnale in ingresso. Notazione grafica: azione di ricezione evento, che abilita la prosecuzione del flusso. La prosecuzione dipende da un evento esterno. Utile per modellare processi reattivi e asincroni. Quando usarlo: per stati in attesa di input/evento esterno. Errore tipico: non specificare chi emette il segnale atteso.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319153154.png" width="200">
+</div>
+
+**Time event:** Il processo reagisce a una scadenza temporale. Notazione grafica: azione di attesa temporale, che abilita una transizione al verificarsi della scadenza. Rende esplicite le transizioni guidate dall’orologio. Nel nostro esempio, il flusso prosegue quando viene raggiunta la scadenza delle iscrizioni. Quando usarlo: per transizioni innescate dal tempo. Errore tipico: modellare tempi con testo libero invece di eventi
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319153249.png" width="200">
+</div>
+
+> [!example] Esempio con send, receive e time
+> ![[Pasted image 20260319153413.png|200]]
+> 
+> - Lo scenario combina in un unico flusso invio evento, attesa evento e transizione temporale. 
+> - Sequenza logica: pubblicazione esiti, notifica esterna, conferma ricevuta, attesa scadenza, archiviazione finale.
+> - Il diagramma chiarisce come eventi esterni e tempo guidano avanzamento e chiusura del processo.
+
+**Loop structure:** Un blocco viene ripetuto finché la condizione resta vera. Qui il ciclo copre tutti gli elementi da elaborare. Esplicitare il loop evita di nascondere lavoro ripetitivo. Quando usarlo: per cicli di processo su insiemi di elementi. Errore tipico: non esplicitare condizione di uscita del ciclo.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319153508.png" width="200">
+</div>
+
+**Interruptable region:** Una regione può essere interrotta da un evento di annullamento. Il diagramma evidenzia il ramo di uscita anticipata. Fondamentale per processi lunghi con comando stop. Quando usarlo: su processi lunghi annullabili dall’utente. Errore tipico: annullamento modellato ma senza cleanup logico.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260319153603.png" width="200">
+</div>
+
+**Confronto finale:**
+- Sequence Diagram: 
+	- risponde a: chi interagisce con chi, in quale ordine, con quali messaggi; 
+	- è ideale per analizzare responsabilità tra componenti e interfacce. 
+- Activity Diagram: 
+	- risponde a: quali passi compongono il processo, con quali decisioni/parallelismi; 
+	- è ideale per descrivere il flusso end-to-end anche a livello di business. 
+- Criterio di scelta: 
+	- usa Sequence quando il rischio è distribuire male la logica tra oggetti; 
+	- usa Activity quando il rischio è perdere la visione complessiva del processo. 
