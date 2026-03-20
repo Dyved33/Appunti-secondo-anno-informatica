@@ -671,3 +671,92 @@ La soluzione al mio problema è: date le espressioni regolari $E,F$
 1. Calcolare automi deterministici che accettano i linguaggi $L_E$ e $L_F$ denotati da $E$ e $F$, rispettivamente; 
 2. Calcolare un automa deterministico che accetta $(L_E − L_F ) \cup (L_F − L_E )$; 
 3. Verificare se tutti gli stati finali sono inaccessibili.
+
+###### Automa minimo
+**Definizione:** un’equivalenza è una relazione riflessiva, simmetrica e transitiva
+
+**Osservazione:** ogni equivalenza su un insieme $S$ determina una partizione dell’insieme $S$ in classi di equivalenza. Viceversa, ogni partizione dell’inisieme $S$ è associata a un’equivalenza di cui le parti sono classi di equivalenza
+
+**Definizione:** sia $\Sigma$ un alfabeto. Una relazione di equivalenza $\sim$ su $\Sigma^*$ si dice una congruenza destra (risp. Sinistra) se per ogni $u, v \in \Sigma^*$ tali che $u \sim v$ e per ogni lettera $a \in \Sigma$, si ha $ua \sim va$ (risp. au \sim av). Una relazione che sia contemporaneamente una congruenza destra e una congruenza sinistra si dice congruenza 
+
+> [!example] Si considerino le relazione $\sim$ su $\Sigma^*$ definite da:
+> 1. $u \sim v$ se $u$ e $v$ iniziano con la stessa lettera (o $u$ = $v$ = $\epsilon$)
+> 2. $u \sim v$ se $u$ e $v$ terminano con la stessa lettera (o $u$ = $v$ = $\epsilon$)
+> 3. $u \sim v$ se $u$ e $v$ hanno la stessa lunghezza
+> 4. $u \sim v$ se $u$ e  $v$ le prime due lettere di u sono una permutazione delle prime due lettere di $v$ (o $u = v$)
+> 
+> Per es. $abaa \sim bab, aababb \sim aaabaa \ \text{ma} \ aababb \not\sim baaabaa$
+
+**Equivalenza di Nerode:**
+
+**Definizione:** sia $L$ un linguaggio sull’alfabeto $\Sigma$. L’equivalenza di Nerode associata al linguaggio $L$ è la relazione $N_L$ definita in $\Sigma^*$ da: $u \ N_L \ v$ se per ogni $y \in \Sigma^*$*, $uy \in L \iff vy \in L$. Cioè, $u \ N_L \ v$ se $u$ e $v$ hanno gli stessi completamenti a destra in $L$
+
+**Lemma:** sia $L \subseteq \Sigma^*$ un linguaggio
+1. La relazione $N_L$ è una congruenza destra
+
+**Dimostrazione:** $N_L$ è un’equivalenza. Dobbiamo verificare che per ogni $u, v \in \Sigma^*$ , $a \in \Sigma$, se $u N_L v$, allora $ua \ N_L \ va$. Invero sia $u \ N_L \ v$ e $a \in \Sigma$. Dalla definizione di $N_L$ si ha $uy \in L \iff vy \in L$ per ogni $y \in \Sigma^*$ Sostituendo $y$ con $ay$, ottengo $uay \in L \iff vay \in L$ Quindi si ha anche $ua \ N_L \ va$.
+
+2. $L$ è unione di classi di equivalenza di $N_L$
+
+**Dimostrazione:** Sia $u \ N_L \ v$. Allora $uy \in L \iff vy \in L$ per ogni $y \in \Sigma^*$ . Prendendo $y = \epsilon$ ottengo $u \in L \iff v \in L$. Quindi ogni classe di equivalenza o sta tutta dentro L o sta tutta nel complemento.
+
+**Teorema di Myhill-Nerode (1958):** Sia $L$ un linguaggio sull’alfabeto $\Sigma$, le seguenti proposizioni sono equivalenti:
+1. $L$ è regolare
+2. $L$ è unione di classi di una congruenza destra su $\Sigma^*$ si dice finito
+3. $N_L$ ha indice finito
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260320102535.png" width="200">
+</div>
+
+Dimostrazione circolare: 1. $\implies$ 2. $\implies$ 3. $\implies$ 1.
+
+**Dimostrazione 1. $\implies$ 2.:** 
+- Sia $L$ regolare
+- $L$ è accettata da un automa deterministico $A = \langle Q; \Sigma, \delta, q_0, F \rangle$ con tutti gli stati accessibili
+- Per ogni stato $q \in Q$ sia $L_q = \{w \in \Sigma^* | \hat\delta(q_0,w) = q\}$
+- Gli insiemi $L_q$ costituiscono una partizione di $\Sigma^*$
+- $L$ è l’unione delle classi $L_q$ con $q \in F$
+- Quindi basta verificare che l’equivalenza $\sim$ associata alla partizione è una congruenza destra:
+	- Supponiamo $u \sim v, u, v \in \Sigma^*$
+	- Allora $u, v \in L_q$ per qualche stato $q$
+	- Quindi $\hat\delta(q_0,u) = \hat\delta(q_0,v) = q$
+	- Pertanto per ogni lettera $a, \hat\delta(q_0,va) = \delta(q,a) = q'$
+	- Cioè $ua, va \in L_q$, per cui $ua \sim va$
+
+**Dimostrazione 2. $\implies$ 3.:** $L$ unione di classi di una congruenza destra di indice finito $\implies N_L$ ha indice finito
+- Sia $L$ unione di classi di una congruenza destra $\sim$ su $\Sigma^*$ di indice finito
+- Basta mostra che ogni classe di $N_L$ è unione di classi di $\sim$
+- Cioè che se $u \sim v$ allora $u \ N_L \ v,u,v \in \Sigma^*$ 
+	- Supponiamo $u \sim v,u,v \in \Sigma^*$
+	- Dato che $\sim$ è una congruenza destra, si ha $ua \sim va$ per ogni $a \in \Sigma$
+	- Più in generale si ha $uy \sim vy$ per ogni $y \in \Sigma^*$
+	- Visto che $L$ è unione di classi di $\sim$ ne segue che $uy \in L \iff vy \in L$ e quindi $u \ N_L \ v$
+- Abbiamo mostrato che ogni classe di $N_L$ è unione di classi di $\sim$ve quindi contiene almeno una classe di $\sim$
+- Ne concludiamo che l’indice di $N_L$ è minore o uguale a quello di $\sim$ e pertanto è finito
+
+**Dimostrazione 3. $\implies$ 1.:** $N_L$ ha indice finito $\implies L$ è regolare
+- Per il teorema di Kleene basta costruire un automa che accetta $L$
+- Sia $A$ l’automa ottenuto nel modo seguente (automa di Nerode di $L$)
+	- Gli stati sono le classi dell’equivalenza $N_L$
+	- La funzione di transizione $\delta$ è definita nel modo seguente: siano $q \in Q$ e $a \in \Sigma$. Poiché $q$ è una classe dell’equivalenza $N_L$ tutte le parole $ua$ con $u \in q$ appartengono a un’unica classe $p$ dell’equivalenza $N_L$. Poniamo dunque $\delta(q,a) = p$
+	- Lo stato iniziale $q_0$ è la classe d’equivalenza della parola vuota
+	- Gli stati finali sono le classi d’equivalenza incluse in $L$
+- Per ogni $w \in \Sigma, \hat\delta(q_0,w)$ è la classe di equivalenza della parola $w$
+- Poiché $L$ è unione di classi dell’equivalenza $N_L$ tale stato è finale se e solo se $w \in L$
+- Se ne conclude che il linguaggio accettato da $A$ è proprio $L$
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260320112259.png" width="200">
+</div>
+
+**Proposizione:** Sia $L$ un linguaggio regolare. L’automa di Nerode di $L$ è un automa deterministico che accetta $L$ col minimo numero di stati possibile. 
+
+**Dimostrazione:** 
+- Sia $A$ l’automa deterministico che accetta $L$ col minimo numero di stati possibile e sia n tale numero; 
+- nella dimostrazione 1. $\implies$ 2. si è visto che $L$ è unione di classi di una congruenza destra $\sim$ di indice n; 
+- nella dimostrazione 2. $\implies$ 3. si è visto che l’indice di $N_L$ è minore o uguale di quello di $\sim$; 
+- quindi l’indice di $N_L$ è minore o uguale a n; 
+- nella dimostrazione 3. $\implies$ 1. si è costruito un automa che accetta $L$ con un numero di stati pari all’indice di $N_L$ ; 
+- quindi l’indice di $N_L$ è maggiore o uguale a n; 
+- ne segue l’asserto
