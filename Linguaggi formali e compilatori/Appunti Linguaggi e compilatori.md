@@ -34,7 +34,7 @@ Il passaggio dal codice sorgente al codice macchina attraversa stadi sequenziali
    > [!EXAMPLE] Struttura dell'AST
    > Confrontando una funzione scritta in 3 linguaggi diversi (Pascal, ML, Java) con 3 parametri reali, una variabile locale e un'operazione, la struttura ad albero logica rimane la stessa. Il nodo principale (radice) viene identificato come `FuncDef`.
 
-4. **Analisi Semantica Statica:** Utilizza l'albero sintattico astratto e la tabella dei simboli per verificare che il programma sorgente sia semanticamente coerente con la definizione del linguaggio.
+3. **Analisi Semantica Statica:** Utilizza l'albero sintattico astratto e la tabella dei simboli per verificare che il programma sorgente sia semanticamente coerente con la definizione del linguaggio.
    * **Type checking:** Verifica che ogni operatore abbia tutti gli operandi del tipo corretto. Se necessario, può eseguire la **coercizione** (conversione forzata del tipo).
    * *Esempio in C:* È permesso moltiplicare un intero per un reale; il compilatore converte silenziosamente l'intero in un reale.
    * *Esempio in Pascal:* Il costrutto `WHILE` richiede obbligatoriamente un valore `BOOLEAN`. L'espressione `WHILE X DO X := X - 1 ;` farà segnalare un errore all'analizzatore semantico.
@@ -42,16 +42,16 @@ Il passaggio dal codice sorgente al codice macchina attraversa stadi sequenziali
 **Fase di sintesi:**
 5. **Generazione del Codice Intermedio:** Dall'AST e dalla tabella dei simboli si ottiene un codice intermedio basato su istruzioni elementari, facili da tradurre in codice macchina. È **indipendente dall'architettura** (non specifica gli indirizzi fisici in memoria né i registri).
    * *Esempio pratico:* L'espressione precedente viene scomposta in operazioni atomiche: `t1 = inttofloat(60)`, `t2 = id3 * t1`, `t3 = id2 + t2`, `id1 = t3`.
-6. **Ottimizzazione:** L'ottimizzatore elabora il codice intermedio per ridurre il tempo o lo spazio necessario all'esecuzione.
+5. **Ottimizzazione:** L'ottimizzatore elabora il codice intermedio per ridurre il tempo o lo spazio necessario all'esecuzione.
    > [!NOTE] Taglio delle Istruzioni
    > L'ottimizzatore snellisce il codice eliminando passaggi inutili. Nel nostro esempio, riduce le operazioni accorpando i calcoli: `t2 = id3 * 60.0` e `id1 = id2 + t2`.
-7. **Generazione del Codice Oggetto:** È la parte più complessa e dipende strettamente dall'architettura della piattaforma hardware. Il compilatore genera codice assembly o file oggetto ricollocabili. I passaggi chiave sono:
+6. **Generazione del Codice Oggetto:** È la parte più complessa e dipende strettamente dall'architettura della piattaforma hardware. Il compilatore genera codice assembly o file oggetto ricollocabili. I passaggi chiave sono:
    * Fissare le locazioni di memoria esatte per i dati.
    * Generare il codice di basso livello per accedere a tali dati.
    * Selezionare i registri fisici della CPU per i calcoli intermedi.
    > [!IMPORTANT] Il ruolo dell'Assemblatore e del Linker
    > A rigore, l'Assemblatore (se il compilatore emette assembly) e il Linker sono strumenti esterni che intervengono al termine della compilazione. Il Linker si occuperà di collegare il codice oggetto generato in questa fase con eventuali librerie esterne, producendo il file eseguibile finale.
-8. **Ottimizzazione Peep-hole:** Un'ulteriore e ultimissima fase di ottimizzazione legata alle specificità e ai "trucchi" dell'architettura hardware di destinazione.
+5. **Ottimizzazione Peep-hole:** Un'ulteriore e ultimissima fase di ottimizzazione legata alle specificità e ai "trucchi" dell'architettura hardware di destinazione.
 ###### **L'Architettura Software del Compilatore**
 L'organizzazione interna del compilatore definisce come i moduli comunichino effettivamente tra loro durante il processo di traduzione.
 * **Il Nucleo Centrale (Parser & Semantica):** la parte centrale di tutto il processo è l'**analizzatore sintattico**. In questa architettura, esso realizza contestualmente anche l'**analisi semantica statica**.
@@ -673,11 +673,18 @@ La soluzione al mio problema è: date le espressioni regolari $E,F$
 3. Verificare se tutti gli stati finali sono inaccessibili.
 
 ###### Automa minimo
+Si tratta di un’automa deterministico con il minor numero possibile di stati.
+L’automa di Nerode di un linguaggio regolare L è un automa deterministico che accetta L col minimo numero di stati possibile. Quindi definisco prima la congruenza di Nerode, così da definire un’equivalenza cioè una partizione dell’insieme Σ* in un numero finito di classi di equivalenza. Costruisco in seguito un automa minimo partendo da queste classi di equivalenza, che accetta il linguaggio L. 
+
+
+Equivalenza: insieme sul quale è definita una relazione riflessiva (cioè ogni elemento è equivalente a se stesso), simmetrica (se x è equivalente a y, allora y è equivalente a x) e transitiva (se abbiamo tre elementi e il primo è equivalente al secondo, il secondo è equivalente al terzo, allora il primo è equivalente al terzo). C’è una corrispondenza tra la nozione di equivalenza, quindi un insieme di coppie che soddisfa le proprietà citate sopra, e la nozione di partizione su un insieme, cioè la divisione di un insieme in sottoinsiemi che sono a due a due disgiunti (privi di elementi in comune), e che uniti mi danno tutto l’insieme. Quindi se ho un’equivalenza su un insieme, le classi di equivalenza (cioè l’insieme di tutti gli elementi che sono equivalenti l’uno all’altro), costituiscono una partizione sull'insieme. Allo stesso modo se ho una partizione, gli insiemi che la costituiscono sono classi di un’opportuna equivalenza. 
+
+
 **Definizione:** un’equivalenza è una relazione riflessiva, simmetrica e transitiva
 
-**Osservazione:** ogni equivalenza su un insieme $S$ determina una partizione dell’insieme $S$ in classi di equivalenza. Viceversa, ogni partizione dell’inisieme $S$ è associata a un’equivalenza di cui le parti sono classi di equivalenza
+**Osservazione:** ogni equivalenza su un insieme $S$ determina una partizione dell’insieme $S$ in classi di equivalenza. Viceversa, ogni partizione dell’insieme $S$ è associata a un’equivalenza di cui le parti sono classi di equivalenza
 
-**Definizione:** sia $\Sigma$ un alfabeto. Una relazione di equivalenza $\sim$ su $\Sigma^*$ si dice una congruenza destra (risp. Sinistra) se per ogni $u, v \in \Sigma^*$ tali che $u \sim v$ e per ogni lettera $a \in \Sigma$, si ha $ua \sim va$ (risp. au \sim av). Una relazione che sia contemporaneamente una congruenza destra e una congruenza sinistra si dice congruenza 
+**Definizione:** sia $\Sigma$ un alfabeto. Una relazione di equivalenza $\sim$ su $\Sigma^*$ si dice una congruenza destra (risp. Sinistra) se per ogni $u, v \in \Sigma^*$ tali che $u \sim v$ e per ogni lettera $a \in \Sigma$, si ha $ua \sim va$ (risp. $au \ \sim \ av$). Una relazione che sia contemporaneamente una congruenza destra e una congruenza sinistra si dice congruenza. In altre parole qui non abbiamo solo un insieme, ma un insieme che ha un’operazione definita su di esso. Ogni volta che si va a concatenare a dx di due parole equivalenti, una lettera, ottengo due parole equivalenti (rispettivamente per la congruenza sx).
 
 > [!example] Si considerino le relazione $\sim$ su $\Sigma^*$ definite da:
 > 1. $u \sim v$ se $u$ e $v$ iniziano con la stessa lettera (o $u$ = $v$ = $\epsilon$)
