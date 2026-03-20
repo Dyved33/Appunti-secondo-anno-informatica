@@ -526,7 +526,7 @@ return 0;
 
 Queste due funzioni hanno sempre successo
 
-> [!info] esiste anche `getpgrp()` che ritorna il *process group ID*
+> [!info] Esiste anche `getpgrp()` che ritorna il *process group ID*
 
 **wait () e waitPID():** `#include <sys/wait.h> pid_t wait(int *wstatus); pid_t waitpid(pid_t pid, int *wstatus, int options)`
 
