@@ -12,8 +12,8 @@ int main()
 	}	
 	else if (pid == 0) { /* child process */
 		printf("Child: my pid = %d, parent pid = %d\n", getpid(), getppid());//execlp("/bin/ls","ls",NULL);
-		//sleep(10); //mette il processo in attesa passiva (no consumo risorse) per 10 secondi
-        _exit(0); //termina il processo figlio senza eseguire le operazioni di pulizia del processo (come la chiusura dei file aperti)
+		sleep(5); //mette il processo in attesa passiva (no consumo risorse) per 10 secondi
+        //_exit(0); //termina il processo figlio senza eseguire le operazioni di pulizia del processo (come la chiusura dei file aperti)
 	}
 	else { /* parent process */
 		/* parent will wait for the child to complete */

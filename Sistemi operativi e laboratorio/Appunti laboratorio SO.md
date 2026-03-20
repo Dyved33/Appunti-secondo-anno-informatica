@@ -559,6 +559,26 @@ Permettono di rilasciare le risorse assegnate al *child*. Se un *child* termina 
 ###### File Bash
 ```C
 // Prima riga = quale interprete deve interpretare i comandi: shabang
+#!/bin/bash
+
+RET=0
+LABEL="${1}" #non mettere spazi tra le parole, altrimenti da errore 
+
+if test $# -ge 1
+then
+
+gcc -o $LABEL $LABEL.c
+RET=$? #ciò che gcc ritorna alla shell ce lo ho in $?
+
+if test $RET -eq 0 #-eq significa equal e si usa per i valori numerici
+then
+
+./$LABEL
+
+echo "Pid dello script = $$"
+echo "Pid della bash = $BASHPID"
+
+fi //fine if
 LABEL="fork" #non mettere spazi tra le parole, altrimenti da errore
 
 gcc -o $LABEL $LABEL.c
@@ -578,7 +598,22 @@ echo "PIDdella bash = $BASHPID"
 fi #fine if
 
 exit $RET
+else
+
+echo "Usage: `basename $0` nome_file" >&2
+RET=1
+
+fi
+  
+exit $RET
 ```
 
 > [!attention] Nei file bash (e nella shell in generale), non bisogna mettere spazi attorno al segno di uguale quando si definisce una variabile perché **bash usa gli spazi per separare i comandi dai loro argomenti** (nome variabile verrebbe interpretato come nome di un comando da eseguire e `=` e il `valore` della variabile verrebbero interpretati come argomenti di questo comando)
+
+**Scripting:** 
+- Possiamo passare ad uno script degli argomenti
+- Per lo script 
+
+> [!info] echo ls stampa ls (cioè ciò che c’è dopo echo)
+> `echo ls` stampa invece il contenuto di ls
 
