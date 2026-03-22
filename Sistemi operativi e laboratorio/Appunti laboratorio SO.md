@@ -478,13 +478,13 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 ###### System calls per i processi
 **fork():** `include <unistd.h> pid_t fork();`
 
-È una syscall che non vuole argomenti. Questo metodo ritorna -1 difficilmente (il *child* non viene creato e errno viene settata).
+È una syscall che non vuole argomenti. Questo metodo ritorna -1 difficilmente (il *child* non viene creato e errno viene settata), altrimenti:
 - Crea un nuovo processo duplicando il chiamante, tuttavia alcuni attributi non sono duplicati: PID, memory locks, segnali pendenti, timer, etc,
 - Il nuovo processo  è detto *child*, il processo chiamante è detto *parent*
 - Lo spazio di indirizzamento del nuovo processo è un duplicato di quello del *parent* (sono separati, ognuno ha il proprio)
 
 > [!info] 
-> - fork() nel *child* torna 0, mentre nel *parent* torna il valore del PIDdel *child* (valore > 0). In questo modo si può differenziare il codice tra i due
+> - fork() nel *child* torna 0, mentre nel *parent* torna il valore del PID del *child* (valore > 0). In questo modo si può differenziare il codice tra i due
 > - con `fprintf()` posso decidere su quale descrittore andare a stampare 
 
 I due processi (child e parent) sono eseguiti concorrentemente. Il child eredita una copia della *tabella dei descrittori* aperti dal padre ma ogni copia di un file descriptor si riferisce alla stessa voce nella tabella dei file aperti (di sistema) cui si riferisce il descrittore originale. Originale e copia condividono:
@@ -519,7 +519,7 @@ sleep(10);
 return 0;
 }
 ```
-**PIDe PPID:** `include <unistd.h> pid_t getpid(void); pid_t getppid(void)`
+**PID e PPID:** `include <unistd.h> pid_t getpid(void); pid_t getppid(void)`
 
 - getpid() torna il process ID
 - getppid() torna il parent process ID 
@@ -533,9 +533,9 @@ Queste due funzioni hanno sempre successo
 - *wait()* sospende il chiamante finché un *child* termina
 - *waitpid()* sospende il chiamante finché un *child* cambia stato (terminato; stoppato da un *signal*; ha ripreso dopo un *signal*), dipende da *options*
 
-Permettono di rilasciare le risorse assegnate al *child*. Se un *child* termina e una *wait* non viene eseguita il *child* rimane nello stato di *zombie* (*man wait(2)*). Questi metodi ritornano il PIDdel processo il cui stato è cambiato (*waitpid()* può tornare 0 in certe circostanze) oppure -1 in caso di errore. Se un/il *child* è terminato/ha già cambiato stato tornano immediatamente. Tra i valori che possiamo dare a PIDci sono i seguenti:
+Permettono di rilasciare le risorse assegnate al *child*. Se un *child* termina e una *wait* non viene eseguita il *child* rimane nello stato di *zombie* (*man wait(2)*). Questi metodi ritornano il PID del processo il cui stato è cambiato (*waitpid()* può tornare 0 in certe circostanze) oppure -1 in caso di errore. Se un/il *child* è terminato/ha già cambiato stato tornano immediatamente. Tra i valori che possiamo dare a PID ci sono i seguenti:
 - -1: attende per un cambiamento di stato di uno qualsiasi dei child
-- >0: attende per un cambiamento di stato del child il cui process ID è uguale a pid
+- >0: attende per un cambiamento di stato del child il cui process ID è uguale a PID
 - Etc
 
 *waitpid(-1, &wstatus, 0)* è equivalente a *wait(&wstatus)*. Se *&wstatus* non è NULL riceve informazioni sul *child*. Queste informazioni possono essere evinte con delle macro:
@@ -615,5 +615,5 @@ exit $RET
 - Per lo script 
 
 > [!info] echo ls stampa ls (cioè ciò che c’è dopo echo)
-> `echo ls` stampa invece il contenuto di ls
+> 'echo ls' (Alt Gr + ') stampa invece il contenuto di ls
 

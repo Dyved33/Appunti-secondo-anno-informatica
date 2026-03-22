@@ -673,14 +673,9 @@ La soluzione al mio problema è: date le espressioni regolari $E,F$
 3. Verificare se tutti gli stati finali sono inaccessibili.
 
 ###### Automa minimo
-Si tratta di un’automa deterministico con il minor numero possibile di stati.
-L’automa di Nerode di un linguaggio regolare L è un automa deterministico che accetta L col minimo numero di stati possibile. Quindi definisco prima la congruenza di Nerode, così da definire un’equivalenza cioè una partizione dell’insieme Σ* in un numero finito di classi di equivalenza. Costruisco in seguito un automa minimo partendo da queste classi di equivalenza, che accetta il linguaggio L. 
+Si tratta di un’automa deterministico con il minor numero possibile di stati. L’automa di Nerode di un linguaggio regolare $L$ è un automa deterministico che accetta $L$ col minimo numero di stati possibile. Quindi definisco prima la congruenza di Nerode, così da definire un’equivalenza cioè una partizione dell’insieme $\Sigma^*$ in un numero finito di classi di equivalenza. Costruisco in seguito un automa minimo partendo da queste classi di equivalenza, che accetta il linguaggio $L$. 
 
-
-Equivalenza: insieme sul quale è definita una relazione riflessiva (cioè ogni elemento è equivalente a se stesso), simmetrica (se x è equivalente a y, allora y è equivalente a x) e transitiva (se abbiamo tre elementi e il primo è equivalente al secondo, il secondo è equivalente al terzo, allora il primo è equivalente al terzo). C’è una corrispondenza tra la nozione di equivalenza, quindi un insieme di coppie che soddisfa le proprietà citate sopra, e la nozione di partizione su un insieme, cioè la divisione di un insieme in sottoinsiemi che sono a due a due disgiunti (privi di elementi in comune), e che uniti mi danno tutto l’insieme. Quindi se ho un’equivalenza su un insieme, le classi di equivalenza (cioè l’insieme di tutti gli elementi che sono equivalenti l’uno all’altro), costituiscono una partizione sull'insieme. Allo stesso modo se ho una partizione, gli insiemi che la costituiscono sono classi di un’opportuna equivalenza. 
-
-
-**Definizione:** un’equivalenza è una relazione riflessiva, simmetrica e transitiva
+**Equivalenza:** insieme sul quale è definita una relazione riflessiva (cioè ogni elemento è equivalente a se stesso), simmetrica (se x è equivalente a y, allora y è equivalente a x) e transitiva (se abbiamo tre elementi e il primo è equivalente al secondo, il secondo è equivalente al terzo, allora il primo è equivalente al terzo). C’è una corrispondenza tra la nozione di equivalenza, quindi un insieme di coppie che soddisfa le proprietà citate sopra, e la nozione di partizione su un insieme, cioè la divisione di un insieme in sottoinsiemi che sono a due a due disgiunti (privi di elementi in comune), e che uniti mi danno tutto l’insieme. Quindi se ho un’equivalenza su un insieme, le classi di equivalenza (cioè l’insieme di tutti gli elementi che sono equivalenti l’uno all’altro), costituiscono una partizione sull'insieme. Allo stesso modo se ho una partizione, gli insiemi che la costituiscono sono classi di un’opportuna equivalenza.  
 
 **Osservazione:** ogni equivalenza su un insieme $S$ determina una partizione dell’insieme $S$ in classi di equivalenza. Viceversa, ogni partizione dell’insieme $S$ è associata a un’equivalenza di cui le parti sono classi di equivalenza
 
@@ -696,27 +691,39 @@ Equivalenza: insieme sul quale è definita una relazione riflessiva (cioè ogni 
 
 **Equivalenza di Nerode:**
 
-**Definizione:** sia $L$ un linguaggio sull’alfabeto $\Sigma$. L’equivalenza di Nerode associata al linguaggio $L$ è la relazione $N_L$ definita in $\Sigma^*$ da: $u \ N_L \ v$ se per ogni $y \in \Sigma^*$*, $uy \in L \iff vy \in L$. Cioè, $u \ N_L \ v$ se $u$ e $v$ hanno gli stessi completamenti a destra in $L$
+**Definizione:** sia $L$ un linguaggio sull’alfabeto $\Sigma$. L’equivalenza di Nerode associata al linguaggio $L$ è la relazione $N_L$ definita in $\Sigma^*$ da: $u \ N_L \ v$ se per ogni $y \in \Sigma^*$*, $uy \in L \iff vy \in L$. Cioè, $u \ N_L \ v$ se $u$ e $v$ hanno gli stessi completamenti a destra in $L$. 
+
+Quindi diciamo che due parole sono equivalenti se le parole che mi permettono di completare la prima ($u$, a dx) dentro una parola di $L$, sono esattamente le stesse che mi permettono di completare $v$ in una parola di $L$. Questo teorema ci da una caratterizzazione vera e propria dei linguaggi regolari sottoforma algebrica: un linguaggio è regolare se lo posso ottenere come unione di classi di una congruenza dx di indice finito.
 
 **Lemma:** sia $L \subseteq \Sigma^*$ un linguaggio
 1. La relazione $N_L$ è una congruenza destra
 
-**Dimostrazione:** $N_L$ è un’equivalenza. Dobbiamo verificare che per ogni $u, v \in \Sigma^*$ , $a \in \Sigma$, se $u N_L v$, allora $ua \ N_L \ va$. Invero sia $u \ N_L \ v$ e $a \in \Sigma$. Dalla definizione di $N_L$ si ha $uy \in L \iff vy \in L$ per ogni $y \in \Sigma^*$ Sostituendo $y$ con $ay$, ottengo $uay \in L \iff vay \in L$ Quindi si ha anche $ua \ N_L \ va$.
+**Dimostrazione:** $N_L$ è un’equivalenza. Dobbiamo verificare che per ogni $u, v \in \Sigma^*$ , $a \in \Sigma$, se $u N_L v$, allora $ua \ N_L \ va$. Invero sia $u \ N_L \ v$ e $a \in \Sigma$. Dalla definizione di $N_L$ si ha $uy \in L \iff vy \in L$ per ogni $y \in \Sigma^*$ Sostituendo $y$ con $ay$, ottengo $uay \in L \iff vay \in L$ Quindi si ha anche $ua \ N_L \ va$. Cioè ogni parola è in un’equivalenza $N_L$ con sé stessa (prop. Riflessiva) perché i suoi completamenti in $L$ sono gli stessi suoi completamenti in $L$. Se $u$ e $v$ hanno gli stessi completamenti, allora $v$ e $u$ avranno gli 25 stessi completamenti (prop. Simmetrica). Se $u$ e $v$ hanno gli stessi completamenti, e $v$ e $w$ hanno gli stessi completamenti, allora $u$ e $w$ hanno gli stessi completamenti (prop. Transitiva).
 
 2. $L$ è unione di classi di equivalenza di $N_L$
 
-**Dimostrazione:** Sia $u \ N_L \ v$. Allora $uy \in L \iff vy \in L$ per ogni $y \in \Sigma^*$ . Prendendo $y = \epsilon$ ottengo $u \in L \iff v \in L$. Quindi ogni classe di equivalenza o sta tutta dentro L o sta tutta nel complemento.
+**Dimostrazione:** Sia $u \ N_L \ v$. Allora $uy \in L \iff vy \in L$ per ogni $y \in \Sigma^*$ . Prendendo $y = \epsilon$ ottengo $u \in L \iff v \in L$. Quindi ogni classe di equivalenza o sta tutta dentro L o sta tutta nel complemento. Cioè il linguaggio $L$ si può decomporre in classi di equivalenza $N_L$. In altre parole, $N_L$ è un’equivalenza quindi ci determina quella partizione in classi di equivalenza dell’insieme $\Sigma^*$. Ci sono queste famiglie di parole che sono tutte equivalenti tra loro, ogni parola sta in una classe di equivalenza e classi equivalenza diverse non hanno elementi comuni. Una classe di equivalenza o è contenuta dentro $L$ (quindi è l’unione di alcune classi di equivalenza), oppure è interamente fuori da $L$. Quello che non può succedere è che una classe di equivalenza sia a cavallo: qualche elemento in $L$ e qualche elemento fuori dal linguaggio $L$.
 
 **Teorema di Myhill-Nerode (1958):** Sia $L$ un linguaggio sull’alfabeto $\Sigma$, le seguenti proposizioni sono equivalenti:
 1. $L$ è regolare
 2. $L$ è unione di classi di una congruenza destra su $\Sigma^*$ si dice finito
-3. $N_L$ ha indice finito
+3. $N_L$ ha indice finito (indice = numero di classi di equivalenza dell'equivalenza stessa)
 
-<div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260320102535.png" width="200">
+Posso vedere queste classi come gli stati di un automa, in cui la transizione con la lettera 'a' mi porta da una classe che contiene le parole $u,v$ a una classe che contiene le parole $ua,va$
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260320102535.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  L'ovale  rappresenta l'insieme di tutte le parole sull'alfabeto sigma. Viene partizionato in 2 parti:
+  <li>1. Linguaggio L, cioè le parole che stanno nel linguaggio L</li>
+  <li>2. Le parole che stanno fuori da linguaggio L e che non appartengono ad esso</li>
+  
+  Sopra a questo ovale diviso in un numero finito di pezzi, ci costruiremo sopra l'automa del linguaggio L
+  </div>
 </div>
-
-Dimostrazione circolare: 1. $\implies$ 2. $\implies$ 3. $\implies$ 1.
+Dimostrazione circolare per dimostrare che le 3 condizioni suddette siano equivalenti: 1. $\implies$ 2. $\implies$ 3. $\implies$ 1.
 
 **Dimostrazione 1. $\implies$ 2.:** 
 - Sia $L$ regolare

@@ -293,7 +293,7 @@ Una hash table è una generalizzazione di un array. In un array gli elementi ven
 > - può accadere quando ci sono più chiavi che slot $(|U| > m)$
 > - dato un set K di chiavi con $|K| < m$ potrebbe come potrebbe non accadere (accade sicuramente se $|K| > m$)
 
-**Hashing indipendente e uniforme:** Idealmente $h(k)$ verrebbe scelto casualmente e indipendentemente da $\{0,...,m-1\}$. Una volta scelto $h(k)$ ogni valutazione seguente di $h(k)$ deve ridare lo stesso risultato. L'idea che la hash function sia indipendente, uniforme o casuale è teoretico e non può essere implementato nella pratica (si usa per analizzare il comportamento della hash function e per trovare delle approssimazioni pratiche alla forma ideale)
+**Hashing indipendente e uniforme:** Idealmente $h(k)$ verrebbe scelta casualmente e indipendentemente da $\{0,...,m-1\}$. Una volta scelta $h(k)$ ogni valutazione seguente di $h(k)$ deve ridare lo stesso risultato. L'idea che la hash function sia indipendente, uniforme o casuale è teoretico e non può essere implementato nella pratica (si usa per analizzare il comportamento della hash function e per trovare delle approssimazioni pratiche alla forma ideale)
 
 <div style="display: flex; justify-content: center;">
   <img src="Screenshot From 2026-03-03 23-14-22.png" width="400">
@@ -324,16 +324,14 @@ Nella pratica le hash function assumono che le chiavi siano alternativamente:
 - Un interno non negativo e corto che rientri in una *machine word* (32 o 64 bit di solito)
 - Un vettore corto di interi non negativi, ciascuno dei quali rientra in un limite definito
 
-**Static hashing:** Si tratta di una hash function fissa per la quale la casualità viene solo dalla "speranza per la distribuzione" delle chiavi
+**Static hashing:** Si tratta di una hash function fissa per la quale la casualità viene solo dalla "speranza per la distribuzione" delle chiavi:
 - *Division method:* $h(k) = k \ \text{mod} \ m$. Il vantaggio risiede nel fatto che è veloce e richiede solo un'operazione di divisione. Una buona scelta per $m$ è un numero primo non troppo vicino ad una potenza esatta di 2
 > [!example] $m$ = 20 e $k$ = 91 $\implies$ $h(k) = 91 \ \text{mod} \ 20 = 11$
 - *Multiplication method:* si sceglie la costante $A \ \text{nel range} \ 0 < A < 1 \ \rightarrow$ moltiplico la chiave $k \ \text{per} \ A \ \rightarrow$ estraggo la parte frazionaria da $k*A \rightarrow$ moltiplico la parte frazionaria per $m \rightarrow$  prendo il *floor* del risultato. Questo metodo è più lento del *division method*, ma il valore di $m$ non è critico (può essere scelto indipendentemente da A)
 
 > [!info] $h(k) = \lfloor m(k*A \ \text{mod} \ 1)\rfloor$, dove $k*A \ \text{mod} \ 1 = k*A - \lfloor k*A \rfloor = \ \text{parte frazionaria di} \ k*A$ 
 
-**Hashing casuale:** Un ipotetico avversario malevolo, conoscendo la funzione hash, potrebbe scegliere chiavi che collidano tutte nello stesso slot, producendo il caso pessimo. Qualsiasi funzione hash statica è vulnerabile a questo attacco.
-La soluzione sta nello scegliere la funzione hash **casualmente**, indipendentemente dalle chiavi. Un caso particolare è l’**hashing universale**, che garantisce buone prestazioni medie quando si usa il chaining, indipendentemente dalle chiavi.
-Si consideri una collezione finita $\mathscr{H}$  di funzioni hash che mappi l'universo $U$ di chiavi nel range $\{0,1,...,m-1\}$. $\mathscr{H}$ è universale  se per ogni coppia di chiavi $k_1, k_2 \in U$, il numero di funzioni hash $h \in \mathscr{H}$ con $h(k_1) = h(k_2) \leq \frac{|\mathscr{H}|}{m}$. In altre parole $\mathscr{H}$ è universale se, con una funzione hash *h* scelta casualmente da $\mathscr{H}$, la probabilità di una collisione tra due chiavi distinte non supera l'$\frac{1}{m}$ di probabilità di scegliere due slot casuali e indipendenti
+**Hashing casuale:** Un ipotetico avversario malevolo, conoscendo la funzione hash, potrebbe scegliere chiavi che collidano tutte nello stesso slot, producendo il caso pessimo. Qualsiasi funzione hash statica è vulnerabile a questo attacco. La soluzione sta nello scegliere la funzione hash **casualmente**, indipendentemente dalle chiavi. Un caso particolare è l’**hashing universale**, che garantisce buone prestazioni medie quando si usa il chaining, indipendentemente dalle chiavi. Si consideri una collezione finita $\mathscr{H}$ di funzioni hash che mappi l'universo $U$ di chiavi nel range $\{0,1,...,m-1\}$. $\mathscr{H}$ è universale  se per ogni coppia di chiavi $k_1, k_2 \in U$, il numero di funzioni hash $h \in \mathscr{H}$ con $h(k_1) = h(k_2) \leq \frac{|\mathscr{H}|}{m}$. In altre parole $\mathscr{H}$ è universale se, con una funzione hash *h* scelta casualmente da $\mathscr{H}$, la probabilità di una collisione tra due chiavi distinte non supera l'$\frac{1}{m}$ di probabilità di scegliere due slot casuali e indipendenti
 
 **Proprietà hashing casuale:** Si possono ottenere limiti teorici sulle collisioni e sulle prestazioni attese. Considero una famiglia di hash function $\mathscr{H}$ su un dominio $U$ e con range $\{0,1,...,m-1\}$, le chiavi appartengono a $U$,i numeri degli slot sono in $\{0,1,...,m-1\}$, e una hash function *h* è presa casualmente da $\mathscr{H}$:
 - Uniforme: la probabilità di prendere *h* tale che $h(k) = q$ è $\frac{1}{m}$
@@ -356,6 +354,7 @@ Dato *p* e *m*, la famiglia di hash function è $\mathscr{H}_{ab} = \{h_{ab} : a
  2. Se è libera, inserire l’elemento. 
  3. Se è occupata, calcolare la seconda posizione. 
  4. Continuare finché si trova uno slot libero.
+ 
 Ogni elemento ha una propria sequenza di preferenze.
 
 ```
@@ -643,6 +642,7 @@ SCC(G)
 > [!example] 
 > Eseguo DFS: ![[Pasted image 20260318233449.png|200]]
 > Prendo $G^T$: ![[Screenshot From 2026-03-18 23-35-19.png|200]]
+> 
 > DFS in $G^T$: ![[Screenshot From 2026-03-18 23-36-09.png|200]]
 > 
 > Tempo: $\Theta(V+E)$, ogni top level della DFS-Visit scoprirà il suo componente

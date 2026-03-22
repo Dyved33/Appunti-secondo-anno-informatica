@@ -313,7 +313,7 @@ Il sistema ha bisogno di conoscere la situazione dei vari processi e per questo 
 ###### Schedulatori e fasi del processo
 Il sistema operativo deve decidere a quali processi assegnare il processore e per fare ciò ci sono diversi schedulatori:
 - **Schedulatore a breve termine (CPU scheduler):** Prende i processi dalla coda ready e gli assegna un processore. Siccome deve essere eseguito con grande frequenza, deve essere molto veloce (i processi running vengono anche messi in coda ready proprio perché lo scheduler assegna la CPU a un processo, poi la toglie a quello per assegnarla ad un altro, così da far avanzare più processi contemporaneamente).
-- **Schedulatore a lungo termine:** Seleziona tra i processi nuovi quali fa passare in coda ready, ma non è opportuno che i processi finiscano tutti in questa coda. Per questo esiste il *job scheduler*. Seleziona i processi da inserire in coda ready e per fare ciò controlla il grado di multiprogrammazione, cioè i programmi eseguiti contemporaneamente. Non viene eseguito con frequenza, per questo può applicare procedure più complesse. Ci sono ad esempio processi CPU-bound, ovvero processi che non rilasciano mai la CPU a loro assegnata a meno che non siano forzati 
+- **Schedulatore a lungo termine (*job scheduler*):** Seleziona i processi da inserire in coda ready e per fare ciò controlla il grado di multiprogrammazione, cioè i programmi eseguiti contemporaneamente (regola il numero di processi presenti contemporaneamente in memoria. Se è troppo alto, la CPU si sovraccarica; se è troppo basso, le risorse restano inattive). Non viene eseguito con frequenza, per questo può applicare procedure più complesse. Ci sono ad esempio processi CPU-bound, ovvero processi che non rilasciano mai la CPU a loro assegnata a meno che non siano forzati 
 
 > [!example]
 > - I/O bound processi che interagiscono con input e output
@@ -332,21 +332,22 @@ Oltre a questo c'è un problema di overhead (risorse accessorie sono ridondanti 
 - Istruzioni speciali (riservate al kernel)
 
 **Creazione del processo**
-Il sistema operativo fornisce meccanismi per creazione/terminazione dei processi. Generalmente un processo genitore chiede al kernel di creare un processo figlio che a sua volta può creare altri processi (*albero dei processi*). Ogni processo è identificato da un numero detto *identificatore di processo (PID)* $\rightarrow$ su linux è il primo numero che vedo quando scrivo `ps` nel terminale. Quando un processo termina, viene eliminato dall'albero.
+Il sistema operativo fornisce meccanismi per creazione/terminazione dei processi. Generalmente un processo genitore chiede al kernel di creare un processo figlio che a sua volta può creare altri processi (*albero dei processi* che in Linux posso vedere con il comando `pstree`). Ogni processo è identificato da un numero detto *identificatore di processo (PID)* $\rightarrow$ su linux è il primo numero che vedo quando scrivo `ps` nel terminale. Quando un processo termina, viene eliminato dall'albero.
 
 **Assegnazione delle risorse ad un processo figlio**
 Avviene in base al tipo di sistema operativo:
 - Un processo figlio riceve le risorse dal processo padre 
  - Risorse ripartite = il padre non può usarle finché il figlio non ha finito di usarle
- - Risorse condivise 
+ - Risorse condivise = il padre e il figlio condividono le risorse del padre
 - Il processo figlio ottiene le risorse dal sistema operativo
 
-Genitore e figlio possono essere eseguiti concorrentemente mentre il genitore attende la terminazione del figlio. Per quanto riguarda la memoria il processo figlio può avere un duplicato di memoria del genitore e quindi avere lo stesso programma, oppure può averne uno nuovo.
+Il processo genitore e il processo figlio possono essere eseguiti in modo concorrente; in alternativa, il genitore può attendere la terminazione del figlio tramite una system call (ad esempio `wait`).  
+Per quanto riguarda la memoria, il processo figlio inizialmente è una copia del processo genitore (stesso codice, dati e stack), ma può successivamente eseguire un nuovo programma sostituendo il proprio spazio di memoria (ad esempio tramite `exec`).
 
-> [!info] La funzione `fork` è una syscall che crea una copia esatta del processo e restituisce al padre il PID del figlio:
-> - **0 (Zero):** Indica che il processo corrente è il **processo figlio** appena creato.
-> - **Maggiore di 0 (Positivo):** Indica che il processo corrente è il **processo padre** e ritorna il valore corrisponde al PID del figlio.
-> - **-1 (Negativo):** Indica che la `fork()` è fallita e nessun processo figlio è stato creato.
+> [!info] La funzione `fork` è una syscall che duplica il processo chiamante (padre) creando un processo figlio, restituendo valori distinti per differenziarli: **0 al processo figlio**, il **PID (Process ID) del figlio al processo padre** (>0), e **-1 in caso di errore**.
+> - **Nel processo FIGLIO (`fork() == 0`):** La funzione restituisce `0`, indicando che il codice in esecuzione è la copia appena creata.
+> - **Nel processo PADRE (`fork() > 0`):** La funzione restituisce un intero positivo, che è il PID del nuovo processo figlio creato.
+> - **In caso di ERRORE (`fork() < 0`):** Non viene creato alcun processo figlio e viene restituito un valore negativo (spesso -1) al padre, solitamente a causa della mancanza di memoria o del superamento del limite massimo di processi.
 
 **Terminazione del processo**
 Il processo termina con la syscall *exit()*, così:
@@ -357,7 +358,7 @@ Il genitore può terminare l'esecuzione del figlio con la syscall *abort()* e qu
 - Eccesso di risorse allocate
 - Compito non più richiesto
 
-La terminazione di un processo figlio fa si che vengano terminati anche i figli del processo terminato (terminazione a cascata). Solo dopo il wait() del genitore viene deallocato il PID: 
+La terminazione di un processo figlio fa si che vengano terminati anche i figli del processo terminato (*terminazione a cascata*). Solo dopo il wait() del genitore viene deallocato il PID: 
 - Il PID però non scompare subito e il processo rimane in stato di zombie e scompare solo dopo che il genitore ha eseguito il wait()
 - Il genitore termina senza che vengano terminati i suoi processi figli, in tal caso quei processi si dicono orfani.
 ###### **Threads**
@@ -412,7 +413,7 @@ Gli stati del thread sono gli stessi dei processi (in esecuzione, pronto e in at
   <img src="Screenshot From 2026-03-12 19-24-20.png" width="200">
 </div>
 
-**Sincronizzazione dei thread:** I thread di un processo condividono spazio di indirizzamento e altre risorse. Ogni modifica simultanea di un dato da parte di due thread può corrompere il dato stesso. Per questi motivi è necessario sincronizzare l'accesso dei thread alle risorse
+**Sincronizzazione dei thread:** I thread di un processo condividono spazio di indirizzamento (porzione di memoria virtuale condivisa con gli altri thread dello stesso processo che include codice, dati e risorse) e altre risorse. Ogni modifica simultanea di un dato da parte di due thread può corrompere il dato stesso. Per questi motivi è necessario sincronizzare l'accesso dei thread alle risorse
 
 **Thread a livello utente:** La gestione dei thread è fatta dall'applicazione e il kernel non sa dell'esistenza dei thread.
 - *Vantaggi*: lo scambio di thread non richiede privilegi della modalità kernel, la schedulazione può essere specifica per l'applicazione e portabilità.
@@ -447,13 +448,13 @@ Il vantaggio lo hanno:
 **Threads in UNIX:**
 - Il kernel non distingue tra processi e thread
 - Per ogni task (processo o thread) c'è un *task control block* (TCB) con fork()
-- Fork() crea una nuova task, con una copia del task control block
+- Fork() crea una nuova task, con una copia del TCB
 - Clone() crea una nuova task, ma nel suo TCB ci sono puntatori ai campi di quello del genitore (in base ai parametri passati a clone()
 ###### Mutua esclusione
 I processi possono interferire tra di loro in maniera positiva o negativa, negativa ad esempio quando sottrae risorse ad altri processi, in maniera positiva quando due o più processi interagiscono e ci permettono di realizzare un’attività che sfrutta l’uso di diversi processi in un’unica applicazione. La gestione dei processi può avvenire tramite: 
  - **Multiprogrammazione**: molti processi con un singolo processore, i processi avanzano attendendo che il processore si liberi; 
  - **Multiprocessing**: molti processi gestiti da un multiprocessore; 
- - **Processi distribuiti**: molti processi, gestiti da molti processori distribuiti (**cluster**), con memorie distribuite, rende le cose più complicate da gestire, ma sicuramente più veloci. 
+ - **Processi distribuiti**: molti processi, gestiti da molti processori distribuiti (**cluster**), con memorie distribuite, rende le cose più complicate da gestire, ma più veloci. 
  
  I differenti processi hanno bisogno di risorse che tipicamente vengono condivise tra i vari processi, si crea quindi una *concorrenza*:
  - Nelle applicazioni multiple, o nelle applicazioni strutturate (con più processi o threads che devono accedere a delle risorse)
@@ -534,13 +535,15 @@ void P2 {
 
 **Collaborazione per condivisione (condivisione per scambio di messaggi):** in questo caso i processi collaborano per un obiettivo comune e la comunicazione permette di sincronizzarsi e coordinarsi. Ci sono delle primitive che consentono a un processo di mandare informazioni a un altro processo o di riceverle fornite dal kernel o dal linguaggio di programmazione. In questo caso il risultato è sicuramente influenzato da ciò che il processo riceve, così come il tempo di elaborazione che è limitato a quando il processo riceve l’informazione necessaria. In questo caso non c’è problema di mutua esclusione poiché i processi non condividono dati, si hanno però sempre problemi di deadlock e starvation.
 
+> [!info] Sezione critica = porzione di codice all'interno di un processo o thread che accede a risorse condivise (variabili, file, dispositivi) e che non deve essere eseguita contemporaneamente da più processi
+
 **Requisiti della mutua esclusione:** Quindi per la mutua esclusione dobbiamo far sì che: 
 - Un solo processo alla volta è ammesso alla sezione critica per ciascuna risorsa condivisa
 - Un processo che si ferma fuori dalla sua sezione critica non deve interferire con gli altri processi
 - Si deve evitare deadlock e stravation
 - Se nessun processo è nella  sezione critica deve essere concesso a ogni processo di entrare senza ritardo
 - Nessuna ipotesi sulla velocità relativa dei processi e sul numero dei processori
-- Un processo resa nella sezione critica per un tempo finito
+- Un processo resta nella sezione critica per un tempo finito
 
 **Mutua esclusione con supporto harware:** Per assicurare che un processore non possa uscire da una sezione critica di un processo su uniprocessore si possono disabilitare le interruzioni tramite delle primitive definite dal kernel, ciò però rallenta il sistema ed è inapplicabile per multiprocessori:
 ```
@@ -628,7 +631,7 @@ L’obiettivo è quello di avere un protocollo che permetta a due processi di as
 <div style="display: flex; justify-content: center;">
   <img src="Screenshot From 2026-03-18 23-28-57.png" width="200">
 </div>
-3. Terzo tentativo: Scambiamo l’ordine delle operazioni di scrittura e lettura, prima occupo, poi aspetto che l’altra sia liberata, ma anche qui se i due processi partissero quasi insieme le due variabili sarebbero inizializzate entrambe a true, così entrambi i loop while sarebbero infiniti e i due processi non avanzeranno mai, è un esempio palese di stallo.
+3. Terzo tentativo: Scambiamo l’ordine delle operazioni di scrittura e lettura, prima occupo, poi aspetto che l’altra sia liberata, ma anche qui se i due processi partissero quasi insieme le due variabili sarebbero inizializzate entrambe a true, così entrambi i loop while sarebbero infiniti e i due processi non avanzeranno mai, è un esempio di stallo.
 <div style="display: flex; justify-content: center;">
   <img src="Screenshot From 2026-03-18 23-29-45.png" width="200">
 </div>
@@ -711,7 +714,7 @@ void semSignal(semaphore s) {
 ```
 
 **Semaforo binario:** la variabile ora è un valore binario (o 0 o 1), poi ho una coda e tre operazioni:
-- Inizializzazione a 0 o 1
+- Inizializzazione a 0 o 1 (1 significa risorsa libera, 0 risorsa occupata)
 - *semWaitB* verifica il valore del semaforo. Se il valore è 1 allora è portato a 0, nel caso contrario, il processo è sospeso e inserito nella coda
 - *semSignalB* verifica se ci sono processi in attesa nella coda. In caso affermativo, uno dei processi della coda è riattivato, nel caso opposto, il valore del semaforo è portato a 1
 
@@ -779,11 +782,13 @@ Si usa nella programmazione parallela:
 L’alternativa alla condivisione di dati è lo scambio di messaggi, un meccanismo molto più sicuro poiché i processi non accedono allo spazio degli altri processi.
 
 ###### Messaggi
-Anche il meccanismo dei messaggi consente la sincronizzazione per realizzare la mutua esclusione e la comunicazione per lo scambio di informazioni tra processi. Perché utilizzare i messaggi invece della condivisione di memoria? In sistemi distribuiti i processi hanno difficoltà a leggere la memoria di altri processi in sistemi diversi, perciò il loro utilizzo è naturale nei sistemi distribuiti, ma anche nei sistemi a memoria condivisa questo meccanismo è utile. Hanno 2 primitive:
+Anche il meccanismo dei messaggi consente la sincronizzazione per realizzare la mutua esclusione e la comunicazione per lo scambio di informazioni tra processi. 
+
+**Perché utilizzare i messaggi invece della condivisione di memoria?** In sistemi distribuiti i processi hanno difficoltà a leggere la memoria di altri processi in sistemi diversi, perciò il loro utilizzo è naturale nei sistemi distribuiti, ma anche nei sistemi a memoria condivisa questo meccanismo è utile. Hanno 2 primitive:
 - *Send (destination, message):* un processo invia informazioni in forma di messaggio a un altro processo designato come destinatario
 - *Receive (source, message):* un processo riceve informazioni indicando il mittente e l’indirizzo in cui salvare il messaggio
 
-**Caratteristiche dei sistemi di messaggistica:** La sincronizzazione per la send è bloccante se il processo a cui si vuole mandare non attende un messaggio, quindi si blocca l’esecuzione del send, è non bloccante quando il messaggio viene mandato correttamente. Il receive allo stesso modo è bloccante quando si tenta di ricevere un messaggio indiretto senza che sia stato ancora mandato, non bloccante quando il messaggio già c’è, oppure si testa per la presenza di messaggi (Ci sono situazioni in cui sia la send che la receive sono bloccanti). Per la send tipicamente l’indirizzamento è diretto, il processo specifica a quale processo inviare il messaggio, la receive può avere un indirizzamento esplicito (dal processo X prelevo il messaggio) o implicito. Quando il processo esegue una receive, se c’è un messaggio per questo processo, prende il messaggio e l’identificativo del processo che l’ha mandato. Il formato dei messaggi può essere di lunghezza fissa o variabile, inoltre l’organizzazione delle code dei messaggi è FIFO, oppure può esserci una gestione tramite priorità.
+**Caratteristiche dei sistemi di messaggistica:** La sincronizzazione per la send è bloccante se il processo a cui si vuole mandare non attende un messaggio, quindi si blocca l’esecuzione del send, è non bloccante quando il messaggio viene mandato correttamente. Il receive allo stesso modo è bloccante quando si tenta di ricevere un messaggio indiretto senza che sia stato ancora mandato, non bloccante quando il messaggio già c’è, oppure si testa per la presenza di messaggi (ci sono situazioni in cui sia la send che la receive sono bloccanti). Per la send tipicamente l’indirizzamento è diretto, il processo specifica a quale processo inviare il messaggio, la receive può avere un indirizzamento esplicito (dal processo X prelevo il messaggio) o implicito. Quando il processo esegue una receive, se c’è un messaggio per questo processo, prende il messaggio e l’identificativo del processo che l’ha mandato. Il formato dei messaggi può essere di lunghezza fissa o variabile, inoltre l’organizzazione delle code dei messaggi è FIFO, oppure può esserci una gestione tramite priorità.
 
 **Sincronizzazione:** il destinatario non può ricevere il messaggio prima che questo sia stato inviato. Quando si esegue la receive:
 - Se è presente un messaggio, il processo lo riceve e continua l’esecuzione
@@ -816,7 +821,7 @@ Anche il meccanismo dei messaggi consente la sincronizzazione per realizzare la 
 
 **Gestione delle code:** Il meccanismo più semplice è il FIFO, il primo messaggio in coda viene trasmesso, oppure si può fare una coda prioritaria per tipo di messaggio o designata dal mittente, alternativamente il destinatario potrebbe ispezionare la coda e scegliere un messaggio particolare. 
 
-Avendo quindi a disposizione una receive bloccante, la mutua esclusione diventa molto più semplice degli algoritmi visti in precedenza, si crea una mailbox e si inviano ad essa dei messaggi, i processi prima di iniziare la sezione critica eseguono un receive, se c’è il messaggio nella mailbox entrano nella sezione critica e terminata la sezione mandano un messaggio alla mailbox, se un processo esegue la receive mentre l’altro processo è nella sezione critica troverà la mailbox vuota e perciò si bloccherà finché l’altro processo non uscirà dalla sezione critica e manderà un messaggio nella mailbox.
+Avendo quindi a disposizione una receive bloccante, la mutua esclusione diventa molto più semplice degli algoritmi visti in precedenza. Si crea una mailbox e si inviano ad essa dei messaggi, i processi prima di iniziare la sezione critica eseguono un receive, se c’è il messaggio nella mailbox entrano nella sezione critica e terminata la sezione mandano un messaggio alla mailbox. Se un processo esegue la receive mentre l’altro processo è nella sezione critica troverà la mailbox vuota e perciò si bloccherà finché l’altro processo non uscirà dalla sezione critica e manderà un messaggio nella mailbox.
 
 ```Mutua_esclusione
 /* program mutualexclusion */ 
@@ -838,7 +843,7 @@ void main() {
 }
 ```
 
-**Problema produttore/conduttore:** Ci sono processi che consumano e processi che producono, ho uno o più produttori che inseriscono dati in un buffer, mentre un consumatore estrae i dati dal buffer, uno alla volta, un solo produttore o consumatore alla volta può accedere al buffer. 
+**Problema produttore/conduttore:** Ci sono processi che consumano e processi che producono. Se ho uno o più produttori che inseriscono dati in un buffer, un consumatore estrae i dati dal buffer (uno alla volta). Un solo produttore o consumatore alla volta può accedere al buffer. 
 
 Bisogna quindi assicurare la mutua esclusione ed evitare che un produttore aggiunga dati a un buffer pieno e che un consumatore cerchi di estrarre dati da un buffer vuoto.
 

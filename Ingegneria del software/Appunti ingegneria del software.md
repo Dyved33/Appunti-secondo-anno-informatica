@@ -1116,8 +1116,6 @@ Ogni freccia rappresenta un messaggio tra lifeline e quindi un passo osservabile
 - primo messaggio, eventuale risposta, passo successivo; 
 - in presenza di rami, capire quale condizione seleziona il percorso. 
 
-Obiettivo didattico: raccontare lo scenario guardando ordine e contenuto dei messaggi
-
 **Lifeline:** Le lifeline identificano i partecipanti coinvolti nello scenario. Qui distinguiamo attore, interfaccia e servizio: ruoli diversi, responsabilità diverse. L’obiettivo è rendere esplicito chi partecipa prima di parlare dei dettagli dei messaggi. Quando usarlo: all’inizio, per fissare i confini dello scenario. Errore tipico: introdurre partecipanti non necessari al caso in esame.
 
 <div style="display: flex; justify-content: center;">
@@ -1162,7 +1160,7 @@ Obiettivo didattico: raccontare lo scenario guardando ordine e contenuto dei mes
   <img src="Pasted image 20260319150320.png" width="200">
 </div>
 
-**Frammento alt:** `alt` modella rami alternativi mutuamente esclusivi. • Nel nostro esempio, *svc: AppelloService* sceglie il ramo in base ai prerequisiti dello studente. È la forma naturale per success/failure nello stesso scenario. Quando usarlo: per rami alternativi che non possono coesistere. Errore tipico: guardie sovrapposte o non mutuamente esclusive.
+**Frammento alt:** `alt` modella rami alternativi mutuamente esclusivi. Nel nostro esempio, *svc: AppelloService* sceglie il ramo in base ai prerequisiti dello studente. È la forma naturale per success/failure nello stesso scenario. Quando usarlo: per rami alternativi che non possono coesistere. Errore tipico: guardie sovrapposte o non mutuamente esclusive.
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260319150439.png" width="200">
@@ -1186,7 +1184,7 @@ Obiettivo didattico: raccontare lo scenario guardando ordine e contenuto dei mes
   <img src="Pasted image 20260319150855.png" width="200">
 </div>
 
-**Frammento jar:** `par` descrive rami concorrenti eseguibili in parallelo. Nel mini-esempio salvataggio e notifica sono indipendenti. Aiuta a discutere latenza e sincronizzazione senza entrare nel codice. Quando usarlo: per attività indipendenti eseguibili in parallelo. Errore tipico: segnare par su rami che in realtà si bloccano.
+**Frammento par:** `par` descrive rami concorrenti eseguibili in parallelo. Nel mini-esempio salvataggio e notifica sono indipendenti. Aiuta a discutere latenza e sincronizzazione senza entrare nel codice. Quando usarlo: per attività indipendenti eseguibili in parallelo. Errore tipico: segnare par su rami che in realtà si bloccano.
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260319151013.png" width="200">

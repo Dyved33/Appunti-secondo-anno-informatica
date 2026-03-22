@@ -302,13 +302,13 @@ Un ambito di forte scontro tra diritto alla riservatezza e altri diritti costitu
 ###### Guerra ibrida
 Nella scelta di obiettivi militari del 28-02-2026 si è usata l’intelligenza artificiale (troppe informazioni da elaborare per un umano)
 
-**AI:** si dice ai qualsiasi modo di simulare co nu computer processi mentali umani come: apprendimento, ragionamento, risoluzione di problemi, percezione, processi decisionali, linguaggio,… . L’origine si  confonde con la nascita dei computer stessi:
+**AI:** si dice AI qualsiasi modo di simulare con un computer processi mentali umani come: apprendimento, ragionamento, risoluzione di problemi, percezione, processi decisionali, linguaggio,… . L’origine si  confonde con la nascita dei computer stessi:
 - Anni 60: reti neurali artificiali
 - Anni 80: sistemi esperti
 - Anni 2000: big data, deep learning (supercomputer e reti neurali)
 - Anni 2010: transformer e LLM 
 
-> [!info] non esiste e nessuno sa come realizzare un’intelligenza artificiale generale (AGI)
+> [!info] Non esiste e nessuno sa come realizzare un’intelligenza artificiale generale (AGI)
 
 **6 principi di sicurezza delle informazioni:**
 - Confidentiality: impedire che l’informazione venga letta da chi non può
