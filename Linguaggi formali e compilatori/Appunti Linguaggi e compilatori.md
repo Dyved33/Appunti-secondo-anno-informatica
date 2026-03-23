@@ -325,7 +325,7 @@ Apparentemente questo tipo di progettazione non ci da nessun vantaggio, perché 
 - L'insieme degli stati è l'insieme $Q' = \wp(Q)$ costituito dai sottoinsiemi di $Q$ (uno stato dell' $A'$ deterministico è in realtà un'insieme di stati dell' $A$ non deterministico)
 - Lo stato iniziale è $s_0 = \{q_0\}$ (singleton costituito dallo stato iniziale dell' $A$ non deterministico)
 - Gli stati finali sono tutti i sottoinsiemi di $Q$ che contengono almeno un elemento di $F$ (quindi almeno uno stato finale dell' $A$ di partenza), cioè: $F' = \{s \in \wp(Q) | s \cap F \neq \emptyset \}$ 
-- La funzione di transizione $\delta'(s,a) = \displaystyle\bigcup_{q \in s} \delta(q,a), s \in \wp(Q), a \in \Sigma$ (prende in input uno stato dell' $A$, cioè un insieme degli stati dell'automa non-deterministico, e una lettera $a$)
+- La funzione di transizione $\delta'(s,a) = \bigcup\limits_{q \in s} \delta(q,a), s \in \wp(Q), a \in \Sigma$ (prende in input uno stato dell' $A$, cioè un insieme degli stati dell'automa non-deterministico, e una lettera $a$)
 
 **Dimostrazione:** per ogni $w \in \Sigma^*$ risulta che $\hat{\delta'}(s_0,w) = \{q \in Q | \text{nel grafo di A c'è un cammino da}\ q_0 \ \text{a} \ q \ \text{con etichetta} \ w\}$ (dimostrazione per induzione sulla lunghezza di $w$). Pertanto sono equivalenti: 
 - $w\ \text{è accettata da} \ A$
@@ -354,7 +354,7 @@ Se io elimino tutti questi stati inaccessibili e restringo la funzione di transi
 > ![[Screenshot From 2026-03-06 11-32-32.png|200]]
 > ![[Screenshot From 2026-03-06 11-33-08.png|200]]
 > 
-> Come possiamo notare, l’automa deterministico ha più stati rispetto a quelli che avevamo trovato noi manualmente nel primo esempio abac (pag.11), successivamente vedremo infatti un altro algoritmo in grado di trovare partendo da un automa non deterministico, un automa deterministico con il minimo numero di stati possibile (automa minimo).
+> Come possiamo notare, l’automa deterministico ha più stati rispetto a quelli che avevamo trovato noi manualmente nel primo esempio abac
 
 > [!info] Caso difficile:
 > ![[Pasted image 20260308174311.png|200]]
@@ -384,7 +384,7 @@ Ci si convince facilmente a questo punto che:
 - $q \in C_{\epsilon}(q)$
 - Per ogni $p \in C_{\epsilon}(q)$, $\delta(p,\epsilon) \subseteq C_{\epsilon}(q)$
 
-La $\epsilon$-chiusura di un insieme di stati $S \subseteq Q$ è l'unione delle $\epsilon$ chiusure dei singoli stati di $S: C_{\epsilon}(S) = \bigcup_{q \in S} C_{\epsilon}(q)$.  In altre parole la ε-chiusura di uno stato è l’insieme degli stati che da questo si possono raggiungere utilizzando solo ε- transizioni (questo insieme deve contenere lo stato stesso).
+La $\epsilon$-chiusura di un insieme di stati $S \subseteq Q$ è l'unione delle $\epsilon$ chiusure dei singoli stati di $S: C_{\epsilon}(S) = \bigcup\limits_{q \in S} C_{\epsilon}(q)$.  In altre parole la ε-chiusura di uno stato è l’insieme degli stati che da questo si possono raggiungere utilizzando solo ε- transizioni (questo insieme deve contenere lo stato stesso).
 > [!example] ![[Screenshot From 2026-03-12 10-31-58.png|200]]
 > - $C_{\epsilon}(q_0)$ deve contenere $q_3$ perché con $\epsilon$-transizioni vado in $q_3$
 > - $C_{\epsilon}(\{q_0,q_1\})$ è la $\epsilon$-chiusura della coppia di stati $q_0,q_1$ che si ottiene facendo l’unione delle chiusure dei due stati
@@ -395,8 +395,9 @@ La $\epsilon$-chiusura di un insieme di stati $S \subseteq Q$ è l'unione delle 
 ```
 R <- (q) // inizialmente la lista contiene solo lo stato q
 p <- puntatore al primo elemento di R
-while p != NIL   // Prendiamo tutti gli elementi che si ottengono partendo dal primo elemento della // lista e seguendo tutte le ε transizioni e le aggiungiamo alla lista, avendo l’accortezza di        // aggiungere solo quelle nuove, e non quelle che già appaiono in essa, quindi non creiamo             // ripetizioni.)
-	 appendi a R tutti gli elementi di $\delta$ (p, $\epsilon$) \ R
+while p != NIL   
+Prendiamo tutti gli elementi che si ottengono partendo dal primo elemento della lista e seguendo tutte le ε transizioni e le aggiungiamo alla lista, avendo l’accortezza di aggiungere solo quelle nuove, e non quelle che già appaiono in essa, quindi non creiamo ripetizioni.
+	 appendi a R tutti gli elementi di delta (p, epsilon) \ R
 	 p <- successivo(p) // passo all'elemento successivo
 return R
 ```
@@ -406,7 +407,7 @@ return R
 - L'insieme degli stati è l'insieme $Q' = \wp(Q)$ costituito dai sottoinsiemi di $Q$ (cioè uno stato di $A'$  è un insieme di stati di $A$ )
 - Lo stato iniziale è $s_0 = C_{\epsilon}(q_0)$ (stato iniziale è una $\epsilon$ -chiusura, quindi non si tratta più di un singleton, ma di un insieme di stati)
 - Gli stati finali sono tutti i sottoinsiemi di Q che contengono almeno un elemento di $F$, cioè: $F' = \{s \in \wp(Q) | s \cap F \neq \emptyset\}$ (sottoinsiemi che contengono almeno uno stato finale dell' $A$ precedente)
-- La funzione di transizione è $\delta'(s,a): C_{\epsilon}(\bigcup_{p \in s} \delta(p,a))$, $s \in \wp(Q)$, $a \in \Sigma$ (insieme di tutti quegli stati che posso raggiungere in $A$ partendo da uno qualunque degli stati di $s$ e poi seguendo la freccia con etichetta a, e poi tute le frecce che voglio con etichetta $\epsilon$)
+- La funzione di transizione è $\delta'(s,a): C_{\epsilon}(\bigcup\limits_{p \in s} \delta(p,a))$, $s \in \wp(Q)$, $a \in \Sigma$ (insieme di tutti quegli stati che posso raggiungere in $A$ partendo da uno qualunque degli stati di $s$ e poi seguendo la freccia con etichetta a, e poi tute le frecce che voglio con etichetta $\epsilon$)
 
 **Dimostrazione:** Per ogni $w \in \Sigma^*$ risulta che $\hat{\delta'}(s_0,w) = \{q \in Q |$ nel grafo di $A$  c'è un cammino da $q_0$ a $q$ con etichetta $w$ $\}$. Pertanto sono equivalenti:
 - $w$ è accettata da $A$
@@ -421,23 +422,10 @@ Sostanzialmente  è sempre possibile costruire un automa deterministico che acce
 - *Input*: un automa non deterministico con $\epsilon$ transizioni $A = \langle Q,\Sigma, \delta, q_0, F \rangle$
 - *Output*: un automa deterministico equivalente $A' = \langle Q',\Sigma, \delta', q_0, F' \rangle$
 
-n ← 1  // numero degli stati  
-j ← 0  
-$s_0 \leftarrow C_{\epsilon}(q_0)$  
-if $s_0 \cap F \neq \emptyset$ then $F'$ else $F' \leftarrow \emptyset$
-while $j < n$
-	for $a \in \Sigma$
-		$s \leftarrow \bigcup_{q \in s_j}\delta(q,a)$
-		$s \leftarrow C_{\epsilon}(s)$
-		if $s = s_i$ per qualche $i < n$
-			 $\delta'(j,a) \leftarrow i$
-	    else
-	         $s_n \leftarrow s$
-	         $\delta'(j,a) \leftarrow n$
-	         if $s \cap F \neq \emptyset$ then $F' \leftarrow F \cup \{n\}$
-	         $n \leftarrow n+1$
-	$j \leftarrow j+1$
-	
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-03-23 17-01-04.png" width="200">
+</div>
+
 > [!example] 
 > - valuto le chiusure di ogni stato
 > ![[Screenshot From 2026-03-12 11-25-10.png|200]]
@@ -446,6 +434,8 @@ while $j < n$
 > 
 > Il grafo dell’esempio sarà quindi:
 > ![[Screenshot From 2026-03-12 11-29-04.png|200]]
+> 
+> Ricorda: ogni valutazione va fatta ricordando che "sono contemporaneamente in ognuno di questi stati". L'algoritmo che si può sfruttare prevede di: applicare uno degli input possibili per volta, raccogliere tutti i risultati conseguenti e infine allargare con $\epsilon$
 ###### Espressioni regolari
 La teoria dei linguaggi formali può essere vista come l’arte di rappresentare degli oggetti infiniti con una descrizione finita. Per costruire nuovi linguaggi partendo da linguaggi noti, possiamo applicare delle operazioni: 
 1. unione
@@ -484,11 +474,11 @@ A ogni espressione regolare è associato un linguaggio, detto *linguaggio denota
 
 Perché se due linguaggi sono denotati da espressioni regolari, la loro unione sarà denotata anche lei da un’espressione regolare. Lo stesso per la concatenazione. La chiusura di Kleene sarà denotata dall’espressione regolare del linguaggio con la * vicino
 
-**Osservazione:** possiamo omettere qualche parentesi, rispettando la priorità:
+**Osservazione:** possiamo omettere le parentesi, rispettando la priorità:
 - Chiusura di Kleene
 - Concatenazione
 - Somma
-> [!example] Se si omettono le parentesi, la priorità delle operazioni sono: chiusura di Kleene, concatenazione e poi somma.
+> [!example] 
 > - $a+b$: espressione regolare che denota il linguaggio composto dalle due parole a e b
 > - $(a+b)^*$: chiusura di Kleene, tutte le concatenazioni di parole che appartengono all'insieme a, b. Cioè tutte le concatenazioni di lettere a, b . In sostanza è l'insieme delle parole sull'alfabeto (a, b)
 > - $\emptyset$: se concateno 0 parole dell'insieme vuoto (linguaggio che contiene solo la parola vuota)
@@ -507,7 +497,7 @@ Esiste una procedura effettiva che:
 
 Utilizzeremo esclusivamente automi non deterministici con 𝜀-transizioni con un unico stato finale (non restrittivo)
 
-Un’espressione regolare, dove E e F sono espressioni regolari, può essere:
+Un’espressione regolare, dove $E$ e $F$ sono espressioni regolari, può essere:
 
  <div style="display: flex; align-items: flex-start; gap: 20px;">
    <div style="flex: 1;">
@@ -610,7 +600,7 @@ Per ogni $i, j, k$ con $0 \leq k < i, j \leq n$ (indici i e j compresi tra 1 e n
 
 Se riesco a trovare un’espressione regolare per tutti gli $L_{ijk}$, avrò un’espressione regolare per $L_{n-1 \ n \ n-2}$, che
 è proprio il linguaggio accettato dall’automa. Ho quindi ottenuto l’espressione regolare corrispondente al
-Linguaggio. Quello che dobbiamo mostrare è un meccanismo che ci permetta di determinare delle espressioni regolari che denotano questi linguaggi $L_{ijk}$ Per ottenere tutti questi $L_{ijk}$, si procede per induzione su $k$.
+linguaggio. Quello che dobbiamo mostrare è un meccanismo che ci permetta di determinare delle espressioni regolari che denotano questi linguaggi $L_{ijk}$ Per ottenere tutti questi $L_{ijk}$, si procede per induzione su $k$.
 
 Il linguaggio $L_{ij0}$ è denotato dall’espressione regolare $E_{ij0}$ ottenuta come segue (supponendo $k = 0$):
 - La somma delle etichette delle frecce da $q_i$ a $q_j$, se ne esistono e $i\neq j$ 
@@ -659,7 +649,7 @@ Tutti che attraversano solo stati di indice $\leq k-1$
 - *Complemento:* Per il Teorema di Kleene, un linguaggio regolare è accettato da un automa a stati finiti deterministico. Il complemento è accettato dall’automa ottenuto scambiando stati finali e non. Quindi, per il Teorema di Kleene, è regolare 
 - *Intersezione:* L’intersezione si esprime per mezzo di unione e complemento: $L \cap M = \Sigma^* - ((\Sigma^* -L) \cup (\Sigma^* - M))$
 
-**Osservazione:** anche la differenza insiemistica si esprime per messo di unione e completamento: $L - M = \Sigma^* - ((\Sigma^* -L) \cup M)$ 
+**Osservazione:** anche la differenza insiemistica si esprime per mezzo di unione e completamento: $L - M = \Sigma^* - ((\Sigma^* -L) \cup M)$ 
 
 **Osservazione:** Date due espressioni regolari, posso effettivamente trovare espressioni regolari per l’unione, l’intersezione e i complementi dei linguaggi da esse denotati.
 
