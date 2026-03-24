@@ -796,7 +796,7 @@ Dimostrazione circolare per dimostrare che le 3 condizioni suddette siano equiva
 Il punto finale è il seguente:
 - ogni stato di un DFA corrisponde, in sostanza, a una classe di parole indistinguibili;
 - Nerode identifica proprio queste classi;
-- quindi il numero minimo di stati possibili è proprio il numero delle classi di NLN_LNL​
+- quindi il numero minimo di stati possibili è proprio il numero delle classi di $N_L$​
 
 Per questo l’automa di Nerode è il **minimo**.
 

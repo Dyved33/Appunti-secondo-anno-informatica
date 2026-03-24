@@ -652,7 +652,7 @@ Dopo il prefisso "exec" posso mettere:
 
 **Execl(3):** `#include int execl(const char *pathname, const char *arg, ... /* (char *) NULL */);`
 - Pathname è il programma da eseguire
-- Const char *arg* ed i susseguenti argomenti (in numero variabile) equivalgono ad arg0,...,argN e rappresentano gli argomenti del programa da eseguire:
+- Const char *arg* ed i susseguenti argomenti (in numero variabile) equivalgono ad arg0,...,argN e rappresentano gli argomenti del programma da eseguire:
 	- Il primo dei suddetti argomenti (arg0) per convenzione è il nome del programma
 	- L'ultimo (argN) dovrebbe essere NULL e castato: (char*)NULL
 
@@ -661,7 +661,7 @@ Se non c'è errore non ritornano nulla, -1 in caso di errore (errno settata)
 **_ exit(2):** `#include void _exit(int status);`
 - Termina il chiamante "immediately"
 - I file descriptors sono chiusi
-- Il parent ID di eventuali chil diventa init (o il più vicino "subreaper process"...)
+- Il parent ID di eventuali child diventa init (o il più vicino "subreaper process"...)
 
 Non c'è ritorno, ma il processo parent può ottenere il byte meno significativo di status (status & 0xFF) con wait(2)
 
@@ -672,4 +672,4 @@ Non c'è ritorno, ma il processo parent può ottenere il byte meno significativo
 	- Esegue il flush dei buffer di I/O relativi alle funzioni di libreria C per l'I/O (stdio(3)streams) e chiude i relativi stream
 - Lo standard C definisce EXIT_SUCCESS e EXIT_FAILURE (per portabilità) come valori di uscita
 
-Non c'è ritorno, ma il processo parent può ottenere il byte meno significativo di status (status & 0 xFF) con wait(2)
+Non c'è ritorno, ma il processo parent può ottenere il byte meno significativo di status (status & 0xFF) con wait(2)
