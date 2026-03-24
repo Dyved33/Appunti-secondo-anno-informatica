@@ -458,6 +458,13 @@ La teoria dei linguaggi formali può essere vista come l’arte di rappresentare
 
 Quindi, i linguaggi finiti li sappiamo definire facendo una semplice lista delle parole; con questi linguaggi finiti posso poi fare le operazioni di unione e concatenazione ed ottenere nuovi linguaggi finiti, e con la chiusura di Kleene ottengo nuovi linguaggi infiniti. Con questi linguaggi infiniti posso fare altre operazioni di unione e concatenazione, ottenendo altri linguaggi sempre più complessi. Questo vuol dire che posso scrivere la definizione dei linguaggi infiniti semplicemente indicando le operazioni che eseguo per ottenerli: ovvero le espressioni regolari. <u>Le espressioni sono parole che costruisco partendo dalle lettere dell’alfabeto e dal simbolo ∅, seguendo le regole.</u> Rappresentano quindi una sequenza di operazioni fatte a partire dall’alfabeto iniziale. 
 
+> [!info] 
+> - $\emptyset =$ **linguaggio vuoto**, cioè non contiene nessuna parola
+> - $\epsilon =$ **parola vuota**, cioè la parola di lunghezza 0
+>> [!example] 
+>> - $\emptyset^* = \{\epsilon\}$
+>> - $\epsilon^* = \{\epsilon\}$
+
 **Definizione:** sia $\hat\Sigma$ l'alfabeto ottenuto aggiungendo a $\Sigma$ le lettere $\emptyset, +, *, (,), . \implies$ si dicono *espressioni regolari* sull'alfabeto $\Sigma$ le parole sull'alfabeto $\hat\Sigma$ che si ottengono applicando un numero finito di volte le regole seguenti regole:
 1. Ogni lettera $a \in \Sigma$ è un'espressione regolare, $\emptyset$ è un'espressione regolare
 2. Se $E$ e $F$ sono espressioni regolari, allora $(E+F), (EF)$ e $E^*$ sono espressioni regolari.
@@ -479,14 +486,14 @@ Perché se due linguaggi sono denotati da espressioni regolari, la loro unione s
 - Concatenazione
 - Somma
 > [!example] 
-> - $a+b$: espressione regolare che denota il linguaggio composto dalle due parole a e b
-> - $(a+b)^*$: chiusura di Kleene, tutte le concatenazioni di parole che appartengono all'insieme a, b. Cioè tutte le concatenazioni di lettere a, b . In sostanza è l'insieme delle parole sull'alfabeto (a, b)
+> - $a+b$: espressione regolare che denota il linguaggio composto dalle due parole a e b (**unione**)
+> - $(a+b)^*$: **chiusura di Kleene**, tutte le concatenazioni di parole che appartengono all'insieme a, b. Cioè tutte le concatenazioni di lettere a, b . In sostanza è l'insieme delle parole sull'alfabeto (a, b) 
 > - $\emptyset$: se concateno 0 parole dell'insieme vuoto (linguaggio che contiene solo la parola vuota)
 > - $((a+b)(a+b)(a+b))$: ottengo tutte le parole di lunghezza 3, e poi ne faccio la chiusura di Kleene e ottengo  tutte le parole che hanno lunghezza multipla di 3
-> - $(a+ab)^*$:
-> - $(a+b)^*abb$: otteniamo tutte le lettere che finiscono con $abb$
-> - $(b^*ab^*ab^*)^*b^*ab^*$:
-> - $(a+b+c)^*abac (a+b+c)^*$:
+> - $(a+ab)^*$: ogni blocco può essere $a$ oppure $ab$ (parole ottenute concatenando blocchi di "$a$" o "$ab$")
+> - $(a+b)^*abb$: otteniamo tutte le lettere che finiscono con $abb$ (**concatenazione**)
+> - $(b^*ab^*ab^*)^*b^*ab^*$: dentro alla parentesi ho: qualche $b$ (anche 0), poi qualche $a$, poi qualche $b$, poi un altro $a$, poi un altro $b \implies$ 2 $a$ (con qualsiasi numero di $b$ intorno e in mezzo). Poi si ripete questo blocco quante volte volte si vuole (qui ho parole con un numero pari di $a$). Lo step finale implica di aggiungere un solo $a$ 
+> - $(a+b+c)^*abac (a+b+c)^*$: tutte le parole su $\{a,b,c\}$, poi si ha $abac$ e infine ancora $(a+b+c)^*$
 > - $((a+b+c),)^*(a+b+c) \& (a+b+c)+a+b+c$
 
 **Teorema di Kleene:** un linguaggio è regolare $\iff$ è riconosciuto da un automa a stati finiti. 
@@ -507,9 +514,11 @@ Un’espressione regolare, dove $E$ e $F$ sono espressioni regolari, può essere
 <li>una lettera, un insieme vuoto o una parola vuota (che corrisponde alla chiusura di Kleene dell’insieme vuoto)</li>
 <li>(E+F), cioè l’unione</li>
 <li>(EF), cioè la concatenazione</li>
-<li>E^*, cioè la chiusura di Kleene</li>
+<li> E^*, cioè la chiusura di Kleene</li>
    </div>
  </div>
+ 
+ Quindi il caso base prevede che se $G = a$ allora si costruisce un automa che accetta solo $a$, se $G = \emptyset$ allora si costruisce l'automa che non accetta nulla
  
  <div style="display: flex; align-items: flex-start; gap: 20px;">
    <div style="flex: 1;">
@@ -563,7 +572,7 @@ Siano $A_1 = \langle Q_1,\Sigma,\delta_1, i_1, \{f_1\}\rangle$ l'automa che rico
 Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
 - $Q = Q_1 \cup \{i,f\}$ ove $i,f$ sono due nuovi stati
 - $i,f$ sono rispettivamente lo stato iniziale e l'unico stato finale
-- Le frecce del grafo di $A$ sono le frecce del grafo di $A_1$ e, inoltre, $(i,\epsilon,i_1), (i,\epsilon,i_2), (f_1,\epsilon, f), (f_2,\epsilon, f)$
+- Le frecce del grafo di $A$ sono le frecce del grafo di $A_1$ e, inoltre, $(f_1,\epsilon,i_1), (i,\epsilon,i_1), (f_1,\epsilon, f), (i,\epsilon, f)$
 
 Allora $A$ accetta il linguaggio denotato da $E^*$
 > [!example]
@@ -583,7 +592,7 @@ Esempio completo nelle slide del prof
 - Lo stato iniziale è $q_1$
 
 > [!tip] Avendo un automa A, vogliamo che: 
-> abbia un unico stato finale e, per semplicità, non abbia frecce che entrano nello stato iniziale né frecce che escono dallo stato finale. Questo implica che un percorso uscito dallo stato iniziale non potrà più rientrarci (perché non ci sono frecce entranti in esso) così come non potrà passare per lo stato finale se non all’ultimo (perché non ci sono frecce uscenti da esso). Aggiungo quindi delle $\epsilon$ transizioni che mi portano dal nuovo stato iniziale al vecchio stato iniziale, e dai vecchi stati finali al nuovo stato finale. Questo nuovo automa accetterà le stesse parole dell’automa vecchio.
+> abbia un unico stato finale e, per semplicità, non abbia frecce che entrano nello stato iniziale né frecce che escono dallo stato finale. Questo implica che un percorso uscito dallo stato iniziale non potrà più rientrarci (perché non ci sono frecce entranti in esso) così come non potrà passare per lo stato finale se non all’ultimo (perché non ci sono frecce uscenti da esso). Aggiungo quindi delle $\epsilon$-transizioni che mi portano dal nuovo stato iniziale al vecchio stato iniziale, e dai vecchi stati finali al nuovo stato finale. Questo nuovo automa accetterà le stesse parole dell’automa vecchio.
 > Inoltre, supponiamo anche di dare dei nomi ai vari stati del nostro automa: $q_1$, $q_2$, …, $q_n$, dove lo stato
 > iniziale corrisponde al $q_{n-1}$ (quindi al penultimo stato) e lo stato finale a $q_n$. Prendiamo dei linguaggi che in qualche modo approssimano il linguaggio che vogliamo cercare e cerchiamo delle espressioni regolari per questi linguaggi.
 > 
@@ -594,9 +603,9 @@ Per ogni $i, j, k$ con $0 \leq k < i, j \leq n$ (indici i e j compresi tra 1 e n
 **Osservazione:** $L(A)= \bigcup\limits_{q_j \in F} L_{1jn}$. Quindi, se riesco a trovare espressioni regolari per tutti gli $L_{ijk}$, avrò anche un’espressione regolare di $L(A)$
 
 > [!example] ![[Pasted image 20260319110515.png|200]]
-> - $q_4$ stato finale
+> - $q_2$ stato iniziale
 > - $q_5$ stato finale
-> - quindi devo prendere tutti i cammini che partono da $q_2$, che arrivano in $q_5$ e che attraversano soltanto $q_1 \implies L(A) = L_{n-1 \ n \ n-2}$ dato dal cammino $q_2 \xrightarrow[]{b} q_1 \xrightarrow[]{c} q_5$
+> - quindi devo prendere tutti i cammini che partono da $q_2$, che arrivano in $q_4$ e che attraversano soltanto $q_1 \implies L(A) = L_{n-1 \ n \ n-2}$ dato dal cammino $q_2 \xrightarrow[]{b} q_1 \xrightarrow[]{c} q_5$
 
 Se riesco a trovare un’espressione regolare per tutti gli $L_{ijk}$, avrò un’espressione regolare per $L_{n-1 \ n \ n-2}$, che
 è proprio il linguaggio accettato dall’automa. Ho quindi ottenuto l’espressione regolare corrispondente al
@@ -606,12 +615,13 @@ Il linguaggio $L_{ij0}$ è denotato dall’espressione regolare $E_{ij0}$ ottenu
 - La somma delle etichette delle frecce da $q_i$ a $q_j$, se ne esistono e $i\neq j$ 
 - La somma delle etichette delle frecce da $q_i$ a $q_j$ più $\epsilon$ se ne esistono e $i = j$
 - $\epsilon$ se non ci sono frecce da $q_i$ a $q_j$ e $i = j$
+- $\emptyset$ se non ci sono frecce da $q_i$ a $q_j$ e $i \neq j$
 
 > [!example] ![[Screenshot From 2026-03-19 11-07-41.png|200]]
 > Dato che $k \leq 0$ ciò significa che i cammini devono attraversare 0 stati (cioè si tratta di frecce dirette)
 
 Supponiamo $k\geq 1$. I cammini nel grafo $A$ con origine in $q_i$, termine in $q_j$ e che attraversano esclusivamente stati di indice $\leq k$, si possono ripartire in due categorie:
-1. Cammini da $q_i$ a $q_j$ che attraversano solo stati di indice $\leq k-1$. Questi cammini per $q_k$ potrebbero no passare proprio, oppure possono passare per $q_1,q_2,...,q_{k-1}$. Per questi l’espressione regolare già l’abbiamo
+1. Cammini da $q_i$ a $q_j$ che attraversano solo stati di indice $\leq k-1$. Questi cammini per $q_k$ potrebbero non passare proprio, oppure possono passare per $q_1,q_2,...,q_{k-1}$. Per questi l’espressione regolare già l’abbiamo
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260319173347.png" width="200">
 </div>
@@ -626,13 +636,13 @@ Tutti che attraversano solo stati di indice $\leq k-1$
   <img src="Pasted image 20260319174122.png" width="200">
 </div>
 
-**Passo induttivo:** ora dobbiamo trovare l’espressione $E_{ijk}$, cioè l’espressione per il linguaggio costituito dalle etichette di tutti i cammini delle forme precederti. Innanzitutto facciamo  l’unione dei cammini del primo punto con i cammini del secondo punto. I cammini del secondo gruppo saranno a loro volta riportati come la concatenazione del primo segmento con i segmenti intermedi (concatenazione di 0 o più coppi[]()e di un 0 espressione utilizzando la chiusura di Kleene) e l’ultimo segmento. In sostanza le espressioni regolari $E_{ijk}$ che denotano i linguaggi $L_{ijk}$ devono soddisfare le relazioni ricorsive $E_{ijk} = E_{ijk−1} + (E_{ikk−1})(Ek k k−1)(E_{kjk−1}), \ 1 \leq k < i, j \leq n$. Un’espressione regolare di $L(A)$ è data dalla somma delle $E_{1jn}$ con $q_j$ stato finale. In questo mode è possibile calcolare tutte le espressioni regolari, compresa $E_{n-1 \ n \ n-2}$ che denota il linguaggio accettato dall’automa (esempio nelle slide 8-11)
+**Passo induttivo:** ora dobbiamo trovare l’espressione $E_{ijk}$, cioè l’espressione per il linguaggio costituito dalle etichette di tutti i cammini delle forme precederti. Innanzitutto facciamo  l’unione dei cammini del primo punto con i cammini del secondo punto. I cammini del secondo gruppo saranno a loro volta riportati come la concatenazione del primo segmento con i segmenti intermedi (concatenazione di 0 o più coppie di un espressione utilizzando la chiusura di Kleene) e l’ultimo segmento. In sostanza le espressioni regolari $E_{ijk}$ che denotano i linguaggi $L_{ijk}$ devono soddisfare le relazioni ricorsive $E_{ijk} = E_{ijk−1} + (E_{ikk−1})(Ek k k−1)(E_{kjk−1}), \ 1 \leq k < i, j \leq n$ (la prima parte contiene tutti i cammini che NON usano $q_k$, mentre la seconda parte contiene tutti i cammini che usano $q_k$ ALMENO una volta). Un’espressione regolare di $L(A)$ è data dalla somma delle $E_{1jn}$ con $q_j$ stato finale. In questo mode è possibile calcolare tutte le espressioni regolari, compresa $E_{n-1 \ n \ n-2}$ che denota il linguaggio accettato dall’automa (esempio nelle slide 8-11)
 
-**Regola pratica:** Per fare tutto ciò utilizzeremo il Metodo di eliminazione degli stati partendo dal nostro automa che corrisponde ad un grafo sulle cui etichette delle frecce ci sono espressioni particolari che possono essere o lettere, o ε o somma di lettere.
+**Regola pratica:** Per fare tutto ciò utilizzeremo il <u>Metodo di eliminazione degli stati</u> partendo dal nostro automa. Questo corrisponde ad un grafo sulle cui etichette delle frecce ci sono espressioni particolari che possono essere o lettere, o $\epsilon$ o somma di lettere.
 1. ci riduciamo al caso in cui:
 	- $A$ ha un unico stato finale 
 	- Nel grafo di $A$ non ci sono frecce che entrano nello stato iniziale, ne frecce che escono dallo stato finale
-2. Sostituiamo le etichette multiple con la loro somma 
+2. Sostituiamo le etichette multiple con la loro somma (cioè se ci sono più frecce tra due stati, uniscile con +)
 3. Selezioniamo uno stato $q_k$ che non sia né iniziale né finale; per ogni freccia $q_i \xrightarrow[]{E_{ik}} q_k$ che entra nello stato $q_k$ e ogni freccia $q_k \xrightarrow[]{E_{kj}} q_j$ che esce da tale stato $(i, j \neq k)$ 
 	- Rimpiazziamo l’etichetta della freccia $q_i \xrightarrow[]{E_{ij}} q_j$ con $E_{ij} + E_{ik}E_{kk}^*E_{kj}$ (o $E_{ij} + E_{ik}E_{kj}$ qualora manchi la freccia da $q_k$ a $q_k$); 
 	- se tale freccia è assente, la creiamo (con etichetta $E_{ik}E_{kk}^*E_{kj}$ , ovvero $E_{ik}E_{kj}$ ); 
@@ -640,9 +650,15 @@ Tutti che attraversano solo stati di indice $\leq k-1$
 4. Ripetiamo il passo precedente fino a ottenere un automa con due stati e una sola freccia; 
 5. L’etichetta di tale freccia è l’espressione regolare cercata.
 
+> [!info] Intuizione finale:
+> - un'automa riconosce parole tramite cammini
+> - ogni cammino ha un'etichetta (una parola)
+> - eliminando gli stati, stai "riscrivendo" tutti i cammini possibili in una sola formula regolare 
+> - alla fine tutta la complessità del grafo si concentra in un'espressione regole
+
 > [!example] > ![[Pasted image 20260319181524.png]]
 ###### Operazioni booleane
-**Proposizione:** la classe dei linguaggi regolari è un’algebra Booleana (altra conseguenza del teorema di Kleene)
+**Proposizione:** la classe dei linguaggi regolari è un’algebra Booleana (altra conseguenza del teorema di Kleene). Ciò significa che i linguaggi regolari si comportano come insiemi normali e puoi fare operazioni logiche come OR, AND e NOT (e il risultato è sempre un linguaggio regolare)
 
 **Dimostrazione:** Ci sono delle operazioni che sono naturali sulle espressioni regolari e altre operazioni che sono naturali sugli automi a stati finiti. Come abbiamo detto in precedenza, infatti, la famiglia dei linguaggi regolari è chiusa per le operazioni di unione, concatenazione e chiusura di Kleene. È anche chiusa per complemento ed intersezione, quindi per tutte le operazioni booleane.
 - *Unione:* L’unione dei linguaggi denotati dalle espressioni $E$ e $F$ è denotato dall’espressione $E$ + $F$. 
@@ -651,25 +667,35 @@ Tutti che attraversano solo stati di indice $\leq k-1$
 
 **Osservazione:** anche la differenza insiemistica si esprime per mezzo di unione e completamento: $L - M = \Sigma^* - ((\Sigma^* -L) \cup M)$ 
 
-**Osservazione:** Date due espressioni regolari, posso effettivamente trovare espressioni regolari per l’unione, l’intersezione e i complementi dei linguaggi da esse denotati.
+**Osservazione:** Date due espressioni regolari, posso effettivamente trovare espressioni regolari per l’unione, l’intersezione e i complementi dei linguaggi da esse denotati (devo però passare obbligatoriamente per gli automi).
 
-**Equivalenza di espressioni regolari:** $a^* + (a^*ba^*)^* = (a+b)^*$. Date due espressioni regolari ho il problema di decidere se queste sono equivalenti o meno
+**Equivalenza di espressioni regolari:** Date due espressioni regolari ho il problema di decidere se queste sono equivalenti o meno
+
+> [!example] $a^* + (a^*ba^*)^* = (a+b)^*$ descrivono lo stesso linguaggio
 
 **Osservazioni:** dati due insiemi $X,Y$ sono uguali se e solo se $(X-Y) \cup (Y-X) = \emptyset$ 
 
-La soluzione al mio problema è: date le espressioni regolari $E,F$
+La soluzione al mio problema è: date le espressioni regolari $E,F$, voglio sapere se $L_E = L_F$
 1. Calcolare automi deterministici che accettano i linguaggi $L_E$ e $L_F$ denotati da $E$ e $F$, rispettivamente; 
 2. Calcolare un automa deterministico che accetta $(L_E − L_F ) \cup (L_F − L_E )$; 
-3. Verificare se tutti gli stati finali sono inaccessibili.
+3. Verificare se tutti gli stati finali sono inaccessibili. In tal caso NON esiste nessuna parola accettata e quindi il linguaggio è vuoto
 
+> [!tip] 
+> - se **non esiste parola che li distingue** allora sono uguali
+> - se **esiste almeno una parola diversa** allora non sono uguali
+
+> [!info] Sintesi: per confrontare due espressioni regolari:
+> - costruisci gli automi
+> - confronti i linguaggi
+> - riduci il problema a:"esiste una parola che li distingue?"
 ###### Automa minimo
-Si tratta di un’automa deterministico con il minor numero possibile di stati. L’automa di Nerode di un linguaggio regolare $L$ è un automa deterministico che accetta $L$ col minimo numero di stati possibile. Quindi definisco prima la congruenza di Nerode, così da definire un’equivalenza cioè una partizione dell’insieme $\Sigma^*$ in un numero finito di classi di equivalenza. Costruisco in seguito un automa minimo partendo da queste classi di equivalenza, che accetta il linguaggio $L$. 
+Due parole sono uguali per un linguaggio se aggiungendo lo stesso suffisso a destra si comportano sempre nello stesso modo rispetto all'appartenenza a $L$. Da questa idea nasce l'automa minimo. Si tratta di un’automa deterministico con il minor numero possibile di stati. <u>L’automa di Nerode di un linguaggio regolare L è un automa deterministico che accetta L col minimo numero di stati possibile</u>. Quindi definisco prima la congruenza di Nerode, così da definire un’equivalenza cioè una partizione dell’insieme $\Sigma^*$ in un numero finito di classi di equivalenza. Costruisco in seguito un automa minimo partendo da queste classi di equivalenza, che accetta il linguaggio $L$. 
 
-**Equivalenza:** insieme sul quale è definita una relazione riflessiva (cioè ogni elemento è equivalente a se stesso), simmetrica (se x è equivalente a y, allora y è equivalente a x) e transitiva (se abbiamo tre elementi e il primo è equivalente al secondo, il secondo è equivalente al terzo, allora il primo è equivalente al terzo). C’è una corrispondenza tra la nozione di equivalenza, quindi un insieme di coppie che soddisfa le proprietà citate sopra, e la nozione di partizione su un insieme, cioè la divisione di un insieme in sottoinsiemi che sono a due a due disgiunti (privi di elementi in comune), e che uniti mi danno tutto l’insieme. Quindi se ho un’equivalenza su un insieme, le classi di equivalenza (cioè l’insieme di tutti gli elementi che sono equivalenti l’uno all’altro), costituiscono una partizione sull'insieme. Allo stesso modo se ho una partizione, gli insiemi che la costituiscono sono classi di un’opportuna equivalenza.  
+**Equivalenza:** insieme sul quale è definita una relazione **riflessiva** ($x \sim x$), **simmetrica** ($x \sim y \implies y \sim x$) e **transitiva** ($x \sim y, y \sim z \implies x \sim z$). Ogni equivalenza divide l’insieme in **classi di equivalenza**, e queste classi formano una **partizione**. Quindi un equivalenza corrisponde ad una partizione, ogni elemento appartiene ad una sola classe e classi diverse non si intersecano
 
 **Osservazione:** ogni equivalenza su un insieme $S$ determina una partizione dell’insieme $S$ in classi di equivalenza. Viceversa, ogni partizione dell’insieme $S$ è associata a un’equivalenza di cui le parti sono classi di equivalenza
 
-**Definizione:** sia $\Sigma$ un alfabeto. Una relazione di equivalenza $\sim$ su $\Sigma^*$ si dice una congruenza destra (risp. Sinistra) se per ogni $u, v \in \Sigma^*$ tali che $u \sim v$ e per ogni lettera $a \in \Sigma$, si ha $ua \sim va$ (risp. $au \ \sim \ av$). Una relazione che sia contemporaneamente una congruenza destra e una congruenza sinistra si dice congruenza. In altre parole qui non abbiamo solo un insieme, ma un insieme che ha un’operazione definita su di esso. Ogni volta che si va a concatenare a dx di due parole equivalenti, una lettera, ottengo due parole equivalenti (rispettivamente per la congruenza sx).
+**Definizione:** sia $\Sigma$ un alfabeto. Una relazione di equivalenza $\sim$ su $\Sigma^*$ si dice una congruenza destra (risp. Sinistra) se per ogni $u, v \in \Sigma^*$ tali che $u \sim v$ e per ogni lettera $a \in \Sigma$, si ha $ua \sim va$ (risp. $au \ \sim \ av$). <u>Una relazione che sia contemporaneamente una congruenza destra e una congruenza sinistra si dice congruenza.</u> In altre parole qui non abbiamo solo un insieme, ma un insieme che ha un’operazione definita su di esso. Ogni volta che si va a concatenare una lettera a dx di due parole equivalenti ottengo due parole equivalenti (rispettivamente per la congruenza sx).
 
 > [!example] Si considerino le relazione $\sim$ su $\Sigma^*$ definite da:
 > 1. $u \sim v$ se $u$ e $v$ iniziano con la stessa lettera (o $u$ = $v$ = $\epsilon$)
@@ -681,23 +707,33 @@ Si tratta di un’automa deterministico con il minor numero possibile di stati. 
 
 **Equivalenza di Nerode:**
 
-**Definizione:** sia $L$ un linguaggio sull’alfabeto $\Sigma$. L’equivalenza di Nerode associata al linguaggio $L$ è la relazione $N_L$ definita in $\Sigma^*$ da: $u \ N_L \ v$ se per ogni $y \in \Sigma^*$*, $uy \in L \iff vy \in L$. Cioè, $u \ N_L \ v$ se $u$ e $v$ hanno gli stessi completamenti a destra in $L$. 
+**Definizione:** sia $L$ un linguaggio sull’alfabeto $\Sigma$. L’equivalenza di Nerode associata al linguaggio $L$ è la relazione $N_L$ definita in $\Sigma^*$ da: $u \ N_L \ v$ se per ogni $y \in \Sigma^*$*, $uy \in L \iff vy \in L$. Cioè, $u \ N_L \ v$ se $u$ e $v$ sono equivalenti e se hanno gli stessi completamenti a destra per entrare in $L$. 
 
 Quindi diciamo che due parole sono equivalenti se le parole che mi permettono di completare la prima ($u$, a dx) dentro una parola di $L$, sono esattamente le stesse che mi permettono di completare $v$ in una parola di $L$. Questo teorema ci da una caratterizzazione vera e propria dei linguaggi regolari sottoforma algebrica: un linguaggio è regolare se lo posso ottenere come unione di classi di una congruenza dx di indice finito.
 
+$N_L$ è la relazione che identifica precisamente gli stati dell'automa minimo:
+- Due parole stanno nella stessa classe se portano allo stesso "stato logico" rispetto a $L$
+- Ogni classe diventa uno stato dell'automa di Nerode
+
 **Lemma:** sia $L \subseteq \Sigma^*$ un linguaggio
-1. La relazione $N_L$ è una congruenza destra
+1. La relazione $N_L$ è una congruenza destra. Quindi se $uN_Lv$ allora per ogni lettera $a$: $uaN_Lva$
 
 **Dimostrazione:** $N_L$ è un’equivalenza. Dobbiamo verificare che per ogni $u, v \in \Sigma^*$ , $a \in \Sigma$, se $u N_L v$, allora $ua \ N_L \ va$. Invero sia $u \ N_L \ v$ e $a \in \Sigma$. Dalla definizione di $N_L$ si ha $uy \in L \iff vy \in L$ per ogni $y \in \Sigma^*$ Sostituendo $y$ con $ay$, ottengo $uay \in L \iff vay \in L$ Quindi si ha anche $ua \ N_L \ va$. Cioè ogni parola è in un’equivalenza $N_L$ con sé stessa (prop. Riflessiva) perché i suoi completamenti in $L$ sono gli stessi suoi completamenti in $L$. Se $u$ e $v$ hanno gli stessi completamenti, allora $v$ e $u$ avranno gli 25 stessi completamenti (prop. Simmetrica). Se $u$ e $v$ hanno gli stessi completamenti, e $v$ e $w$ hanno gli stessi completamenti, allora $u$ e $w$ hanno gli stessi completamenti (prop. Transitiva).
 
-2. $L$ è unione di classi di equivalenza di $N_L$
+2. $L$ è unione di classi di equivalenza di $N_L$. Se $uN_Lv$ allora prendendo $y = \epsilon$: $u \in L \iff v \in L$. Quindi una classe di equivalenza non può "tagliare" il linguaggio a metà:
+	- O sta tutto dentro $L$
+	- Oppure sta tutta fuori
 
 **Dimostrazione:** Sia $u \ N_L \ v$. Allora $uy \in L \iff vy \in L$ per ogni $y \in \Sigma^*$ . Prendendo $y = \epsilon$ ottengo $u \in L \iff v \in L$. Quindi ogni classe di equivalenza o sta tutta dentro L o sta tutta nel complemento. Cioè il linguaggio $L$ si può decomporre in classi di equivalenza $N_L$. In altre parole, $N_L$ è un’equivalenza quindi ci determina quella partizione in classi di equivalenza dell’insieme $\Sigma^*$. Ci sono queste famiglie di parole che sono tutte equivalenti tra loro, ogni parola sta in una classe di equivalenza e classi equivalenza diverse non hanno elementi comuni. Una classe di equivalenza o è contenuta dentro $L$ (quindi è l’unione di alcune classi di equivalenza), oppure è interamente fuori da $L$. Quello che non può succedere è che una classe di equivalenza sia a cavallo: qualche elemento in $L$ e qualche elemento fuori dal linguaggio $L$.
 
 **Teorema di Myhill-Nerode (1958):** Sia $L$ un linguaggio sull’alfabeto $\Sigma$, le seguenti proposizioni sono equivalenti:
 1. $L$ è regolare
-2. $L$ è unione di classi di una congruenza destra su $\Sigma^*$ si dice finito
+2. $L$ è unione di classi di una congruenza destra su $\Sigma^*$ si dice finito 
 3. $N_L$ ha indice finito (indice = numero di classi di equivalenza dell'equivalenza stessa)
+
+Il teorema dice che il numero di “situazioni diverse” che bisogna distinguere per riconoscerlo è finito. Queste “situazioni diverse” sono proprio le classi di Nerode. Quindi:
+- se ci sono finitissime classi, posso costruire un automa con finitissimi stati;
+- se le classi sono infinite, non esiste un DFA che lo riconosce.
 
 Posso vedere queste classi come gli stati di un automa, in cui la transizione con la lettera 'a' mi porta da una classe che contiene le parole $u,v$ a una classe che contiene le parole $ua,va$
 
@@ -713,6 +749,7 @@ Posso vedere queste classi come gli stati di un automa, in cui la transizione co
   Sopra a questo ovale diviso in un numero finito di pezzi, ci costruiremo sopra l'automa del linguaggio L
   </div>
 </div>
+
 Dimostrazione circolare per dimostrare che le 3 condizioni suddette siano equivalenti: 1. $\implies$ 2. $\implies$ 3. $\implies$ 1.
 
 **Dimostrazione 1. $\implies$ 2.:** 
@@ -756,6 +793,13 @@ Dimostrazione circolare per dimostrare che le 3 condizioni suddette siano equiva
 
 **Proposizione:** Sia $L$ un linguaggio regolare. L’automa di Nerode di $L$ è un automa deterministico che accetta $L$ col minimo numero di stati possibile. 
 
+Il punto finale è il seguente:
+- ogni stato di un DFA corrisponde, in sostanza, a una classe di parole indistinguibili;
+- Nerode identifica proprio queste classi;
+- quindi il numero minimo di stati possibili è proprio il numero delle classi di NLN_LNL​
+
+Per questo l’automa di Nerode è il **minimo**.
+
 **Dimostrazione:** 
 - Sia $A$ l’automa deterministico che accetta $L$ col minimo numero di stati possibile e sia n tale numero; 
 - nella dimostrazione 1. $\implies$ 2. si è visto che $L$ è unione di classi di una congruenza destra $\sim$ di indice n; 
@@ -764,3 +808,10 @@ Dimostrazione circolare per dimostrare che le 3 condizioni suddette siano equiva
 - nella dimostrazione 3. $\implies$ 1. si è costruito un automa che accetta $L$ con un numero di stati pari all’indice di $N_L$ ; 
 - quindi l’indice di $N_L$ è maggiore o uguale a n; 
 - ne segue l’asserto
+
+> [!info] Sintesi:
+> - **Congruenza destra**: se $u \sim v$, allora $ua \sim va$
+> - **Nerode**: $uN_Lv$ se $u$ e $v$ hanno gli stessi completamenti a destra per entrare in $L$
+> - **Myhill-Nerode**: $L$ è regolare se e solo se $N_L$​ ha indice finito
+> - **Automa minimo**: gli stati sono le classi di $N_L$
+

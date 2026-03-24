@@ -472,7 +472,7 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 | `cat 3< /etc/hosts`                         | /etc/hosts $\rightarrow$ fd 3 (inutilizzato) $\rightarrow$ stdin (terminale) $\rightarrow$ cat $\rightarrow$ terminale                 | Apre il file su fd 3, ma `cat` legge da stdin (0), non da 3 (si comporta come `cat`) |
 | `cat 3< /etc/hosts 0<&3`                    | /etc/hosts $\rightarrow$ fd 3 $\rightarrow$ stdin $\rightarrow$ cat $\rightarrow$ terminale                                            | Stampa il contenuto del file                                                         |
 | `cat 4> /tmp/my.txt`                        | stdin (tastiera) $\rightarrow$ cat $\rightarrow$ terminale  <br>fd 4 $\rightarrow$ file (inutilizzato)                                 | Il comportamento è come quello di `cat` e inoltre il file viene creato (vuoto)       |
-| `cat 4> /tmp/my.txt /etc/hosts`             | /etc/hosts $\rightarrow$cat $\rightarrow$ terminale  <br>fd 4 $\rightarrow$ file vuoto                                                 | Stampa a schermo e e viene creato un file vuoto                                      |
+| `cat 4> /tmp/my.txt /etc/hosts`             | /etc/hosts $\rightarrow$cat $\rightarrow$ terminale  <br>fd 4 $\rightarrow$ file vuoto                                                 | Stampa a schermo e viene creato un file vuoto                                        |
 | `cat 4> /tmp/my.txt /etc/hosts 1>&4`        | /etc/hosts $\rightarrow$ cat $\rightarrow$ stdout (1) $\rightarrow$ fd 4 $\rightarrow$ file                                            | Output scritto su `/tmp/my.txt`, niente a schermo                                    |
 | `cat 3< /etc/hosts 4>/tmp/my.txt 1>&4 0<&3` | /etc/hosts $\rightarrow$ fd 3 $\rightarrow$ stdin $\rightarrow$ cat $\rightarrow$ stdout $\rightarrow$ fd 4 $\rightarrow$ /tmp/my. Txt | `cat` legge da `/etc/hosts` e scrive su `/tmp/my.txt`                                |
 ###### System calls per i processi
@@ -617,3 +617,59 @@ exit $RET
 > [!info] echo ls stampa ls (cioè ciò che c’è dopo echo)
 > 'echo ls' (Alt Gr + ') stampa invece il contenuto di ls
 
+**Creazione processi:execve(2):** `#include int execve(const char *pathname, char *const argv[], char *const envp[]);`
+- **Pathname:** path del programma da eseguire. Può essere un eseguibile o uno script (che contenga la shabang)
+- **Argv:** array di puntatori a stringa che contiene gli argomenti che verranno passati al nuovo programma. Il primo elemento è il "filename" del programma da eseguire (argv[0]). L’ultimo elemento deve essere un puntatore nullo
+- **Envp:** array di puntatori a stringhe, nella forma nome=valore, che verranno passare come enviroment al nuovo programma. L’ultimo elemento deve essere un puntatore nullo
+
+**Creazione processi: exec(3):** `#include extern char **environ;`
+
+`int execl(const char *pathname, const char *arg, ... /* (char *) NULL */); `
+
+`int execlp(const char *file, const char *arg, ... /* (char *) NULL */); `
+
+`int execle(const char *pathname, const char *arg, ... /*, (char *) NULL, char *const envp[] */); `
+
+`int execv(const char *pathname, char *const argv[]); `
+
+`int execvp(const char *file, char *const argv[]); 
+`
+`int execvpe(const char *file, char *const argv[], char *const envp[]);
+`
+`#include <unistd.h>`
+
+- Rimpiazzano il processo chiamante con un nuovo processo 
+- Chiamano la sottostante execve(2) 
+- Il primo argomento è il nome del file da eseguire
+
+Se non c'è errore non ritornano nulla, -1 in caso di errore (errno settata)
+
+Dopo il prefisso "exec" posso mettere:
+- l: (execl(), execlp(), execle()) gli argomenti da passare al programma chiamato sono specificati come lista
+- v: (execv(), execvp(), execvpe()) gli argomenti da passare al programma chiamato sono specificati in un array
+- e: (execle(), execvpe()) envp specifica l'enviroment. Gli altri wrappers prendono l'enviroment dalla variabile esterna environ
+- p: (execlp(),execvp(), execvpe()) se il primmo argomento del wrapper non è un path assoluto il programma da eseguire è cercato in base alla variabile di ambiente PATH
+
+**Execl(3):** `#include int execl(const char *pathname, const char *arg, ... /* (char *) NULL */);`
+- Pathname è il programma da eseguire
+- Const char *arg* ed i susseguenti argomenti (in numero variabile) equivalgono ad arg0,...,argN e rappresentano gli argomenti del programa da eseguire:
+	- Il primo dei suddetti argomenti (arg0) per convenzione è il nome del programma
+	- L'ultimo (argN) dovrebbe essere NULL e castato: (char*)NULL
+
+Se non c'è errore non ritornano nulla, -1 in caso di errore (errno settata)
+
+**_ exit(2):** `#include void _exit(int status);`
+- Termina il chiamante "immediately"
+- I file descriptors sono chiusi
+- Il parent ID di eventuali chil diventa init (o il più vicino "subreaper process"...)
+
+Non c'è ritorno, ma il processo parent può ottenere il byte meno significativo di status (status & 0xFF) con wait(2)
+
+**_ exit(2) vs exit(3):** `#include void exit(int status);`
+- Termina il chiamante
+- *Exit(3)* fa tutto ciò che fa *_ exit(2)*, ma inoltre:
+	- Chiama eventuali funzioni registrate con *atexit(3)* e *on_exit(3)*
+	- Esegue il flush dei buffer di I/O relativi alle funzioni di libreria C per l'I/O (stdio(3)streams) e chiude i relativi stream
+- Lo standard C definisce EXIT_SUCCESS e EXIT_FAILURE (per portabilità) come valori di uscita
+
+Non c'è ritorno, ma il processo parent può ottenere il byte meno significativo di status (status & 0 xFF) con wait(2)

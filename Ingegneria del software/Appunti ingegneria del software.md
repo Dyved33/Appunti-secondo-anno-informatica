@@ -1353,3 +1353,4 @@ Si capisce subito chi fa cosa (studente vs sistema). Ottimo strumento di comunic
 - Criterio di scelta: 
 	- usa Sequence quando il rischio è distribuire male la logica tra oggetti; 
 	- usa Activity quando il rischio è perdere la visione complessiva del processo. 
+
