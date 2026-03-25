@@ -418,7 +418,7 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 > [!NOTE] Nota del Prof
 > Se esegui un comando come `sort` senza alcun parametro, la Bash "apre lo 0": invece di leggere da un file, resta in attesa di input direttamente dalla tastiera finché non viene inviato un segnale di EOF (Ctrl+D).
 
-**Bash: redirezione dell’input:** La redirezione dell'input in Bash permette di inviare il contenuto di un file (o altro input) a un comando, sostituendo la tastiera standard (stdin, descrittore file 0) con l'operatore `<`: `comando [n] < filename`. 
+**Bash: redirezione dell’input:** <u>La redirezione dell'input in Bash permette di inviare il contenuto di un file (o altro input) a un comando</u>, sostituendo la tastiera standard (stdin, descrittore file 0) con l'operatore `<`: `comando [n] < filename` (la shell apre il file, lo collega a stdin e il comando legge da stdin). 
 - Il descrittore *n* è associato a *filename* che viene aperto in lettura
 - Se *n* è omesso, lo *standard input* (*n* = 0) è associato al file, cioè il comando legge l’input dal file
 
@@ -436,7 +436,7 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 > - **Here String (`<<<`):** passa una singola stringa come input
 >> [!example] `grep "cerca" <<< "$variabile"`
 
-**Bash: redirezione dell'Output:** I simboli `>` e `>>` permettono di deviare/salvare l'output di un comando (che normalmente andrebbe a video) verso un file (sovrascrivendolo). `comando [n] > filename`
+**Bash: redirezione dell'Output:** I simboli `>` e `>>` permettono di deviare/salvare l'output di un comando (che normalmente andrebbe a video) verso un file (sovrascrivendolo). `comando [n] > filename` (la shell apre il file in questione in scrittura e collega stdout a quel file)
 - Il descrittore *n* è associato a *filename* che viene aperto in scrittura
 - Se *n* è omesso lo *standard output* (*n* = 1) è associato al file, cioè il comando scrive sul file l’output
 > [!example] `ls -l > lista.txt`: Salva la lista dei file in `lista.txt`, sovrascrivendolo.
@@ -449,10 +449,15 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 **BASH: redirezione dell'output in append:** `comando >> file` viene aggiunto l’output in coda al file senza sovrascriverlo
 > [!example] `echo "nuova riga" >> scan.txt`: Il testo viene aggiunto in coda al file senza cancellare il contenuto precedente.
 
-**BASH: reindirizzare/duplicare uno stream:** È possibile duplicare o spostare i descrittori di file per operazioni avanzate con gli operatori della redirezione.
-- `[n]<&x`: duplica il file descriptor in input x, nel senso che n fa riferimento allo stesso device/file cui si riferisce x. Se n è omesso viene assunto 0 (stdin). x deve essere un descrittore aperto in input altrimenti viene restituito un errore
-- `[n]>&x`: duplica il file descriptor di output x. Se n è omesso viene assunto 1 (stdout). x deve essere un descrittore aperto in output altrimenti viene restituito un errore
-> [!example] `3< /percorso-file comando 0<&3`:  Viene aperto il file sul descrittore 3, poi il comando (es. `cat` ) viene istruito a leggere dallo 0 che è stato duplicato dal 3 (simile alla system call `dup2` ).
+**BASH: reindirizzare/duplicare uno stream:** È possibile duplicare o spostare i descrittori di file per operazioni avanzate con gli operatori della redirezione (<u>si tratta di far puntare due flussi allo stesso oggetto tipo un file</u>).
+- `[n]<&x`: duplica il file descriptor in input x, nel senso che n fa riferimento allo stesso device/file cui si riferisce x (il quale è un fd). Se n è omesso viene assunto 0 (stdin). x deve essere un descrittore aperto in input altrimenti viene restituito un errore
+- `[n]>&x`: duplica il file descriptor di output x. Se n è omesso viene assunto 1 (stdout). x deve essere un descrittore aperto in output altrimenti viene restituito un errore (semplicemente viene redirezionato l'output al file/device indicato da x)
+
+> [!tip]
+> Ogni flusso, a prescindere dalla redirezione, mantiene la sua natura (es.stdin legge o stdout scrive,...), ciò che cambia è da dove legge o dove scrive. Quando si scrive `0<&3` ("stdin punta ciò che punta 3") significa che stdin usa lo stesso oggetto (file aperto) che usa 3
+
+> [!example] `3< /percorso-file comando 0<&3`: 
+>  Viene aperto il file sul descrittore 3, poi il comando (es. `cat` ) viene istruito a leggere dallo 0 che è stato duplicato dal 3 (simile alla system call `dup2` ).
 
 > [!NOTE] Nota del Prof
 > La funzione di sistema `read` torna sempre il numero di byte effettivamente letti. Per analizzare queste operazioni a basso livello, si può usare il comando `strace` , che mostra tutte le **system call** eseguite da un comando.
@@ -464,19 +469,30 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 **Bash:Pipeline:** `cmd1 | cmd2 | ... | cmdN`. Posso scrivere ed eseguire vari comandi separati solo dal carattere `|` (pipe). La pipe collega direttamente lo Standard Output di un comando allo Standard Input di quello successivo. Al posto del carattere `|` posso anche utilizzare solo `|&` con cui stdout e stderr del comando precedente vengono entrambi connessi all’input del comando successivo. Ogni comando è eseguito in un processo differente (*subshell*)
 > [!example] `sort /etc/passwd | less`: Il file `/etc/passwd` viene ordinato da `sort` , l'output prodotto non viene stampato a video ma passato a `less` , che permette di consultarlo pagina per pagina.
 
-| Comando                                     | Flusso                                                                                                                                 | Comportamento                                                                        |
-| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `cat`                                       | Tastiera $\rightarrow$ cat $\rightarrow$ tastiera                                                                                      | Io scrivo e lui stampa fino al `Ctrl + d`                                            |
-| `cat /etc/hosts`                            | /etc/hosts $\rightarrow$ cat $\rightarrow$ stdout (terminale)                                                                          | Legge il file come argomento                                                         |
-| `cat < /etc/hosts`                          | /etc/hosts $\rightarrow$ stdin $\rightarrow$ cat $\rightarrow$ terminale                                                               | Stdin viene collegato al file (risultato uguale al caso precedente)                  |
-| `cat 3< /etc/hosts`                         | /etc/hosts $\rightarrow$ fd 3 (inutilizzato) $\rightarrow$ stdin (terminale) $\rightarrow$ cat $\rightarrow$ terminale                 | Apre il file su fd 3, ma `cat` legge da stdin (0), non da 3 (si comporta come `cat`) |
-| `cat 3< /etc/hosts 0<&3`                    | /etc/hosts $\rightarrow$ fd 3 $\rightarrow$ stdin $\rightarrow$ cat $\rightarrow$ terminale                                            | Stampa il contenuto del file                                                         |
-| `cat 4> /tmp/my.txt`                        | stdin (tastiera) $\rightarrow$ cat $\rightarrow$ terminale  <br>fd 4 $\rightarrow$ file (inutilizzato)                                 | Il comportamento è come quello di `cat` e inoltre il file viene creato (vuoto)       |
-| `cat 4> /tmp/my.txt /etc/hosts`             | /etc/hosts $\rightarrow$cat $\rightarrow$ terminale  <br>fd 4 $\rightarrow$ file vuoto                                                 | Stampa a schermo e viene creato un file vuoto                                        |
-| `cat 4> /tmp/my.txt /etc/hosts 1>&4`        | /etc/hosts $\rightarrow$ cat $\rightarrow$ stdout (1) $\rightarrow$ fd 4 $\rightarrow$ file                                            | Output scritto su `/tmp/my.txt`, niente a schermo                                    |
-| `cat 3< /etc/hosts 4>/tmp/my.txt 1>&4 0<&3` | /etc/hosts $\rightarrow$ fd 3 $\rightarrow$ stdin $\rightarrow$ cat $\rightarrow$ stdout $\rightarrow$ fd 4 $\rightarrow$ /tmp/my. Txt | `cat` legge da `/etc/hosts` e scrive su `/tmp/my.txt`                                |
-> [!info] il comando `cat` riceve SEMPRE dal processo 0
-###### System calls per i processi
+| Comando                                     | Flusso                                                                                                                                 | Comportamento                                                                                                                                                                                                                                                                                                                          |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cat`                                       | Tastiera $\rightarrow$ cat $\rightarrow$ tastiera                                                                                      | scrivo e lui stampa fino al `Ctrl + d`. `cat` usa il flusso stdin e scrive su stdout                                                                                                                                                                                                                                                   |
+| `cat /etc/hosts`                            | /etc/hosts $\rightarrow$ cat $\rightarrow$ stdout (terminale)                                                                          | `cat` apre `/etc/hosts` e ne stampa il contenuto su stdout (legge il file passato direttamente come argomento)                                                                                                                                                                                                                         |
+| `cat < /etc/hosts`                          | /etc/hosts $\rightarrow$ stdin $\rightarrow$ cat $\rightarrow$ terminale                                                               | la shell apre il file, lo collega a stdin (fd 0) e `cat` lo legge da stdin                                                                                                                                                                                                                                                             |
+| `cat 3< /etc/hosts`                         | /etc/hosts $\rightarrow$ fd 3 (inutilizzato) $\rightarrow$ stdin (terminale) $\rightarrow$ cat $\rightarrow$ terminale                 | La shell con `3< /etc/hosts` apre il file in lettura e lo collega a fd 3, poi si esegue cat. Siccome `cat` usa SOLO fd 0 e fd 1, "ignora" fd 3 e stdin resta la tastiera (quindi il comando si comporta come se ci fosse solo `cat`)                                                                                                   |
+| `cat 3< /etc/hosts 0<&3`                    | /etc/hosts $\rightarrow$ fd 3 $\rightarrow$ stdin $\rightarrow$ cat $\rightarrow$ terminale                                            | `3< /etc/hosts` apre il file su fd 3 e `0<&3` <u>duplica</u> fd 3 su stdin. Ora stdin punta al file e `cat` legge da li                                                                                                                                                                                                                |
+| `cat 4> /tmp/my.txt`                        | stdin (tastiera) $\rightarrow$ cat $\rightarrow$ terminale  <br>fd 4 $\rightarrow$ file (inutilizzato)                                 | la shell apre il file in scrittura su fd 4 (`cat` non usa fd 4). `cat` legge da stdin e stampa su stdout. Il file viene creato (vuoto) ma non scritto                                                                                                                                                                                  |
+| `cat 4> /tmp/my.txt /etc/hosts`             | /etc/hosts $\rightarrow$cat $\rightarrow$ terminale  <br>fd 4 $\rightarrow$ file vuoto                                                 | `4> /tmp/my.txt` apre fd 4 (inutile per cat) e `cat /etc/hosts` legge il file e stampa su stdout (quindi il file.txt resta vuoto e il contenuto dell'argomento viene stampato a terminale)                                                                                                                                             |
+| `cat 4> /tmp/my.txt /etc/hosts 1>&4`        | /etc/hosts $\rightarrow$ cat $\rightarrow$ stdout (1) $\rightarrow$ fd 4 $\rightarrow$ file                                            | `4> /tmp/my.txt` apre fd 4 e `1>&4` duplica il flusso stdout in fd 4 (quindi l'output di `cat /etc/hosts` va nel file). In sostanza non avrò output a schermo ma `/tmp/my.txt` conterrà `/etc/hosts`                                                                                                                                   |
+| `cat 3< /etc/hosts 4>/tmp/my.txt 1>&4 0<&3` | /etc/hosts $\rightarrow$ fd 3 $\rightarrow$ stdin $\rightarrow$ cat $\rightarrow$ stdout $\rightarrow$ fd 4 $\rightarrow$ /tmp/my. Txt | `3< /etc/hosts` apre il file in lettura su fd 3, `4> /tmp/my.txt` apre il file in scrittura su fd 4, `0<&3` duplica stdin su fd 3 e `1>&4` duplica stdout su fd 4. In sostanza il comando legge (stdin) da `/etc/hosts` e scrive (stdout) su `/tmp/my.txt` (è come fare una copia del file). Equivale a `cat /etc/hosts > /tmp/my.txt` |
+> [!info] Il comando `cat` legge sempre e solo da stdin (fd 0)
+
+> [!tip] Nota bene:
+> - un comando come `<` fa si che la shell apra il file usando il pathname, ottenga così il pathname e lo colleghi a stdin (fd 0). Quindi si usa un file esterno che viene aperto nel momento dell'esecuzione del comando
+> - un comando come `<&` implica che la shell NON debba aprire un file, ma usare un file descriptor già aperto (lo duplica). Pertanto si lavora solo con connessioni già esistenti
+
+> [!caution] 
+> - `<` apre il file in lettura
+> - `>` apre il file in scrittura
+> - `<&` duplica (solitamente) stdin (se c'è 0 prima) sul file descriptor passato
+> - `>&` duplica (solitamente) stdout (se c'è 1 prima) sul file descriptor passato
+
+ ###### System calls per i processi
 **fork():** `include <unistd.h> pid_t fork();`
 
 È una syscall che non vuole argomenti. Questo metodo ritorna -1 difficilmente (il *child* non viene creato e errno viene settata), altrimenti:

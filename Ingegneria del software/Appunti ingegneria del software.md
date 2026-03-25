@@ -1692,5 +1692,3 @@ Se molte risposte sono negative, l’architettura va rifinita prima di ampliare 
 >La responsabilità di ciascun passo è chiara e localizzata nel layer corretto. 
 > ![[Pasted image 20260325152144.png|200]]
 
- 
-

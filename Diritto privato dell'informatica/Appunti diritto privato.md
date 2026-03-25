@@ -326,50 +326,47 @@ Nella scelta di obiettivi militari del 28-02-2026 si è usata l’intelligenza a
 - Esposizione a contenuti non affidabili
 
 ###### *Blockchain* e contracts
-Un file può essere copiato infinite volte. Allo stesso modo una criptovaluta può essere spesa infinite volte. La *blockchain* nasce con l'esigenza di garantire la totale tracciabilità delle transazioni di un determinato MANCA
+La blockchain nasce per risolvere il problema del **double spending** nelle monete digitali: in un sistema puramente digitale, infatti, lo stesso “valore” potrebbe essere tentato più volte se non esistesse un meccanismo condiviso di controllo (in altre parole una criptovaluta potrebbe essere spesa più volte se non ci fosse una forma di controllo). La soluzione di Bitcoin è una rete **peer-to-peer** che registra pubblicamente le transazioni in una catena di blocchi protetta da *proof-of-work*, così da rendere costosa la modifica della storia già registrata.
 
-Essa è una tecnologia a registro distribuito, un registro digitale immutabile decentralizzato organizzato in blocchi concatenati cronologicamente tramite tecniche crittografiche.
+La blockchain è un **registro digitale decentralizzato**, sicuro e immutabile, strutturato come una catena di blocchi che memorizzano dati e transazioni. Condiviso tra più nodi (computer) di una rete, elimina intermediari centrali, garantendo trasparenza e tracciabilità inalterabile grazie alla crittografia, rendendo così impossibile modificare i dati una volta registrati. Ecco i punti chiave per capire la blockchain:
+- *Struttura a blocchi:* Le informazioni sono raggruppate in blocchi, ognuno dei quali contiene un'impronta crittografica (hash) del blocco precedente, creando una catena cronologica.
+- *Decentralizzazione (Registro Distribuito):* Non esiste un server centrale. Il registro è copiato e condiviso su migliaia di nodi, rendendo il sistema resistente agli attacchi.
+- *Immutabilità e Sicurezza:* Una volta che i dati sono scritti, non possono essere cancellati o modificati senza il consenso della rete, garantendo una alta sicurezza.
+- *Consenso:* Per aggiungere un nuovo blocco, la rete deve validare la transazione attraverso regole condivise (meccanismi di consenso), come il Proof of Work.
+- *Utilizzi:* Sebbene famosa per le criptovalute (es. Bitcoin) , la blockchain è usata per tracciare la filiera, gestire l'identità digitale, atti notarili e contratti intelligenti (smart contracts).
 
-**Architettura peer-to-peer:** ogni dispositivo connesso alla rete (soprannominato nodo) svolge contemporaneamente la funzione di client e server. MANCA
+> [!info] Il **Proof-of-Work (PoW):**
+> è un meccanismo di consenso utilizzato nelle blockchain per confermare le transazioni e creare nuovi blocchi. I partecipanti, detti _miner_, risolvono complessi enigmi matematici usando potenza computazionale; chi vince aggiunge il blocco e riceve una ricompensa, garantendo sicurezza e prevenendo attacchi informatici. Caratteristiche principali: 
+> - **Scopo:** Prevenire la doppia spesa e garantire l'immutabilità dei dati sulla blockchain, contrastando attacchi Sybil.
+> - **Funzionamento:** I miner mettono in competizione la propria potenza di calcolo (CPU/GPU) per risolvere un problema crittografico.
+> - **Verifica:** Risolvere il puzzle è difficile, ma verificare la soluzione è estremamente facile per tutti i nodi della rete.
+> - **Mining:** Il processo di risoluzione crea nuove criptovalute e convalida blocchi, come accade con Bitcoin.
+> - **Consumo Energetico:** La necessità di elevata potenza di calcolo comporta un notevole consumo di energia elettrica.
 
-I singoli blocchi che compongono la *blockchain* sono insieme i di transazioni e dati registrati in modo permanente, validati e concatenati cronologicamente MANCA
+**Nodi, architettura peer-to-peer e blocchi:** Nell’architettura **peer-to-peer** i nodi non sono solo “client” o solo “server”: partecipano alla propagazione delle informazioni e, a seconda del protocollo, alla validazione. In MiCA, per esempio, un nodo DLT è descritto come un dispositivo o processo che fa parte della rete e conserva una replica completa o parziale dei record delle transazioni.
 
-Ogni blocco è suddiviso in due parti:
-1. *Header*
-2. *Body*
+I blocchi sono fatti, in sostanza, di:
+- **header:** contiene elementi come hash del blocco precedente, merkle root, time, target/difficulty (nBits) e **nonce** (*number only used once*). Quest'ultima è una variabile numerica aggiunta a un blocco per trovarne l'hash valido. I miner cambiano questo numero per soddisfare la regola della *difficoulty* (consuma potenza di calcolo ma garantisce che vecchie transazioni vengano rielaborate)
+- **transazioni:** stanno nel resto del blocco. Il collegamento tra hash del blocco precedente e merkle root fa sì che modificare una transazione o un blocco precedente richieda di rifare i calcoli successivi.
 
-In questo modo si garantisce l'immutabilità della *blockchain* e la distinguibilità tra una *blockchain* e l'altra
+**Hash, nonce e proof of work:** L’**hash** è l’impronta crittografica del blocco: se cambia anche solo un dato, cambia l’hash. Nel proof-of-work il miner varia il **nonce** fino a trovare un hash che soddisfi il target richiesto; il white paper di Bitcoin dice esplicitamente che il nonce viene incrementato nel blocco finché l’hash non ha il numero di zeri richiesto, e che cambiare un blocco richiede rifare il lavoro.
 
-L'hash è il risultato di una funzione crittografica a senso unico che trasformai dati in un MANCA 
+**Consenso:** I **meccanismi di consenso** sono l’insieme di regole con cui la rete decide quale storia delle transazioni è valida. NIST, nel suo panorama sui blockchain systems, include tra i modelli di consenso proof of work, proof of stake, proof of authority e altri modelli ancora.
 
-Il nonce è un valore numerico utilizzato una sola volta in un vlocco che viene modificato iteativamente dirante il proveso di geerazione dell'hash.
+Nel **proof of work** la validità nasce dalla prova di calcolo; in un modello **proof of authority** la validazione è affidata a soggetti autorizzati dal protocollo o dall’ecosistema. Il punto da ricordare, per gli appunti, è che il consenso serve a evitare conflitti sulla “versione ufficiale” del registro.
 
-**Ruolo del consenso:** nel modello *Proof to Work* i nodi (minatori) competono per risolver un problema crittografico comlesso che consiste nel trovar un nocnce tale che l'hash del nolcco soddisgi un criteroiospecigico (es. Presentare un numero minimo di zeri iniziali)
+**Smart contract:**  In Italia l’art. 8-ter del d.l. 135/2018, convertito nella l. 12/2019, definisce lo **smart contract** come un programma per elaboratore che opera su tecnologie basate su registri distribuiti e la cui esecuzione vincola automaticamente due o più parti sulla base di effetti predefiniti dalle stesse. La norma collega anche la memorizzazione di un documento informatico su DLT agli effetti giuridici della validazione temporale elettronica ex art. 41 eIDAS.
 
-**Variabili di calcolo:** poiché i dati del blocco MANCA
+Quindi uno smart contract **non è semplicemente un contratto “in forma informatica”**: è un programma che esegue automaticamente alcune clausole o effetti pattuiti. La parte giuridicamente importante è che il legislatore italiano gli attribuisce rilevanza, ma a condizione che siano rispettati i requisiti previsti dalla disciplina tecnica e dall’identificazione informatica delle parti.
 
-Modelli di consenso sono un insieme di regole politiche e algoritmi concordati tre i nodi di una rete blockchain e che disciplinano MANCA
+**Quadro dell’Unione europea: approccio a doppio binario:** L’UE ha adottato un approccio “a doppio binario”. Da un lato c’è **MiCA** (Regolamento 2023/1114), che disciplina l’offerta al pubblico, l’ammissione alla negoziazione e i prestatori di servizi su cripto-attività; dall’altro c’è il **DLT Pilot Regime** (Regolamento 2022/858), pensato per le infrastrutture di mercato che usano DLT per strumenti finanziari tokenizzati.
 
-MANCA
+MiCA definisce la **crypto-asset** come una rappresentazione digitale di valore o di diritto trasferibile e memorizzabile elettronicamente usando DLT o tecnologia simile. Dentro MiCA trovi anche le categorie principali: **asset-referenced token (ART)**, **e-money token (EMT)** e **utility token**.
 
-MANCA
+Il Pilot Regime, invece, non riguarda tutte le cripto-attività: serve soprattutto per strumenti finanziari emessi o gestiti tramite DLT e consente temporanee esenzioni da alcune regole dei mercati finanziari tradizionali per sperimentare trading e settlement tokenizzati. ESMA sottolinea anche che la definizione di crypto-asset di MiCA è distinta da quella degli strumenti finanziari DLT del Pilot Regime.
 
-Come interagiscono hash, nonce e consenso:
-- Trasmissione della transazione: il dato (viene trasmesso)
-MANCA
+MiCA si applica in modo generale dal **30 dicembre 2024**; inoltre prevede un regime transitorio per alcuni prestatori di servizi già operativi prima di quella data, che possono continuare fino al **1° luglio 2026** o fino alla concessione/rifiuto dell’autorizzazione, se la disciplina nazionale lo consente.
 
-In una blockchain che usa l'algoritmo *proof by authority* MANCA
+**In Italia:** In Italia, oltre alla definizione di smart contract, la norma sulle DLT insiste molto sulla **tracciabilità**: il registro deve essere condiviso, distribuito, replicabile, accessibile simultaneamente e architetturalmente decentralizzato su basi crittografiche, con dati verificabili dai partecipanti e non alterabili. Questo spiega perché nelle tue note “tracciabilità”, “immutabilità” e “sicurezza crittografica” sono caratteristiche centrali.
 
-Caratteristica della blockchain:
-- Decentralizzazione
-- Immutabilità
-- Trasparenza/pubblicità
-- Tracciabilità
-- Sicurezza crittografica
-
-Approccio a doppio binario dell'unione europea per i mercati digitali
-MANCA
-
-Incompatibilità MANCA 
-
-Italia MANCA
+Un punto utile da aggiungere è che, se nella blockchain finiscono **dati personali**, entrano in gioco problemi GDPR molto delicati. L’EDPB nel 2025 ha adottato linee guida proprio sul trattamento dei dati personali tramite blockchain, riconoscendo che architetture diverse hanno implicazioni diverse per ruoli, responsabilità e conformità.
