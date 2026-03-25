@@ -73,7 +73,7 @@ La sostenibilità del software dipende dalla qualità delle scelte fatte nelle f
 - rilascio
 - manutenzione
 
-1. Le attività iniziali seguono un flusso lineare: requisiti → progettazione → implementazione.
+1. Le attività iniziali seguono un flusso lineare: requisiti $\rightarrow$ progettazione $\rightarrow$ implementazione.
 2. Dopo la prima versione, il processo entra in un ciclo continuo di test, rilascio e manutenzione.
 3. Le attività della seconda riga sono iterative: ogni modifica o bug-fix riattiva il ciclo.
 4. La manutenzione genera spesso nuovi requisiti, chiudendo il loop verso la fase iniziale.
@@ -328,9 +328,9 @@ Il **backlog** è un artefatto vivo: viene aggiornato continuamente **sulla base
 - di coinvolgere regolarmente gli stakeholder
 
 Le funzionalità non vengono affrontate tutte insieme, ma organizzate in:
-- epic → macro–aree funzionali
-- user stories → unità più piccole e verificabili
-- sprint → passi concreti che producono un incremento funzionante.
+- epic $\rightarrow$ macro–aree funzionali
+- user stories $\rightarrow$ unità più piccole e verificabili
+- sprint $\rightarrow$ passi concreti che producono un incremento funzionante.
 
 Questo rende visibile l’evoluzione del sistema e permette di: 
 - adattare le priorità nel tempo
@@ -352,7 +352,7 @@ A partire dalle epic possiamo ricavare user stories più piccole e concrete, cia
 > - L’accesso alla piattaforma deve essere possibile solo tramite credenziali istituzionali.
 
 Un requisito può essere espresso a due livelli di dettaglio:
-1. *Lato utente:* linguaggio semplice, orientato ai bisogni, agli obiettivi e al contesto → comprensibile a chi usa il sistema
+1. *Lato utente:* linguaggio semplice, orientato ai bisogni, agli obiettivi e al contesto $\rightarrow$ comprensibile a chi usa il sistema
 2. *Lato sistema:* descrizione più precisa, utile per progettare e implementare concretamente -> utilizzato da sviluppatori e progettisti
 
 Non sono due categorie distinte, ma di due modi di esprimere la stessa necessità. Questi due li
@@ -369,7 +369,7 @@ velli sono spesso indicati come *requisiti utente* e *requisiti di sistema*.
 
 I requisiti si dividono in due grandi famiglie:
 1. *Requisiti funzionali:* descrivono cosa il sistema deve fare, cioè servizi, operazioni e comportamenti osservabili dagli utenti (quali servizi deve offrire il sistema)
-2. *Requisiti non funzionali*: descrivono come il sistema deve funzionare, quali vincoli deve rispettare e quale livello di qualità deve garantire (in che condizioni questi servizi devono funzionare bene)
+2. *Requisiti non funzionali:* descrivono come il sistema deve funzionare, quali vincoli deve rispettare e quale livello di qualità deve garantire (in che condizioni questi servizi devono funzionare bene)
 
 <u>Queste due categorie si completano in quanto i funzionali definiscono la funzione mentre i non funzionali definiscono qualità, limiti e contesto operativo</u>
 
@@ -565,9 +565,9 @@ Alcune relazioni descrivono la struttura stabile del dominio:
 
 Queste relazioni esistono “a prescindere” dal singolo utilizzo del sistema: descrivono il modo in cui è organizzato il mondo universitario. Sono la base della nostra mappa concettuale del dominio.
 Altre relazioni descrivono azioni/eventi che avvengono nel dominio: 
-- Studente → Iscrizione: crea una nuova iscrizione a un appello; 
-- Docente → Voto: registra o aggiorna l’esito di uno studente; 
-- Segreteria → Corso/Appello: crea o aggiorna i dati organizzativi. 
+- Studente $\rightarrow$ Iscrizione: crea una nuova iscrizione a un appello; 
+- Docente $\rightarrow$ Voto: registra o aggiorna l’esito di uno studente; 
+- Segreteria $\rightarrow$ Corso/Appello: crea o aggiorna i dati organizzativi. 
 
 Queste relazioni sono più vicine al comportamento del sistema: hanno tipicamente precondizioni, effetti e controlli.
 
@@ -786,7 +786,7 @@ A livello grafico:
 
 A livello grafico (UML): 
 - si usa una linea continua con una freccia triangolare non piena; 
-- la freccia punta verso l’attore più generale (da Specializzato → Generale). 
+- la freccia punta verso l’attore più generale (da Specializzato $\rightarrow$ Generale). 
 
 Va usata solo se semplifica il modello o riduce ripetizioni. In alcuni casi può essere utile introdurre un attore più generale: Utente come ruolo comune. Attori più specifici: 
 - Studente, 
@@ -925,8 +925,8 @@ Un concetto è un buon candidato se:
 **Molteplicità:** La molteplicità esprime quante istanze di un concetto possono essere collegate a un altro. Lettura rapida: 
 - 1: esattamente una; 
 - 0..1: opzionale; 
-- 0..*: zero o molte; 
-- 1..*: almeno una
+- 0..:* zero o molte; 
+- 1..:* almeno una
 
 <div style="display: flex; justify-content: center;">
   <img src="Screenshot From 2026-03-18 15-05-46.png" width="200">
@@ -1052,7 +1052,7 @@ Obiettivo: restare vicini al dominio, ma con una struttura già utile al design 
   <img src="Screenshot From 2026-03-18 15-25-22.png" width="200">
 </div>
 
-**Class diagram di *Unimanager*:** Traduzione del Domain Model in una rappresentazione orientata al software: 
+**Class diagram di *Unimanager:*** Traduzione del Domain Model in una rappresentazione orientata al software: 
 - classi con attributi tipizzati; 
 - relazioni che suggeriscono i futuri collegamenti tra oggetti; 
 - in questo diagramma mostriamo solo associazioni.
@@ -1085,8 +1085,8 @@ Non dicono ancora:
 
 ###### Sequence diagram e activity diagram
 Nella lezione precedente abbiamo definito la struttura del sistema: 
-- **Domain Model**: concetti del dominio e relazioni principali;
-- **Class Diagram**: classi software e legami tra classi. 
+- **Domain Model:** concetti del dominio e relazioni principali;
+- **Class Diagram:** classi software e legami tra classi. 
 
 Oggi passiamo al livello dinamico: 
 - come gli oggetti collaborano durante uno scenario; 
@@ -1353,4 +1353,344 @@ Si capisce subito chi fa cosa (studente vs sistema). Ottimo strumento di comunic
 - Criterio di scelta: 
 	- usa Sequence quando il rischio è distribuire male la logica tra oggetti; 
 	- usa Activity quando il rischio è perdere la visione complessiva del processo. 
+
+###### Principi di architettura software
+Nelle tre lezioni UML precedenti abbiamo usato cinque diagrammi per capire che cosa deve fare il sistema: 
+1. Use Case Diagram per funzionalità e attori; 
+2. Domain Model  per i concetti del dominio;
+3. Class Diagram  per la struttura software; 
+4. Sequence Diagram per i messaggi nel tempo; 
+5. Activity Diagram per il flusso di processo. 
+
+Questa analisi ci dà una buona fotografia del comportamento e del dominio di UniManager. Il passo successivo è chiederci: come organizziamo il software in modo che questi elementi siano implementati in maniera ordinata, comprensibile e mantenibile?
+
+L’architettura software è il ponte tra: l’analisi (requisiti, casi d’uso, modelli UML), e l’implementazione concreta (classi, moduli, codice). Se l’analisi ci dice cosa deve succedere, l’architettura ci dice come organizzare il sistema perché quelle funzionalità possano essere realizzate in modo coerente. Un’architettura chiara rende più semplice: 
+- assegnare il lavoro a più sviluppatori, 
+- prevedere l’impatto dei cambiamenti, 
+- discutere le scelte progettuali usando una mappa condivisa.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260325132937.png" width="200">
+</div>
+
+> [!info] Parliamo di architettura in questo momento del corso perché: 
+> - abbiamo già compreso il dominio di UniManager (gestione di corsi, appelli, iscrizioni e voti), 
+> - abbiamo identificato gli attori e i casi d’uso principali di questo dominio (Studente, Docente, Segreteria), 
+> - abbiamo un modello concettuale stabile degli elementi centrali del dominio (Studente, Corso, Appello, Iscrizione). 
+>  
+ È il momento di decidere come strutturare il codice in modo che rispecchi questa comprensione, evitando di arrivare all’implementazione con un insieme di file disorganizzati. Le scelte architetturali prese all’inizio sono difficili da cambiare e condizionano l’evoluzione futura del sistema: per questo è importante renderle esplicite.
+
+**Che cos’è l’architettura software?** Possiamo definire l’architettura software come: 
+- la struttura di alto livello del sistema, 
+- la suddivisione in componenti principali (moduli, servizi, sottosistemi), 
+- le relazioni e le dipendenze tra questi componenti. 
+
+L’architettura non entra nei dettagli di ogni singolo metodo, ma definisce il contenitore in cui questi dettagli andranno a collocarsi. Una buona architettura aiuta chiunque, anche non autore del codice, a farsi un’idea del sistema “a colpo d’occhio”.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260325133013.png" width="200">
+</div>
+
+Possiamo considerare l’architettura software a due livelli: 
+1. *in piccolo:* riguarda la struttura interna di un singolo sistema applicativo, come UniManager. Ci chiediamo come suddividere il software in componenti, servizi, moduli. 
+2. *in grande:* riguarda sistemi più complessi che coinvolgono molte applicazioni, servizi distribuiti, componenti remoti o cloud. Qui le decisioni architetturali includono protocolli, distribuzione, scalabilità. 
+
+Nel corso ci concentreremo soprattutto sull’architettura in piccolo, perché è la base su cui costruire soluzioni più complesse. Il passaggio all’architettura “in grande” avviene spesso in modo naturale, man mano che un sistema cresce e integra componenti esterni. 
+
+> [!example]  Esempio concreto di architettura “in grande”: 
+> - una piattaforma e-commerce come Amazon, con sistemi distinti per catalogo, ordini, pagamenti, spedizioni e raccomandazioni, 
+> - applicazioni dedicate per utenti finali e operatori (web, app mobile, app per venditori e logistica), 
+> - servizi distribuiti e comunicazione tra sistemi tramite API/eventi.
+
+L’architettura è anche l’insieme delle decisioni strutturali che: 
+- sono difficili da cambiare una volta implementate, 
+- influenzano molte parti del sistema, 
+- impattano su prestazioni, manutenibilità, riusabilità.
+
+> [!example]  Alcuni esempi di decisioni architetturali: 
+> - separare o meno la logica di business dall’accesso ai dati, 
+> - usare o meno livelli distinti per presentazione, logica, persistenza, 
+> - organizzare il codice per funzionalità (Studenti, Corsi, . . . ) o per tipo di responsabilità (domain = entità e regole di business, service = logica applicativa/casi d’uso, repository = accesso ai dati e persistenza). 
+
+Queste decisioni definiscono confini e regole di dipendenza:
+- chi può chiamare chi, 
+- dove può risiedere una regola di business, 
+- quali componenti possono conoscere dettagli tecnologici. 
+
+> [!info] In UniManager, per esempio, decidere che la CLI parli solo con i Service e non direttamente con i Repository è una decisione architetturale, non di dettaglio.
+
+**Progettare l’architettura:** significa prendere una serie di decisioni che influenzano profondamente il sistema, per esempio: 
+- come suddividere il software in componenti, 
+- quale forma far assumere ai confini tra i componenti, 
+- come far comunicare i diversi moduli tra loro, 
+- quali dipendenze ammettere e quali vietare, 
+- quanto isolare il dominio dai dettagli tecnologici. 
+
+Ogni decisione architetturale ha un costo e un beneficio: l’obiettivo è trovare l’equilibrio che rende il sistema comprensibile, efficace e manutenibile. L’architettura emerge quindi non come una singola scelta, ma come un insieme coerente di decisioni che lavorano insieme.
+
+**Architettura vs design di dettaglio:** È utile distinguere l’architettura dal design di dettaglio: 
+- l’architettura definisce i grandi blocchi e le loro relazioni, 
+- il design di dettaglio decide come questi blocchi sono implementati internamente. 
+
+Le due dimensioni non sono in conflitto: 
+- l’architettura crea i confini (chi fa cosa), 
+- il design di dettaglio popola questi confini con classi, metodi e algoritmi specifici. 
+
+> [!example]  Esempi tipici di design di dettaglio: 
+> - firma dei metodi e scelta dei parametri (iscriviStudente(matricola, idAppello)); 
+> - struttura delle classi interne a un modulo e responsabilità dei singoli oggetti; 
+> - algoritmo di ordinamento/ricerca adottato in un servizio;
+> - gestione puntuale di eccezioni, validazioni e messaggi di errore.
+
+**Strumento per il team:** In un progetto reale, l’architettura non è solo un concetto tecnico, ma un strumento di comunicazione: 
+- permette a sviluppatori, progettisti e responsabili di parlare del sistema con un linguaggio comune,
+- aiuta a spiegare rapidamente “come è fatto” il software a chi entra nel team. 
+
+Sapere in quale componente collocare una nuova funzionalità riduce discussioni inutili e favorisce un’evoluzione ordinata del codice. Un’architettura condivisa rende più semplice anche la revisione del codice, perché si può valutare se una modifica rispetta o meno i confini stabiliti.
+
+**Se non ci fosse l'architettura:** Se l’architettura non viene pensata o viene lasciata “emergere” senza guida, il rischio è che il sistema si trasformi in una *“big ball of mud”:* 
+- file molto grandi e confusi, 
+- logica di business mescolata all’accesso ai dati, 
+- interfaccia utente che conosce dettagli interni del dominio. 
+
+In questo scenario ogni modifica è potenzialmente pericolosa, nessuno sa esattamente che cosa rompe cambiando una riga e si generano “zone del codice” che nessuno vuole toccare.
+
+**Obiettivi concreti dell'architettura:** Una buona architettura si pone obiettivi molto pratici:
+- ridurre la complessità percepita del sistema, 
+- facilitare i cambiamenti nel tempo, isolandoli dove possibile, 
+- favorire la testabilità, separando ciò che è facilmente verificabile da ciò che dipende dall’ambiente, 
+- supportare la crescita del progetto senza doverlo riscrivere da zero ogni anno. 
+
+Nel caso di UniManager, vogliamo che aggiungere una funzionalità (es. un nuovo tipo di report) non significhi toccare codice in dieci posti diversi.
+
+**Architettura e requisiti non funzionali:** L’architettura non serve solo a organizzare il codice: è lo strumento principale per soddisfare molti requisiti non funzionali. Aspetti come: 
+- prestazioni (tempi di risposta, carico), 
+- affidabilità e tolleranza ai guasti, 
+- scalabilità, 
+- sicurezza, 
+- manutenibilità ed estendibilità, 
+
+dipendono molto più dalle scelte architetturali che dal codice delle singole classi
+
+Un’architettura ben pensata permette di prevedere come il sistema si comporterà sotto stress e come potrà evolvere in futuro. Per questo motivo, le decisioni architetturali vengono prese molto presto nel progetto e orientano molte attività successive.
+
+**Decisioni architetturali e trade-off:** In architettura non esistono scelte “gratis”: quasi ogni decisione porta vantaggi su alcuni aspetti e costi su altri.
+
+> [!example]  Esempi tipici di trade-off: 
+> - più livelli e confini $\rightarrow$ maggiore manutenibilità, ma maggiore complessità iniziale; 
+> - moduli molto indipendenti $\rightarrow$ migliore evoluzione, ma più interfacce da progettare; 
+> - accesso ai dati centralizzato $\rightarrow$ coerenza, ma possibile collo di bottiglia. 
+> 
+
+Per questo una decisione architetturale va sempre motivata rispetto a: 
+- requisiti prioritari del progetto, 
+- vincoli tecnici e organizzativi, 
+- costo di implementazione e di evoluzione.  
+
+**Documentare le decisioni architetturali:** Anche in progetti didattici conviene rendere esplicite le decisioni architetturali, evitando che restino solo “nella testa” di chi le ha proposte. Un formato minimo efficace può contenere: 
+- *contesto:* quale problema dobbiamo risolvere; 
+- *decisione:* quale scelta adottiamo; 
+- *alternative:* quali opzioni abbiamo scartato e perché; 
+- *conseguenze:* effetti attesi, rischi, impatti. 
+
+Buona pratica operativa: 
+- una decisione per documento, titolo chiaro e data; 
+- aggiornamento del documento quando la decisione cambia. 
+
+> [!example] Esempio in UniManager:
+>  “i comandi CLI invocano solo i Service, senza accesso diretto ai Repository”. Questo riduce ambiguità nel team e facilita revisioni future.
+
+**Tre principi fondamentali:** Per lavorare sull’architettura useremo come filo conduttore tre principi semplici ma molto potenti: 
+- *modularità:* dividere il sistema in parti coese, 
+- *separazione delle responsabilità:* evitare componenti “tuttofare”, 
+- *layering:* organizzare il sistema in livelli con ruoli distinti. 
+
+Questi principi non sono legati a un linguaggio specifico, e valgono anche oltre l’OS, come criterio generale di organizzazione. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260325150441.png" width="200">
+</div>
+
+**Vocabolario operativo: CLI/UI, Service, Domain, Repository:** Fissiamo i quattro concetti che useremo nel resto del corso: 
+- *CLI/UI *(Command-Line Interface / User Interface): riceve input utente e mostra output, senza contenere regole di business; 
+- *Service:*coordina i casi d’uso applicativi (sequenza dei passi, validazioni applicative, gestione esiti/errore) e orchestra le interazioni tra Domain e Repository; 
+- *Domain:*rappresenta entità e regole del dominio (vincoli, invarianti, significato dei dati), indipendenti da UI e persistenza; 
+- *Repository:*si occupa di accesso ai dati e persistenza (lettura/scrittura). 
+
+Regola guida: 
+- la regola di business vive tra Service e Domain; 
+- CLI/UI e Repository sono livelli di interazione, non sede della logica di dominio. CLI / UI Service Domain Repository 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260325150627.png" width="200">
+</div>
+
+> [!example] Esempio di una decisione in UniManager 
+> - Problema: dove collocare la regola “uno studente non può iscriversi due volte allo stesso appello”? 
+> - Possibili scelte: 
+> 	- nella CLI/UI (scelta errata: vincolo di dominio in livello di presentazione), 
+> 	- nel Repository (scelta parziale: verifica tecnica sui dati ma non governo del caso d’uso), 
+> 	- in Service + Domain (scelta coerente con le responsabilità architetturali). 
+> - Decisione architetturale coerente: 
+> 	- la CLI/UI invia la richiesta di iscrizione al Service; 
+> 	- il Service applica la regola di business usando concetti e vincoli di Domain; 
+> 	- il Repository viene usato solo per leggere/scrivere lo stato persistente; 
+> 	- l’esito (OK/errore) torna alla CLI/UI senza esporre dettagli di persistenza.  
+
+**Primo principio- modularità:** La modularità consiste nel dividere il sistema in parti che:
+- hanno un ruolo chiaro, 
+- comunicano tramite interfacce ben definite, 
+- sono ragionabili e testabili quasi indipendentemente. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260325150733.png" width="200">
+</div>
+
+**Perché la modularità è essenziale?** La modularità riduce la porzione di sistema da analizzare per prendere una decisione progettuale: 
+- possiamo concentrarci su un modulo alla volta, 
+- il resto del sistema viene visto come un “servizio” con alcune funzioni disponibili. 
+
+Un sistema modulare: 
+- si presta meglio al lavoro in team (ogni gruppo segue un modulo), 
+- facilita il riuso (un modulo può essere sfruttato in altri contesti), 
+- rende più prevedibili gli impatti di ogni modifica. 
+
+> [!example] ![[Pasted image 20260325150841.png|200]]
+
+**Segnali di buona e cattiva modularità:** 
+- Buona modularità: nomi dei moduli intuitivi e stabili nel tempo, interfacce semplici (pochi metodi, significativi), dipendenze chiare, idealmente in una sola direzione. 
+- Scarsa modularità: moduli che cambiano continuamente scopo, componenti che conoscono dettagli interni l’uno dell’altro, dipendenze incrociate difficili da districare. 
+
+> [!example] 
+> ![[Pasted image 20260325151046.png|200]] 
+
+**Modularità funzionale in UniManager:** Guardando ai requisiti di UniManager, emergono in modo naturale alcune aree funzionali: 
+- gestione degli Studenti, 
+- gestione dei Corsi, 
+- gestione degli Appelli e delle Iscrizioni, 
+- gestione della persistenza delle informazioni. 
+
+Possiamo quindi immaginare di avere, almeno concettualmente, un modulo per ciascuna di queste aree, che si occupa di quella parte del dominio. Questa è una prima forma di modularità, che poi andremo a raffinare con il principio della separazione delle responsabilità.
+
+> [!example] ![[Pasted image 20260325151146.png|200]]
+
+**Secondo principio- separazione delle responsabilità:** La separazione delle responsabilità invita a evitare componenti che fanno “un po’ di tutto”. Ogni parte del sistema dovrebbe avere una responsabilità principale ben riconoscibile: 
+- rappresentare dati del dominio, 
+- applicare regole di business, 
+- comunicare con l’utente, 
+- accedere al database. 
+
+Quando questi ruoli si mescolano, il codice diventa più difficile da capire, da testare e da modificare. 
+
+> [!example] ![[Pasted image 20260325151234.png|200]] 
+
+**Perché separare le responsabilità:** Una separazione chiara delle responsabilità offre diversi vantaggi: 
+- rende più semplice capire “a chi compete” un certo cambiamento, 
+- riduce il rischio di introdurre effetti collaterali non desiderati, 
+- permette di sostituire una parte (es. la persistenza) mantenendo le altre stabili. 
+
+Al contrario, una classe o un modulo che gestisce: 
+- logica del dominio, 
+- interfaccia utente, 
+- accesso ai file, è destinato a diventare un punto critico del sistema.  
+
+**Tipi di responsabilità in UniManager:**
+In questa slide adottiamo una vista per responsabilità tecniche (non per aree funzionali): 
+- è una prospettiva diversa da “modularità funzionale” (Studenti, Corsi, Appelli), 
+- serve a chiarire chi fa cosa tra i componenti tecnici. 
+
+In UniManager possiamo individuare almeno quattro tipi di responsabilità: 
+- dominio: rappresentare entità e regole del mondo universitario, 
+- logica applicativa: orchestrare i casi d’uso, 
+- persistenza: leggere e scrivere dati, 
+- interfaccia: interagire con l’utente. 
+
+Separare queste responsabilità ci aiuta a progettare componenti più puliti e facili da testare. 
+
+> [!example] ![[Pasted image 20260325151358.png|200]]
+
+**Separazione in pratica- entità, servizi, repository, CLI:** Possiamo tradurre queste responsabilità in quattro famiglie di componenti: 
+- *entità del dominio* (es. Studente, Corso, Appello), che contengono dati e regole del dominio; 
+- *servizi applicativ*i (es. AppelloService), che implementano le operazioni richieste dai casi d’uso; 
+- *repository* (es. StudenteRepository), che si occupano di salvare e recuperare i dati; 
+- *componenti CLI/UI*, che gestiscono input e output verso l’utente. 
+
+In questo modo, ogni famiglia ha una responsabilità precisa e riconoscibile.  
+
+**Terzo principio- layering:** Il terzo principio riguarda il layering, cioè l’idea di organizzare il sistema in livelli di astrazione:
+- un livello più vicino all’utente (interfaccia), 
+- livelli intermedi di logica, 
+- un livello più vicino alle tecnologie di base (file, database, rete). 
+
+Ogni livello offre servizi al livello superiore e sfrutta i servizi del livello inferiore, secondo regole di dipendenza ben precise. 
+
+> [!example] ![[Pasted image 20260325151530.png|200]]
+
+**Perché usare i layer:** I layer servono a tenere sotto controllo le dipendenze: 
+- il codice dell’interfaccia utente non dovrebbe conoscere i dettagli del database, 
+- la logica di business non dovrebbe dipendere da come i dati sono memorizzati. 
+
+I benefici principali sono: 
+- maggiore chiarezza nella struttura, 
+- confini più netti per i test, 
+- facilità nel sostituire un livello (es. cambiare DB) mantenendo stabili gli altri.
+
+> [!example] ![[Pasted image 20260325151648.png|200]]
+ 
+**Un layering semplice per UniManager:** Per UniManager possiamo immaginare quattro livelli principali:
+- *CLI/UI:*comandi testuali o schermate che l’utente utilizza; 
+- *Service:*implementazione dei casi d’uso; 
+- *Domain:*entità e regole del dominio universitario; 
+- *Repository:*accesso ai dati su file o database. 
+
+Questi livelli formano una “pila” dove ciascuno ha un ruolo distinto. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260325151828.png" width="200">
+</div>
+
+**Regole di comunicazione tra i layer:** Per mantenere l’architettura pulita, è utile stabilire alcune regole: 
+- la CLI/UI parla solo con il livello Service, 
+- i Service parlano con il Domain e i Repository, 
+- i Repository non devono dipendere dall’interfaccia utente, 
+- il Domain non dovrebbe conoscere dettagli di persistenza o di interfaccia. 
+
+In questo modo, le dipendenze hanno una direzione chiara e il dominio rimane al centro dell’architettura. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260325151933.png" width="200">
+</div>
+
+**Checklist rapida di qualità architetturale:** Domande operative da porre al modello architetturale: 
+- ogni componente ha una responsabilità principale chiara? 
+- le dipendenze rispettano i confini tra layer? 
+- una modifica tipica richiede tocchi localizzati o diffusi? 
+- il dominio resta isolato da UI e persistenza? 
+- i test possono concentrarsi su un livello alla volta? 
+
+Se molte risposte sono negative, l’architettura va rifinita prima di ampliare il codice.  
+
+**UniManager- una prima suddivisione in pacchetti:** Possiamo tradurre questi livelli in una prima proposta di struttura del progetto: 
+- cli/ per l’interfaccia testuale o grafica, 
+- service/ per i servizi applicativi, 
+- domain/ per le entità e le regole del dominio, 
+- repository/ per l’accesso ai dati. 
+- Questa suddivisione ha il vantaggio di: 
+- rendere subito visibile la separazione delle responsabilità, 
+- dare una mappa chiara del sistema fin dai primi commit. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260325152042.png" width="200">
+</div>
+
+> [!example]  Iscrizione a un appello attraverso i layer. Immaginiamo l’operazione “Studente si iscrive a un appello”:
+> - la CLI raccoglie l’input (matricola, appello) e invoca il servizio opportuno; 
+> - il Service verifica le regole (esistenza di studente e appello, vincoli sulle iscrizioni) usando il Domain; 
+> - il Service chiede al Repository di aggiornare la persistenza; 
+> - il risultato torna verso la CLI, che mostra all’utente conferma o eventuali errori. 
+>
+>La responsabilità di ciascun passo è chiara e localizzata nel layer corretto. 
+> ![[Pasted image 20260325152144.png|200]]
+
+ 
 

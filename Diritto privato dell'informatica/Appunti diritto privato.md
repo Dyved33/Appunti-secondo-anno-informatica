@@ -40,7 +40,7 @@ Il codice civile è un regio decreto perché deriva da quello precedente e ha la
 
 **Diritto patrimoniale d'autore:** Diritto di fare propri i risultati economici dell'opera. Si può rinunciare a tale diritto (es. open source). In Italia il pubblico dominio di un'opera si ottiene dopo 70 anni dalla morte dell'autore (cessa il diritto patrimoniale di autore, non ci posso più guadagnare, per i 70 anni i guadagni sono degli eredi). 
 
-**Altri ordinamenti:** In altri ordinamenti non esiste il diritto d'autore ma il copyright (es USA dove il copyright è solo patrimoniale). Per acquistarlo c'è bisogno di un accertamento dell'originalità. In Italia si depone alla SIAE (es blockchain può provare l'originalità di un contratto). La SIAE controlla l'utilizzo di licenze. In USA il copy right vale per 75 anni (95 con il Micky mouse act per le opere dal 1922 al 1978) 
+**Altri ordinamenti:** In altri ordinamenti non esiste il diritto d'autore ma il copyright (es USA dove il copyright è solo patrimoniale). Per acquistarlo c'è bisogno di un accertamento dell'originalità. In Italia si depone alla SIAE (es *blockchain* può provare l'originalità di un contratto). La SIAE controlla l'utilizzo di licenze. In USA il copy right vale per 75 anni (95 con il Micky mouse act per le opere dal 1922 al 1978) 
 
 >[!example] topolino può essere usato nella sua versione originale. Il logo Disney non scade finché viene pagato. Un marchio copre un simbolo/prodotto che agisce sul mercato 
 
@@ -324,3 +324,52 @@ Nella scelta di obiettivi militari del 28-02-2026 si è usata l’intelligenza a
 - Accesso a dati privati
 - Abilità di comunicare all’esterno 
 - Esposizione a contenuti non affidabili
+
+###### *Blockchain* e contracts
+Un file può essere copiato infinite volte. Allo stesso modo una criptovaluta può essere spesa infinite volte. La *blockchain* nasce con l'esigenza di garantire la totale tracciabilità delle transazioni di un determinato MANCA
+
+Essa è una tecnologia a registro distribuito, un registro digitale immutabile decentralizzato organizzato in blocchi concatenati cronologicamente tramite tecniche crittografiche.
+
+**Architettura peer-to-peer:** ogni dispositivo connesso alla rete (soprannominato nodo) svolge contemporaneamente la funzione di client e server. MANCA
+
+I singoli blocchi che compongono la *blockchain* sono insieme i di transazioni e dati registrati in modo permanente, validati e concatenati cronologicamente MANCA
+
+Ogni blocco è suddiviso in due parti:
+1. *Header*
+2. *Body*
+
+In questo modo si garantisce l'immutabilità della *blockchain* e la distinguibilità tra una *blockchain* e l'altra
+
+L'hash è il risultato di una funzione crittografica a senso unico che trasformai dati in un MANCA 
+
+Il nonce è un valore numerico utilizzato una sola volta in un vlocco che viene modificato iteativamente dirante il proveso di geerazione dell'hash.
+
+**Ruolo del consenso:** nel modello *Proof to Work* i nodi (minatori) competono per risolver un problema crittografico comlesso che consiste nel trovar un nocnce tale che l'hash del nolcco soddisgi un criteroiospecigico (es. Presentare un numero minimo di zeri iniziali)
+
+**Variabili di calcolo:** poiché i dati del blocco MANCA
+
+Modelli di consenso sono un insieme di regole politiche e algoritmi concordati tre i nodi di una rete blockchain e che disciplinano MANCA
+
+MANCA
+
+MANCA
+
+Come interagiscono hash, nonce e consenso:
+- Trasmissione della transazione: il dato (viene trasmesso)
+MANCA
+
+In una blockchain che usa l'algoritmo *proof by authority* MANCA
+
+Caratteristica della blockchain:
+- Decentralizzazione
+- Immutabilità
+- Trasparenza/pubblicità
+- Tracciabilità
+- Sicurezza crittografica
+
+Approccio a doppio binario dell'unione europea per i mercati digitali
+MANCA
+
+Incompatibilità MANCA 
+
+Italia MANCA

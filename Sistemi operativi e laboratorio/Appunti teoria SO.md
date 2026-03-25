@@ -850,3 +850,332 @@ Bisogna quindi assicurare la mutua esclusione ed evitare che un produttore aggiu
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260319133107.png" width="200">
 </div>
+
+Soluzione errata con buffer infinito:
+```C
+/* program producerconsumer */ 
+int n; 
+binary_semaphore s = 1, delay = 0; /*due semafori distinti per evitare che si legga in un buffer vuoto ???????????*/
+
+void producer() { 
+	while (true) { 
+		produce(); 
+		semWaitB(s); 
+		append(); 
+		n++; 
+		if (n==1) semSignalB(delay); 
+		semSignalB(s); 
+		/*ogni volta che si entra si fa una wait e ogni volta che si esce si fa una signal*/
+	} 
+}
+
+void consumer() { 
+	semWaitB(delay); 
+	while (true) { 
+		semWaitB(s); 
+		take(); 
+		n--; 
+		semSignalB(s); 
+		consume(); 
+		if (n==0) semWaitB(delay); 
+	} 
+}
+```
+
+Abbiamo un semaforo binario che esegue la wait per realizzare la mutua esclusione. append() scrive l’evento prodotto nel buffer, poi n++ incrementa il contatore del numero di elementi nel buffer. Se n == 1, esegue un signal sull’altro semaforo, il quale prenderà la risorsa, decrementerà il contatore n e
+segnalerà con delay che il buffer è vuoto. Questo non funziona perché terminato semSignalB(s) il produttore potrebbe aver già prodotto qualcos'altro, quindi blocca l’accesso ad altri processi (n non sarà zero). Il problema è che la semWaitB() non può stare nel while true, ma altrimenti non funzionerebbe.
+
+Soluzione corretta con buffer infinito:
+```C
+/* program producerconsumer */ 
+int n; binary_semaphore s = 1, delay = 0; 
+
+void producer() { 
+	while (true) { 
+		produce(); 
+		semWaitB(s); 
+		append(); 
+		n++; 
+		if (n==1) semSignalB(delay); 
+		semSignalB(s); 
+	} 
+}
+
+void consumer() { 
+	int m; /* a local variable */ 
+	semWaitB(delay);
+	while (true) { 
+		semWaitB(s); 
+		take(); 
+		n--; 
+		m = n; 
+		semSignalB(s); 
+		consume(); 
+		if (m==0) semWaitB(delay); 
+	} 
+}
+```
+
+La procedura del producer non cambia, il consumer invece crea m, copia in m il contatore n, consuma la risorsa e poi il check viene fatto non con n (che potrebbe essere stato modificato da producer), ma con m che ha salvato il valore di n prima che il consumer abbia consumato la risorsa. 
+
+Soluzione con semafori generici e buffer infinito (soluzione più semplice):
+```C
+/* program producerconsumer */ 
+semaphore n = 0, s = 1; 
+
+void producer() { 
+	while (true) { 
+		produce(); 
+		semWait(s); 
+		append(); 
+		semSignal(s); 
+		semSignal(n); 
+	} 
+}
+
+void consumer() { 
+	while (true) { 	
+		semWait(n); 
+		semWait(s); 
+		take(); 
+		semSignal(s); 
+		consume(); 
+	} 
+}
+```
+
+Soluzione con semafori generici e buffer finito:
+```C
+/* program boundedbuffer */ 
+const int sizeofbuffer = /* buffer size */; 
+semaphore s = 1, n= 0, e= sizeofbuffer; 
+
+void producer() { 
+	while (true) { 
+		produce(); 
+		semWait(e); 
+		semWait(s); 
+		append(); 
+		semSignal(s); 
+		semSignal(n); 
+	} 
+}
+
+void consumer() { 
+	while (true) { 
+		semWait(n); 
+		semWait(s); 
+		take(); 
+		semSignal(s); 
+		semSignal(e); 
+		consume(); 
+	} 
+}
+```
+
+ Il produttore produce, poi fa wait sul semaforo e, che prenderà valori negativi, quando il buffer sarà pieno, e wait su s per la mutua esclusione sull’accesso al buffer. Poi fa il signal a s per segnalare che ora il buffer è libero e segnala a n, incrementa quindi n di 1 dicendo che ora c’è un elemento in più nel buffer. Il consumer invece fa esattamente il contrario: facendo lo wait su n che se positivo indica che ci sono degli elementi nel buffer. Altrimenti il consumer si mette in coda, se c’è la risorsa prende la risorsa, segnala che ora e si è liberato di un elemento.
+###### Monitor
+Quando si hanno programmi complessi si possono utilizzare dei programmi costruiti apposta per la concorrenza. Questi hanno degli oggetti fatti apposta per la gestione dei dati condivisi. Il monitor è un costrutto di alcuni linguaggi di programmazione con funzionalità analoghe ai semafori usato per la programmazione concorrente (disponibile in molti linguaggi e molte librerie). Si tratta di un modulo software usato per gestire:
+- I dati locali  
+- Le sequenze di inizializzazione
+- Una o più procedure
+
+I dati locali condivisi sono accessibili solo attraverso le procedure del monitor e in esso definisco le operazioni da fare su questi dati condivisi. Il resto dei programmi che usano la concorrenza sono chiamate alle procedure definite nel modulo. I singoli processi quindi non toccano direttamente i dati condivisi, ma devono passare per le procedure del modulo. I dati condivisi quindi sono accessibili solo tramite le procedure del monitor e i codici dei processi possono accedervi solo tramite le procedure. Inoltre un solo processo alla volta può eseguire le procedure del monitor.
+
+All’interno del monitor stanno le variabili di condizione, variabili accessibili solo attraverso due funzioni:
+1. *Cwait(c):* sospende l'esecuzione del processo che la ha esegiuita sulla condizione *c*
+2. *Csignal(c):* riattiva uno dei processi in attesa sulla condizione *c*; se non ce ne sono non fa nulla
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260325123445.png" width="200">
+</div>
+
+Problema del produttore/consumatore:
+```C
+/* program producerconsumer */ 
+monitor boundedbuffer; 
+char buffer [N]; /* space for N items*/ 
+int nextin, nextout; /* buffer pointers*/ 
+int count; /* number of items in buffer*/
+cond notfull, notempty; /* condition variables for synchronization*/
+
+void append (char x) { 
+	if (count == N) cwait(notfull); /* buffer is full; avoid overflow*/
+	buffer[nextin] = x; 
+	nextin = (nextin + 1) % N; 
+	count++; /* one more item in buffer */ 
+	csignal(notempty); /* resume any waiting consumer */ 
+} 
+
+void take (char x) { 
+	if (count == 0) cwait(notempty); /* buffer is empty; avoid underflow*/
+	x = buffer[nextout];
+	nextout = (nextout + 1) % N; 
+	count--; /* one fewer item in buffer */ 
+	csignal(notfull); /* resume any waiting producer */ 
+} 
+
+{ /* monitor body */ 
+	nextin = 0; nextout = 0; count = 0; /* buffer initially empty */ 
+}
+```
+###### Problema dei lettori e scrittori
+Alcuni processi leggono soltanto (lettori), altri scrivono soltanto (scrittori). Imponiamo come condizioni affinché tutto vada bene che:
+- Qualsiasi numero di lettori può leggere simultaneamente i dati;
+- Un solo scrittore alla volta può scrivere i dati; 
+- Durante la scrittura nessun lettore può leggere.
+
+Dati condivisi:
+- Alcuni processi leggono soltanto (lettori)
+- Gli altri scrivono soltanto
+
+Condizioni:
+- Qualsiasi numero di lettori può leggere simultaneamente i dati 
+- Un solo scrittore alla volta può scrivere i dati 
+- Durante la scrittura, nessun lettore può leggere
+
+**Precedenza ai lettori:** Si ha un contatore, due semafori, il semaforo x per la mutua esclusione, e un semaforo wsem per controllare l’accesso degli scrittori. Se readcount == 1, cioè se c’è un lettore esegue una wait sul semaforo wsem. Fatto ciò esco dalla mutua esclusione. La x in sostanza serve per la mutua esclusione sulla variabile readcount. Devo incrementare readcount, e per fare questa operazione ho tre istruzioni elementari: leggi readcount, aggiungici 1 e aggiorna. A questo punto il lettore legge e quando ha terminato decrementa readcount (la variabile in mutua esclusione). Quando verifica che lui è l’ultimo lettore, esegue la signal su wsem, quindi abilita o un processo scrittore o un prossimo lettore. Il processo scrittore può scrivere solo quando non ci sono lettori, quindi esegue semwait su wsem, scrive ed esegue la signal. Può scrivere il suo comando solo se è l’unico processo che sta accedendo. C’è un semWait all’interno di una sezione critica, sarebbe buona regola non lasciare dei wait all’interno delle sezioni critiche perché altrimenti se il processo si blocca nessuno può più accedervi, ma qui non fa danni perché la wait blocca il processo quando c’è un processo che sta scrivendo. Quindi finché il
+processo scrive è vero che tutti i lettori non possono accedere alla sezione critica, ma non potrebbero comunque accedere alla lettura. Precedenza ai lettori (con buffer infinito):
+```C
+/* program readersandwriters */ 
+int readcount; 
+semaphore x = 1, wsem = 1; 
+
+void reader() { 
+	while (true) { 
+		semWait (x); 
+		readcount++; 
+		if (readcount == 1) semWait (wsem); 
+		semSignal (x); 
+		READUNIT(); 
+		semWait (x); 
+		readcount--; 
+		if (readcount == 0) semSignal (wsem); 
+		semSignal (x); 
+	} 
+} 
+
+void writer() { 
+	while (true) { 
+		semWait (wsem); 
+		WRITEUNIT(); 
+		semSignal (wsem); 
+	} 
+} 
+		
+void main() { readcount = 0; parbegin (reader, writer); }
+```
+
+**Precedenza agli scrittori:** Ho 3 semafori e non uno solo. Con semsignal(x) esco dalla mutua esclusione per
+questo tratto, poi semsignal(rsem) e semsignal(z). A questo punto, finita la lettura, segnalo semwait(x) per la mutua esclusione, decremento il contatore, e se il contatore è 0 eseguo una signal su wsem, e ciò significa che tutti i lettori hanno finito di leggere. Alla fine semsignal(x) conclude la mutua
+esclusione. Passando a void writer(), si ha una semWait(y) sul semaforo y per la mutua esclusione, poi incrementiamo la writecount, se writecount == 1 significa che questo è l’unico processo che vuole scrivere, c’è una wait su rsem (semaforo dei lettori), dopodiché si esce dalla sezione critica e si esegue
+una wait sul semaforo wsem che segnala se si può scrivere o meno. A questo punto si scrive, terminato di scrivere si segnala wsem, cioè un altro processo può accedere. Finiti gli scrittori, per cui questo era l’ultimo scrittore, segnala ai processi lettori di partire. Wsem inizialmente è 1, viene decrementato o
+quando accede un primo lettore o quando accede uno scrittore, quindi wsem sarà a 0 quando almeno un processo sta leggendo o un processo sta scrivendo, ciò dunque assicura che non vi siano sovrapposizioni tra due processi scrittori, e un processo scrittore e uno lettore. Il semaforo x serve per la mutua esclusione sulla variabile readcount. Semwait e semsignal devono essere accessibili all’interno della mutua esclusione. Ciò significa che non posso mettere semwait(x) e basta o semwait(z) e basta, perché succederebbe che mentre un processo è fermo sulla semsignal, non sarebbe accessibile la lettura che invece deve essere accessibile perché altrimenti il processo in uscita non potrebbero aggiornarla e quindi far ripartire il processo.
+
+```C
+/* program readersandwriters */ 
+int readcount, writecount; 
+semaphore x = 1, y = 1, z = 1, wsem = 1, rsem = 1; 
+
+void reader() { 
+	while (true) { 
+		semWait (z); 
+			semWait (rsem); 
+				semWait (x); 
+					readcount++; 
+					if (readcount == 1) semWait (wsem); 
+						semSignal (x); 
+				semSignal (rsem); 
+			semSignal (z); 
+			READUNIT(); 
+			semWait (x); 
+				readcount--; 
+				if (readcount == 0) semSignal (wsem); 
+					semSignal (x); 
+	} 
+} 
+		
+void writer () { 
+	while (true) { 
+		semWait (y); 
+			writecount++; 
+			if (writecount == 1) 
+				semWait (rsem); 
+		semSignal (y); 
+		semWait (wsem); 
+			WRITEUNIT(); 
+		semSignal (wsem); 
+		semWait (y); 
+			writecount--; 
+			if (writecount == 0) 
+				semSignal (rsem); 
+		semSignal (y); 
+	}
+} 
+		
+void main() { 
+	readcount = writecount = 0; parbegin (reader, writer); 
+}
+```
+
+**Scambio di messaggio:** Un server, chiamato anche controller gestisce le informazioni che andrebbero condivise. A sx si ha il programma del processo lettore e scrittore, il processo lettore ha una variabile rmsg con un messaggio che deve leggere il lettore, invia questo messaggio a una mailbox chiamata readrequest (un contenitore che conterrà tutte le richieste da parte dello scrittore). Fatto questo
+si mette in attesa sulla sua porta (mailbox indice i) e quando avrà ricevuto il messaggio di risposta dal controllo leggerà e poi invierà il messaggio lettura terminata in un’altra mailbox denominata finish. Il processo scrittore funziona allo stesso modo, con la differenza che invece di readrequest avrà
+writerequest. Se c’è una richiesta di lettura viene prelevato il messaggio, decrementato il contatore, e in risposta al messaggio ricevuto si invia un messaggio di ricezione. Quando il contatore arriva a 0 si manda allo scrittore il messaggio OK e ci si mette in attesa del messaggio di terminata scrittura,
+dopodiché il contatore viene portato a 100. Al termine si ha un while(count <0). Finché il count è <0 ci si mette in attesa dei messaggi di lavoro terminato e mano mano si incrementa il contatore. Quindi in questo modo il diritto di accesso alla lettura e alla scrittura la dà un processo ben preciso, ovvero il controllore, e non c’è più la necessità di realizzare la mutua esclusione poiché è il controllore stesso che gestisce il tutto. In questo senso i meccanismi operativi basati su meccanismi client server sono più sicuri, un solo processo che sbaglia le operazioni di mutua esclusione rendono il dato condiviso
+
+```C
+void reader(int i) { 
+	message rmsg; 
+	while (true) { 
+		rmsg = i; 
+		send (readrequest, rmsg); 
+		receive (mbox[i], rmsg); 
+		READUNIT (); 
+		rmsg = i; 
+		send (finished, rmsg); 
+	} 
+} 
+	
+void writer(int j) { 
+	message rmsg; 
+	while(true) { 
+		rmsg = j; 
+		send (writerequest, rmsg); 
+		receive (mbox[j], rmsg); 
+		WRITEUNIT (); 
+		rmsg = j; 
+		send (finished, rmsg); 
+	} 
+}
+
+void controller () { 
+	while (true) { 
+		if (count > 0) { 
+			if (!empty (finished)) { 
+				receive (finished, msg); 
+				count++; 
+			} 
+			else if (!empty (writerequest)) { 
+				receive (writerequest, msg); 
+				writer_id = msg.id; 
+				count = count – 100; 
+			} 
+			else if (!empty (readrequest)) { 
+				receive (readrequest, msg); 
+				count--; 
+				send (msg.id, "OK"); 
+			} 
+		} 
+		if (count == 0) { 
+			send (writer_id, "OK"); 
+			receive (finished, msg); 
+			count = 100; 
+		} 
+	} 
+	while (count < 0) { 
+		receive (finished, msg); 
+		count++; 
+	} 
+}
+```
+

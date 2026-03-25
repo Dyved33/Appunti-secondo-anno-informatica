@@ -1,13 +1,16 @@
 #include <sys/wait.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 int main()
 {
 	pid_t pid;
 	/* char *args[] = {"ls", "-l", NULL}; */ // Array di argomenti per cat
 	/* char *args[] = {"cat", NULL} */
 	char *args[] = {"go.sh", NULL}; 
-	char *envs[] = {MY_VAR=addio,NULL}; // Array di variabili d'ambiente (vuoto)
+	char *envs[] = {"MY_VAR=addio",NULL}; // Array di variabili d'ambiente (vuoto)
 	/* fork a child process */
 	pid = fork();
 	if (pid < 0) { /* error occurred */
@@ -18,9 +21,9 @@ int main()
 		/* execlp("/bin/ls","ls",NULL); */
 		int fd = open("etc/passwd", O_RDONLY);
 		printf("Child. my pid = %d\n", getpid());
-		/* execve("/usr/bin/ls", args, envs); */
-		execlp("ls", "ls", "-l", NULL);
-		
+		int x = execve("/usr/bin/ls", args, envs); 
+		if (x) fprintf(stderr, "Errore:""Program failed to execute\n""|[%d]\n");
+		else fprintf(stdout, "Program executed successfully\n");
 		perror("Errore in execve");
 	}
 	else { /* parent process */

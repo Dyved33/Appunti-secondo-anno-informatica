@@ -815,3 +815,10 @@ Per questo l’automa di Nerode è il **minimo**.
 > - **Myhill-Nerode**: $L$ è regolare se e solo se $N_L$​ ha indice finito
 > - **Automa minimo**: gli stati sono le classi di $N_L$
 
+> [!example] Immagina di leggere una parola a sinistra verso destra.
+> A un certo punto, due prefissi $u$ $v$ possono essere considerati “uguali” per il linguaggio se, qualunque cosa ci aggiungi dopo, il risultato finale sarà sempre:
+> - accettato in entrambi i casi
+> - oppure rifiutato in entrambi i casi
+> 
+> Se questo succede, non ha senso tenerli in stati separati. Quindi l’automa minimo “fonde” tutte le parole che hanno lo stesso futuro possibile rispetto a $L$
+

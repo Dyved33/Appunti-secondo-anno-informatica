@@ -441,7 +441,7 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 - Se *n* è omesso lo *standard output* (*n* = 1) è associato al file, cioè il comando scrive sul file l’output
 > [!example] `ls -l > lista.txt`: Salva la lista dei file in `lista.txt`, sovrascrivendolo.
 
-**BASH: redirezione di stderr:** `comando [n]> filename` (default `n=1`), reindirizza solo lo standard error in un file
+**BASH: redirezione di stderr:** `comando 2> filename` (default `n=1`), reindirizza solo lo standard error in un file
 > [!example] 
 > - `cat /etc/hosts > file.out`: Il contenuto di `/etc/hosts` viene scritto in `file.out` . Se il file esiste, viene sovrascritto.
 > - **Redirezione Errori:** `ls cartella_inesistente 2> errori.log` Invia solo i messaggi d'errore al file `errori.log` .
@@ -475,6 +475,7 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 | `cat 4> /tmp/my.txt /etc/hosts`             | /etc/hosts $\rightarrow$cat $\rightarrow$ terminale  <br>fd 4 $\rightarrow$ file vuoto                                                 | Stampa a schermo e viene creato un file vuoto                                        |
 | `cat 4> /tmp/my.txt /etc/hosts 1>&4`        | /etc/hosts $\rightarrow$ cat $\rightarrow$ stdout (1) $\rightarrow$ fd 4 $\rightarrow$ file                                            | Output scritto su `/tmp/my.txt`, niente a schermo                                    |
 | `cat 3< /etc/hosts 4>/tmp/my.txt 1>&4 0<&3` | /etc/hosts $\rightarrow$ fd 3 $\rightarrow$ stdin $\rightarrow$ cat $\rightarrow$ stdout $\rightarrow$ fd 4 $\rightarrow$ /tmp/my. Txt | `cat` legge da `/etc/hosts` e scrive su `/tmp/my.txt`                                |
+> [!info] il comando `cat` riceve SEMPRE dal processo 0
 ###### System calls per i processi
 **fork():** `include <unistd.h> pid_t fork();`
 
@@ -673,3 +674,40 @@ Non c'è ritorno, ma il processo parent può ottenere il byte meno significativo
 - Lo standard C definisce EXIT_SUCCESS e EXIT_FAILURE (per portabilità) come valori di uscita
 
 Non c'è ritorno, ma il processo parent può ottenere il byte meno significativo di status (status & 0xFF) con wait(2)
+
+```C
+#include <sys/wait.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+int main()
+{
+	pid_t pid;
+	/* char *args[] = {"ls", "-l", NULL}; */ // Array di argomenti per cat
+	/* char *args[] = {"cat", NULL} */
+	char *args[] = {"go.sh", NULL};
+	char *envs[] = {"MY_VAR=addio",NULL}; // Array di variabili d'ambiente (vuoto)
+	/* fork a child process */
+	pid = fork();
+	if (pid < 0) { /* error occurred */
+		fprintf(stderr, "Fork Failed");
+		return 1;
+	}
+	else if (pid == 0) { /* child process */
+		/* execlp("/bin/ls","ls",NULL); */
+		int fd = open("etc/passwd", O_RDONLY);
+		printf("Child. my pid = %d\n", getpid());
+		int x = execve("/usr/bin/ls", args, envs);
+		if (x) fprintf(stderr, "Errore:""Program failed to execute\n""|[%d]\n");
+		else fprintf(stdout, "Program executed successfully\n");
+		perror("Errore in execve");
+	}
+	else { /* parent process */
+	/* parent will wait for the child to complete */
+	wait(NULL);
+	printf("Child Complete");
+	}
+	return 0;
+}
+```
