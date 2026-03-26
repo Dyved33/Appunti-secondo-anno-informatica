@@ -153,13 +153,13 @@ Quando eseguo il comando *ls -l*, nella prima colonna, compare un carattere che 
 
 | Simbolo | Tipologia          |
 | ------- | ------------------ |
-| -       | File "regolare"    |
-| d       | Cartella           |
-| b       | Device a blocchi   |
-| c       | Device a caratteri |
-| l       | Link simbolico     |
-| p       | Pipe               |
-| s       | Socket             |
+| `-`     | File "regolare"    |
+| `d`     | Cartella           |
+| `b`     | Device a blocchi   |
+| `c`     | Device a caratteri |
+| `l`     | Link simbolico     |
+| `p`     | Pipe               |
+| `s`     | Socket             |
 > [!example] Esempio: `-rw-r--r--` (trattino iniziale = file regolare), `drwxr-xr-x` (d = directory)
 
 Su Linux ogni file ha un proprietario (utente) e un gruppo proprietario. Quest'ultimo è una raccolta di utenti che condividono un insieme di permessi sul file (un utente appartenente ad un gruppo proprietario del file riceve i premessi per il "group" quando si accede al file stesso). Questo è utile per condividere cartelle/progetti tra più persone senza dare permessi a tutti gli utenti del sistema. Se non si è ne il proprietario ne si appartiene al gruppo proprietario si fa parte degli "altri". Questa distinzione tra ruoli mi serve per distinguere i permessi che ognuno può avere.
@@ -229,23 +229,23 @@ Le system calls sono invocate non direttamente ma tramite funzioni *wrappers* de
 
 **System calls per i file:** 
 
-| Nome                | Cosa fa                                                                        |
-| ------------------- | ------------------------------------------------------------------------------ |
-| open                | Apre un file in lettura e/o scrittura o crea un nuovo file                     |
-| close               | Chiude un file precedentemente aperto                                          |
-| read                | Legge da un file                                                               |
-| write               | Scrive su un file                                                              |
-| lseek               | Sposta il puntatore di lettura/scrittura ad una determinata posizione nel file |
-| unlink              | Rimuove una entry di un file nel filesystem                                    |
-| stat (fstat, Istat) | Fornisce informazioni sugli attributi di un file                               |
-| dup, dup2, dup3     | Duplicano un file descriptor                                                   |
+| Nome                  | Cosa fa                                                                        |
+| --------------------- | ------------------------------------------------------------------------------ |
+| `open`                | Apre un file in lettura e/o scrittura o crea un nuovo file                     |
+| `close`               | Chiude un file precedentemente aperto                                          |
+| `read`                | Legge da un file                                                               |
+| `write`               | Scrive su un file                                                              |
+| `lseek`               | Sposta il puntatore di lettura/scrittura ad una determinata posizione nel file |
+| `unlink`              | Rimuove una entry di un file nel filesystem                                    |
+| `stat (fstat, Istat)` | Fornisce informazioni sugli attributi di un file                               |
+| `dup, dup2, dup3`     | Duplicano un file descriptor                                                   |
 **System calls per le directory:**
 
-| Nome  | Cosa fa                           |
-| ----- | --------------------------------- |
-| mkdir | Crea una directory                |
-| rmdir | Cancella una directory (se vuota) |
-| chdir | Cambia la directory corrente      |
+| Nome    | Cosa fa                           |
+| ------- | --------------------------------- |
+| `mkdir` | Crea una directory                |
+| 'rmdir' | Cancella una directory (se vuota) |
+| `chdir` | Cambia la directory corrente      |
 **Open:** ` #include <unistd.h> int open(const char *pathname, int flags, mode_t mode)`
 - Apre il file specificato da *pathname*
 - *flags* deve includere uno tra `O_RDONLY, O_WRONLY o O_RDWR`
@@ -253,10 +253,10 @@ Le system calls sono invocate non direttamente ma tramite funzioni *wrappers* de
 
 | Altri flags (separati da \|) | Funzionamento                                                                              |
 | ---------------------------- | ------------------------------------------------------------------------------------------ |
-| O_CREAT                      | Se il file no esiste lo crea                                                               |
-| O_APPEND                     | Il file è aperto in accodo per la scrittura                                                |
-| O_TRUNC                      | Se il file esiste il contenuto viene azzerato                                              |
-| O_EXCL                       | Se usato insieme a O_CREAT e il file esiste, open () fallisce ed errno è settata ad EEXIST |
+| `O_CREAT`                    | Se il file no esiste lo crea                                                               |
+| `O_APPEND`                   | Il file è aperto in accodo per la scrittura                                                |
+| `O_TRUNC`                    | Se il file esiste il contenuto viene azzerato                                              |
+| `O_EXCL`                     | Se usato insieme a O_CREAT e il file esiste, open () fallisce ed errno è settata ad EEXIST |
 Questa system call ha due valori di ritorno possibili:
  1. Un intero positivo che è il *file descriptor* da usare per le operazioni successive
  2.  -1 in caso di errore che viene settato da errno
@@ -279,13 +279,13 @@ Questa system call ha due valori di ritorno possibili:
 > - 2 = stderr
 > - 3 = primo file aperto dal programma
 
-| Comando      | Contenuto                                              |
-| ------------ | ------------------------------------------------------ |
-| Man syscalls | Linux system calls                                     |
-| Man 7 libc   | Overview of standard C libraries on Linux              |
-| Strace -c ls | Summary dell'uso delle syscalls                        |
-| Man 2 open   | Mostra la pagina del manuale per la system call *open* |
-| Man 3 stdio  | Funzioni I/O                                           |
+| Comando        | Contenuto                                              |
+| -------------- | ------------------------------------------------------ |
+| `man syscalls` | Linux system calls                                     |
+| `man 7 libc`   | Overview of standard C libraries on Linux              |
+| `strace -c ls` | Summary dell'uso delle syscalls                        |
+| `man 2 open`   | Mostra la pagina del manuale per la system call *open* |
+| `man 3 stdio`  | Funzioni I/O                                           |
 
 **write:** `ssize_t write(int fd, const void *buf, size_t count);` <u>Scrive i primi count (numero di byte da scrivere) byte contenuti in buf (puntatore alla memoria che contiene i dati da scrivere) nel file aperto identificato da fd </u>(file descriptor ritornato da open(2)). Ritorna il numero di byte scritti (che può anche essere inferiore a count se, per esempio, il device di scrittura si è riempito) o -1 in caso di errore (se errno settata). 
 
@@ -383,13 +383,13 @@ int main(int argc, char *argv[]) //sono gli unici due parametri che può prender
 ###### Standard I/O library
 È un insieme di funzioni per accesso ai file, agli *streams* standard, etc che astraggono le operazioni di input-output sotto forma di streams. Le operazioni sono bufferizzate in spazio utente e ciò riduce il numero di chiamate alle sottostanti syscall e i relativi cambi di contesto ottimizzando le prestazioni. Forniscono un'interfaccia verso il SO di più alto livello rispetto alle syscall
 
-| Syscall (no bufferizzazione nello spazio utante)         | StdIO library (bufferizzazione nello spazio utente)                                                         |
-| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Open                                                     | Fopen                                                                                                       |
-| Close                                                    | Fclose                                                                                                      |
-| Read/write                                               | getchar/putchar, getc/putc, fgetc/fputc, fread/fwrite, gets/puts, fgets/fputs, scanf/printf, fscanf/fprintf |
-| Lseek                                                    | Fseek                                                                                                       |
-| Richiedono cambio contesto user-kernel ad ogni carattere | Tipicamente più efficaci e più veloci                                                                       |
+| Syscall (no bufferizzazione nello spazio utante)         | StdIO library (bufferizzazione nello spazio utente)                                                           |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `open`                                                   | `fopen`                                                                                                       |
+| `close`                                                  | `fclose`                                                                                                      |
+| `read/write`                                             | `getchar/putchar, getc/putc, fgetc/fputc, fread/fwrite, gets/puts, fgets/fputs, scanf/printf, fscanf/fprintf` |
+| `lseek`                                                  | `fseek`                                                                                                       |
+| Richiedono cambio contesto user-kernel ad ogni carattere | Tipicamente più efficaci e più veloci                                                                         |
 ###### Bash: standard stream e redirezioni
 **command-line completion:** *bash* ha la funzione di completamento delle linee di comando premendo il tasto *TAB*. Premendo una volta il tasto *TAB* ottengo:
 1. se c'è una sola possibilità il comando viene completato 
@@ -401,10 +401,10 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 
 | Comando (interno) | Descrizione                                                                                                                                |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| history           | visualizza gli ultimi n comandi eseguiti (il numero di comandi visualizzato e memorizzato dipende dalle variabili HISTSIZE e HISTFILESIZE) |
-| !a                | esegue l’ultimo comando nella history che inizia per ‘a’                                                                                   |
-| !68               | esegue il comando numero 68 della history                                                                                                  |
-| !!                | ripete l’ultimo comando eseguito                                                                                                           |
+| `history`         | visualizza gli ultimi n comandi eseguiti (il numero di comandi visualizzato e memorizzato dipende dalle variabili HISTSIZE e HISTFILESIZE) |
+| `!a`              | esegue l’ultimo comando nella history che inizia per ‘a’                                                                                   |
+| `!68`             | esegue il comando numero 68 della history                                                                                                  |
+| `!!`              | ripete l’ultimo comando eseguito                                                                                                           |
 **Bash: Metacaratteri:** si tratta di caratteri che separano le parole. Un metacarattere può essere: spazio, tab, newline, `|`, `&`,`;`,`(`, `)`, `<`, `>` (da *Bash Reference Manual*). Questi caratteri hanno un significato per la shell, come anche i caratteri `*`, `?`, `Ctrl + d (EOF)`, `Ctrl + c`, `'`,…
 > [!IMPORTANT]
 > Se si desidera usare questi caratteri come testo normale, devono essere racchiusi tra **apici** (quoting) per evitare che la Bash li interpreti.
@@ -467,6 +467,7 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 - Analogamente si realizza l’append:`comando &>> filename`, che semanticamente equivale a `comando >> filename 2>&1`
 
 **Bash:Pipeline:** `cmd1 | cmd2 | ... | cmdN`. Posso scrivere ed eseguire vari comandi separati solo dal carattere `|` (pipe). La pipe collega direttamente lo Standard Output di un comando allo Standard Input di quello successivo. Al posto del carattere `|` posso anche utilizzare solo `|&` con cui stdout e stderr del comando precedente vengono entrambi connessi all’input del comando successivo. Ogni comando è eseguito in un processo differente (*subshell*)
+
 > [!example] `sort /etc/passwd | less`: Il file `/etc/passwd` viene ordinato da `sort` , l'output prodotto non viene stampato a video ma passato a `less` , che permette di consultarlo pagina per pagina.
 
 | Comando                                     | Flusso                                                                                                                                 | Comportamento                                                                                                                                                                                                                                                                                                                          |
@@ -492,7 +493,60 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 > - `<&` duplica (solitamente) stdin (se c'è 0 prima) sul file descriptor passato
 > - `>&` duplica (solitamente) stdout (se c'è 1 prima) sul file descriptor passato
 
- ###### System calls per i processi
+**Bash- comandi informativi:**
+
+| Comando    | Comportamento                                            |
+| ---------- | -------------------------------------------------------- |
+| `id`       | Visualizza gli ID di utente e gruppo                     |
+| `hostname` | visualizza/imposta l'hostname della macchina             |
+| `uname`    | visualizza informazioni sul sistema                      |
+| `which`    | visualizza il path dell'eseguibile che esegue un comando |
+| `date`     | visualizza/imposta data e ora correnti                   |
+| `who, w`   | visualizzano chi è loggato nel sistema                   |
+| `tty`      | visualizza il nome del terminale                         |
+| `df`       | visualizza l’occupazione dello spazio disco              |
+**Bash- trattamento testi:**
+
+| Comando        | Comportamento                                                                       |
+| -------------- | ----------------------------------------------------------------------------------- |
+| `grep (-rvec)` | visualizza linee che soddisfano criteri (patterns) di ricerca                       |
+| `awk`          | implementa un linguaggio di programmazione per il «pattern scanning and processing» |
+| `tr`           | sostituisce, comprime e/o cancella caratteri                                        |
+| `uniq`         | visualizza o sostituisce lineee ripetute                                            |
+| `cut`          | seleziona parti di linee di un file (es.: a campi delimitati)                       |
+| `sed(-ei)`     | stream editor per filtrare e modificare un testo                                    |
+| `wc(-l)`       | conta linee, parole e caratteri                                                     |
+| `more`         | visualizza il contenuto di un file una pagina alla volta                            |
+| `less`         | permette di navigare in un file una pagina alla volta (ed anche altro...)           |
+| `diff`         | confronta il contenuto di due file per linee                                        |
+**Bash- gestione processi:**
+
+| Comando       | Comportamento                                              |
+| ------------- | ---------------------------------------------------------- |
+| `ps (axuj)`   | visualizza i processi attivi                               |
+| `top`         | visualizza in modo interattivo processi e risorse occupate |
+| `nice`        | esegue un comando modificandone la priorità                |
+| `renice`      | modifica la priorità di un processo                        |
+| `kill`        | invia un signal ad un processo                             |
+| `strace (-p)` | monitora system calls e signal di un processo              |
+**Bash- altri comandi:**
+
+| Comando     | Comportamento                                                                                                                                                         |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `find`      | cerca file che corrispondono a determinati criteri                                                                                                                    |
+| `uptime`    | risponde a: "da quanto la macchina è accesa?"                                                                                                                         |
+| `last`      | riporta le ultime login                                                                                                                                               |
+| `lastlog`   | riporta le ultime login di tutti o di un singolo utente                                                                                                               |
+| `xargs`     | da man: "build and execute command lines from standard input"                                                                                                         |
+| `su(-,-c)`  | permette di "agire" come altro utente                                                                                                                                 |
+| `echo(-en)` | visualizza una linea di testo (interno)                                                                                                                               |
+| `help`      | fornisce la lista dei comandi built-in della shell (interno)                                                                                                          |
+| `tee`       | "scrive" il suo stdin su stdout e uno o più file                                                                                                                      |
+| `basename`  | visualizza in output il solo nome file senza le precedenti directory da un pathname. Se richiesto rimuove il suffisso. Es.: basename /home/user 1 visualizza "user 1" |
+| `dirname`   | visualizza le directory che precedono il nome del file in un pathname Es.: dirname /home/user 1 visualizza "/home"                                                    |
+| `sleep n`   | attende n secondi senza fare nulla                                                                                                                                    |
+**Comando ps:**
+###### System calls per i processi
 **fork():** `include <unistd.h> pid_t fork();`
 
 È una syscall che non vuole argomenti. Questo metodo ritorna -1 difficilmente (il *child* non viene creato e errno viene settata), altrimenti:

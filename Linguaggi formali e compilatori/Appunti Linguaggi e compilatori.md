@@ -822,3 +822,97 @@ Per questo l’automa di Nerode è il **minimo**.
 > 
 > Se questo succede, non ha senso tenerli in stati separati. Quindi l’automa minimo “fonde” tutte le parole che hanno lo stesso futuro possibile rispetto a $L$
 
+**Costruzione dell'automa di Nerode:** dato un'automa a stati finiti deterministico $A = \langle Q, \Sigma, \delta, q_0, f \rangle$, costruire un'automa deterministico equivalente ad $A$ col minimo numero di stati:
+- Possiamo ridurci al caso in cui tutti gli stati siano accessibili
+- Gli stati dell'automa di Nerode sono le classi di $N_L ...$
+- Ma anche unione di insiemi $L_q$ con $q \in Q$ (cf. Dimostrazione del th di Nerode $ii) \implies iii)$)
+- Insomma la partizione di $\Sigma^*$ nelle classi di $N_L$ induce una partizione di $Q$
+- Tale partizione gode delle seguenti 3 proprietà:
+	1. L'insieme $F$ è unione di classi
+	2. Se $p$ e $q$ sono nella medesima classe, allora pr ogni lettera $a \in \Sigma$, $\delta(p,a)$ e $\delta(q,a)$ cadono in una stessa classe
+	3. è la meno fine tra le partizioni che soddisfano le due condizioni precedenti
+- Il problema della minimizzazione si ridurrà pertanto alla ricerca della partizione $Q$ che soddisfa tali condizioni 
+
+**Algoritmo di minimizzazione:** La partizione di $Q$ che soddisfa le precedenti Condizioni 1–3 si ottiene per approssimazioni successive: costruiamo la sequenza di partizioni $\Pi_n$ di $Q$ definite come segue:
+- La partizione $\Pi_0$ (stati finali separati da quelli non finali) ha le sole due classi $F$ e $Q ∖ F$; 
+- per ogni $n \geq 0$, le classi di $\Pi_{n+1}$ si ottengono spezzando quelle di $\Pi_n$ in modo da "separare" le coppie di stati che non soddisfano la Condizione 2 (spezzo una classe in modo da separare le coppie di stati che non soddisfano la condizione 2 vista prima, cioè che hanno l'immagine ch va in due classi differenti)
+- ci arrestiamo non appena $\Pi_{n+1} = \Pi_n$ (continuo a spezzare classi finché non posso spezzare più nulla e mi fermo, creando così il minor numero di classi possibile)
+
+L’automa minimo di $L$ si ottiene nel modo seguente:
+- gli stati sono le classi della partizione $\Pi$, 
+- per ogni classe $\mathscr C$ e ogni lettera $a \in \Sigma, \delta'(\mathscr C, a)$ è la classe che contiene tutti gli stati $\delta(q, a)$ con $q \in \mathscr C$, 
+- lo stato iniziale è la classe $\mathscr C_0$ che contiene lo stato iniziale $q_0$ di $A$ 
+- gli stati finali sono le classi contenute in $F$. 
+
+> [!example] 
+> Voglio minimizzare il seguente automa deterministico. Innanzitutto divido l'insieme degli stati in due classi: stati finali e stati non finali: $\Pi_0 =(Q \backslash F, F) = (\{q_0.q_1,q_2,q_3,q_4\},\{q_5,q_6\}$. > 
+> ![[Pasted image 20260326162039.png|200]]
+> 
+> Dopodiché vado a vedere le lettere (a,b) su ogni stato, in quale classe mi riportano.
+> Lo stato $q_0$, per esempio, con la lettera "a" mi porta in $q_3$, il quale fa parte della classe 0 $\implies$ scrivo 0. Faccio la stessa cosa in ogni classe per ciascuno stato (ogni colonnina). Gli stati che hanno colonnine uguali e che si trovano nella stessa classe, devono rimanere insieme: quindi $q_0$ e $q_3$ hanno entrambi colonnina 0,0 e devono restare insieme $\implies \Pi_1 = (\{q_0,q_3\}, \{q_1,q_2\}, \{q_4\}, \{q_5,q_6\}$
+>> [!info] Anche se $q_2$ e $q_5$ hanno la stesa colonnina rimangono separati perché si trovano già in classi diverse
+> 
+> ![[Pasted image 20260326100813.png|200]]
+> 
+> Ripeto lo stesso identico meccanismo di prima e mi ritrovo con 5 classi
+> ![[Pasted image 20260326100838.png|200]]
+>> [!info] Quelli nella classe 3 sono gli stati finali
+> 
+> Rifaccio la tabellina con queste nuove classi e mi rendo conto che non c'è più nulla da spezzare. Il partizionamento è finito. Gli stati dell'automa saranno le classi di equivalenza con indice: 0, 1, 2, 3, 4
+> 
+> ![[Pasted image 20260326100850.png|200]]
+> 
+> Il nuovo automa minimizzato è il seguente e avrà 5 stati invece dei 7 iniziali
+> 
+> ![[Pasted image 20260326100911.png|200]]
+
+**Procedura di raffinamento:**
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260326102140.png" width="200">
+</div>
+
+**Algoritmo di minimizzazione:**
+- *Input:* un automa deterministico $A = \langle Q, \Sigma, \delta, q_0, f \rangle$
+- *Output:* la partizione $\Pi$ relativa all'automa minimo
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260326102153.png" width="200">
+</div>
+###### Lemma di iterazione (proprietà dei linguaggi regolari)
+**Lemma:** sia $L$ un linguaggio regolare. Esiste un intero n tale che ogni parola $w \in L$ di lunghezza $|w| \geq n$ si può fattorizzare $w = xyz$ con $y \neq \epsilon$ e $xy^mz \in L$ per ogni $m \geq 0$. In altri termini se $L$ è un linguaggio regolare, in ogni parola di $L$ abbastanza lunga si può trovare un fattore non vuoto che può essere iterato (*pumped*) senza uscire dal linguaggio. Pertanto se un linguaggio non ha questa proprietà non può essere regolare. Ci sono, però, linguaggi che hanno questa proprietà e non sono regolari
+
+> [!tip] In altre parole:
+> Se prendiamo un linguaggio regolare, possiamo trovare un intero n per cui tutte le parole del linguaggio che siano più lunghe di questo intero n, possono essere scomposte in 3 pezzi: xyz. La parte centrale y non è la parola vuota, ma un fattore che può essere ripetuto n volte senza che si esca dal linguaggio. Un linguaggio che non supporta questa proprietà di iterazione (pumping), non può essere regolare, anche se esistono linguaggi che hanno la suddetta proprietà ma non sono regolari.
+
+> [!example]
+> 1. Mostriamo che $L = \{a^m b^m \mid m \geq 0\}$ non è regolare
+> - per $m$ abbastanza grande si dovrebbe avere  
+>     $a^m b^m = xyz, y \neq \epsilon, xy^n z \in L$ per ogni $n \geq 0$     
+> - se $|x| \geq m$ allora    
+>     ![[Pasted image 20260326163412.png|200]]
+>     
+>     - si ha $y = b^k$, con $k > 0$ e $xz = a^m b^{m-k})$>         
+>     - ma allora $xy^0 z = xz \notin L$, il che è assurdo
+>         
+> - se $|z| \geq m$, si ragiona in maniera simmetrica
+> - se $|x| < m$ e $|z| < m$ allora
+> 	![[Pasted image 20260326164834.png|200]]
+> 	- si ha $y = a^hb^k$ con $h,k > 0$
+> 	- quindi $xy^2z = xa^hb^ka^hb^kz$ contiene il fattore $ba$
+> 	- ma allora $xy^2z \notin L$, il che è assurdo
+> - pertanto $L$ NON è regolare
+
+**Dimostrazione:** 
+- per il teorema di Kleene, $L$ è accettato da un automa a stati finiti $A$
+- Sia $n$ il numero degli stati
+- Sia $w \in L$ e $|w| \geq n$. Scriviamo $w = a_1 a_2...a_k$, con $a_1,a_2,...,a_k \in A, k \geq n$ ($k$ numero di lettere, quindi abbiamo preso una parola che abbia lunghezza $\geq n$)
+- Nel grafo di $A$ c'è un cammino $q_0 \xrightarrow[]{a_1} q_1 \xrightarrow[]{a_2} ... \xrightarrow[]{a_k} q_k \in F$ (c'è un cammino da uno stato iniziale ad uno finale che ah $w$ come etichetta)
+- Dato che $k \geq n$, troveremo uno stato ripetuto $q_i = q_j, \ 0 \leq i < j \leq l$ (ci saranno almeno $n+1$ stati, quindi questi saranno più del numero di stati totale dell'automa. Ci saranno di conseguenza delle ripetizioni)
+- Quindi, posto $x = a_1...a_i, y = a_{i+1}...a_j, z = a_{j+1}...a_k$ avremo $w = xyz, y \neq \epsilon$ e 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260326165631.png" width="200">
+</div>
+
+- Pertanto $A$ accetta tutte le parole $xy^nz$ con $n\geq0$ 
+- Cioè $xy^nz \in L$ per ogni $n\geq 0$

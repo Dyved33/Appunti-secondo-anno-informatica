@@ -592,7 +592,7 @@ Queste regole guidano sia la mappa concettuale sia i controlli che progetteremo 
 > - può essere oggetto di visualizzazione, controllo, statistiche.
 
 > [!info] Confine del sistema
-> Oltre alle entità del dominio, è importante chiarire chi interagisce con il sistema: studenti, docenti, segreteria, eventuali amministratori di sistema. Dobbiamo chiederci: che cosa sta dentro UniManager e che cosa sta fuori? • 
+> Oltre alle entità del dominio, è importante chiarire chi interagisce con il sistema: studenti, docenti, segreteria, eventuali amministratori di sistema. Dobbiamo chiederci: che cosa sta dentro UniManager e che cosa sta fuori?  
 >> [!example] Elementi esterni:
 >> - sistemi di autenticazione dell’ateneo; 
 >> - basi dati istituzionali di anagrafe
@@ -963,7 +963,7 @@ Le molteplicità non sono numerini casuali:
 
 Ogni risposta può portare a correggere o raffinare il modello:
 - aggiungere o rimuovere un concetto; 
-- modificare una molteplicità; • introdurre una nuova associazione.
+- modificare una molteplicità; introdurre una nuova associazione.
 
 **Da domain model a class diagram:** Il Domain Model è concettuale e indipendente dalla tecnologia. Il Class Diagram inizia a guardare verso il software: 
 - introduce il concetto di classe; 
@@ -1032,7 +1032,7 @@ Obiettivo: restare vicini al dominio, ma con una struttura già utile al design 
   <img src="Screenshot From 2026-03-18 15-22-00.png" width="200">
 </div>
 
-**Aggregazione e composizione:** Sono due tipi particolari di associazione UML. In entrambi i casi c’è un rapporto tra un tutto e una parte. •
+**Aggregazione e composizione:** Sono due tipi particolari di associazione UML. In entrambi i casi c’è un rapporto tra un tutto e una parte. 
 - *Aggregazione* (rombo vuoto): la parte può esistere anche senza quel tutto. 
 - *Composizione* (rombo pieno): la parte dipende dal tutto per esistere.
 
@@ -1064,7 +1064,7 @@ Obiettivo: restare vicini al dominio, ma con una struttura già utile al design 
 **Errori tipici nel passaggio a class diagram:** Aggiungere subito: 
 - metodi per ogni scenario immaginabile; 
 - classi per ogni schermata dell’interfaccia grafica; 
-- dettagli di persistenza (DB, ORM, ecc.). •
+- dettagli di persistenza (DB, ORM, ecc.). 
 - ORM: meccanismo per mappare oggetti ↔ database;
 
 Confondere classi del dominio con: 
@@ -1691,4 +1691,294 @@ Se molte risposte sono negative, l’architettura va rifinita prima di ampliare 
 >
 >La responsabilità di ciascun passo è chiara e localizzata nel layer corretto. 
 > ![[Pasted image 20260325152144.png|200]]
+###### Stili architetturali
+Nella lezione precedente abbiamo visto: 
+- che cos'è l’architettura software, 
+- perché è importante pensarla esplicitamente, 
+- tre principi chiave: modularità, separazione delle responsabilità, layering. 
 
+Oggi facciamo un passo avanti: vediamo come questi principi possono essere combinati in forme ricorrenti, cioè in stili architetturali. Obiettivo: dare un vocabolario per riconoscere le strutture tipiche dei sistemi e per discutere le scelte senza basarsi solo su tecnologie o mode del momento.  
+
+**Che cos'è uno stile architetturale?** Uno stile architetturale descrive:
+- un insieme di componenti tipici, 
+- le regole di organizzazione (es. livelli, ruoli), 
+- le modalità di comunicazione tra i componenti, 
+- i vincoli sulle dipendenze. 
+
+Non è una tecnologia o un framework, è un modello concettuale che può essere implementato in molti modi diversi. Serve per ragionare in termini di forme globali del sistema, non di singole classi. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260326150435.png" width="200">
+</div>
+
+**Perché esistono più stili?** I sistemi software devono soddisfare esigenze molto diverse: interattività, prestazioni, scalabilità, affidabilità, integrazione con altri sistemi, . . . Ogni stile è nato per rispondere meglio a alcuni di questi bisogni. Non esiste uno stile “migliore in assoluto”: ogni scelta comporta vantaggi e svantaggi, capire questi compromessi è parte del mestiere dell’ingegnere del software.  
+
+In questa lezione ci concentriamo su quattro stili molto diffusi: 
+1. *Layered:* organizzazione a livelli (es. presentazione, logica, dati). 
+2. *Client–server:* separazione tra chi chiede un servizio e chi lo fornisce. 
+3. *Repository:* più componenti che condividono una base dati comune. 
+4. *Service-based:* sistema composto da servizi indipendenti che espongono interfacce.  
+
+**Architettura layered:** Lo stile layered organizza il sistema in livelli di astrazione: 
+- ogni livello ha un ruolo specifico, 
+- i livelli comunicano tra loro secondo regole definite. 
+
+Tipicamente si distinguono livelli come: 
+- presentazione verso l’utente, 
+- logica di business / servizi applicativi, 
+- accesso ai dati e infrastruttura di base.
+
+L’idea chiave è tenere separati i diversi tipi di responsabilità e controllare le dipendenze tra le parti del sistema. In pratica, layered risponde bene alla domanda: dove deve vivere una certa logica, per evitare che UI, regole di business e persistenza si mescolino. Non impone una tecnologia specifica: è uno schema organizzativo che può essere applicato in modo simile in stack diversi. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260326150612.png" width="200">
+</div>
+
+Ogni layer offre servizi a quello sopra e usa i servizi di quello sotto. Le dipendenze seguono una direzione prevalente: dall’alto verso il basso. 
+
+**Layered- vantaggi:**
+1. *Chiarezza strutturale:* 
+	- è facile spiegare “come è fatto” il sistema, 
+	- i confini tra responsabilità sono visibili. 
+2. *Facilità di manutenzione:*
+	- cambiare il database può richiedere modifiche solo nel layer di accesso ai dati, 
+	- cambiare UI dovrebbe toccare principalmente il layer di presentazione. 
+3. *Testabilità:* 
+	- si possono testare i servizi senza coinvolgere né UI né DB reali (mock). 
+4. *Evoluzione controllata:* 
+	- una modifica in un layer tende a propagarsi meno agli altri, se le interfacce restano stabili. 
+5. *Onboarding del team:* 
+	- la struttura a livelli aiuta a capire rapidamente dove collocare nuova logica.  
+
+**Layered: limiti e compromessi:** 
+1. *Possibile overhead:* 
+	- le chiamate attraversano più layer, con qualche costo in termini di prestazioni. 
+2. *Rischio di rigidità:* 
+	- se i confini tra layer sono troppo rigidi, diventa difficile gestire casi “trasversali”. 
+3. *Necessità di disciplina:* 
+	- se i layer iniziano a “bucarsi” (UI che accede direttamente al DB), la struttura si degrada in fretta.  
+4. *Rischio di stratificazione artificiale:* 
+	- in sistemi piccoli, troppi layer possono introdurre complessità non necessaria. 
+5. *Possibile duplicazione di modelli:*  
+	- spesso gli stessi dati attraversano più layer con trasformazioni ripetitive.  
+
+> [!info] Per UniManager possiamo riprendere il layering già introdotto: 
+> - CLI / UI: interazione con l’utente (comandi, menu). 
+> - Service: implementazione dei casi d’uso (iscrizione, creazione appelli, . . . ). 
+> - Domain: entità e regole del dominio universitario. 
+> - Repository: accesso ai dati su file o database. 
+> ![[Pasted image 20260326150653.png|200]]
+
+> [!example] Iscrizione a un appello nei layer 
+> - Scenario «Studente si iscrive a un appello»: 
+> 	1. CLI/UI chiede matricola e appello e invoca AppelloService. 
+> 	2. Service controlla i vincoli usando oggetti del Domain. 
+> 	3. Service chiede al Repository di aggiornare la persistenza. 
+> 	4. CLI/UI mostra il risultato (successo o errore). 
+> - Il flusso attraversa i layer in modo ordinato, con responsabilità chiare
+> ![[Pasted image 20260326150719.png|200]]
+
+**Architettura client–server:** Lo stile client–server separa: 
+- il client, che richiede servizi, 
+- il server, che fornisce servizi. 
+
+Tipicamente: 
+- il server è centrale, mantiene dati e logica, 
+- i client sono distribuiti, interagiscono con il server via rete. 
+
+È il modello concettuale alla base di molte applicazioni web e sistemi distribuiti. La separazione client/server rende esplicito un confine importante: l’esperienza utente sta lato client, mentre regole e dati condivisi stanno lato server. Questo stile è spesso il primo passo quando un sistema locale deve diventare multiutente.  
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260326150805.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  I client inviano richieste (request), il server risponde (response).  
+  </div>
+</div>
+
+**Client–serverà- vantaggi:** 
+- *Centralizzazione:* 
+	- dati e logica critici restano concentrati sul server, 
+	- più facile aggiornare e controllare il sistema. 
+- *Multi-client:* 
+	- lo stesso server può servire molti client diversi (desktop, web, mobile). 
+- *Sicurezza:* 
+	- le regole di accesso ai dati sono gestite lato server. 
+- *Governance semplificata:* 
+	- aggiornamenti di logica e policy avvengono centralmente, senza distribuire patch su ogni client. 
+- *Riuso dei servizi:* 
+	- più canali (web, mobile, desktop) possono sfruttare lo stesso backend.  
+
+**Client–server- limiti e compromessi:** 
+- *Single point of failure:* 
+	- se il server è giù, tutti i client sono bloccati. 
+- *Scalabilità:*
+	- se il numero di client cresce molto, il server può diventare un collo di bottiglia. 
+- *Complessità di rete:* 
+	- bisogna gestire latenza, errori di comunicazione, autenticazione, . . . 
+- *Dipendenza dalla connettività:* 
+	- in assenza di rete, il client può perdere funzionalità critiche. 
+- *Scelte di stato/sessione:* 
+	- la gestione dello stato lato server o lato client impatta scalabilità e semplicità.  
+
+Al momento, UniManager è pensato come applicazione locale (es. CLI). Potremmo però immaginare un’evoluzione: 
+- un server UniManager che espone servizi (API), 
+- diversi client: 
+	- applicazione web per gli studenti, 
+	- applicazione interna per la segreteria, 
+	- app mobile per consultare il libretto. 
+	
+In questo scenario, lo stile client–server diventa il modello concettuale di riferimento.  
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260326151002.png" width="200">
+</div>
+
+**Architettura repository:** Nello stile repository, più componenti condividono un’unica base dati comune. Il repository è il “cuore” dove risiedono le informazioni condivise. Intorno ad esso ci sono componenti che: 
+- elaborano dati, 
+- offrono funzionalità, 
+- reagiscono ai cambiamenti nel repository. 
+
+ La priorità di questo stile è la coerenza informativa: più moduli diversi lavorano sullo stesso patrimonio dati. È adatto quando il valore principale del sistema sta nei dati condivisi più che nel comportamento di un singolo componente.  
+
+**Repository:** Nello stile repository, tutti i componenti ruotano attorno a un’unica base dati condivisa. Ogni componente legge e aggiorna il repository, ma rimane indipendente dagli altri. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260326151052.png" width="200">
+</div>
+
+**Repository- vantaggi:** 
+- *Consistenza dei dati:* 
+	- una sola fonte di verità per le informazioni condivise. 
+- *Condivisione:* 
+	- sottosistemi diversi possono cooperare accedendo agli stessi dati. 
+- *Evoluzione dei componenti:* 
+	- è possibile sostituire o aggiornare i componenti attorno al repository mantenendo stabile la base dati (entro certi limiti). 
+- *Tracciabilità:* 
+	- avere un punto dati centrale facilita audit, report e analisi trasversali. 
+- *Integrazione:* 
+	- nuovi componenti possono essere aggiunti collegandosi al repository condiviso.  
+
+**Repository- limiti e compromessi:** 
+- *Punto critico di fallimento:* 
+	- se il repository si blocca o viene corrotto, l’intero sistema è in difficoltà. 
+- *Scalabilità e prestazioni:* 
+	- molte richieste concorrenti possono creare colli di bottiglia. 
+- *Dipendenza forte dal modello dati:* 
+	- cambiare lo schema del repository può impattare molti componenti. 
+- *Accoppiamento semantico:* 
+	- componenti nominalmente separati possono diventare dipendenti dagli stessi dettagli di schema. 
+- *Migrazioni delicate:* 
+	- evolvere il repository richiede coordinamento tra molti moduli e finestre di rilascio ben pianificate.  
+
+In UniManager abbiamo concettualmente una base dati universitaria: studenti, corsi, appelli, iscrizioni, voti, . . . Per ora la implementiamo in modo semplice (file / strutture in memoria), ma concettualmente è un repository informativo condiviso. In una versione più evoluta: servizi diversi (es. gestione esami, reportistica, analisi statistiche) potrebbero accedere allo stesso repository.  
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260326151202.png" width="200">
+</div>
+
+**Architettura service-based:** Nello stile service-based, il sistema è costituito da servizi: 
+- ciascun servizio è un componente indipendente, 
+- espone una interfaccia ben definita, 
+- può essere sviluppato, distribuito e aggiornato separatamente. 
+
+I servizi comunicano tra loro tramite chiamate di rete (es. API). Ogni servizio presidia una responsabilità funzionale chiara: questo riduce l’impatto dei cambiamenti e favorisce evoluzione incrementale. L’attenzione si sposta dai confini tra classi ai contratti tra servizi (endpoint, payload, versioni).  
+
+**Da client–server a service-based:** 
+- Lo stile service-based può essere visto come una evoluzione del client–server: 
+	- invece di un unico server “monolitico”, abbiamo più servizi specializzati, 
+	- ogni servizio può avere i propri dati e responsabilità.
+
+> [!example] In UniManager:
+>  - servizio StudenteService per la gestione studenti, 
+>  - servizio AppelloService per appelli e voti, 
+>  - servizio ReportingService per report e statistiche.  
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260326151415.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  <b>Service-based:</b>
+  <li> Il client/UI parla con più servizi indipendenti, ciascuno con una responsabilità ben definita.</li>
+  <li> I servizi possono anche collaborare tra loro tramite chiamate di rete (linee tratteggiate).</li>
+  </div>
+</div>
+
+**Service-based- vantaggi:** 
+- *Scalabilità:* 
+	- ogni servizio può essere scalato indipendentemente (più istanze del solo servizio critico). 
+- *Autonomia dei team:* 
+	- team diversi possono sviluppare e rilasciare servizi separati. 
+- *Evoluzione tecnologica:* 
+	- servizi diversi possono usare tecnologie diverse, purché rispettino i contratti di interfaccia. 
+- *Isolamento dei guasti:* 
+	- un problema in un servizio può avere impatto limitato, se i fallback sono progettati bene. 
+- *Rilasci mirati:* 
+	- è possibile aggiornare un singolo servizio senza rilasciare l’intero sistema.  
+
+**Service-based- limiti e compromessi:** 
+- *Maggiore complessità complessiva:* 
+	- bisogna gestire comunicazione tra servizi, fallimenti parziali, versioni delle API. 
+- *Osservabilità e debugging più difficili:* 
+	- un flusso di richiesta può attraversare molti servizi diversi. 
+- *Coerenza dei dati:* 
+	- se ogni servizio ha il proprio storage, garantire consistenza diventa più complesso. 
+- *Transazioni distribuite:* 
+	- operazioni che coinvolgono più servizi richiedono sequenze coordinate e azioni di annullamento in caso di errore. 
+- *Costo operativo:* 
+	- servono strumenti maturi per monitoraggio, tracing, deployment e gestione API.  
+
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260326151541.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  Per il corso manteniamo UniManager semplice e monolitico (layered). Ma possiamo usare il modello service-based per: 
+<li> discutere come dividere il sistema in aree funzionali indipendenti, </li>
+<li> ragionare su possibili evoluzioni future (es. servizi separati per studenti, esami, analytics), </li>
+<li> introdurre l’idea di contratti tra componenti (interfacce ben definite).</li>
+  </div>
+</div>
+
+**Stili a confronto** Ogni stile risponde meglio a una domanda diversa: 
+- *Layered:* come separare responsabilità interne e tenere ordinate le dipendenze? 
+- *Client–server:* come distribuire il sistema tra client e server condiviso? 
+- *Repository:* come far cooperare componenti diversi sugli stessi dati? 
+- *Service-based:* come far evolvere parti del sistema in modo indipendente? 
+
+Sintesi operativa: 
+- priorità a manutenibilità interna e chiarezza: *Layered*; 
+- priorità a multiutente via rete: *Client–server*; 
+- priorità a consistenza e patrimonio dati comune: *Repository*; 
+- priorità a scalabilità organizzativa e rilasci indipendenti: *Service-based*. 
+
+Nei sistemi reali la scelta è spesso ibrida, ma i confini devono restare espliciti.  
+
+Ogni stile ha impatti diversi su: 
+- *prestazioni*, 
+- *scalabilità*, 
+- *affidabilità*, 
+- *manutenibilità*,
+- *evolutività*. 
+
+> [!example] 
+> - layered aiuta molto la manutenibilità e la testabilità; 
+> - client–server e service-based introducono nuove sfide di prestazioni e affidabilità di rete; 
+> - repository facilita la consistenza, ma crea possibili colli di bottiglia.  
+
+**Come scegliere uno stile (o più di uno):** Nella pratica, i sistemi reali sono spesso una combinazione di stili:
+- un’applicazione web può essere client–server e internamente layered, 
+- più servizi possono condividere un repository o avere ognuno il proprio. 
+
+Alcune domande utili: 
+- Quanto è importante la manutenibilità interna? (layered) 
+- Il sistema è distribuito o locale? (client–server / service-based) 
+- I dati condivisi sono il vero cuore del sistema? (repository) 
+- Ci sono team diversi che devono lavorare in modo indipendente? (service-based) 
+
+Sintesi per UniManager in questa fase: 
+- base layered con repository centrale dei dati,
+- client–server e service-based come possibili evoluzioni successive. 

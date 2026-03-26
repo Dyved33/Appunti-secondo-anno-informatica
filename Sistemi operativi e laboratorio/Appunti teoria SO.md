@@ -1170,12 +1170,106 @@ void controller () {
 			send (writer_id, "OK"); 
 			receive (finished, msg); 
 			count = 100; 
+		}  
+		while (count < 0) { 
+			receive (finished, msg); 
+			count++; 
 		} 
-	} 
-	while (count < 0) { 
-		receive (finished, msg); 
-		count++; 
-	} 
+	}
 }
 ```
 
+###### Stallo
+**Definizione:** un insieme di processi è in stallo (*deadlock*) se ogni processo è in attesa di un evento che può essere generato solo da un altro processo dell'insieme, nel caso generale non c’è una soluzione efficiente per la deadlock
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260326171056.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  Se siamo sfortunati il processo P preleva A mentre il processo Q preleva B, quando poi i due cercano di prelevare rispettivamente B e A entrambe le risorse sono già occupate, ma per essere rilasciate dai processi si deve passare il punto dove si prendono B e A, perciò oltre ai processi che rimarranno in stallo all’infinito, anche le risorse A e B saranno occupate all’infinito creando un gran problema.
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260326171121.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  La deadlock avviene se una delle due frecce si interseca con una delle aree tratteggiate, da questa situazione come scritto la deadlock è inevitabile se si entra nell’area grigia poichè poi le frecce andranno per forza nelle aree tratteggiate
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260326171200.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  In questa foto invece è sempre possibile evitare la deadlock. Per i processi concorrenti non c’è modo di prevedere chi avanzerà per primo e chi per secondo, se la deadlock succede ci si ritrova in una situazione complicata.
+  </div>
+</div>
+
+**Categorie di risorse:** 
+1. *Risorse riutilizzabili:* utilizzabili da un processo alla volta e non vengono distrutte dal loro utilizzo (una volta finito il processo vengono restituite). Per esempio sono processore, canali I/O, memoria, files, semafori
+2. *Risorse consumabili:* possono essere create (prodotte) e distrutte (consumate), come le interruzioni, i segnali, i messaggi, i dati in buffer ecc…
+
+> [!example] Esempio risorse utilizzabili: 
+> Due processi competono per l’uso di un file D e un dispositivo T, p1 richiede prima D e lo blocca, p2 richiede prima T e lo blocca, poi però i processi richiedono subito rispettivamente T e D, che però ora sono bloccati dall’altro processo, perciò ora ci troviamo nella situazione di stallo descritta prima. 
+> 
+> ![[Pasted image 20260326171336.png|200]]
+> 
+> Se però si invertisse l’ordine in cui sono richieste T e D in modo tale che entrambi i processi richiedono le risorse T e D nello stesso ordine, così p1 prende subito sia T che D, fa ciò che deve fare e sblocca le risorse a p2 che aveva trovato T subito occupato ed era rimasto perciò in attesa.
+
+> [!example] Esempio risorse consumabili: 
+> Due processi si scambiano messaggi:
+> 
+> ![[Pasted image 20260326171425.png|200]]
+> 
+> Receive è una funzione bloccante, p1 attende che p2 mandi un messaggio,ma allo stesso tempo p2 attende che p1 mandi un messaggio, quindi attendono messaggi che non arriveranno mai poiché entrambi in attesa. 
+
+**Grafo di allocazione delle risorse:**
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260326171512.png" width="300">
+</div>
+
+> [!info]
+>  L’esempio dell’incrocio delle auto che non sanno chi debba passare per primo può essere rappresentato così: 
+> 
+> ![[Pasted image 20260326171549.png|200]]
+
+**Condizioni per lo stallo:** le condizioni necessarie sono:
+1. Mutua esclusione: le risorse possono essere assegnate a un solo processo alla volta
+2. Possesso della risorsa e l'attesa che questa si liberi
+3. Assenza di prerilascio: 
+
+La condizione determinante per lo stallo è l’attesa circolare, cioè che esista una catena chiusa di processi tale che ogni processo possiede una risorsa richiesta dal processo successivo (quindi che si abbia un ciclo nel grafo di Holt, il grafo delle risorse).
+
+> [!info]
+> - $1,2,3 \implies$ stallo POSSIBILE, cioè se si hanno solo le condizioni necessarie
+> - $1,2,3,4 \implies$ stallo ESISTENTE, cioè se si ha anche la quarta condizione
+
+**Azioni contro lo stallo:**
+- *Prevenzione:* far si che i processi si comportino in maniera tale da evitare lo stallo
+- *Esclusione:* meccanismi che permettono al sistema operativo di controllare se assegnare una risorsa a un dato processo può causare lo stallo, nel qual caso questa assegnazione viene rifiutata o posticipata
+- *Rilevamento:* non lo prevediamo, non lo escludiamo, ma quando temiamo che esso si sia verificato cerchiamo di rilevarlo e prendere provvedimenti
+
+**Prevenzione:** si progetta il sistema in modo da escludere lo stallo. Ci sono metodi indiretti, che riguardano l’esclusione di una delle tre condizioni necessarie per lo stallo e i metodi diretti, che sono atti a prevenire il presentarsi dell’attesa circolare.
+- *Metodi indiretti:*
+	- *Mutua esclusione:* impossibile disabilitarla per risorse seriali. Possibile solo in rari casi (e.g.file in lettura dove tutti i processi possono accedere contemporaneamente al file)
+	- *Possesso e attesa:* si può imporre ai processi un'unica richiesta globale di tutte le risorse, sospendendolo finché non le ha ottenute tutte simultaneamente (*assegnazione statica*). Questo metodo funziona ma è inefficiente poiché molti processi restano sospesi in attesa delle risorse e possono esserci risorse assegnate e non utilizzate.
+	- *Assenza di prerilascio:* si impone ai processi in attesa di una risorsa di rilasciare quelle che possiedono, oppure il sistema pre rilascia il processo che usa la risorsa richiesta e gli impone di rilasciare la risorsa utilizzata (*priorità*). Anche questo però non è sempre realizzabile, lo è solo se lo stato della risorsa può essere salvato e ripristinato.
+- *Metodi diretti:* si può evitare l’attesa circolare tramite l’*assegnazione ordinata*:
+	- Si definisce un ordine totale sulle categorie di risorse
+	- Un processo cui siano state già assegnate delle risorse, può richiedere solo risorse di categorie successive a quelle delle risorse assegnate
+
+Poiché in caso di attesa circolare, un processo ha una risorsa $R_i$ e chiede una risorsa $R_j$ e un altro processo ha la risorsa $R_j$ e chiede $R_i$, allora uno dei due sta violando il protocollo. Il primo se $j < i$, il secondo se $i < j$. Anche se il metodo diretto dell’assegnazione ordinata funziona, esso inefficiente. Se l’ordinamento è coerente e tiene conto dell’ordine in cui le risorse vengono usate (ad esempio scrivere dati su disco, prima ho bisogno della tastiera e poi ho bisogno del disco, raramente viceversa) è molto meno inefficiente dell’assegnazione statica.
+
+**Prevenire/Evitare lo stallo:**
+- *Prevenire (deadlock prevention):* Limitazioni sulle richieste di risorse
+- *Evitare (deadlock avoidance):* Limitazione sulle assegnazioni di risorse
+
+Ho 2 approcci possibili:
+1. Rifiuto di esecuzione per i processi le cui richieste potrebbero determinare stallo
+2. Rifiuto di allocazione per le richieste di risorse che potrebbero determinare stallo
+
+In entrambi i casi è necessario conoscere le future richieste dei processi
