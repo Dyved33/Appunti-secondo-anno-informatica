@@ -545,7 +545,27 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 | `basename`  | visualizza in output il solo nome file senza le precedenti directory da un pathname. Se richiesto rimuove il suffisso. Es.: basename /home/user 1 visualizza "user 1" |
 | `dirname`   | visualizza le directory che precedono il nome del file in un pathname Es.: dirname /home/user 1 visualizza "/home"                                                    |
 | `sleep n`   | attende n secondi senza fare nulla                                                                                                                                    |
-**Comando ps:**
+**Comando ps:** è un'abbreviazione per *precess status*, visualizza informazioni sui processi attivi nel sistema. Ci sono 3 tipi di opzioni (opzioni di diverso tipo possono essere mescolate tra di loro ma ci possono essere dei conflitti):
+1. *Unix style:* precedute da un trattino
+2. *BSD style:* non precedute da un trattino
+3. *GNU long options:* precedute da 2 trattini
+
+| Comando                     | Comportamento                                                                                                            |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `ps -e/-ef/-eF/-ely`        | Per vedere ogni processo nel sistema usando la sintassi standard                                                         |
+| `ps ax/axu`                 | Per vedere ogni processo nel sistema usando la sintassi BSD                                                              |
+| `ps -ejH/axjf`              | Per stampare un albero dei processi                                                                                      |
+| `ps -eLf/axms`              | Per avere informazioni sui thread                                                                                        |
+| `ps`                        | Lista i processi dell'utente che lo esegue ed associati allo stesso terminale cui è associata la shell da cui è invocato |
+| `ps ax`                     | Lista tutti i processi                                                                                                   |
+| `ps axf`                    | Visualizzazione a foresta (gerarchica)                                                                                   |
+| `ps –U user1`               | Visualizza i processi dell'utente *user1*                                                                                |
+| `ps ax –L`                  | Lista tutti i processi e i thread                                                                                        |
+| `ps –C name1,name2,…,nameN` | Lista i processi il cui nome è specificato tra quelli che seguono -C                                                     |
+
+> [!info] Useremo anche:
+> - `ps ax | grep –e <string1> –e <string2>` per selezionare delle righe dall'output di ps, e precisamente quelle che contengono una delle stringhe string1 o string2 o entrambe 
+> - watch `–n3 'ps ax | grep –e <string1> –e <string2>'` per eseguire lo stesso comando sopra descritto ogni 3 secondi fin quando il comando watch non viene interrotto (per esempio premendo Ctrl+c)
 ###### System calls per i processi
 **fork():** `include <unistd.h> pid_t fork();`
 
@@ -628,6 +648,72 @@ Permettono di rilasciare le risorse assegnate al *child*. Se un *child* termina 
 | Execvve(2)        | Esegue un programma che rimpiazza il chiamante   |
 | Exec*(3)          | Wrappers per execve(2) (sono 6)                  |
 ###### File Bash
+**Backtick:** in BASH le stringhe contenute tra caratteri backtick $(`)$ sono sostituite dall'output del comando che rappresentano  
+
+> [!example] 
+> user1@host1:~$ pwd 
+> 
+> /home/user1 
+> 
+> user1@host1:~$ ls -ld `pwd`
+>  
+> drwxr-xr-x 93 user1 group1 12288 mar 17 11:52 /home/user1 
+> 
+> user1@host1:~$
+
+> [!info] La sintassi `$(cmd)` è equivalente (l'output del comando `cmd` si sostituisce a `$(cmd)`)
+
+**Esecuzione in background:** Esegue un comando senza interazione con l’utente. La shell viene subito «liberata», cioè non devo attendere la fine del comando per impartirne altri. Alla fine del comando si inserisce il carattere `&` (il processo in background continuerà comunque a mandare l’output al terminale). I processi in background sono detti «jobs». Eseguendo un comando in background la shell mostra il PID del processo ed il codice del job. Per visualizzare i job in esecuzione uso il comando `jobs`. Per far tornare nella modalità interattiva (foreground) un job uso il comando `fg [%x]`, dove `%x` è facoltativo e `x` è il codice del job (1,2,...). Per terminare un job uso il comando `kill -9 <pid>` , dove `<pid>` è il PID del processo. Per mandare un processo da foreground in background: 
+- Stopparlo con Ctrl+z 
+- Mandarlo in background col comando bg
+
+**Variabili:** array di coppie nella forma nome=valore:
+- nome: stringa alfanumerica che comincia per lettera 
+- valore: stringa di caratteri •
+
+Si dichiarano/assegnano senza spazi intorno all'uguale (per convenzione il nome in maiuscolo) 
+
+> [!example] 
+> - VAR1=2
+> - VAR1=`pwd`
+> - VAR1=$VAR2
+
+Si referenziano con $NOME e si può utilizzare anche la notazione ${NOME} che è utile se può esserci ambiguità
+
+> [!example]  
+> user1@host1 :~$ VAR 1="NUMBER " 
+> 
+> user1@host1 :~$ VAR 1 ONE="scratch" 
+> 
+> user1@host1 :~$ echo $VAR1ONE 
+> 
+> scratch
+> 
+> user1@host1 :~$ echo ${VAR1}ONE 
+> 
+> NUMBER ONE 
+> 
+> user1@host1 :~$
+
+> [!info] 
+> - nelle costanti stringa delimitate da DOPPI apici $NOME viene interpretato 
+> - nelle costanti stringa delimitate da SINGOLI apici $NOME non viene interpretato •
+>> [!example] 
+>> - `VAR1="33"` echo "$VAR 1" # visualizza '33' 
+>> - `echo '$VAR1'` # visualizza '$VAR 1'
+
+**Ambiente (environment):** variabili impostate inizialmente dalla BASH quando viene invocata in base ai file di configurazione, "ereditate" da ogni comando eseguito dalla BASH.
+- NOME=VALORE per definire una nuova variabile $NOME 
+- export NOME per renderla disponibile ai processi child 
+- unset NOME per cancellarla 
+- set o env per visualizzare l'environment. set mostra tutte le variabili e funzioni definite nella shell. set permette anche di settare gli attributi (opzioni) che regolano il funzionamento della BASH
+
+**Variabili d'ambiente predefinite:** 
+- PATH: contiene una lista di directory, separate da ':', in cui la BASH cerca i comandi da eseguire (se non viene specificato un path per essi) 
+- HOSTNAME: nome host del sistema 
+- USER: nome dell'utente 
+- PWD: directory corrente
+
 ```C
 // Prima riga = quale interprete deve interpretare i comandi: shabang
 #!/bin/bash
