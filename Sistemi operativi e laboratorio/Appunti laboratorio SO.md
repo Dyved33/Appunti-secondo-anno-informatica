@@ -107,7 +107,7 @@ Le **opzioni** iniziano tipicamente con il carattere `-` e modificano il comport
 | **`rmdir`**    | Rimuove cartelle, a condizione che siano **strettamente vuote** (altrimenti genera un errore).                           |
 | **`ln`**       | Crea collegamenti a file o directory.                                                                                    |
 | **`pwd`**      | Visualizza la directory corrente in cui ci si trova.                                                                     |
-| **`df`**       | Elenca i file system attualmente montati.                                                                                |
+| **`df`**       | Elenca i filesystem attualmente montati.                                                                                |
 | **`cat`**      | Visualizza per intero il contenuto di un file testo.                                                                     |
 | **`realpath`** | Visualizza il path assoluto "risolto" (molto utile per calcolare la vera destinazione di link o riferimenti relativi).   |
 | **`file`**     | Ritorna il tipo reale di un file (testo, binario, pdf) in maniera totalmente indipendente dall'estensione nominale.      |
@@ -865,5 +865,300 @@ int main()
 	printf("Child Complete");
 	}
 	return 0;
+}
+```
+
+###### Pipe
+**IPC:** vari strumenti per la comunicazione tra processi:
+- Signal
+- Socket
+- Pipe
+- Semafori
+- Shared memory
+- Memory-mapped file
+- Message queue
+- Etc
+
+Le pipe sono di solito unidirezionali (in certi sistemi sono bidirezionali come in Windows), sono uno dei primi meccanismi di IPC e sono disponibili praticamente su tutti i sistemi. Connettono due o più processi tramite un canale di comunicazione. Hanno un'estremità per la lettura (*read end*) ed una per la scrittura (*write end*). Sono caratterizzate da comunicazione non strutturata (*byte stream*), cioè **le pipe trasmettono un flusso continuo di byte grezzi senza alcuna informazione di controllo, formattazione o metadati** associati al contenuto dei dati stessi
+
+Ne esistono 2 tipi:
+1. Senza nome (*unnamed*): sono crate con `pipe()`, i processi comunicanti condividono file descriptor per la lettura e la scrittura (`fork(2)`). Solo tra processi relati
+2. Con nome (*named o FIFO*): sono un file speciale (type `p` in `ls -l`) visibile nel filesystem (ma non occupano né implicano operazioni in esso).
+
+> [!info] Una volta create (ed aperte) si usano allo stesso modo
+> "The only difference between pipes and FIFOs is the manner in which they are created and opened. Once these tasks have been accomplished, I/O on pipes and FIFOs has exactly the same semantics" (man 7 pipe)
+
+**(unnamed) Pipe:** solo processi relati/discendenti (`fork(2)`). I file descriptor per le due estremità (di lettura e di scrittura) sono duplicati da fork(2) e quindi disponibili anche nel child
+
+**Named Pipe o FIFO:** sono visibili nel filesystem ma il "nome" nel filesystem è solo un riferimento. Non occupano spazio disco né implicano operazioni in esso (i dati transitano nel kernel)
+
+> [!info] Da man 7 pipe: 
+> "Although FIFOs have a pathname in the filesystem, I/O on FIFOs does not involve operations on the underlying device (if there is one)"
+
+Possono essere trattate come qualsiasi file (SC per l'I/O) e sono visibili quindi nel sistema come gli altri file:
+- Qualsiasi processo può fare la open (se ne ha il permesso)
+- Possiamo importare permessi per gli utenti
+- Possiamo rimuoverle con `rm`
+
+| Comando man per le pipe | Comportamento                                                                                                     |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `man 7 pipe`            | Per una panoramica (overview) sulle pipe                                                                          |
+| `man 7 fifo`            | Per una panoramica sulle named pipe                                                                               |
+| `man 2 pipe`            | Per il manuale della system calls pipe(2) che crea una unnamed pipe (solo tra processi "imparentati" con fork(2)) |
+| `man 3 mkfifo`          | Per il manuale della funzione di libreria C che crea una named pipe (visibile nel filesystem)                    |
+| `man 1 mkfifo`          | Per il manuale sul comando unix che crea una named pipe nella shell (visibile nel filesystem)                     |
+**Creazione di una pipe unnamed:** `#include int pipefd[2]; if (pipe(pipefd) == -1) { perror("pipe"); exit(EXIT_FAILURE); }`
+Crea la pipe e apre le due estremità:
+- `pipefd[0]` file descriptor per la read end della pipe 
+- `pipefd[1]` file descriptor per la write end della pipe 
+- `Ritorno : 0` se tutto ok. -1 per errore (errno settata)
+
+Creata la pipe è possibile leggere e scrivere dati, per es.: con `read()` e `write()`. Una sequenza tipica di utilizzo è:
+- il parent crea la pipe (pipe()) 
+- il parent crea un child (fork()). I file descriptor ritornati dalla pipe() sono duplicati nel child 
+- lo scrivente chiude il fd di lettura* 
+- il lettore chiude il fd di scrittura* 
+- i processi comunicano con read() e write() 
+- al termine entrambi chiudono il fd utilizzato
+
+**Creazione di una named pipe:** `int mkfifo(const char *pathname, mode_t mode)`
+- crea una named pipe di nome pathname 
+- visibile nel filesystem ma non occupa spazio 
+- mode specifica i permessi, in accordo con umask (mode & ~umask) 
+- Persistenti, permangono anche dopo il reboot 
+- utilizzabile da qualsiasi processo (se ha il permesso…)
+
+**Apertura di una named pipe:** `int open(const char *pathname, int flags);` 
+- una volta creata, la named pipe deve essere aperta 
+- nel caso in cui il lato opposto non sia ancora aperto `open` è bloccante (a meno che sia settato il flag `O_NONBLOCK`) 
+- in Linux è possibile aprire una named pipe in lettura e scrittura. Ciò permette di raggiungere certi scopi ma va usato con cautela. 
+
+> [!info] Da man 7 fifo: 
+> "Under Linux, opening a FIFO for read and write will succeed both in blocking and nonblocking mode. POSIX leaves this behavior undefined"
+
+**Capacità delle pipe:** (numero di byte) la pipe hanno una capacità limitata che varia seconda dell'implementazione. In Linux di default attualmente è 16 "system page size" (che dipende dal sistema), ma è configurabile (da 2.6.35) con `fcntl(2)`
+
+**Bloccaggio delle pipe:** le operazioni di apertura/lettura/scrittura possono essere bloccanti o non bloccanti, cioè: 
+- ritornare al chiamante solo dopo che si sia verificato un certo evento 
+- oppure ritornare subito 
+
+Questo fatto dipende anche da: 
+- la condizione della pipe, per esempio se vi sono stati scritti dati, se dall'altro lato della pipe qualcuno legge/scrive, se è piena o c'è ancora spazio, etc. 
+- sia stato settato o meno per la pipe il flag `O_NONBLOCK` (vedi anche open(2)) 
+
+Non sono possibili operazioni di seek (no lseek(2)). Di default il flag `O_NONBLOCK` non è settato. Le operazioni allora sono bloccanti nei seguenti casi: 
+- `open(2)`: si blocca se dall'altro lato nessun processo ha aperto la pipe nella modalità di accesso opposta (read/write) 
+- `read(2)`: si blocca se la pipe è vuota (non ci sono dati) 
+- `write(2)`: si blocca se la pipe è piena
+
+**Pipe- scrittura:** `ret = write(fdw, buffer, size)` (vedi man 7 pipe (paragrafo PIPE_BUF) per maggiori dettagli)
+- I dati sono scritti nella pipe sequenzialmente
+- Se la pipe è piena ulteriori write(2) si bloccheranno (o falliranno se `O_NONBLOCK` è settato) 
+- POSIX stabilisce che le `write(2)` di ampiezza minore di `PIPE_BUF` sono garantite essere atomiche (ma possono essere bloccanti se la pipe è piena) 
+- Stabilisce anche che `PIPE_BUF` deve essere almeno 512 byte
+- se tutti i descrittori di lettura sono stati chiusi una write provoca l’invio di un segnale `SIGPIPE` al processo: 
+	- se `SIGPIPE` è gestito da un handler o ignorato: write ritorna -1 con errno settato a `EPIPE` 
+	- se `SIGPIPE` non è gestito: la gestione di default provoca la terminazione del processo 
+
+**Pipe- lettura** `ret = read(fdr, buffer, size)` 
+- i dati sono letti in ordine di arrivo 
+- i dati letti sono tolti dalla pipe 
+- `O_NONBLOCK`:
+	- se non settato (generalmente il default) : 
+		- se la pipe è vuota: 
+			- se i descrittori di scrittura non sono ancora stati tutti chiusi la read si blocca in attesa 
+			- se durante tale blocco in attesa tutti i descrittori in scrittura vengono chiusi ritorna 0 (end_of_file) 
+			- se invocata quando i descrittori di scrittura sono stati tutti chiusi ritorna 0 (end_of_file) 
+		- altrimenti legge al più size byte; se al momento dell’invocazione la pipe contiene meno di size byte li legge tutti. Ritorna il numero dei byte letti ret 
+	- se settato: 
+		- se la pipe è vuota la read ritorna subito -1; `errno EAGAIN`
+
+**Pipe- close():** `ret = close(fd)` 
+- quando l’ultimo descrittore di scrittura è chiuso genera EOF per i lettori (facendo ritornare 0 ad eventuali read in attesa) 
+- se viene effettuata una write su una pipe in cui tutti i descrittori di lettura sono stati chiusi il processo riceve `SIGPIPE`
+
+**Named Pipe da shell:** 
+- comando `mkfifo(1)` 
+- crea un file speciale di tipo `p` 
+- ci possiamo scrivere e leggere da shell con i comandi usuali per i file 
+- anche qui le operazioni possono essere bloccanti, in accordo con quanto detto sopra 
+
+> [!example]
+> - mkfifo mypipe 
+> - echo "Ciao" > mypipe 
+> - cat mypipe
+
+```C
+unn_pipe.c
+#include <sys/wait.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h> 
+
+#define READ_END 0
+#define WRITE_END 1  
+
+int main()
+{
+	pid_t pid;
+	int pipefd[2], iRet = EXIT_SUCCESS;
+	char sBuf[128];
+	/* fork a child process */
+	if (pipe(pipefd) != -1)
+	{
+		pid = fork();
+		if (pid == 0)
+		{
+			close(pipefd[READ_END]);
+			printf("Child: my pid is %d\n", getpid());
+			sprintf(sBuf, "Hello from child process\n");
+			if (write(pipefd[WRITE_END], sBuf, sizeof(sBuf)) != -1)
+			{
+				printf("Child: wrote to pipe\n");
+			}
+			else
+			{
+				fprintf(stderr, "Child: Failed to write to pipe\n");
+				iRet = EXIT_FAILURE;
+			}
+			close(pipefd[WRITE_END]);
+			return iRet;
+		}
+		else
+		{ /* parent process */
+		/* parent will wait for the child to complete */
+			close(pipefd[WRITE_END]);
+			wait(NULL);
+			int iReadCount;
+			if ((iReadCount = read(pipefd[READ_END],sBuf,sizeof(sBuf) - 1)) >= 0)
+			{
+				sBuf[iReadCount] = '\0';
+				printf("Parent: read from pipe: \"%s\"\n", sBuf);
+			}
+			else{
+				if (iReadCount == 0)
+				{
+					fprintf(stderr, "Parent: No data to read from pipe\n");
+					iRet = EXIT_FAILURE;
+				}
+				else
+				{
+					perror("Parent: Failed to read from pipe\n");
+					iRet = EXIT_FAILURE;
+				}
+			}
+			close(pipefd[READ_END]);
+		}
+	}
+	else /* parent success */
+	{
+		fprintf(stderr, "Pipe Failed\n");
+		iRet = EXIT_FAILURE;
+	}
+	return iRet;
+}
+```
+
+```C
+wfifo.c
+#include <sys/wait.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+  
+#define MY_FIFO "myfifo"
+  
+int main()
+{
+	int iRet = EXIT_SUCCESS, fd;
+	char sBuf[128];
+	  
+	if (access(MY_FIFO, F_OK) != 0)
+	{
+		if (mkfifo(MY_FIFO, S_IRUSR | S_IWUSR) != 0)
+		{
+			perror("Error in mkfifo\n");
+			return EXIT_FAILURE;
+		}
+	}
+	  
+	if (fd = open(MY_FIFO, O_WRONLY) != -1)
+	{
+		printf("Open in write mode\n");
+		sleep(5);
+		sprintf(sBuf, "I wrote in the pipe\n");
+		if (write(fd, sBuf, sizeof(sBuf)) != -1)
+		{
+			printf("Wrote in the pipe\n");
+		}
+		else
+		{
+			perror("Error in write");
+			iRet = EXIT_FAILURE;
+		}
+		close(fd);
+	}
+	else
+	{
+		perror("Error in open");
+		iRet = EXIT_FAILURE;
+	}
+	  
+	printf("Write exiting...\n");
+	return iRet;
+}
+```
+
+```C
+rfifo.c
+#include <sys/wait.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+  
+#define MY_FIFO "myfifo"
+  
+int main()
+{
+	int iRet  EXIT_SUCCESS, fd;
+	char sBuf[128];
+	
+	if (fd = open(MY_FIFO, O_RDONLY) != -1)
+	{
+		int iReadCount;
+		if ((iReadCount = read(fd, sBuf, sizeof(sBuf)) - 1) != -1)
+			{
+			printf("Open in read mode\n");
+			if (iReadCount == 0)
+			{
+				printf("Every descriptor closed\n");
+			}
+			else
+			{
+				sBuf[iReadCount] = '\0';
+				printf("Read from the pipe: \"%s\"\n", sBuf);
+			}
+		}
+		else
+		{
+			perror("Error in read");
+			iRet = EXIT_FAILURE;
+		}
+		close(fd);
+	}
+	else
+	{
+		perror("Error in open");
+		iRet = EXIT_FAILURE;
+	}
+	  
+	printf("Read exiting...\n");
+	return iRet;
 }
 ```

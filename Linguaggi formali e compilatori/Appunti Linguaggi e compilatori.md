@@ -916,3 +916,85 @@ L’automa minimo di $L$ si ottiene nel modo seguente:
 
 - Pertanto $A$ accetta tutte le parole $xy^nz$ con $n\geq0$ 
 - Cioè $xy^nz \in L$ per ogni $n\geq 0$
+###### Analisi lessicale
+Come abbiamo visto inizialmente, l’analisi è la prima fase nella compilazione di un codice sorgente. Dobbiamo identificare gli elementi atomici che costituiscono il nostro codice e individuare a quale categoria lessicale fanno riferimento. Il programma sorgente viene dato in pasto all’Analizzatore lessicale, che restituirà un token al Parser ogni volta che questo deve procedere con la sua analisi sintattica. Contemporaneamente, all’invio del token, l’analizzatore scriverà nella tabella dei simboli gli attributi del token, che poi potranno essere recuperati dal parser.
+
+IMMAGINE
+
+**Perché analisi lessicale e sintattica devono essere separate?** E’ importante separare l’analisi lessicale da quella sintattica perché si ha un’enorme semplificazione nella progettazione del compilatore, una maggiore efficienza e portabilità (perché cambiando sistema, cambia la gestione dell’input) rispetto a che se fossero svolte insieme.
+
+- *Token:* è un simbolo astratto che rappresenta un'unità lessicale (es.una parola chiave, un identificatore, una costante numerica,...). I simboli processati dal parser sono i token. A ogni token viene associato un pattern
+- *Lessema:* è una sequenza di caratteri di un codice sergente associato a un token. L'analizzatore lessicale identifica i lessemi come istanze del token a cui sono associati
+- *Pattern:* è una descrizione della forma che i lessemi possono avere per poter essere associati ad un determinato token. In pratica si tratta di un'espressione regolare
+
+**Attributi del token:** se più di un lessema è associato al medesimo pattern è necessario tenere traccia di ulteriori informazioni sul particolare lessema letto dall'analizzatore lessicale. Tali informazioni sono registrate nella *tabella dei simboli*
+
+| Token             | Descrizione informale              | Esempi            |
+| ----------------- | ---------------------------------- | ----------------- |
+| If                | `if`                               | `if`              |
+| Else              | `else`                             | `else`            |
+| Comparazione      | `<,>,<=,>=,==,!=`                  | `<,>,<=,>=,==,!=` |
+| Id                | Lettera seguita da lettere e cifre | Valore,a,c 1,...  |
+| Numero            | Costanti nuemriche                 | 3.14,0,...        |
+| Stringa letterale | Qualunque cosa tra ""              | "Hello",...       |
+**Classi di token (relative all'esempio):** 
+1. Un token per ogni parola chiave
+2. Token per gli operatori (uno per ciascuno o raggruppati)
+3. Un unico token per gli identificatori
+4. Uno o più token per le costanti
+5. Un token per ogni segno di punteggiatura
+
+> [!example] $E = M * C ** 2$
+> 1. Id, puntatore alla riga di $E$ nella tabella dei simboli
+> 2. Operatore assegnazione
+> 3. Id, puntatore alla riga di $M$ nella tabella dei simboli
+> 4. Operatore prodotto
+> 5. Id, puntatore alla riga di $C$ nella tabella dei simboli
+> 6. Operatore potenza
+> 7. Numero, valore intero 2
+
+- I token sono identificati da espressioni regolari (i pattern)
+- O token hanno un ordine di priorità
+- L'analizzatore lessicale
+	1. Legge il testo e trova il più lungo prefisso del testo da analizzare che sia un lessema
+	2. Manca
+
+> [!example] `int interesse = 5;`
+> - il più lungo lessema iniziale è `int`, che corrisponde ai pattern dei token int e identificatore
+> - l'analizzatore restituisce int, perché ha priorità maggiore
+> - alla successiva attivazione analizza `interesse = 5;`
+> - anche questo inizia con il lessema `int` ma non è il più lungo
+> - MANCA
+
+**Problema:** ho:
+- Una sequenza finita di espressioni regolari $E_1, E_2, ..., E_n$ ( i pattern)
+- Una parola $w$ (il testo da analizzare)
+
+Devo determinare:
+- Il più lungo prefisso $u$ di $w$ che appartenga al linguaggio denotato dall'espressione MANCA
+- MANCA
+
+**Automa per l'analisi lessicale:** per ognuna delle espressioni $E_j, j = 1, ..., n$ costruiamo un'automa a stati finiti $A_j = \langle Q_j, \Sigma, \delta_j, \{i_j\}, \{f_j\} \rangle$ che accetta il linguaggio denotato da $E_j$
+Possiamo supporre che tali automi non abbiano stati comuni
+Costruiamo l'automa A che accetta il linguaggio denotato da $F = E_1 + ... + E_n$ con:
+- Gli stati, le transizioni e gli stati finali di $A_1, A_2,...,A_n$ e inoltre 
+- Un nuovo stato iniziale $i_0$
+- Delle epsilon-transizioni da $i_0$ agli stati iniziali originali degli automi $A_1, A_2,...,A_n$
+
+Con la costruzione dei sottoinsiemi otteniamo un'automa deterministico $A_D = \langle P, \Sigma, \delta, q_0, F' \rangle$ che accetta il linguaggio denotato da $F$. Osserviamo che :
+- Gli stati di $A_D$ sono sotto insiemi di $Q = \{i_0\} \cup \displaystyle\bigcup_{j=1}^n Q_j$
+- Si ha che w sta nel linguaggio denotato da $E_j$ se e soltanto se $f_j \in \hat\delta(q_0,u)$
+
+Troviamo il più lungo prefisso $u$ di $w$ accettato da $A_D$ e il più piccolo indice $j$ tale che $f_j \in \hat\delta(q_0,u)$. Gli stati di $A_D$ sono sottoinsiemi di $Q$ tra i quali c'è $\emptyset$ che funge da 'pozzo'. L'ultimo transito da uno stato finale prima dell'ingresso nel pozzo individua il più lungo prefisso di $w$ accettato da $A_D$
+
+ESEMPIO
+
+**Algoritmo:** 
+*Input:* l'automa deterministico $A_D$ e un puntatore start al test da analizzare
+*Outpu:* la massima lunghezza di un prefisso del testo accettato da $A_D$ e il token corrispondente
+
+PSEUDOCODICE
+
+**Lex:** è un generatore di analizzatori lessicali
+
+IMMAGINE
