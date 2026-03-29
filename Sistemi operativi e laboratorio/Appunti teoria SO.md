@@ -302,7 +302,7 @@ Un processo può avere multiple sequenze di istruzioni (*threads*) che possono e
     <img src="Screenshot From 2026-03-05 13-28-52.png" style="width: 100%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
-    Supponiamo che venga creato il processo P0 che è in stato di running. Ad un certo punto si verifica un'interruzione e tutte le informazioni del processo vengono salvate nel PCB0. Queste saranno ricaricate dal sistema di gestione delle interruzioni dopo che il processore avrà terminato un altro processo P1 (ricaricato da PCB1 quando magari P1 era stato interrotto precedentemente). A questo punto può accadere una nuova interruzione, si salva lo stato di P1 dentro a PCB1 e si ricarica lo stato contenuto in PCB0 (si riprende esecuzione di P0). Questo ci permette di usare il sistema in maniera efficiente purché le operazioni di salvataggio e ricarica degli stati del processore siano eseguite in maniera efficiente.
+    Supponiamo che venga creato il processo P 0 che è in stato di running. Ad un certo punto si verifica un'interruzione e tutte le informazioni del processo vengono salvate nel PCB 0. Queste saranno ricaricate dal sistema di gestione delle interruzioni dopo che il processore avrà terminato un altro processo P 1 (ricaricato da PCB 1 quando magari P 1 era stato interrotto precedentemente). A questo punto può accadere una nuova interruzione, si salva lo stato di P 1 dentro a PCB 1 e si ricarica lo stato contenuto in PCB 0 (si riprende esecuzione di P 0). Questo ci permette di usare il sistema in maniera efficiente purché le operazioni di salvataggio e ricarica degli stati del processore siano eseguite in maniera efficiente.
   </div>
 </div>
 
@@ -475,7 +475,7 @@ Vengono generate le seguenti difficoltà:
 - Allocazione ottimale delle risorse
 - Debugging (può comparire un errore specifico dovuto a una serie di eventi sfortunati che si verifica raramente e sarà difficile da ri-individuare)
 
-> [!info] L’uniprocessore prende il processo P1, esegue chin=getchar(), sospende l’esecuzione di P1 passando a P2, rifà getchar() e cambia chin, stampa chout, poi si ritorna al processo P1, dove chout = chin, ma chin è stato cambiato da P2, perciò verrà stampato nuovamente il secondo carattere. Se un solo processo alla volta potesse eseguire la procedura P2 va in stato di block perchè la risorsa (in questo caso la procedura) non è disponibile poiché usata da un altro processo. La computazione va avanti finché viene ripreso P1, viene conclusa la procedura e si ritorna a P2 con la risorsa ora disponibile, i due caratteri ora sono stampati in ordine. Anche nel multiprocessore ci sarebbe questo problema.
+> [!info] L’uniprocessore prende il processo P 1, esegue chin=getchar(), sospende l’esecuzione di P 1 passando a P 2, rifà getchar() e cambia chin, stampa chout, poi si ritorna al processo P 1, dove chout = chin, ma chin è stato cambiato da P 2, perciò verrà stampato nuovamente il secondo carattere. Se un solo processo alla volta potesse eseguire la procedura P 2 va in stato di block perchè la risorsa (in questo caso la procedura) non è disponibile poiché usata da un altro processo. La computazione va avanti finché viene ripreso P 1, viene conclusa la procedura e si ritorna a P 2 con la risorsa ora disponibile, i due caratteri ora sono stampati in ordine. Anche nel multiprocessore ci sarebbe questo problema.
 > ![[Screenshot From 2026-03-18 19-47-13.png|200]]
 > ![[Screenshot From 2026-03-18 19-47-24.png|200]]
 > ![[Screenshot From 2026-03-18 19-48-41.png|200]] > 
@@ -484,7 +484,7 @@ Vengono generate le seguenti difficoltà:
 
 **Race condition:** si verifica quando più processi o threads leggono e scrivono dati in modo che il risultato finale dipenda dall'ordine di esecuzione delle istruzioni dei processi
 
-> [!example] I processi P1 e P2 assegnano rispettivamente 1 e 2 alla variabile condivisa a. Il valore finale sarà quello del ‘secondo arrivato’. I processi P1 e P2 condividono le variabili b e c con valori iniziali b = 1, c = 2. P1 esegue b = b + c, P2 esegue c = b + c. Se arriva primo P1, avremo b = 3; c = 5. Nel caso opposto, b = 4; c = 3
+> [!example] I processi P 1 e P 2 assegnano rispettivamente 1 e 2 alla variabile condivisa a. Il valore finale sarà quello del ‘secondo arrivato’. I processi P 1 e P 2 condividono le variabili b e c con valori iniziali b = 1, c = 2. P 1 esegue b = b + c, P 2 esegue c = b + c. Se arriva primo P 1, avremo b = 3; c = 5. Nel caso opposto, b = 4; c = 3
 
 **Compiti del SO:** La concorrenza quindi può portare a problemi, è compito del sistema operativo fare in modo che la concorrenza si svolga nella maniera corretta:
 - Tenere traccia dei processi (PCB)
@@ -529,8 +529,8 @@ void P2 {
 **Collaborazione tramite la condivisione di risorse:** in questo caso i processi interagiscono senza conoscersi, ma usano e modificano i dati condivisi. Il risultato di un processo può dipendere dalle azioni di un altro e anche qui i tempi di elaborazione ne sono influenzati. I problemi sono sempre gli stessi, la mutua esclusione, poiché il meccanismo di controllo deve assicurare l’integrità dei dati (tranne per le operazioni di lettura), la deadlock e la starvation, ma anche un problema di data coherence. I processi modificano dei dati condivisi e se uno dei processi sbaglia a modificare i dati essi diventano incoerenti e portano a errori anche gli altri processi.
 
 > [!example] 
-> P1: a = a + 1, b = b + 1
-> P2: b = 2 * b, a = 2 * b
+> P 1: a = a + 1, b = b + 1
+> P 2: b = 2 * b, a = 2 * b
 > Posso ottenere situazioni come: a = a + 1, b = 2 * b, b = b + 1, a = 2 * b $\implies$ due risultati diversi
 
 **Collaborazione per condivisione (condivisione per scambio di messaggi):** in questo caso i processi collaborano per un obiettivo comune e la comunicazione permette di sincronizzarsi e coordinarsi. Ci sono delle primitive che consentono a un processo di mandare informazioni a un altro processo o di riceverle fornite dal kernel o dal linguaggio di programmazione. In questo caso il risultato è sicuramente influenzato da ciò che il processo riceve, così come il tempo di elaborazione che è limitato a quando il processo riceve l’informazione necessaria. In questo caso non c’è problema di mutua esclusione poiché i processi non condividono dati, si hanno però sempre problemi di deadlock e starvation.
@@ -983,12 +983,20 @@ Quando si hanno programmi complessi si possono utilizzare dei programmi costruit
 I dati locali condivisi sono accessibili solo attraverso le procedure del monitor e in esso definisco le operazioni da fare su questi dati condivisi. Il resto dei programmi che usano la concorrenza sono chiamate alle procedure definite nel modulo. I singoli processi quindi non toccano direttamente i dati condivisi, ma devono passare per le procedure del modulo. I dati condivisi quindi sono accessibili solo tramite le procedure del monitor e i codici dei processi possono accedervi solo tramite le procedure. Inoltre un solo processo alla volta può eseguire le procedure del monitor.
 
 All’interno del monitor stanno le variabili di condizione, variabili accessibili solo attraverso due funzioni:
-1. *Cwait(c):* sospende l'esecuzione del processo che la ha esegiuita sulla condizione *c*
+1. *Cwait(c):* sospende l'esecuzione del processo che la ha eseguita sulla condizione *c*
 2. *Csignal(c):* riattiva uno dei processi in attesa sulla condizione *c*; se non ce ne sono non fa nulla
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260325123445.png" width="200">
 </div>
+
+> [!info] Sintesi:
+> è un costrutto di sincronizzazione usato nella programmazione concorrente per gestire in modo sicuro l'accesso a risorse condivise tra thread o processi. Solo un thread alla volta può entrarci e dentro ci sono:
+> - variabili condivise
+> - procedure per accedervi
+> - variabili di condizione per sincronizzare i thread
+> 
+> In particolare servono per evitare race condition, mutua esclusione e coordinare i thread
 
 Problema del produttore/consumatore:
 ```C
@@ -1025,17 +1033,9 @@ Alcuni processi leggono soltanto (lettori), altri scrivono soltanto (scrittori).
 - Un solo scrittore alla volta può scrivere i dati; 
 - Durante la scrittura nessun lettore può leggere.
 
-Dati condivisi:
-- Alcuni processi leggono soltanto (lettori)
-- Gli altri scrivono soltanto
-
-Condizioni:
-- Qualsiasi numero di lettori può leggere simultaneamente i dati 
-- Un solo scrittore alla volta può scrivere i dati 
-- Durante la scrittura, nessun lettore può leggere
-
-**Precedenza ai lettori:** Si ha un contatore, due semafori, il semaforo x per la mutua esclusione, e un semaforo wsem per controllare l’accesso degli scrittori. Se readcount == 1, cioè se c’è un lettore esegue una wait sul semaforo wsem. Fatto ciò esco dalla mutua esclusione. La x in sostanza serve per la mutua esclusione sulla variabile readcount. Devo incrementare readcount, e per fare questa operazione ho tre istruzioni elementari: leggi readcount, aggiungici 1 e aggiorna. A questo punto il lettore legge e quando ha terminato decrementa readcount (la variabile in mutua esclusione). Quando verifica che lui è l’ultimo lettore, esegue la signal su wsem, quindi abilita o un processo scrittore o un prossimo lettore. Il processo scrittore può scrivere solo quando non ci sono lettori, quindi esegue semwait su wsem, scrive ed esegue la signal. Può scrivere il suo comando solo se è l’unico processo che sta accedendo. C’è un semWait all’interno di una sezione critica, sarebbe buona regola non lasciare dei wait all’interno delle sezioni critiche perché altrimenti se il processo si blocca nessuno può più accedervi, ma qui non fa danni perché la wait blocca il processo quando c’è un processo che sta scrivendo. Quindi finché il
+**Precedenza ai lettori:** Si ha un contatore, due semafori, il semaforo x per la mutua esclusione, e un semaforo wsem per controllare l’accesso degli scrittori. Se readcount == 1, cioè se c’è un lettore, esegue una wait sul semaforo wsem. Fatto ciò esco dalla mutua esclusione. La x in sostanza serve per la mutua esclusione sulla variabile readcount. Devo incrementare readcount, e per fare questa operazione ho tre istruzioni elementari: leggi readcount, aggiungici 1 e aggiorna. A questo punto il lettore legge e quando ha terminato decrementa readcount (la variabile in mutua esclusione). Quando verifica che lui è l’ultimo lettore, esegue la signal su wsem, quindi abilita o un processo scrittore o un prossimo lettore. Il processo scrittore può scrivere solo quando non ci sono lettori, quindi esegue semwait su wsem, scrive ed esegue la signal. Può scrivere il suo comando solo se è l’unico processo che sta accedendo. C’è un semWait all’interno di una sezione critica, sarebbe buona regola non lasciare dei wait all’interno delle sezioni critiche perché altrimenti se il processo si blocca nessuno può più accedervi, ma qui non fa danni perché la wait blocca il processo quando c’è un processo che sta scrivendo. Quindi finché il
 processo scrive è vero che tutti i lettori non possono accedere alla sezione critica, ma non potrebbero comunque accedere alla lettura. Precedenza ai lettori (con buffer infinito):
+
 ```C
 /* program readersandwriters */ 
 int readcount; 
@@ -1066,11 +1066,10 @@ void writer() {
 void main() { readcount = 0; parbegin (reader, writer); }
 ```
 
-**Precedenza agli scrittori:** Ho 3 semafori e non uno solo. Con semsignal(x) esco dalla mutua esclusione per
+**Precedenza agli scrittori:** Ho 3 semafori. Con semsignal(x) esco dalla mutua esclusione per
 questo tratto, poi semsignal(rsem) e semsignal(z). A questo punto, finita la lettura, segnalo semwait(x) per la mutua esclusione, decremento il contatore, e se il contatore è 0 eseguo una signal su wsem, e ciò significa che tutti i lettori hanno finito di leggere. Alla fine semsignal(x) conclude la mutua
-esclusione. Passando a void writer(), si ha una semWait(y) sul semaforo y per la mutua esclusione, poi incrementiamo la writecount, se writecount == 1 significa che questo è l’unico processo che vuole scrivere, c’è una wait su rsem (semaforo dei lettori), dopodiché si esce dalla sezione critica e si esegue
-una wait sul semaforo wsem che segnala se si può scrivere o meno. A questo punto si scrive, terminato di scrivere si segnala wsem, cioè un altro processo può accedere. Finiti gli scrittori, per cui questo era l’ultimo scrittore, segnala ai processi lettori di partire. Wsem inizialmente è 1, viene decrementato o
-quando accede un primo lettore o quando accede uno scrittore, quindi wsem sarà a 0 quando almeno un processo sta leggendo o un processo sta scrivendo, ciò dunque assicura che non vi siano sovrapposizioni tra due processi scrittori, e un processo scrittore e uno lettore. Il semaforo x serve per la mutua esclusione sulla variabile readcount. Semwait e semsignal devono essere accessibili all’interno della mutua esclusione. Ciò significa che non posso mettere semwait(x) e basta o semwait(z) e basta, perché succederebbe che mentre un processo è fermo sulla semsignal, non sarebbe accessibile la lettura che invece deve essere accessibile perché altrimenti il processo in uscita non potrebbero aggiornarla e quindi far ripartire il processo.
+esclusione. Passando a void writer(), si ha una semWait(y) sul semaforo y per la mutua esclusione, poi incrementiamo la writecount. Se writecount == 1 significa che questo è l’unico processo che vuole scrivere, c’è una wait su rsem (semaforo dei lettori). Dopodiché si esce dalla sezione critica e si esegue
+una wait sul semaforo wsem che segnala se si può scrivere o meno. A questo punto si scrive e una volta  terminata questa fase si segnala wsem, cioè un altro processo può accedere. Finiti gli scrittori, per cui questo era l’ultimo scrittore, segnala ai processi lettori di partire. Wsem inizialmente è 1, viene decrementato o quando accede un primo lettore o quando accede uno scrittore, quindi wsem sarà a 0 quando almeno un processo sta leggendo o un processo sta scrivendo. Ciò dunque assicura che non vi siano sovrapposizioni tra due processi scrittori o un processo scrittore e uno lettore. Il semaforo x serve per la mutua esclusione sulla variabile readcount. semwait e semsignal devono essere accessibili all’interno della mutua esclusione. Ciò significa che non posso mettere semwait(x) e basta o semwait(z) e basta, perché succederebbe che mentre un processo è fermo sulla semsignal, non sarebbe accessibile la lettura che invece deve essere accessibile perché altrimenti il processo in uscita non potrebbero aggiornarla e quindi far ripartire il processo.
 
 ```C
 /* program readersandwriters */ 
@@ -1118,10 +1117,10 @@ void main() {
 }
 ```
 
-**Scambio di messaggio:** Un server, chiamato anche controller gestisce le informazioni che andrebbero condivise. A sx si ha il programma del processo lettore e scrittore, il processo lettore ha una variabile rmsg con un messaggio che deve leggere il lettore, invia questo messaggio a una mailbox chiamata readrequest (un contenitore che conterrà tutte le richieste da parte dello scrittore). Fatto questo
+**Scambio di messaggio:** Un server, chiamato anche controller gestisce le informazioni che vengpono condivise. A sx si ha il programma del processo lettore e scrittore, il processo lettore ha una variabile rmsg con un messaggio che deve leggere il lettore e invia questo messaggio a una mailbox chiamata readrequest (un contenitore che conterrà tutte le richieste da parte dello scrittore). Fatto questo
 si mette in attesa sulla sua porta (mailbox indice i) e quando avrà ricevuto il messaggio di risposta dal controllo leggerà e poi invierà il messaggio lettura terminata in un’altra mailbox denominata finish. Il processo scrittore funziona allo stesso modo, con la differenza che invece di readrequest avrà
 writerequest. Se c’è una richiesta di lettura viene prelevato il messaggio, decrementato il contatore, e in risposta al messaggio ricevuto si invia un messaggio di ricezione. Quando il contatore arriva a 0 si manda allo scrittore il messaggio OK e ci si mette in attesa del messaggio di terminata scrittura,
-dopodiché il contatore viene portato a 100. Al termine si ha un while(count <0). Finché il count è <0 ci si mette in attesa dei messaggi di lavoro terminato e mano mano si incrementa il contatore. Quindi in questo modo il diritto di accesso alla lettura e alla scrittura la dà un processo ben preciso, ovvero il controllore, e non c’è più la necessità di realizzare la mutua esclusione poiché è il controllore stesso che gestisce il tutto. In questo senso i meccanismi operativi basati su meccanismi client server sono più sicuri, un solo processo che sbaglia le operazioni di mutua esclusione rendono il dato condiviso
+dopodiché il contatore viene portato a 100. Al termine si ha un while b(count <0). Finché il count è <0 ci si mette in attesa dei messaggi di lavoro terminato e mano mano si incrementa il contatore. Quindi in questo modo il diritto di accesso alla lettura e alla scrittura la dà un processo ben preciso, ovvero il controllore, e non c’è più la necessità di realizzare la mutua esclusione poiché è il controllore stesso che gestisce il tutto. In questo senso i meccanismi operativi basati su meccanismi client server sono più sicuri, un solo processo che sbaglia le operazioni di mutua esclusione rendono il dato condiviso
 
 ```C
 void reader(int i) { 
@@ -1214,18 +1213,18 @@ void controller () {
 2. *Risorse consumabili:* possono essere create (prodotte) e distrutte (consumate), come le interruzioni, i segnali, i messaggi, i dati in buffer ecc…
 
 > [!example] Esempio risorse utilizzabili: 
-> Due processi competono per l’uso di un file D e un dispositivo T, p1 richiede prima D e lo blocca, p2 richiede prima T e lo blocca, poi però i processi richiedono subito rispettivamente T e D, che però ora sono bloccati dall’altro processo, perciò ora ci troviamo nella situazione di stallo descritta prima. 
+> Due processi competono per l’uso di un file D e un dispositivo T, p 1 richiede prima D e lo blocca, p 2 richiede prima T e lo blocca, poi però i processi richiedono subito rispettivamente T e D, che però ora sono bloccati dall’altro processo, perciò ora ci troviamo nella situazione di stallo descritta prima. 
 > 
 > ![[Pasted image 20260326171336.png|200]]
 > 
-> Se però si invertisse l’ordine in cui sono richieste T e D in modo tale che entrambi i processi richiedono le risorse T e D nello stesso ordine, così p1 prende subito sia T che D, fa ciò che deve fare e sblocca le risorse a p2 che aveva trovato T subito occupato ed era rimasto perciò in attesa.
+> Se però si invertisse l’ordine in cui sono richieste T e D in modo tale che entrambi i processi richiedono le risorse T e D nello stesso ordine, così p 1 prende subito sia T che D, fa ciò che deve fare e sblocca le risorse a p 2 che aveva trovato T subito occupato ed era rimasto perciò in attesa.
 
 > [!example] Esempio risorse consumabili: 
 > Due processi si scambiano messaggi:
 > 
 > ![[Pasted image 20260326171425.png|200]]
 > 
-> Receive è una funzione bloccante, p1 attende che p2 mandi un messaggio,ma allo stesso tempo p2 attende che p1 mandi un messaggio, quindi attendono messaggi che non arriveranno mai poiché entrambi in attesa. 
+> Receive è una funzione bloccante, p 1 attende che p 2 mandi un messaggio,ma allo stesso tempo p 2 attende che p 1 mandi un messaggio, quindi attendono messaggi che non arriveranno mai poiché entrambi in attesa. 
 
 **Grafo di allocazione delle risorse:**
 <div style="display: flex; justify-content: center;">
@@ -1240,9 +1239,9 @@ void controller () {
 **Condizioni per lo stallo:** le condizioni necessarie sono:
 1. Mutua esclusione: le risorse possono essere assegnate a un solo processo alla volta
 2. Possesso della risorsa e l'attesa che questa si liberi
-3. Assenza di prerilascio: 
+3. Assenza di prerilascio
 
-La condizione determinante per lo stallo è l’attesa circolare, cioè che esista una catena chiusa di processi tale che ogni processo possiede una risorsa richiesta dal processo successivo (quindi che si abbia un ciclo nel grafo di Holt, il grafo delle risorse).
+La condizione determinante per lo stallo è l’attesa circolare (4), cioè che esista una catena chiusa di processi tale che ogni processo possiede una risorsa richiesta dal processo successivo (quindi che si abbia un ciclo nel grafo di Holt, il grafo delle risorse).
 
 > [!info]
 > - $1,2,3 \implies$ stallo POSSIBILE, cioè se si hanno solo le condizioni necessarie
@@ -1251,7 +1250,7 @@ La condizione determinante per lo stallo è l’attesa circolare, cioè che esis
 **Azioni contro lo stallo:**
 - *Prevenzione:* far si che i processi si comportino in maniera tale da evitare lo stallo
 - *Esclusione:* meccanismi che permettono al sistema operativo di controllare se assegnare una risorsa a un dato processo può causare lo stallo, nel qual caso questa assegnazione viene rifiutata o posticipata
-- *Rilevamento:* non lo prevediamo, non lo escludiamo, ma quando temiamo che esso si sia verificato cerchiamo di rilevarlo e prendere provvedimenti
+- *Rilevamento:* non lo prevediamo, non lo escludiamo, ma quando temiamo che esso si sia verificato cerchiamo di rilevarlo e di prendere provvedimenti
 
 **Prevenzione:** si progetta il sistema in modo da escludere lo stallo. Ci sono metodi indiretti, che riguardano l’esclusione di una delle tre condizioni necessarie per lo stallo e i metodi diretti, che sono atti a prevenire il presentarsi dell’attesa circolare.
 - *Metodi indiretti:*
@@ -1262,7 +1261,7 @@ La condizione determinante per lo stallo è l’attesa circolare, cioè che esis
 	- Si definisce un ordine totale sulle categorie di risorse
 	- Un processo cui siano state già assegnate delle risorse, può richiedere solo risorse di categorie successive a quelle delle risorse assegnate
 
-Poiché in caso di attesa circolare, un processo ha una risorsa $R_i$ e chiede una risorsa $R_j$ e un altro processo ha la risorsa $R_j$ e chiede $R_i$, allora uno dei due sta violando il protocollo. Il primo se $j < i$, il secondo se $i < j$. Anche se il metodo diretto dell’assegnazione ordinata funziona, esso inefficiente. Se l’ordinamento è coerente e tiene conto dell’ordine in cui le risorse vengono usate (ad esempio scrivere dati su disco, prima ho bisogno della tastiera e poi ho bisogno del disco, raramente viceversa) è molto meno inefficiente dell’assegnazione statica.
+Poiché in caso di attesa circolare, un processo ha una risorsa $R_i$ e chiede una risorsa $R_j$ e un altro processo ha la risorsa $R_j$ e chiede $R_i$, allora uno dei due sta violando il protocollo. Il primo se $j < i$, il secondo se $i < j$. Anche se il metodo diretto dell’assegnazione ordinata funziona, esso è inefficiente. Se l’ordinamento è coerente e tiene conto dell’ordine in cui le risorse vengono usate (ad esempio scrivere dati su disco, prima ho bisogno della tastiera e poi ho bisogno del disco, raramente viceversa) è molto meno inefficiente dell’assegnazione statica.
 
 **Prevenire/Evitare lo stallo:**
 - *Prevenire (deadlock prevention):* Limitazioni sulle richieste di risorse

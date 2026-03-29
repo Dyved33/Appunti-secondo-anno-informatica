@@ -391,13 +391,13 @@ int main(int argc, char *argv[]) //sono gli unici due parametri che può prender
 | `lseek`                                                  | `fseek`                                                                                                       |
 | Richiedono cambio contesto user-kernel ad ogni carattere | Tipicamente più efficaci e più veloci                                                                         |
 ###### Bash: standard stream e redirezioni
-**command-line completion:** *bash* ha la funzione di completamento delle linee di comando premendo il tasto *TAB*. Premendo una volta il tasto *TAB* ottengo:
+**command-line completion:** *bash* ha la funzione di completamento delle linee di comando premendo il tasto `TAB`. Premendo una volta il tasto *TAB* ottengo:
 1. se c'è una sola possibilità il comando viene completato 
 2. altrimenti il comando viene eventualmente completato fin dove è possibile farlo in modo univoco e viene emesso un segnale sonoro
 
 Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scelte possibili
 
-**Gestione della history:** *bash* tiene nota degli ultimi *n* comandi dati alla shell. *n* dipende dalle variabili *HISTFILESIZE* e *HISTSIZE* (*man bash*)
+**Gestione della history:** *bash* tiene nota degli ultimi *n* comandi dati alla shell. *n* dipende dalle variabili `HISTFILESIZE` e `HISTSIZE` (*man bash*)
 
 | Comando (interno) | Descrizione                                                                                                                                |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -406,7 +406,8 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 | `!68`             | esegue il comando numero 68 della history                                                                                                  |
 | `!!`              | ripete l’ultimo comando eseguito                                                                                                           |
 **Bash: Metacaratteri:** si tratta di caratteri che separano le parole. Un metacarattere può essere: spazio, tab, newline, `|`, `&`,`;`,`(`, `)`, `<`, `>` (da *Bash Reference Manual*). Questi caratteri hanno un significato per la shell, come anche i caratteri `*`, `?`, `Ctrl + d (EOF)`, `Ctrl + c`, `'`,…
-> [!IMPORTANT]
+
+> [!tip]
 > Se si desidera usare questi caratteri come testo normale, devono essere racchiusi tra **apici** (quoting) per evitare che la Bash li interpreti.
 
 **Bash: standard streams:** In un sistema Unix-like, ogni processo all'avvio ha tre flussi di dati (file descriptor) predefiniti aperti. Questi flussi permettono al comando di interagire con l'ambiente esterno (tastiera, terminale, file) tramite anche la redirezione e il comando pipe (`|`).
@@ -418,7 +419,7 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 > [!NOTE] Nota del Prof
 > Se esegui un comando come `sort` senza alcun parametro, la Bash "apre lo 0": invece di leggere da un file, resta in attesa di input direttamente dalla tastiera finché non viene inviato un segnale di EOF (Ctrl+D).
 
-**Bash: redirezione dell’input:** <u>La redirezione dell'input in Bash permette di inviare il contenuto di un file (o altro input) a un comando</u>, sostituendo la tastiera standard (stdin, descrittore file 0) con l'operatore `<`: `comando [n] < filename` (la shell apre il file, lo collega a stdin e il comando legge da stdin). 
+**Bash: redirezione dell’input:** <u>La redirezione dell'input in Bash permette di inviare il contenuto di un file (o altro input) a un comando</u>, sostituendo la tastiera standard (stdin, descrittore file 0) con l'operatore `<`: `comando [n] < filename` (<u>la shell apre il file, lo collega a stdin e il comando legge da stdin</u>). 
 - Il descrittore *n* è associato a *filename* che viene aperto in lettura
 - Se *n* è omesso, lo *standard input* (*n* = 0) è associato al file, cioè il comando legge l’input dal file
 
@@ -449,7 +450,7 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 **BASH: redirezione dell'output in append:** `comando >> file` viene aggiunto l’output in coda al file senza sovrascriverlo
 > [!example] `echo "nuova riga" >> scan.txt`: Il testo viene aggiunto in coda al file senza cancellare il contenuto precedente.
 
-**BASH: reindirizzare/duplicare uno stream:** È possibile duplicare o spostare i descrittori di file per operazioni avanzate con gli operatori della redirezione (<u>si tratta di far puntare due flussi allo stesso oggetto tipo un file</u>).
+**BASH: reindirizzare/duplicare uno stream:** È possibile duplicare o spostare i file descriptor per operazioni avanzate con gli operatori della redirezione (<u>si tratta di far puntare due flussi allo stesso oggetto tipo un file</u>).
 - `[n]<&x`: duplica il file descriptor in input x, nel senso che n fa riferimento allo stesso device/file cui si riferisce x (il quale è un fd). Se n è omesso viene assunto 0 (stdin). x deve essere un descrittore aperto in input altrimenti viene restituito un errore
 - `[n]>&x`: duplica il file descriptor di output x. Se n è omesso viene assunto 1 (stdout). x deve essere un descrittore aperto in output altrimenti viene restituito un errore (semplicemente viene redirezionato l'output al file/device indicato da x)
 
@@ -487,7 +488,7 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 > - un comando come `<` fa si che la shell apra il file usando il pathname, ottenga così il pathname e lo colleghi a stdin (fd 0). Quindi si usa un file esterno che viene aperto nel momento dell'esecuzione del comando
 > - un comando come `<&` implica che la shell NON debba aprire un file, ma usare un file descriptor già aperto (lo duplica). Pertanto si lavora solo con connessioni già esistenti
 
-> [!caution] 
+> [!warning] 
 > - `<` apre il file in lettura
 > - `>` apre il file in scrittura
 > - `<&` duplica (solitamente) stdin (se c'è 0 prima) sul file descriptor passato
@@ -512,7 +513,7 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 | `grep (-rvec)` | visualizza linee che soddisfano criteri (patterns) di ricerca                       |
 | `awk`          | implementa un linguaggio di programmazione per il «pattern scanning and processing» |
 | `tr`           | sostituisce, comprime e/o cancella caratteri                                        |
-| `uniq`         | visualizza o sostituisce lineee ripetute                                            |
+| `uniq`         | visualizza o sostituisce linee ripetute                                             |
 | `cut`          | seleziona parti di linee di un file (es.: a campi delimitati)                       |
 | `sed(-ei)`     | stream editor per filtrare e modificare un testo                                    |
 | `wc(-l)`       | conta linee, parole e caratteri                                                     |
@@ -582,32 +583,33 @@ I due processi (child e parent) sono eseguiti concorrentemente. Il child eredita
 - I flag di stato del file
 - Il puntatore alla locazione corrente di ogni file
 - Etc. (vedi *man open (2) e man fork (2))
+
 ```C
 #include <sys/wait.h>
 #include <stdio.h>
 #include <unistd.h>
+
 int main()
 {
-pid_t pid;
-/* fork a child process */
-PID= fork();
-if (PID< 0) { /* error occurred */
-fprintf(stderr, "Fork Failed");
-return 1;
-}
-else if (PID== 0) { /* child process */
-printf("Child: my PID= %d, parent PID= %d\n", getpid(), getppid());//execlp("/bin/ls","ls",NULL);
-//sleep(10); //mette il processo in attesa passiva (no consumo risorse) per 10 secondi
-_exit(0); //termina il processo figlio senza eseguire le operazioni di pulizia del processo (come la chiusura dei file //aperti)
-}
-else { /* parent process */
-/* parent will wait for the child to complete */
-wait(NULL);
-printf("Parent: my PID= %d, parent PID= %d. PIDdel child %d\n",getpid(),getppid(),PID);
-//sleep(10);
-}
-sleep(10);
-return 0;
+	pid_t pid;	
+	PID= fork();/* fork a child process */
+	if (PID< 0) { /* error occurred */
+		fprintf(stderr, "Fork Failed");
+		return 1;
+	}
+	else if (PID== 0) { /* child process */
+		printf("Child: my PID= %d, parent PID= %d\n", getpid(), getppid());//execlp("/bin/ls","ls",NULL);
+		//sleep(10); //mette il processo in attesa passiva (no consumo risorse) per 10 secondi
+		_exit(0); //termina il processo figlio senza eseguire le operazioni di pulizia del processo (come la chiusura dei file //aperti)
+	}
+		else { /* parent process */
+		/* parent will wait for the child to complete */
+		wait(NULL);
+		printf("Parent: my PID= %d, parent PID= %d. PID del child %d\n",getpid(),getppid(),PID);
+		//sleep(10);
+	}
+	sleep(10);
+	return 0;
 }
 ```
 **PID e PPID:** `include <unistd.h> pid_t getpid(void); pid_t getppid(void)`
@@ -638,15 +640,15 @@ Permettono di rilasciare le risorse assegnate al *child*. Se un *child* termina 
 
 **System calls per i processi**
 
-| Nome              | Cosa fa                                          |
-| ----------------- | ------------------------------------------------ |
-| Fork              | Crea un nuovo processo                           |
-| Wait              | Attende finché uno dei child termina             |
-| WaitPID          | Attende finché un determinato child cambia stato |
-| Waitid            | Maggiore controllo su quali child attendere      |
-| _exit(2), exit(3) | Terminano il chiamante                           |
-| Execvve(2)        | Esegue un programma che rimpiazza il chiamante   |
-| Exec*(3)          | Wrappers per execve(2) (sono 6)                  |
+| Nome                | Cosa fa                                          |
+| ------------------- | ------------------------------------------------ |
+| `fork`              | Crea un nuovo processo                           |
+| `wait`              | Attende finché uno dei child termina             |
+| `waitPID`           | Attende finché un determinato child cambia stato |
+| `waitid`            | Maggiore controllo su quali child attendere      |
+| `_exit(2), exit(3)` | Terminano il chiamante                           |
+| `execve(2)`         | Esegue un programma che rimpiazza il chiamante   |
+| `exec*(3)`          | Wrappers per execve(2) (sono 6)                  |
 ###### File Bash
 **Backtick:** in BASH le stringhe contenute tra caratteri backtick $(`)$ sono sostituite dall'output del comando che rappresentano  
 
@@ -669,7 +671,7 @@ Permettono di rilasciare le risorse assegnate al *child*. Se un *child* termina 
 
 **Variabili:** array di coppie nella forma nome=valore:
 - nome: stringa alfanumerica che comincia per lettera 
-- valore: stringa di caratteri •
+- valore: stringa di caratteri 
 
 Si dichiarano/assegnano senza spazi intorno all'uguale (per convenzione il nome in maiuscolo) 
 
@@ -697,16 +699,16 @@ Si referenziano con $NOME e si può utilizzare anche la notazione ${NOME} che è
 
 > [!info] 
 > - nelle costanti stringa delimitate da DOPPI apici $NOME viene interpretato 
-> - nelle costanti stringa delimitate da SINGOLI apici $NOME non viene interpretato •
+> - nelle costanti stringa delimitate da SINGOLI apici $NOME non viene interpretato 
 >> [!example] 
 >> - `VAR1="33"` echo "$VAR 1" # visualizza '33' 
 >> - `echo '$VAR1'` # visualizza '$VAR 1'
 
 **Ambiente (environment):** variabili impostate inizialmente dalla BASH quando viene invocata in base ai file di configurazione, "ereditate" da ogni comando eseguito dalla BASH.
-- NOME=VALORE per definire una nuova variabile $NOME 
-- export NOME per renderla disponibile ai processi child 
-- unset NOME per cancellarla 
-- set o env per visualizzare l'environment. set mostra tutte le variabili e funzioni definite nella shell. set permette anche di settare gli attributi (opzioni) che regolano il funzionamento della BASH
+- `NOME=VALORE` per definire una nuova variabile $NOME 
+- `export NOME` per renderla disponibile ai processi child 
+- `unset NOME` per cancellarla 
+- `set` o `env` per visualizzare l'environment. set mostra tutte le variabili e funzioni definite nella shell. set permette anche di settare gli attributi (opzioni) che regolano il funzionamento della BASH
 
 **Variabili d'ambiente predefinite:** 
 - PATH: contiene una lista di directory, separate da ':', in cui la BASH cerca i comandi da eseguire (se non viene specificato un path per essi) 
@@ -725,7 +727,7 @@ if test $# -ge 1
 then
 
 gcc -o $LABEL $LABEL.c
-RET=$? #ciò che gcc ritorna alla shell ce lo ho in $?
+RET=$? #ciò che gcc ritorna alla shell lo ho in $?
 
 if test $RET -eq 0 #-eq significa equal e si usa per i valori numerici
 then
@@ -769,14 +771,13 @@ exit $RET
 
 **Scripting:** 
 - Possiamo passare ad uno script degli argomenti
-- Per lo script 
 
 > [!info] echo ls stampa ls (cioè ciò che c’è dopo echo)
 > 'echo ls' (Alt Gr + ') stampa invece il contenuto di ls
 
 **Creazione processi:execve(2):** `#include int execve(const char *pathname, char *const argv[], char *const envp[]);`
 - **Pathname:** path del programma da eseguire. Può essere un eseguibile o uno script (che contenga la shabang)
-- **Argv:** array di puntatori a stringa che contiene gli argomenti che verranno passati al nuovo programma. Il primo elemento è il "filename" del programma da eseguire (argv[0]). L’ultimo elemento deve essere un puntatore nullo
+- **Argv:** array di puntatori a stringa che contiene gli argomenti che verranno passati al nuovo programma. Il primo elemento è il "filename" del programma da eseguire (`argv[0]`). L’ultimo elemento deve essere un puntatore nullo
 - **Envp:** array di puntatori a stringhe, nella forma nome=valore, che verranno passare come enviroment al nuovo programma. L’ultimo elemento deve essere un puntatore nullo
 
 **Creazione processi: exec(3):** `#include extern char **environ;`
@@ -882,13 +883,13 @@ int main()
 Le pipe sono di solito unidirezionali (in certi sistemi sono bidirezionali come in Windows), sono uno dei primi meccanismi di IPC e sono disponibili praticamente su tutti i sistemi. Connettono due o più processi tramite un canale di comunicazione. Hanno un'estremità per la lettura (*read end*) ed una per la scrittura (*write end*). Sono caratterizzate da comunicazione non strutturata (*byte stream*), cioè **le pipe trasmettono un flusso continuo di byte grezzi senza alcuna informazione di controllo, formattazione o metadati** associati al contenuto dei dati stessi
 
 Ne esistono 2 tipi:
-1. Senza nome (*unnamed*): sono crate con `pipe()`, i processi comunicanti condividono file descriptor per la lettura e la scrittura (`fork(2)`). Solo tra processi relati
+1. Senza nome (*unnamed*): sono crate con la system call `pipe()`, i processi comunicanti condividono file descriptor per la lettura e la scrittura (`fork(2)`). Solo tra processi imparentati (padre-figlio)
 2. Con nome (*named o FIFO*): sono un file speciale (type `p` in `ls -l`) visibile nel filesystem (ma non occupano né implicano operazioni in esso).
 
 > [!info] Una volta create (ed aperte) si usano allo stesso modo
 > "The only difference between pipes and FIFOs is the manner in which they are created and opened. Once these tasks have been accomplished, I/O on pipes and FIFOs has exactly the same semantics" (man 7 pipe)
 
-**(unnamed) Pipe:** solo processi relati/discendenti (`fork(2)`). I file descriptor per le due estremità (di lettura e di scrittura) sono duplicati da fork(2) e quindi disponibili anche nel child
+**(unnamed) Pipe:** solo processi relati/discendenti (`fork(2)`). I file descriptor per le due estremità (di lettura e di scrittura) sono duplicati da fork(2) e quindi disponibili anche nel child. Non ha nome nel file system ed esiste solo temporaneamente (sparisce quando i processi terminano)
 
 **Named Pipe o FIFO:** sono visibili nel filesystem ma il "nome" nel filesystem è solo un riferimento. Non occupano spazio disco né implicano operazioni in esso (i dati transitano nel kernel)
 
@@ -920,6 +921,10 @@ Creata la pipe è possibile leggere e scrivere dati, per es.: con `read()` e `wr
 - il lettore chiude il fd di scrittura* 
 - i processi comunicano con read() e write() 
 - al termine entrambi chiudono il fd utilizzato
+
+> [!info] Differenza tra `pipe()` e `|`
+> - `pipe()`: è una system call che crea una pipe anonima e restituisce 2 file descriptors: int fd[2], pipe(fd)
+> - `|`: è la sintassi della bash che usa internamente la funzione `pipe()` (chiama prima `pipe()`, poi `fork()` per creare i processi e infine collega la pipe ai comandi che poi verranno eseguiti)
 
 **Creazione di una named pipe:** `int mkfifo(const char *pathname, mode_t mode)`
 - crea una named pipe di nome pathname 
@@ -969,7 +974,7 @@ Non sono possibili operazioni di seek (no lseek(2)). Di default il flag `O_NONBL
 			- se i descrittori di scrittura non sono ancora stati tutti chiusi la read si blocca in attesa 
 			- se durante tale blocco in attesa tutti i descrittori in scrittura vengono chiusi ritorna 0 (end_of_file) 
 			- se invocata quando i descrittori di scrittura sono stati tutti chiusi ritorna 0 (end_of_file) 
-		- altrimenti legge al più size byte; se al momento dell’invocazione la pipe contiene meno di size byte li legge tutti. Ritorna il numero dei byte letti ret 
+		- altrimenti legge al più size byte; se al momento dell’invocazione la pipe contiene meno di size byte, li legge tutti. Ritorna il numero dei byte letti (ret) 
 	- se settato: 
 		- se la pipe è vuota la read ritorna subito -1; `errno EAGAIN`
 
@@ -1162,3 +1167,8 @@ int main()
 	return iRet;
 }
 ```
+
+> [!info]
+> - `|` (pipe):  passa lo stdout del comando precedente allo stdin del comando successivo, i comandi vengono eseguiti in maniera concorrente
+> - `&&` (AND logico): collega i comandi così che il secondo in successione venga eseguito subito dopo il primo. Se il primo comando fallisce, allora il resto viene saltato
+> - `&` (background):  va posto dopo un comando e esegue quest‘ultimo in modo asincrono, consentendo alla shell di continuare immediatamente senza attendere il completamento del processo (ATTENZIONE! NON legge eventuali input da terminale come password) 

@@ -1364,7 +1364,7 @@ Nelle tre lezioni UML precedenti abbiamo usato cinque diagrammi per capire che c
 
 Questa analisi ci dà una buona fotografia del comportamento e del dominio di UniManager. Il passo successivo è chiederci: come organizziamo il software in modo che questi elementi siano implementati in maniera ordinata, comprensibile e mantenibile?
 
-L’architettura software è il ponte tra: l’analisi (requisiti, casi d’uso, modelli UML), e l’implementazione concreta (classi, moduli, codice). Se l’analisi ci dice cosa deve succedere, l’architettura ci dice come organizzare il sistema perché quelle funzionalità possano essere realizzate in modo coerente. Un’architettura chiara rende più semplice: 
+L’architettura software è il ponte tra: l’analisi (requisiti, casi d’uso, modelli UML), e l’implementazione concreta (classi, moduli, codice). <u>Se l’analisi ci dice cosa deve succedere, l’architettura ci dice come organizzare il sistema perché quelle funzionalità possano essere realizzate in modo coerente</u>. Un’architettura chiara rende più semplice: 
 - assegnare il lavoro a più sviluppatori, 
 - prevedere l’impatto dei cambiamenti, 
 - discutere le scelte progettuali usando una mappa condivisa.
@@ -1410,7 +1410,7 @@ L’architettura è anche l’insieme delle decisioni strutturali che:
 > [!example]  Alcuni esempi di decisioni architetturali: 
 > - separare o meno la logica di business dall’accesso ai dati, 
 > - usare o meno livelli distinti per presentazione, logica, persistenza, 
-> - organizzare il codice per funzionalità (Studenti, Corsi, . . . ) o per tipo di responsabilità (domain = entità e regole di business, service = logica applicativa/casi d’uso, repository = accesso ai dati e persistenza). 
+> - organizzare il codice per funzionalità (Studenti, Corsi, ... ) o per tipo di responsabilità (domain = entità e regole di business, service = logica applicativa/casi d’uso, repository = accesso ai dati e persistenza). 
 
 Queste decisioni definiscono confini e regole di dipendenza:
 - chi può chiamare chi, 
@@ -1512,14 +1512,14 @@ Questi principi non sono legati a un linguaggio specifico, e valgono anche oltre
 </div>
 
 **Vocabolario operativo: CLI/UI, Service, Domain, Repository:** Fissiamo i quattro concetti che useremo nel resto del corso: 
-- *CLI/UI *(Command-Line Interface / User Interface): riceve input utente e mostra output, senza contenere regole di business; 
-- *Service:*coordina i casi d’uso applicativi (sequenza dei passi, validazioni applicative, gestione esiti/errore) e orchestra le interazioni tra Domain e Repository; 
-- *Domain:*rappresenta entità e regole del dominio (vincoli, invarianti, significato dei dati), indipendenti da UI e persistenza; 
-- *Repository:*si occupa di accesso ai dati e persistenza (lettura/scrittura). 
+- *CLI/UI (Command-Line Interface / User Interface):* riceve input utente e mostra output, senza contenere regole di business; 
+- *Service:* coordina i casi d’uso applicativi (sequenza dei passi, validazioni applicative, gestione esiti/errore) e orchestra le interazioni tra Domain e Repository; 
+- *Domain:* rappresenta entità e regole del dominio (vincoli, invarianti, significato dei dati), indipendenti da UI e persistenza; 
+- *Repository:* si occupa di accesso ai dati e persistenza (lettura/scrittura). 
 
 Regola guida: 
-- la regola di business vive tra Service e Domain; 
-- CLI/UI e Repository sono livelli di interazione, non sede della logica di dominio. CLI / UI Service Domain Repository 
+- la *regola di business* vive tra Service e Domain; 
+- CLI/UI e Repository sono livelli di interazione, non sede della logica di dominio. 
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260325150627.png" width="200">
@@ -1558,8 +1558,8 @@ Un sistema modulare:
 > [!example] ![[Pasted image 20260325150841.png|200]]
 
 **Segnali di buona e cattiva modularità:** 
-- Buona modularità: nomi dei moduli intuitivi e stabili nel tempo, interfacce semplici (pochi metodi, significativi), dipendenze chiare, idealmente in una sola direzione. 
-- Scarsa modularità: moduli che cambiano continuamente scopo, componenti che conoscono dettagli interni l’uno dell’altro, dipendenze incrociate difficili da districare. 
+- *Buona modularità:* nomi dei moduli intuitivi e stabili nel tempo, interfacce semplici (pochi metodi, significativi), dipendenze chiare, idealmente in una sola direzione. 
+- *Scarsa modularità:* moduli che cambiano continuamente scopo, componenti che conoscono dettagli interni l’uno dell’altro, dipendenze incrociate difficili da districare. 
 
 > [!example] 
 > ![[Pasted image 20260325151046.png|200]] 
@@ -1592,7 +1592,9 @@ Quando questi ruoli si mescolano, il codice diventa più difficile da capire, da
 Al contrario, una classe o un modulo che gestisce: 
 - logica del dominio, 
 - interfaccia utente, 
-- accesso ai file, è destinato a diventare un punto critico del sistema.  
+- accesso ai file
+
+è destinato a diventare un punto critico del sistema.  
 
 **Tipi di responsabilità in UniManager:**
 In questa slide adottiamo una vista per responsabilità tecniche (non per aree funzionali): 
@@ -1638,10 +1640,10 @@ I benefici principali sono:
 > [!example] ![[Pasted image 20260325151648.png|200]]
  
 **Un layering semplice per UniManager:** Per UniManager possiamo immaginare quattro livelli principali:
-- *CLI/UI:*comandi testuali o schermate che l’utente utilizza; 
-- *Service:*implementazione dei casi d’uso; 
-- *Domain:*entità e regole del dominio universitario; 
-- *Repository:*accesso ai dati su file o database. 
+- *CLI/UI:* comandi testuali o schermate che l’utente utilizza; 
+- *Service:* implementazione dei casi d’uso; 
+- *Domain:* entità e regole del dominio universitario; 
+- *Repository:* accesso ai dati su file o database. 
 
 Questi livelli formano una “pila” dove ciascuno ha un ruolo distinto. 
 
@@ -1671,11 +1673,12 @@ In questo modo, le dipendenze hanno una direzione chiara e il dominio rimane al 
 Se molte risposte sono negative, l’architettura va rifinita prima di ampliare il codice.  
 
 **UniManager- una prima suddivisione in pacchetti:** Possiamo tradurre questi livelli in una prima proposta di struttura del progetto: 
-- cli/ per l’interfaccia testuale o grafica, 
-- service/ per i servizi applicativi, 
-- domain/ per le entità e le regole del dominio, 
-- repository/ per l’accesso ai dati. 
-- Questa suddivisione ha il vantaggio di: 
+- cli, per l’interfaccia testuale o grafica, 
+- service, per i servizi applicativi, 
+- domain, per le entità e le regole del dominio, 
+- repository, per l’accesso ai dati.
+
+Questa suddivisione ha il vantaggio di: 
 - rendere subito visibile la separazione delle responsabilità, 
 - dare una mappa chiara del sistema fin dai primi commit. 
 
@@ -1711,7 +1714,7 @@ Non è una tecnologia o un framework, è un modello concettuale che può essere 
   <img src="Pasted image 20260326150435.png" width="200">
 </div>
 
-**Perché esistono più stili?** I sistemi software devono soddisfare esigenze molto diverse: interattività, prestazioni, scalabilità, affidabilità, integrazione con altri sistemi, . . . Ogni stile è nato per rispondere meglio a alcuni di questi bisogni. Non esiste uno stile “migliore in assoluto”: ogni scelta comporta vantaggi e svantaggi, capire questi compromessi è parte del mestiere dell’ingegnere del software.  
+**Perché esistono più stili?** I sistemi software devono soddisfare esigenze molto diverse: interattività, prestazioni, scalabilità, affidabilità, integrazione con altri sistemi, ... Ogni stile è nato per rispondere meglio a alcuni di questi bisogni. Non esiste uno stile “migliore in assoluto”: ogni scelta comporta vantaggi e svantaggi, capire questi compromessi è parte del mestiere dell’ingegnere del software.  
 
 In questa lezione ci concentriamo su quattro stili molto diffusi: 
 1. *Layered:* organizzazione a livelli (es. presentazione, logica, dati). 
@@ -1764,9 +1767,10 @@ Ogni layer offre servizi a quello sopra e usa i servizi di quello sotto. Le dipe
 
 > [!info] Per UniManager possiamo riprendere il layering già introdotto: 
 > - CLI / UI: interazione con l’utente (comandi, menu). 
-> - Service: implementazione dei casi d’uso (iscrizione, creazione appelli, . . . ). 
+> - Service: implementazione dei casi d’uso (iscrizione, creazione appelli, ... ). 
 > - Domain: entità e regole del dominio universitario. 
-> - Repository: accesso ai dati su file o database. 
+> - Repository: accesso ai dati su file o database.
+> 
 > ![[Pasted image 20260326150653.png|200]]
 
 > [!example] Iscrizione a un appello nei layer 
@@ -1816,7 +1820,7 @@ Tipicamente:
 - *Scalabilità:*
 	- se il numero di client cresce molto, il server può diventare un collo di bottiglia. 
 - *Complessità di rete:* 
-	- bisogna gestire latenza, errori di comunicazione, autenticazione, . . . 
+	- bisogna gestire latenza, errori di comunicazione, autenticazione, ... 
 - *Dipendenza dalla connettività:* 
 	- in assenza di rete, il client può perdere funzionalità critiche. 
 - *Scelte di stato/sessione:* 
@@ -1872,7 +1876,7 @@ In questo scenario, lo stile client–server diventa il modello concettuale di r
 - *Migrazioni delicate:* 
 	- evolvere il repository richiede coordinamento tra molti moduli e finestre di rilascio ben pianificate.  
 
-In UniManager abbiamo concettualmente una base dati universitaria: studenti, corsi, appelli, iscrizioni, voti, . . . Per ora la implementiamo in modo semplice (file / strutture in memoria), ma concettualmente è un repository informativo condiviso. In una versione più evoluta: servizi diversi (es. gestione esami, reportistica, analisi statistiche) potrebbero accedere allo stesso repository.  
+In UniManager abbiamo concettualmente una base dati universitaria: studenti, corsi, appelli, iscrizioni, voti, ... Per ora la implementiamo in modo semplice (file / strutture in memoria), ma concettualmente è un repository informativo condiviso. In una versione più evoluta: servizi diversi (es. gestione esami, reportistica, analisi statistiche) potrebbero accedere allo stesso repository.  
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260326151202.png" width="200">
@@ -1885,10 +1889,9 @@ In UniManager abbiamo concettualmente una base dati universitaria: studenti, cor
 
 I servizi comunicano tra loro tramite chiamate di rete (es. API). Ogni servizio presidia una responsabilità funzionale chiara: questo riduce l’impatto dei cambiamenti e favorisce evoluzione incrementale. L’attenzione si sposta dai confini tra classi ai contratti tra servizi (endpoint, payload, versioni).  
 
-**Da client–server a service-based:** 
-- Lo stile service-based può essere visto come una evoluzione del client–server: 
-	- invece di un unico server “monolitico”, abbiamo più servizi specializzati, 
-	- ogni servizio può avere i propri dati e responsabilità.
+**Da client–server a service-based:** Lo stile service-based può essere visto come una evoluzione del client–server: 
+- invece di un unico server “monolitico”, abbiamo più servizi specializzati, 
+- ogni servizio può avere i propri dati e responsabilità.
 
 > [!example] In UniManager:
 >  - servizio StudenteService per la gestione studenti, 

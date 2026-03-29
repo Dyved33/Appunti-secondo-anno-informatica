@@ -1,3 +1,5 @@
+
+![[Recording 20260329175218.m4a]]
 ###### **Compilatori e Interpreti**
 La traduzione del codice sorgente in un linguaggio comprensibile dalla macchina può avvenire in modalità differenti (è anche possibile la traduzione da un linguaggio di programmazione a un altro):
 * **Compilatore:** Esegue la traduzione in blocco *prima* dell'esecuzione. Prende in input il **codice sorgente** e, tramite il traduttore, restituisce il **codice oggetto** (oppure delle notifiche di errore).
@@ -903,7 +905,7 @@ L’automa minimo di $L$ si ottiene nel modo seguente:
 > - pertanto $L$ NON è regolare
 
 **Dimostrazione:** 
-- per il teorema di Kleene, $L$ è accettato da un automa a stati finiti $A$
+- Per il teorema di Kleene, $L$ è accettato da un automa a stati finiti $A$
 - Sia $n$ il numero degli stati
 - Sia $w \in L$ e $|w| \geq n$. Scriviamo $w = a_1 a_2...a_k$, con $a_1,a_2,...,a_k \in A, k \geq n$ ($k$ numero di lettere, quindi abbiamo preso una parola che abbia lunghezza $\geq n$)
 - Nel grafo di $A$ c'è un cammino $q_0 \xrightarrow[]{a_1} q_1 \xrightarrow[]{a_2} ... \xrightarrow[]{a_k} q_k \in F$ (c'è un cammino da uno stato iniziale ad uno finale che ah $w$ come etichetta)
@@ -953,11 +955,7 @@ IMMAGINE
 > 6. Operatore potenza
 > 7. Numero, valore intero 2
 
-- I token sono identificati da espressioni regolari (i pattern)
-- O token hanno un ordine di priorità
-- L'analizzatore lessicale
-	1. Legge il testo e trova il più lungo prefisso del testo da analizzare che sia un lessema
-	2. Manca
+**Come si svolge l'analisi lessicale:** I token sono identificati da espressioni regolari (*pattern*) e hanno un ordine di priorità (ad esempio: if potrebbe essere sia un id di una variabile chiamata if, sia il costrutto if che conosciamo tutti). L’analizzatore lessicale quindi va ad identificare il pezzo più lungo del testo da analizzare che possa essere considerato un lessema, dopodiché restituisce il primo token che corrisponde a questo lessema. Questo token sarà quello di massima priorità, ai cui pattern posso associare il lessema.
 
 > [!example] `int interesse = 5;`
 > - il più lungo lessema iniziale è `int`, che corrisponde ai pattern dei token int e identificatore
@@ -966,24 +964,22 @@ IMMAGINE
 > - anche questo inizia con il lessema `int` ma non è il più lungo
 > - MANCA
 
-**Problema:** ho:
-- Una sequenza finita di espressioni regolari $E_1, E_2, ..., E_n$ ( i pattern)
-- Una parola $w$ (il testo da analizzare)
+Il problema dell’analisi lessicale ha come dati: 
+- una sequenza finita di pattern
+- una parola $w$ (il testo da analizzare). 
 
-Devo determinare:
-- Il più lungo prefisso $u$ di $w$ che appartenga al linguaggio denotato dall'espressione MANCA
-- MANCA
+Avendo questi dati devo determinare: 
+- il più lungo prefisso $u$ di $w$ che appartenga al linguaggio denotato dall’espressione regolare
+- il più piccolo indice $j$ tale che $u$ appartiene al linguaggio denotato (quindi devo capire qual è l’espressione regolare con cui questa parola corrisponde e, se ce n’è più di una, scegliere quella con priorità maggiore). 
 
-**Automa per l'analisi lessicale:** per ognuna delle espressioni $E_j, j = 1, ..., n$ costruiamo un'automa a stati finiti $A_j = \langle Q_j, \Sigma, \delta_j, \{i_j\}, \{f_j\} \rangle$ che accetta il linguaggio denotato da $E_j$
-Possiamo supporre che tali automi non abbiano stati comuni
-Costruiamo l'automa A che accetta il linguaggio denotato da $F = E_1 + ... + E_n$ con:
-- Gli stati, le transizioni e gli stati finali di $A_1, A_2,...,A_n$ e inoltre 
+**Automa per l'analisi lessicale:** per ognuna delle espressioni $E_j, j = 1, ..., n$ costruiamo un'automa a stati finiti $A_j = \langle Q_j, \Sigma, \delta_j, \{i_j\}, \{f_j\} \rangle$ che accetta il linguaggio denotato da $E_j$. Possiamo supporre che tali automi non abbiano stati comuni, quindi costruiamo l'automa $A$ che accetta il linguaggio denotato da $F = E_1 + ... + E_n$ con:
+- Gli stati, le transizioni e gli stati finali di $A_1, A_2,...,A_n$  
 - Un nuovo stato iniziale $i_0$
-- Delle epsilon-transizioni da $i_0$ agli stati iniziali originali degli automi $A_1, A_2,...,A_n$
+- Delle $\epsilon-$transizioni da $i_0$ agli stati iniziali originali degli automi $A_1, A_2,...,A_n$ (a differenza della costruzione vista nel teorema di Kleene, qui non aggiungiamo un nuovo stato finale perché vogliamo vedere da quali di miei n automi la parola viene accettata, quindi a quale espressione regolare corrisponde)
 
 Con la costruzione dei sottoinsiemi otteniamo un'automa deterministico $A_D = \langle P, \Sigma, \delta, q_0, F' \rangle$ che accetta il linguaggio denotato da $F$. Osserviamo che :
-- Gli stati di $A_D$ sono sotto insiemi di $Q = \{i_0\} \cup \displaystyle\bigcup_{j=1}^n Q_j$
-- Si ha che w sta nel linguaggio denotato da $E_j$ se e soltanto se $f_j \in \hat\delta(q_0,u)$
+- Gli stati di $A_D$ sono sottoinsiemi di $Q = \{i_0\} \cup \displaystyle\bigcup_{j=1}^n Q_j$
+- Si ha che $w$ sta nel linguaggio denotato da $E_j$ se e soltanto se $f_j \in \hat\delta(q_0,u)$
 
 Troviamo il più lungo prefisso $u$ di $w$ accettato da $A_D$ e il più piccolo indice $j$ tale che $f_j \in \hat\delta(q_0,u)$. Gli stati di $A_D$ sono sottoinsiemi di $Q$ tra i quali c'è $\emptyset$ che funge da 'pozzo'. L'ultimo transito da uno stato finale prima dell'ingresso nel pozzo individua il più lungo prefisso di $w$ accettato da $A_D$
 
@@ -991,7 +987,7 @@ ESEMPIO
 
 **Algoritmo:** 
 *Input:* l'automa deterministico $A_D$ e un puntatore start al test da analizzare
-*Outpu:* la massima lunghezza di un prefisso del testo accettato da $A_D$ e il token corrispondente
+*Output:* la massima lunghezza di un prefisso del testo accettato da $A_D$ e il token corrispondente
 
 PSEUDOCODICE
 

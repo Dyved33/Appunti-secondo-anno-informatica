@@ -333,7 +333,7 @@ La blockchain è un **registro digitale decentralizzato**, sicuro e immutabile, 
 - *Decentralizzazione (Registro Distribuito):* Non esiste un server centrale. Il registro è copiato e condiviso su migliaia di nodi, rendendo il sistema resistente agli attacchi.
 - *Immutabilità e Sicurezza:* Una volta che i dati sono scritti, non possono essere cancellati o modificati senza il consenso della rete, garantendo una alta sicurezza.
 - *Consenso:* Per aggiungere un nuovo blocco, la rete deve validare la transazione attraverso regole condivise (meccanismi di consenso), come il Proof of Work.
-- *Utilizzi:* Sebbene famosa per le criptovalute (es. Bitcoin) , la blockchain è usata per tracciare la filiera, gestire l'identità digitale, atti notarili e contratti intelligenti (smart contracts).
+- *Utilizzi:* Sebbene famosa per le criptovalute (es. Bitcoin), la blockchain è usata per tracciare la filiera, gestire l'identità digitale, atti notarili e contratti intelligenti (smart contracts).
 
 > [!info] Il **Proof-of-Work (PoW):**
 > è un meccanismo di consenso utilizzato nelle blockchain per confermare le transazioni e creare nuovi blocchi. I partecipanti, detti _miner_, risolvono complessi enigmi matematici usando potenza computazionale; chi vince aggiunge il blocco e riceve una ricompensa, garantendo sicurezza e prevenendo attacchi informatici. Caratteristiche principali: 
@@ -343,7 +343,7 @@ La blockchain è un **registro digitale decentralizzato**, sicuro e immutabile, 
 > - **Mining:** Il processo di risoluzione crea nuove criptovalute e convalida blocchi, come accade con Bitcoin.
 > - **Consumo Energetico:** La necessità di elevata potenza di calcolo comporta un notevole consumo di energia elettrica.
 
-**Nodi, architettura peer-to-peer e blocchi:** Nell’architettura **peer-to-peer** i nodi non sono solo “client” o solo “server”: partecipano alla propagazione delle informazioni e, a seconda del protocollo, alla validazione. In MiCA, per esempio, un nodo DLT è descritto come un dispositivo o processo che fa parte della rete e conserva una replica completa o parziale dei record delle transazioni.
+**Nodi, architettura peer-to-peer e blocchi:** Nell’architettura **peer-to-peer** i nodi non sono solo “client” o solo “server”: partecipano alla propagazione delle informazioni e, a seconda del protocollo, alla validazione. In MiCA, per esempio, un nodo DLT (**Distributed Ledger Technology**) è descritto come un dispositivo o processo che fa parte della rete e conserva una replica completa o parziale dei record delle transazioni.
 
 I blocchi sono fatti, in sostanza, di:
 - **header:** contiene elementi come hash del blocco precedente, merkle root, time, target/difficulty (nBits) e **nonce** (*number only used once*). Quest'ultima è una variabile numerica aggiunta a un blocco per trovarne l'hash valido. I miner cambiano questo numero per soddisfare la regola della *difficoulty* (consuma potenza di calcolo ma garantisce che vecchie transazioni vengano rielaborate)
@@ -353,11 +353,11 @@ I blocchi sono fatti, in sostanza, di:
 
 **Consenso:** I **meccanismi di consenso** sono l’insieme di regole con cui la rete decide quale storia delle transazioni è valida. NIST, nel suo panorama sui blockchain systems, include tra i modelli di consenso proof of work, proof of stake, proof of authority e altri modelli ancora.
 
-Nel **proof of work** la validità nasce dalla prova di calcolo; in un modello **proof of authority** la validazione è affidata a soggetti autorizzati dal protocollo o dall’ecosistema. Il punto da ricordare, per gli appunti, è che il consenso serve a evitare conflitti sulla “versione ufficiale” del registro.
+Nel **proof of work** la validità nasce dalla prova di calcolo; in un modello **proof of authority** la validazione è affidata a soggetti autorizzati dal protocollo o dall’ecosistema. In generale il consenso serve a evitare conflitti sulla “versione ufficiale” del registro.
 
 **Smart contract:**  In Italia l’art. 8-ter del d.l. 135/2018, convertito nella l. 12/2019, definisce lo **smart contract** come un programma per elaboratore che opera su tecnologie basate su registri distribuiti e la cui esecuzione vincola automaticamente due o più parti sulla base di effetti predefiniti dalle stesse. La norma collega anche la memorizzazione di un documento informatico su DLT agli effetti giuridici della validazione temporale elettronica ex art. 41 eIDAS.
 
-Quindi uno smart contract **non è semplicemente un contratto “in forma informatica”**: è un programma che esegue automaticamente alcune clausole o effetti pattuiti. La parte giuridicamente importante è che il legislatore italiano gli attribuisce rilevanza, ma a condizione che siano rispettati i requisiti previsti dalla disciplina tecnica e dall’identificazione informatica delle parti.
+<u>Quindi uno smart contract non è semplicemente un contratto: è un programma che esegue automaticamente alcune clausole o effetti pattuiti. La parte giuridicamente importante è che il legislatore italiano gli attribuisce rilevanza, ma a condizione che siano rispettati i requisiti previsti dalla disciplina tecnica e dall’identificazione informatica delle parti.</u>
 
 **Quadro dell’Unione europea: approccio a doppio binario:** L’UE ha adottato un approccio “a doppio binario”. Da un lato c’è **MiCA** (Regolamento 2023/1114), che disciplina l’offerta al pubblico, l’ammissione alla negoziazione e i prestatori di servizi su cripto-attività; dall’altro c’è il **DLT Pilot Regime** (Regolamento 2022/858), pensato per le infrastrutture di mercato che usano DLT per strumenti finanziari tokenizzati.
 
@@ -367,6 +367,4 @@ Il Pilot Regime, invece, non riguarda tutte le cripto-attività: serve soprattut
 
 MiCA si applica in modo generale dal **30 dicembre 2024**; inoltre prevede un regime transitorio per alcuni prestatori di servizi già operativi prima di quella data, che possono continuare fino al **1° luglio 2026** o fino alla concessione/rifiuto dell’autorizzazione, se la disciplina nazionale lo consente.
 
-**In Italia:** In Italia, oltre alla definizione di smart contract, la norma sulle DLT insiste molto sulla **tracciabilità**: il registro deve essere condiviso, distribuito, replicabile, accessibile simultaneamente e architetturalmente decentralizzato su basi crittografiche, con dati verificabili dai partecipanti e non alterabili. Questo spiega perché nelle tue note “tracciabilità”, “immutabilità” e “sicurezza crittografica” sono caratteristiche centrali.
-
-Un punto utile da aggiungere è che, se nella blockchain finiscono **dati personali**, entrano in gioco problemi GDPR molto delicati. L’EDPB nel 2025 ha adottato linee guida proprio sul trattamento dei dati personali tramite blockchain, riconoscendo che architetture diverse hanno implicazioni diverse per ruoli, responsabilità e conformità.
+**In Italia:** In Italia, oltre alla definizione di smart contract, la norma sulle DLT insiste molto sulla **tracciabilità**: il registro deve essere condiviso, distribuito, replicabile, accessibile simultaneamente e architetturalmente decentralizzato su basi crittografiche, con dati verificabili dai partecipanti e non alterabili. Un punto utile da aggiungere è che, se nella blockchain finiscono **dati personali**, entrano in gioco problemi GDPR molto delicati. L’EDPB nel 2025 ha adottato linee guida proprio sul trattamento dei dati personali tramite blockchain, riconoscendo che architetture diverse hanno implicazioni diverse per ruoli, responsabilità e conformità.
