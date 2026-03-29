@@ -925,9 +925,20 @@ IMMAGINE
 
 **Perché analisi lessicale e sintattica devono essere separate?** E’ importante separare l’analisi lessicale da quella sintattica perché si ha un’enorme semplificazione nella progettazione del compilatore, una maggiore efficienza e portabilità (perché cambiando sistema, cambia la gestione dell’input) rispetto a che se fossero svolte insieme.
 
-- *Token:* è un simbolo astratto che rappresenta un'unità lessicale (es.una parola chiave, un identificatore, una costante numerica,...). I simboli processati dal parser sono i token. A ogni token viene associato un pattern
-- *Lessema:* è una sequenza di caratteri di un codice sergente associato a un token. L'analizzatore lessicale identifica i lessemi come istanze del token a cui sono associati
-- *Pattern:* è una descrizione della forma che i lessemi possono avere per poter essere associati ad un determinato token. In pratica si tratta di un'espressione regolare
+- *Token:* è un simbolo astratto che rappresenta un'unità lessicale (es.una parola chiave, un identificatore, una costante numerica,...). I simboli processati dal parser sono i token. A ogni token viene associato un pattern (classe/simbolo che rappresenta il ruolo del lessema es. KEyWORD, IDENTIFIER,...)
+- *Lessema:* è una sequenza di caratteri di un codice sergente associato a un token. L'analizzatore lessicale identifica i lessemi come istanze del token a cui sono associati (stringa reale del programma)
+- *Pattern:* è una descrizione della forma che i lessemi possono avere per poter essere associati ad un determinato token. In pratica si tratta di un'espressione regolare (Il pattern è la regola che descrive tutti i lessemi validi per un certo token.)
+
+Quindi il processo che viene seguito è: pattern $\rightarrow$ genera/riconosce $\rightarrow$ lessemi $\rightarrow$ classificati come $\rightarrow$ token. Preso come esempio y = x + 42;
+
+| Lessema | Token      | Pattern  |
+| ------- | ---------- | -------- |
+| `y`     | IDENTIFIER | Letter   |
+| `=`     | ASSIGN     | `=`      |
+| `x`     | IDENTIFIER | Letter   |
+| `+`     | PLUS       | `+`      |
+| 42      | NUMBER     | `digit+` |
+| `;`     | SEMICOLON  | `;`      |
 
 **Attributi del token:** se più di un lessema è associato al medesimo pattern è necessario tenere traccia di ulteriori informazioni sul particolare lessema letto dall'analizzatore lessicale. Tali informazioni sono registrate nella *tabella dei simboli*
 
