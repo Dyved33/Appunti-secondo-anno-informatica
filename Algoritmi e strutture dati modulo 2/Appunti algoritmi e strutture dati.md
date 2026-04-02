@@ -662,3 +662,236 @@ Ogni radice scelta dal secondo DFS può raggiungere solo:
 - I vertici nei SCC già visitati nel secondo DFS
 
 Visitando i vertici di $(G^T)^{SCC}$ in ordine inverso rispetto all’ordinamento topologico
+###### Disjoint-set data structures
+Le strutture dati per insiemi disgiunti (o anche union find) mantengono la collezione $\mathscr{S} = \{S_1,…,S_k\}$ di insiemi disgiunti e dinamici. Ogni set è identificato da un rappresentante, il quale è un qualche membro dell'insieme. Non importa quale membro sia il rappresentante, fintanto che se si chiede due volte quale sia il rappresentate si ottenga la stessa risposta (senza cambiare il set)
+
+**Operazioni:** 
+- Make-Set(X): crea un nuovo set $S_i = \{x\}$  e aggiunge $S_i$ a $\mathscr{S}$
+- Union(x,y): se $x \in S_x, y \in S_y$, allora $\mathscr{S} = \mathscr{S} - S_x - S_y \cup \{S_x \cup S_y\}$ 
+	- Il rappresentante di ogni nuovo insieme è un membro di $S_x \cup S_y$ (spesso il rappresentante o di $S_x$ o di $S_y$)
+	- Distrugge $S_x$ e $S_y$ (siccome gli insiemi devono essere disgiunti)
+- Find-Set(x): ritorna il rappresentante del set contenente x
+
+L'analisi viene fatta in termini di:
+- $n$ = numero di elementi = numero di operazioni Make-Set
+- $m$ = numero totale di operazioni
+- Siccome Make_Set conta fino al numero totale di operazioni, $m \geq n$
+- Si possono avere al massimo $n-1$ operazioni Union, dato che rimane un solo insieme 
+- Si assuma che le prime $n$ operazioni sono Make-Set (utile nell'analisi ma non necessario)
+
+Per quanto riguarda l'applicazione ho dei componenti dinamici e connessi. Per un grafo $G = (V,E)$ i vertici $u,v$ sono gli stessi componenti connessi se e solo se c'è un cammino tra di loro (i componenti connessi suddividono i vertici in classi di equivalenza)
+
+```Pseudocode
+Connected-Components(G)
+	for ogni vertice v in G.V
+		Make-Set(v)
+	for ogni arco (u,v) in G.E
+		if Find-Set(u) != Find-Set(v)
+			Union(u,v)
+			
+Same-Components(u,v)
+if Find-Set(u) == Find-Set(v)
+	return TRUE
+else 
+	return FALSE
+```
+
+> [!info] Nota:
+> Se vengono implementate delle componenti connesse
+> - ogni vertice necessita di un gestore per il proprio oggetto nella struttura dati a insiemi disgiunti
+> - ogni oggetto nella struttura dati a insiemi disgiunti necessita di un gestore per il proprio vertice
+
+**Rappresentazione delle linked list:** ogni insieme è una linked list rappresentata da un oggetto con attributi:
+- *Testa:* il primo elemento nella lista, assumendo che sia il rappresentante dell'insieme
+- *Coda:* l'ultimo elemento nella lista
+
+Gli oggetti potrebbero apparire nella lista in qualsiasi ordine. Inoltre ogni oggetto della lista ha come attributi:
+- Il membro dell'insieme
+- Il puntatore all'oggetto insieme
+- Next
+
+**Operazioni linked lists:**
+- Make-Set: crea una lista di singleton
+- Find-Set: segue il puntatore fino all'oggetto lista e poi segue il puntatore testa fino al rappresentante
+- Union: ci sono 2 modi per farla
+1. Appende la lista $y$ alla fine della lista $x$ e usa il puntatore coda di $x$ per trovare la fine. Quest'operazione necessita di aggiornare il puntatore all'oggetto insieme per ogni nodo nella lista $y$. Chiaramente se appendo una lista grande su una lista piccola ci può volere molto tempo ($\Theta(n^2)$)
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260402123502.png" width="200">
+</div>
+
+2. *Weighted-union heuristic:* appende sempre la lista più piccola alla lista più grande
+
+**Teorema:** con l'unione pesata una sequenza di $m$ operazioni su $n$ elementi richiede $O(m + n\ln(n))$ di tempo
+
+**Dimostrazione:** sia Make-Set che Find-Set richiedono $O(1)$,  quante volte ogni rappresentante dell'oggetto può essere aggiornato? Deve essere ogni volta nel set più piccolo. Perciò ogni rappresentante viene aggiornato $\leq \ln((n))$ volte
+
+**Foresta disjoint-set:** si tratta di una foresta di alberi
+- Un albero per ogni set e la radice ne è il rappresentante
+- Ogni nodo punta solo al proprio genitore
+- Make-Set: crea un albero con un singolo nodo
+- Union: fa si che una radice sia figlia dell'altra
+- Find-Set: segue i puntatori fino alla radice
+
+Non è molto buono dato che può avere  una catena lineare di nodi
+
+<div style="display: flex; justify-content: center; gap: 10px;">
+  <img src="Pasted image 20260402125220.png" style="width: 60%; height: auto;">
+  <img src="Pasted image 20260402125251.png" style="width: 30%; height: auto;">
+</div>
+
+**Great heuristics:** 
+- *Path compression:* find path = i nodi visitati durante Find-Set nel tragitto fino alla radice. Rende tutti i nodi nella ricerca del percorso diretta al figlio della radice
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260402125937.png" width="200">
+</div>
+
+- *Union by rank:* rende la radice dell'albero più piccolo (con meno nodi) un figlio della radice dell'albero più grande. Non utilizza la dimensione, ma il grado (che è un upper bound sull'altezza del nodo). Rende la radice con il grado più piccolo in un figlio della radice con un grado più grande
+
+```Pseudocode
+Make-Set
+	x.p = x
+	x.rank = 0
+
+Union(x,y)
+	Link(Find-Set(x),Find-Set(y))
+	
+Link(x,y)
+	if x.rank > y.rank
+		y.p = x
+	else x.p = y
+		if x.rank == y.rank
+			y. rank = y.rank+1
+
+Find-Set(x)
+	if x != x.p //non è la radice
+		x.p = Find-Set(x.p) //la radice diventa il genitore
+	return x.p	//ritorna la radice
+```
+
+**Running time:** se si usano entrambe le union (per grado e compressione del cammino), $O(m\alpha(n))$. $\alpha(n)$ è una funzione di crescita molto lenta. I limite è stretto, esiste una sequenza di operazioni che richiede $\Omega(m\alpha(n))$ in tempo
+###### Minimum spanning trees
+Problema ipotetico:
+- Una città ha un set di strade e un set di case
+- Una strada connette 2 sole case
+- Un a strada che connette le case $u$ e $v$ ha un costo di riparazione $w(u,v)$
+
+L'obiettivo è di riparare abbastanza strade in modo da:
+1. Tutti rimangano connessi (ogni casa può essere raggiunta da ogni altra casa)
+2. Il costo di riparazione sia il minimo possibile
+
+Modelliamo un grafo non ordinato $G = (V,E)$ in cui ogni arco $(u,v) \in E$ abbia un peso $w(u,v)$. Devo trovare un $T \subseteq E$ tale che:
+1. $T$ connetta tutti i vertici ($T$ è uno spanning tree)
+2. $w(T) = \sum\limits_{(u,v)\in T} w(u,v)$ sia minimizzato
+
+Uno spanning tree il cui peso sia minimo (tra tutti gli spanning trees) è chiamato (minimum spanning tree) o MST
+
+> [!example] 
+> ![[Pasted image 20260401180919.png|200]]
+> 
+> In questo esempio c'è più di un MST. Ad esempio se rimpiazzassi l'arco $(e,f)$ con l'arco $(c,e$ avrei un MST diverso con lo stesso peso
+
+**Proprietà di un MST:**
+- Ha $|V| -1$ archi
+- Non ha cicli
+- Potrebbe essere unico
+
+**Costruzione:** si costruisce un set $A$ di archi che inizialmente è vuoto. Man mano che vengono aggiunti archi ad $A$, si mantiene un'invariante del ciclo: $A$ è il sottoinsieme di un qualche MST. Si possono aggiungere solo archi che mantengono l'invariante. Se $A$ è un sottoinsieme di un MST, un arco $(u,v)$ è sicuro per $A$ se e solo se $A \cup \{(u,v)\}$ è a sua volta un sottoinsieme di un qualche MST 
+
+**Algoritmo generico MST:**
+```
+Generic-MST(G,w)
+	A = 0 //è vuoto all'inizio
+	while A non forma uno spanning tree
+		trova un arco (u,v) che sia sicuro per A
+		A = A U {(u,v)}
+	return A		
+```
+
+Per mostrare che questo algoritmo funziona usiamo il loop invariant:
+- *Inizializzazione:* il set vuoto soddisfa il loop invariant
+- *Mantenimento:* siccome solo archi validi sono aggiunti, $A$ rimane un sottoinsieme di un qualche MST
+- *Terminazione:* il loop deve terminare quando ha considerato tutti gli archi. Tutti gli archi inseriti dentro ad $A$ sono parte di un MST. Alla fine $A$ è uno spanning tree che è anche un MST
+
+**Come si trova un arco sicuro?** guardando all'esempio l'arco $(c,f)$ ha il peso minore di ogni altro arco nel grafo. È sicuro per $A = \emptyset$? Sia $S \subset V$ un sottoinsieme di vertici che include $c$ ma non $f (f \in V\backslash S)$, è giusto scegliere l'arco con il peso minimo?
+
+**Definizioni:**
+- Un **taglio** $S, V \backslash S$ è una partizione di vertici negli insiemi disgiunti $V$ e $V \backslash S$ 
+- L'arco $(u,v) \in E$  attraversa il taglio $S, V \backslash S$ se un endpoint è in $S$ e l'altro è in $V \backslash S$
+- Un taglio **rispetta** $A$ se e solo se nessun arco di $A$ attraversa il taglio
+- Un arco è un **light edge** attraverso un taglio se e solo se il suo peso è minimo rispetto a tutti gli altri archi che attraversano il taglio. Dato un taglio, ci possono essere >1 light edge attraverso questo 
+
+**Teorema:** sia $A$ un sottoinsieme di un qualche MST, $S, V \backslash S$ sia un taglio che rispetta $A$ e sia $(u,v)$ un light edge attraverso $S, V \backslash S \implies$ $(u,v)$ è sicuro per $A$
+
+**Dimostrazione:** <div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260401184448.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  Sia (S,V\S) una partizione rispetto ad A, un sottoinsieme di un qualche MST T. Tutti gli archi disegnati qui sono parte di T tranne (u,v), il light edge del taglio. Se (u,v) non è nell'albero, rimpiazzando (x,y) con (u,v) da un nuovo spanning tree con un costo minore, una contraddizione!
+  </div>
+</div>
+
+**Algoritmo di Kruskal:** $G = (V,E)$ è un grafo connesso, non ordinato e pesato. $w: E \rightarrow \mathbb{R}$
+- Inizia con ogni vertice che è un suo componente
+- Fonde ripetutamente due componenti in uno scegliendo il light edge che li connette (per esempio il light edge attraverso il taglio tra di loro)
+- scannerizza l'insieme di archi in ordine crescente in base al peso
+- Usa una struttura dati basata su un insieme disgiunto  per determinare quale arco connetta i vertici in componenti diversi
+
+```Pseudocode
+MST-Kruskal(G,w)
+	A = 0
+	for ogni vertice v in G.V
+		Make_Set(v)
+	crea una lista di archi in G.E
+	ordina la lista di archi in ordine crescente in base al peso w
+	for ogni arco (u,v) preso dalla lista ordinata 
+		if Find_Set(u) != Find_Set(v)
+			A = A U {(u,v)}
+			Union(u,v)
+	return A
+```
+
+> [!example] Vediamo l'algoritmo di Kruskal in questo grafo: 
+> ![[Pasted image 20260401192133.png|200]]
+> - archi accettati: $\{(c,f),(g,i),(e,f),(d,h),(f,h),(b,d),(d,g),(a,b)\}$
+> - archi rifiutati: $\{(c,e),(e,d),(b,c),(g,h)\}$
+
+**Analisi:** 
+- Inizializzazione di $A$: $O(1)$
+- Primo ciclo for: $|V|$ volte Make_Set
+- Ordinare $E$: $O(E \ln(E))$ 
+- Secondo ciclo for: $O(E)$ volte Find_Set e Union
+
+Assumendo che l'implementazione di una struttura dati a insiemi disgiunti (disjoint-set), che usa l'unione in base al grado e compressione del percorso: $O((V+E)\alpha(V))+O(E \ln(E))$. 
+- Siccome $G$ è connesso, $|E| \geq |V|-1 \implies O(E \alpha(V))+O(E \ln(E))$ 
+- $\alpha(|V|) = O(\ln(V)) = O(\ln(E))$
+- Per questo motivo il  tempo totale è $O(E \ln(E))$
+- $E \leq |V|^2 \implies \lg|E| = O(2 \ln(V)) = O(\ln(V))$ 
+- Perciò il tempo è $O(E\ln(V))$ (se gli archi sono già ordinati $O(E\alpha(V))$ che è quasi lineare)
+
+**Algoritmo di Prim:**
+Costruisce un albero, in questo modo $A$ è sempre un albero e inizia da una "radice" arbitraria $r$. Ad ogni passo si trova un light edge che connette $A$ ad un vertice isolato. Un arco, in questo modo, deve essere sicuro per $A$ e può essere aggiunto.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260402093655.png" width="200"> <img src="Pasted image 20260402093834.png" width="200">  
+</div>
+
+**Come trovo un light edge?** devo usare una coda di priorità:
+- Ogni oggetto è un vertice non presente in $A$
+- $v.key$ è il peso minimo di ogni arco che connette $v$ ad un vertice in $A$. Se non esiste tale arco allora $v.key = \infty$ 
+- $v.\pi$ è il genitore di $v$ in $A$
+- Bisogna mantenere $A$ implicitamente come $A = \{(v,v.\pi) : v \in V - \{r\} - Q\}$ 
+- Una volta completato, $Q$ è vuoto e il MST è $A = \{(v,v.\pi) : v \in V - \{r\}\}$ 
+
+> [!example] Algoritmo di Prim in questo grafo:
+> ![[Pasted image 20260402095340.png|200]]
+
+**Analisi:** dipende da come la coda di priorità viene implementata. Supponendo che $Q$ sia un binary heap:
+- Inizializzare $Q$ e il primo ciclo for: $O(V\ln(V))$
+- Diminuire la chiave di $r$: $O(\ln(V))$ 
+- Ciclo while: $|V|$ chiamate di Extract_Min $\implies O(V\ln(V)) \leq |E|$ chiamate di Decrease_Key $\implies O(E \ln(V))$
+- Totale: $O(E \ln(V))$
+
+Si supponga che Decrease_Key possa richiedere $O(1)$ di tempo, allora $\leq |E|$ chiamate di Decrease_Key richiedono $O(E)$ in tempo tutte insieme $\implies$ tempo totale diventa $O(V\ln(V) + E)$ 

@@ -1985,3 +1985,376 @@ Alcune domande utili:
 Sintesi per UniManager in questa fase: 
 - base layered con repository centrale dei dati,
 - client–server e service-based come possibili evoluzioni successive. 
+
+###### Principi SOLID
+Finora ci siamo concentrati su: 
+- principi architetturali generali (modularità, separazione delle responsabilità, layering), 
+- stili architetturali (layered, client–server, repository, service-based). 
+
+Oggi scendiamo di livello: come progettare le classi e le loro dipendenze, in modo coerente con l’architettura scelta. L'obiettivo è quello di collegare le decisioni locali (sulle classi) alla struttura globale del sistema
+
+**Perché servono principi di design?** Il codice non deve solo funzionare oggi: deve poter evolvere senza degradarsi. Quando il progetto cresce, emergono problemi ricorrenti: 
+- classi con troppe responsabilità e confini poco chiari; 
+- dipendenze rigide che propagano gli effetti di ogni modifica; 
+- regressioni frequenti e test costosi da mantenere. 
+
+In queste condizioni, il costo principale non è scrivere nuova logica, ma capire e cambiare quella esistente. I principi di design (come *SOLID*) servono come criteri operativi per ridurre accoppiamento, aumentare coesione e migliorare testabilità. 
+
+**Che cos’è SOLID?** SOLID è un acronimo che indica cinque principi: 
+1. Single Responsibility Principle (SRP) - principio di responsabilità singola 
+2. Open/Closed Principle (OCP) - principio aperto/chiuso 
+3. Liskov Substitution Principle (LSP) - principio di sostituzione di Liskov 
+4. Interface Segregation Principle (ISP) - principio di segregazione delle interfacce 
+5. Dependency Inversion Principle (DIP) - principio di inversione delle dipendenze 
+
+Non sono leggi assolute, ma linee guida per prendere decisioni migliori. 
+
+**SRP — Single Responsibility Principle:** *Definizione:* Una classe dovrebbe avere un solo motivo per cambiare. Per “motivo per cambiare” si intende una famiglia omogenea di modifiche (stesso tipo di responsabilità). Quando una classe mescola responsabilità diverse: 
+- aumenta l’accoppiamento interno; 
+- crescono effetti collaterali e regressioni; 
+- test e manutenzione diventano più costosi. 
+
+> [!example] Esempio in UniManager: 
+> - una classe che contiene insieme regole d’esame, persistenza e messaggi UI viola SRP; 
+> - queste responsabilità vanno separate in componenti distinti
+
+In UniManager conviene distinguere almeno queste responsabilità: 
+- business: regole del dominio (vincoli su appelli, prerequisiti, esiti); 
+- persistenza: lettura/scrittura su file o database; 
+- presentazione: messaggi verso CLI/UI e formati di output; 
+- cross-cutting: log, audit, monitoraggio. 
+
+Criterio pratico per rilevare una violazione SRP: “quante ragioni indipendenti ho per modificare questa classe?”. Se la risposta è più di una, serve separare. L'obiettivo è quello di avere classi piccole ma coese, con confini chiari e test più mirati.  
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260401162605.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  GestoreEsami mescola: 
+	  <li> business (regole sugli appelli), </li>
+	  <li> persistenza (salvataggio su file), </li>
+	  <li> presentazione (stampa su console). </li>
+  Cambia il formato di salvataggio? ⇒ modifico GestoreEsami. Cambia il modo di comunicare con l’utente? ⇒ modifico ancora GestoreEsami. Risultato: classe fragile, difficile da testare e da capire.
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260401162702.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  <b>Prima: </b>
+  <li>UI → GestoreEsami (regole + salvataggio su file + stampa).</li>
+  <li> Un’unica classe con responsabilità miste (business, persistenza, presentazione). </li>
+  <b>Dopo: </b>
+  <li> UI → ServizioEsami (solo regole di business), </li>
+  <li> ServizioEsami delega a ArchivioEsamiSuFile la persistenza, </li>
+  <li> la UI (CLI) si occupa dei messaggi verso l’utente (stampe, errori, conferme). </li>
+  <b>Effetti:</b> 
+  <li> ogni classe ha un motivo principale per cambiare, </li>
+  <li> il comportamento si capisce per “blocchi” separati, </li>
+  <li> il design è pronto per introdurre OCP e DIP.</li>
+  </div>
+</div>
+
+**OCP — Open/Closed Principle:** *Definizione:* Il software dovrebbe essere aperto all’estensione, ma chiuso alla modifica. Interpretazione operativa: 
+- nuovo comportamento = aggiungere nuove classi/composizioni; 
+- codice stabile = evitare modifiche continue agli stessi metodi centrali. 
+
+OCP non significa “mai modificare nulla”, ma ridurre le modifiche invasive nelle parti già consolidate.
+
+Esempio in UniManager: • aggiungere un nuovo criterio di ordinamento senza riscrivere ServizioEsami.  
+
+OCP nasce a causa di un problema ricorrente: • il requisito resta lo stesso, ma cambiano le varianti (nuovi casi, nuove regole, nuove modalità). Se ogni variante richiede di riaprire lo stesso componente centrale: 
+- aumenta il rischio di regressioni; 
+- i test da rieseguire crescono a ogni modifica; 
+- quel componente diventa un collo di bottiglia del team. 
+
+OCP nasce per gestire la variabilità in modo più stabile: 
+- la variabilità va isolata in estensioni dedicate; 
+- il nucleo resta stabile e riusabile. 
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260401163352.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+Metodo "monolitico" con tre comportamenti diversi. Ogni nuovo criterio richiede di: 
+<li>modificare ServizioEsami,</li>
+<li>aggiungere un nuovo blocco if/else. </li>
+Questo viola OCP: 
+<li>il codice non è chiuso alla modifica,</li>
+<li>cresce nel tempo e diventa fragile.</li>
+La logica di ordinamento è tutta concentrata qui, difficile da testare in isolamento. 
+  </div>
+</div>
+
+Perché questa versione viola OCP? Ogni nuovo criterio di ordinamento richiede: 
+- di modificare ServizioEsami, 
+- di aggiungere un altro blocco if/else, 
+- di rischiare di rompere casi già funzionanti. 
+
+Criterio diagnostico: se una nuova variante obbliga a riaprire sempre lo stesso metodo, il design non è OCP. Il metodo cresce continuamente: code smell di variabilità concentrata. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260401163939.png" width="200">
+</div>
+
+Separiamo il criterio di ordinamento dal servizio. OrdinatoreAppelli descrive l’operazione in astratto. Ogni criterio (per data, per corso, per iscritti, . . . ) diventa: 
+- una classe separata, 
+- aggiungibile senza modificare codice esistente. 
+
+ServizioEsami non cambia più:
+- riceve un ordinatore dall’esterno, 
+- lo usa senza sapere come funziona. 
+
+Questo rispetta pienamente OCP: 
+- aperto a nuovi criteri: basta aggiungere una classe; 
+- chiuso alle modifiche: nessun if/else da aggiornare.  
+
+Condizioni operative: La soluzione resta OCP solo se il punto di estensione è stabile: 
+- interfaccia chiara (OrdinatoreAppelli), 
+- servizio dipendente dall’astrazione, non dai criteri concreti. 
+
+Per introdurre una nuova variante: 
+- si aggiunge una classe (OrdinaPer...), 
+- si seleziona il criterio in composizione/iniezione, 
+- ServizioEsami resta invariato. 
+
+Checklist rapida OCP: 
+- una nuova variante richiede solo codice nuovo? 
+- i test esistenti restano validi senza riscritture massive? 
+- il comportamento variabile è confinato in componenti dedicati?  
+
+**LSP — Liskov Substitution Principle:** • *Definizione:* Le sottoclassi dovrebbero poter sostituire le superclassi senza cambiare il comportamento atteso del programma. In pratica: 
+- il codice client deve poter usare la sottoclasse al posto della superclasse senza accorgersene; 
+- stessa chiamata, stesso significato, stesso tipo di esito. 
+
+Segnali tipici di violazione: 
+- la sottoclasse rifiuta casi che la superclasse accetta;
+- la sottoclasse introduce errori/eccezioni inattese; 
+- il client deve aggiungere controlli sul tipo concreto per evitare bug.  
+
+In molti sistemi OO usiamo ereditarietà e polimorfismo per riuso. Senza LSP, il polimorfismo diventa fragile: 
+- il chiamante si aspetta un comportamento della superclasse, 
+- alcune sottoclassi rompono quelle attese. 
+
+Effetti pratici: 
+- if speciali per distinguere sottoclassi, 
+- bug difficili da vedere in revisione, 
+- test incompleti perché dipendono dal tipo concreto.  
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260401164427.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+La superclasse promette un contratto semplice: 
+<li>input valido, </li>
+<li>output booleano. </li>
+La sottoclasse introduce un comportamento incompatibile: lancia eccezioni inattese. Un chiamante polimorfico può rompersi pur rispettando il contratto della base.  
+  </div>
+</div>
+
+Perché questa versione viola LSP? La sottoclasse VerificatoreSoloInCorso restringe il contratto: 
+- aggiunge una precondizione implicita (appello aperto), 
+- cambia la modalità di errore (eccezione invece di false). 
+
+Chi usa il tipo base non è più protetto: serve conoscere il tipo concreto per evitare crash. Se serve un comportamento diverso, è meglio modellare una strategia, non una sottoclasse incompatibile. 
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260401164800.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+Tutte le implementazioni rispettano lo stesso contratto: 
+<li>nessuna eccezione inattesa, </li>
+<li>risultato sempre booleano. </li>
+Le varianti cambiano la regola, non il tipo di comportamento osservabile. Il chiamante resta stabile e sostituibile. 
+  </div>
+</div>
+
+La soluzione resta LSP solo se il contratto è uniforme: 
+- stessi input ammessi (niente precondizioni più forti nelle sottoclassi), 
+- stesso tipo di output/errore osservabile dal client. 
+
+Le varianti devono cambiare la regola, non il significato del comportamento atteso. Checklist rapida LSP: 
+- il client funziona uguale con qualunque implementazione? 
+- servono if sul tipo concreto per evitare crash? 
+- una sottoclasse introduce eccezioni o vincoli non previsti?  
+
+**ISP — Interface Segregation Principle:** • *Definizione:* È meglio avere più interfacce piccole e specifiche che un’unica interfaccia “gigante” che fa di tutto. In pratica: 
+- ogni client dovrebbe vedere solo le operazioni del proprio ruolo; 
+- le funzionalità non pertinenti vanno in interfacce separate. 
+
+Violazioni tipiche: 
+- interfacce con molti metodi opzionali, 
+- classi client che devono implementare metodi “vuoti” o fittizi.  
+
+Problema ricorrente: 
+- un’unica interfaccia viene usata da ruoli diversi (studente, docente, segreteria), 
+- col tempo accumula metodi eterogenei. 
+
+Effetti pratici: 
+- i client dipendono da operazioni che non usano; 
+- compaiono metodi vuoti o UnsupportedOperationException; 
+- una modifica locale impatta molti componenti non coinvolti. 
+
+ISP nasce per separare le interfacce per ruolo/scenario e ridurre l’accoppiamento inutile.  
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260401165152.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+ClientStudente dipende da metodi solo docenti/segreteria. Implementa metodi non pertinenti con eccezioni fittizie. Ogni cambiamento dell’interfaccia impatta tutti i client.
+  </div>
+</div>
+
+La violazione nasce da un problema di modellazione: PortaleDidattico mescola responsabilità di ruoli diversi in un unico contratto. Effetto sui client: 
+- ogni client dipende anche da metodi che non dovrebbe conoscere; 
+- compaiono implementazioni fittizie (UnsupportedOperationException). 
+
+Conseguenza pratica: modifiche pensate per un ruolo impattano anche client di altri ruoli. Correzione: separare l’interfaccia per responsabilità funzionali (Studente, Docente, Segreteria).  
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260401165415.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+Ogni client dipende solo da ciò che usa davvero. • I contratti sono più piccoli e chiari. • Le evoluzioni su un ruolo non forzano modifiche sugli altri.
+  </div>
+</div> 
+
+La soluzione resta ISP se le interfacce sono coerenti con i ruoli: 
+- interfacce distinte per Studente, Docente, Segreteria; 
+- ogni client implementa solo metodi pertinenti. 
+
+Quando aggiungi una funzionalità: 
+- modifichi solo l’interfaccia del ruolo coinvolto; 
+- eviti impatti trasversali sui client non interessati. 
+
+Checklist rapida ISP: 
+- compaiono metodi vuoti o UnsupportedOperationException? 
+- un client dipende da operazioni che non usa? 
+- una modifica locale forza cambi in client di altri ruoli
+
+**DIP — Dependency Inversion Principle:** *Definizione:* I moduli di alto livello e quelli di basso livello dovrebbero dipendere da astrazioni; i dettagli concreti dovrebbero dipendere da tali astrazioni. In pratica: 
+- alto livello = logica applicativa/business, più astratta (es. ServizioEsami); 
+- basso livello = dettagli tecnici, più concreti (es. ArchivioEsamiSuFile); 
+- entrambi si collegano tramite un’astrazione comune (es. ArchivioEsami). 
+
+Effetto: il business resta stabile anche se cambiano tecnologie e componenti infrastrutturali.  
+
+Problema ricorrente: 
+- i servizi applicativi creano direttamente classi infrastrutturali (new Archivio..., new ClientHttp...); 
+- quindi il livello alto dipende direttamente dal livello basso. 
+
+Effetti pratici: 
+- cambiare tecnologia richiede modifiche nel business; 
+- i test diventano lenti e fragili perché dipendono da risorse reali; 
+- cresce l’accoppiamento tra livelli che dovrebbero restare separati. 
+
+DIP nasce per invertire questa dipendenza: 
+- il business dipende da interfacce stabili, 
+- i dettagli concreti si agganciano a quelle interfacce.  
+
+Mappa dei ruoli (in UniManager): 
+- alto livello: ServizioEsami (regole applicative); 
+- basso livello: ArchivioEsamiSuFile (I/O su file); 
+- astrazione: ArchivioEsami. 
+
+Regola DIP: ServizioEsami deve dipendere da ArchivioEsami, non da ArchivioEsamiSuFile. Se dipende dal dettaglio concreto: cambiare persistenza (file, DB, memoria) richiede modifiche nel servizio. DIP mantiene pulito il confine tra business e infrastruttura.  
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260401170554.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+ServizioEsami dipende da ArchivioEsamiSuFile, una classe concreta. La scelta del file ("esami.txt") è codificata dentro il servizio. Problemi: 
+<li>per usare un database devo modificare ServizioEsami;</li>
+<li>per fare test devo scrivere davvero sul file;</li>
+<li>la logica di business è legata a un dettaglio di infrastruttura.</li>
+Qui DIP è violato: un modulo di alto livello dipende da un modulo di basso livello.
+  </div>
+</div> 
+
+Nel nostro esempio: 
+- alto livello: ServizioEsami; 
+- basso livello: ArchivioEsamiSuFile. 
+
+Violazione: l’alto livello dipende direttamente dal basso livello concreto. Il servizio crea direttamente la dipendenza: new ArchivioEsamiSuFile(...) dentro il costruttore. Effetto: ogni variazione infrastrutturale entra nel codice business. Criterio diagnostico: se per cambiare tecnologia devo modificare un servizio di dominio/applicazione, DIP non è rispettato.  
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260401171025.png" style="width: 100%; border-radius: 8px;">
+    <img src="Pasted image 20260401171107.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+Spostiamo l’interfaccia ArchivioEsami nel dominio (modulo più stabile). ServizioEsami dipende solo da ArchivioEsami, non da classi concrete. Le implementazioni concrete (SuFile, SuDb, InMemoria, . . . ) dipendono dall’astrazione, non il contrario. Abbiamo invertito la dipendenza: 
+<li>il modulo di alto livello (service) non conosce più i dettagli di persistenza;</li>
+<li>i dettagli dipendono dall’astrazione comune.</li>
+  </div>
+</div> 
+
+La soluzione resta DIP se: 
+- il servizio dipende da ArchivioEsami (astrazione), non da ArchivioEsamiSuFile; 
+- la scelta dell’implementazione avviene all’esterno (composizione/iniezione). 
+
+Impatto diretto sui test: 
+- si può usare un’implementazione finta: 
+	- ArchivioEsamiInMemoria, 
+	- oppure un mock creato con un framework di test. 
+- i test non richiedono file reali, database o configurazioni esterne. 
+
+Checklist rapida DIP: 
+- il servizio conosce classi concrete infrastrutturali? 
+- la dipendenza concreta viene istanziata dentro il servizio? 
+- è possibile testare il servizio senza risorse esterne?  
+
+**I principi SOLID: come lavorano insieme:** 
+- **SRP:** mantiene coese le classi (una responsabilità principale per classe). 
+- **OCP:** consente nuove varianti senza modificare continuamente il nucleo stabile. 
+- **LSP:** rende affidabile la sostituzione tra superclasse e sottoclasse. 
+- **ISP:** evita interfacce troppo ampie e dipendenze inutili lato client. 
+- **DIP:** separa business e infrastruttura tramite astrazioni. 
+
+Insieme, questi principi supportano: 
+- manutenibilità, 
+- estendibilità, 
+- testabilità.  
+
+Applicare SOLID non significa: 
+- creare mille micro-classi inutili, 
+- astrarre tutto “per principio”. 
+
+Significa: 
+- riconoscere code smell (classi sovraccariche, dipendenze rigide), 
+- avere strumenti concettuali per migliorare il design, 
+- trovare un equilibrio tra semplicità e flessibilità.  
+
+**SOLID e refactoring:** Spesso non si progetta “perfettamente” al primo colpo: SOLID aiuta a migliorare in modo incrementale. Workflow tipico di refactoring guidato da SOLID: 
+- individuare code smell e punti di accoppiamento eccessivo; 
+- chiarire responsabilità (SRP) e interfacce (ISP); 
+- isolare variabilità (OCP) e dipendenze infrastrutturali (DIP); 
+- verificare sostituibilità corretta tra tipi correlati (LSP). 
+
+Obiettivo: migliorare il design senza riscrivere tutto da zero.  
+
+**Mini-checklist per UniManager:** 
+1. SRP: 
+	- ci sono classi che fanno sia business che I/O? 
+	- posso separare persistenza, log, presentazione? 
+2. OCP: •
+	- ci sono grandi if/switch su tipo o modalità? 
+	- posso spostare logiche variabili in classi dedicate, evitando di toccare sempre lo stesso metodo? 
+3. LSP: 
+	- una sottoclasse può sostituire la superclasse senza rompere il client? 
+	- compaiono controlli sul tipo concreto o eccezioni inattese? 
+4.  ISP: 
+	- i client dipendono da metodi che non usano? 
+	- ci sono metodi vuoti o UnsupportedOperationException? 
+5. DIP: 
+- i servizi dipendono da classi concrete di repository? 
+- posso introdurre interfacce nel dominio e implementazioni nei layer esterni?
