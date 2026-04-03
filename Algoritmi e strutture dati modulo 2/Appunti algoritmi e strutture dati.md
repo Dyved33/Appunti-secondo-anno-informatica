@@ -663,7 +663,7 @@ Ogni radice scelta dal secondo DFS può raggiungere solo:
 
 Visitando i vertici di $(G^T)^{SCC}$ in ordine inverso rispetto all’ordinamento topologico
 ###### Disjoint-set data structures
-Le strutture dati per insiemi disgiunti (o anche union find) mantengono la collezione $\mathscr{S} = \{S_1,…,S_k\}$ di insiemi disgiunti e dinamici. Ogni set è identificato da un rappresentante, il quale è un qualche membro dell'insieme. Non importa quale membro sia il rappresentante, fintanto che se si chiede due volte quale sia il rappresentate si ottenga la stessa risposta (senza cambiare il set)
+Le strutture dati per insiemi disgiunti (o union find) mantengono la collezione $\mathscr{S} = \{S_1,…,S_k\}$ di insiemi disgiunti e dinamici. Ogni set è identificato da un rappresentante, il quale è un qualche membro dell'insieme. Non importa quale membro sia il rappresentante, fintanto che se si chiede due volte quale sia il rappresentate si ottenga la stessa risposta (senza cambiare il set)
 
 **Operazioni:** 
 - Make-Set(X): crea un nuovo set $S_i = \{x\}$  e aggiunge $S_i$ a $\mathscr{S}$
@@ -701,39 +701,42 @@ else
 > - ogni vertice necessita di un gestore per il proprio oggetto nella struttura dati a insiemi disgiunti
 > - ogni oggetto nella struttura dati a insiemi disgiunti necessita di un gestore per il proprio vertice
 
-**Rappresentazione delle linked list:** ogni insieme è una linked list rappresentata da un oggetto con attributi:
+> [!info] Sintesi:
+> stai gestendo una partizione di elementi in gruppi, e vuoi poter dire velocemente “a quale gruppo appartiene questo elemento?” e “unisci questi due gruppi”. Questo è esattamente il tipo di struttura che poi serve negli algoritmi sui grafi, soprattutto quando devi capire se due vertici sono già nello stesso componente.
+
+**Prima rappresentazione: linked list:** ogni insieme è una linked list rappresentata da un oggetto con attributi:
 - *Testa:* il primo elemento nella lista, assumendo che sia il rappresentante dell'insieme
 - *Coda:* l'ultimo elemento nella lista
 
 Gli oggetti potrebbero apparire nella lista in qualsiasi ordine. Inoltre ogni oggetto della lista ha come attributi:
 - Il membro dell'insieme
-- Il puntatore all'oggetto insieme
+- Il puntatore all'oggetto "insieme"
 - Next
 
 **Operazioni linked lists:**
 - Make-Set: crea una lista di singleton
 - Find-Set: segue il puntatore fino all'oggetto lista e poi segue il puntatore testa fino al rappresentante
 - Union: ci sono 2 modi per farla
-1. Appende la lista $y$ alla fine della lista $x$ e usa il puntatore coda di $x$ per trovare la fine. Quest'operazione necessita di aggiornare il puntatore all'oggetto insieme per ogni nodo nella lista $y$. Chiaramente se appendo una lista grande su una lista piccola ci può volere molto tempo ($\Theta(n^2)$)
-
+	1. Appende la lista $y$ alla fine della lista $x$ e usa il puntatore coda di $x$ per trovare la fine. Quest'operazione necessita di aggiornare il puntatore all'oggetto insieme per ogni nodo nella lista $y$. Chiaramente se appendo una lista grande su una lista piccola ci può volere molto tempo 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260402123502.png" width="200">
 </div>
-
-2. *Weighted-union heuristic:* appende sempre la lista più piccola alla lista più grande
+	2. *Weighted-union heuristic:* appende sempre la lista più piccola alla lista più grande
 
 **Teorema:** con l'unione pesata una sequenza di $m$ operazioni su $n$ elementi richiede $O(m + n\ln(n))$ di tempo
 
-**Dimostrazione:** sia Make-Set che Find-Set richiedono $O(1)$,  quante volte ogni rappresentante dell'oggetto può essere aggiornato? Deve essere ogni volta nel set più piccolo. Perciò ogni rappresentante viene aggiornato $\leq \ln((n))$ volte
+**Dimostrazione:** sia Make-Set che Find-Set richiedono $O(1)$,  quante volte ogni rappresentante dell'oggetto (= la testa della lista) può essere aggiornato? Deve essere ogni volta nel set più piccolo. Perciò ogni rappresentante viene aggiornato $\leq \ln((n))$ volte
 
-**Foresta disjoint-set:** si tratta di una foresta di alberi
+In altre parole: ogni elemento cambia “contenitore grande” solo un numero limitato di volte, perché ogni volta che viene spostato finisce in una lista almeno doppia rispetto a prima. Quindi il numero totale di aggiornamenti resta logaritmico per elemento.
+
+**Seconda rappresentazione: foresta di alberi:** si tratta di una foresta di alberi
 - Un albero per ogni set e la radice ne è il rappresentante
 - Ogni nodo punta solo al proprio genitore
 - Make-Set: crea un albero con un singolo nodo
 - Union: fa si che una radice sia figlia dell'altra
 - Find-Set: segue i puntatori fino alla radice
 
-Non è molto buono dato che può avere  una catena lineare di nodi
+Senza accorgimenti, questa struttura può degenerare in una catena lunga, quindi le operazioni possono diventare lente
 
 <div style="display: flex; justify-content: center; gap: 10px;">
   <img src="Pasted image 20260402125220.png" style="width: 60%; height: auto;">
@@ -741,13 +744,13 @@ Non è molto buono dato che può avere  una catena lineare di nodi
 </div>
 
 **Great heuristics:** 
-- *Path compression:* find path = i nodi visitati durante Find-Set nel tragitto fino alla radice. Rende tutti i nodi nella ricerca del percorso diretta al figlio della radice
+- *Path compression:* durante Find-Set, tutti i nodi visitati vengono ricollegati direttamente alla radice.
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260402125937.png" width="200">
 </div>
 
-- *Union by rank:* rende la radice dell'albero più piccolo (con meno nodi) un figlio della radice dell'albero più grande. Non utilizza la dimensione, ma il grado (che è un upper bound sull'altezza del nodo). Rende la radice con il grado più piccolo in un figlio della radice con un grado più grande
+- *Union by rank:* rende la radice dell'albero più piccolo (con meno nodi) un figlio della radice dell'albero più grande. Non utilizza la dimensione, ma il *rank* (che è un upper bound sull'altezza del nodo). Rende la radice con il grado più piccolo in un figlio della radice con un grado più grande
 
 ```Pseudocode
 Make-Set
@@ -770,7 +773,7 @@ Find-Set(x)
 	return x.p	//ritorna la radice
 ```
 
-**Running time:** se si usano entrambe le union (per grado e compressione del cammino), $O(m\alpha(n))$. $\alpha(n)$ è una funzione di crescita molto lenta. I limite è stretto, esiste una sequenza di operazioni che richiede $\Omega(m\alpha(n))$ in tempo
+**Running time:** se si usano entrambe le union (per grado e compressione del cammino), $O(m\alpha(n))$. $\alpha(n)$ è una funzione di crescita molto lenta. I limite è stretto quindi esiste una sequenza di operazioni che richiede $\Omega(m\alpha(n))$ in tempo
 ###### Minimum spanning trees
 Problema ipotetico:
 - Una città ha un set di strade e un set di case
@@ -797,7 +800,14 @@ Uno spanning tree il cui peso sia minimo (tra tutti gli spanning trees) è chiam
 - Non ha cicli
 - Potrebbe essere unico
 
-**Costruzione:** si costruisce un set $A$ di archi che inizialmente è vuoto. Man mano che vengono aggiunti archi ad $A$, si mantiene un'invariante del ciclo: $A$ è il sottoinsieme di un qualche MST. Si possono aggiungere solo archi che mantengono l'invariante. Se $A$ è un sottoinsieme di un MST, un arco $(u,v)$ è sicuro per $A$ se e solo se $A \cup \{(u,v)\}$ è a sua volta un sottoinsieme di un qualche MST 
+> [!info] In sostanza:
+> Un minimum spanning tree (MST) è uno spanning tree di peso minimo in un grafo non orientato e pesato. Deve quindi:
+> - connettere tutti i vertici;
+> - avere esattamente $∣V∣−1$ archi;
+> - non contenere cicli;
+> - avere peso totale minimo tra tutti gli spanning tree possibili.
+
+**Costruzione:** si costruisce un set $A$ di archi che inizialmente è vuoto. Man mano che vengono aggiunti archi ad $A$, si mantiene un'invariante del ciclo: $A$ è il sottoinsieme di un qualche MST. Si possono aggiungere solo archi che mantengono l'invariante. <u>Se A è un sottoinsieme di un MST, un arco (u,v) è sicuro per A se e solo se A U {(u,v)} è a sua volta un sottoinsieme di un qualche MST.</u>
 
 **Algoritmo generico MST:**
 ```
@@ -814,7 +824,7 @@ Per mostrare che questo algoritmo funziona usiamo il loop invariant:
 - *Mantenimento:* siccome solo archi validi sono aggiunti, $A$ rimane un sottoinsieme di un qualche MST
 - *Terminazione:* il loop deve terminare quando ha considerato tutti gli archi. Tutti gli archi inseriti dentro ad $A$ sono parte di un MST. Alla fine $A$ è uno spanning tree che è anche un MST
 
-**Come si trova un arco sicuro?** guardando all'esempio l'arco $(c,f)$ ha il peso minore di ogni altro arco nel grafo. È sicuro per $A = \emptyset$? Sia $S \subset V$ un sottoinsieme di vertici che include $c$ ma non $f (f \in V\backslash S)$, è giusto scegliere l'arco con il peso minimo?
+**Come si trova un arco sicuro?** guardando all'esempio l'arco $(c,f)$ ha il peso minore di ogni altro arco nel grafo. È sicuro per $A = \emptyset$? Sia $S \subset V$ un sottoinsieme di vertici che include $c$ ma non $f \ (f \in V\backslash S)$, è giusto scegliere l'arco con il peso minimo?
 
 **Definizioni:**
 - Un **taglio** $S, V \backslash S$ è una partizione di vertici negli insiemi disgiunti $V$ e $V \backslash S$ 
@@ -834,9 +844,8 @@ Per mostrare che questo algoritmo funziona usiamo il loop invariant:
 </div>
 
 **Algoritmo di Kruskal:** $G = (V,E)$ è un grafo connesso, non ordinato e pesato. $w: E \rightarrow \mathbb{R}$
-- Inizia con ogni vertice che è un suo componente
-- Fonde ripetutamente due componenti in uno scegliendo il light edge che li connette (per esempio il light edge attraverso il taglio tra di loro)
-- scannerizza l'insieme di archi in ordine crescente in base al peso
+- Inizia con ogni vertice come componente separata e considera gli archi in ordine crescente di peso
+- Fonde ripetutamente due componenti in uno scegliendo il light edge che li connette (prende un arco $(u,v)$: se i suoi estremi sono in componenti diverse, lo aggiunge all’insieme $A$ e fa Union(u,v); altrimenti lo scarta perché creerebbe un ciclo.)
 - Usa una struttura dati basata su un insieme disgiunto  per determinare quale arco connetta i vertici in componenti diversi
 
 ```Pseudocode
@@ -860,9 +869,9 @@ MST-Kruskal(G,w)
 
 **Analisi:** 
 - Inizializzazione di $A$: $O(1)$
-- Primo ciclo for: $|V|$ volte Make_Set
+- Primo ciclo for: $|V|$ volte Make-Set
 - Ordinare $E$: $O(E \ln(E))$ 
-- Secondo ciclo for: $O(E)$ volte Find_Set e Union
+- Secondo ciclo for: $O(E)$ volte Find-Set e Union
 
 Assumendo che l'implementazione di una struttura dati a insiemi disgiunti (disjoint-set), che usa l'unione in base al grado e compressione del percorso: $O((V+E)\alpha(V))+O(E \ln(E))$. 
 - Siccome $G$ è connesso, $|E| \geq |V|-1 \implies O(E \alpha(V))+O(E \ln(E))$ 
@@ -872,16 +881,17 @@ Assumendo che l'implementazione di una struttura dati a insiemi disgiunti (disjo
 - Perciò il tempo è $O(E\ln(V))$ (se gli archi sono già ordinati $O(E\alpha(V))$ che è quasi lineare)
 
 **Algoritmo di Prim:**
-Costruisce un albero, in questo modo $A$ è sempre un albero e inizia da una "radice" arbitraria $r$. Ad ogni passo si trova un light edge che connette $A$ ad un vertice isolato. Un arco, in questo modo, deve essere sicuro per $A$ e può essere aggiunto.
+Costruisce un solo albero alla volta, in questo modo $A$ è sempre un albero e inizia da una "radice" arbitraria $r$. Ad ogni passo si trova un light edge che connette $A$ ad un vertice isolato. Un arco, in questo modo, deve essere sicuro per $A$ e può essere aggiunto.
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260402093655.png" width="200"> <img src="Pasted image 20260402093834.png" width="200">  
 </div>
 
 **Come trovo un light edge?** devo usare una coda di priorità:
-- Ogni oggetto è un vertice non presente in $A$
+- Ogni oggetto è un vertice non presente in $A$ che ha la proprietà $v.key$
 - $v.key$ è il peso minimo di ogni arco che connette $v$ ad un vertice in $A$. Se non esiste tale arco allora $v.key = \infty$ 
 - $v.\pi$ è il genitore di $v$ in $A$
+- Quando si trova un arco migliore si applica Decrease-Key
 - Bisogna mantenere $A$ implicitamente come $A = \{(v,v.\pi) : v \in V - \{r\} - Q\}$ 
 - Una volta completato, $Q$ è vuoto e il MST è $A = \{(v,v.\pi) : v \in V - \{r\}\}$ 
 
@@ -894,4 +904,11 @@ Costruisce un albero, in questo modo $A$ è sempre un albero e inizia da una "ra
 - Ciclo while: $|V|$ chiamate di Extract_Min $\implies O(V\ln(V)) \leq |E|$ chiamate di Decrease_Key $\implies O(E \ln(V))$
 - Totale: $O(E \ln(V))$
 
-Si supponga che Decrease_Key possa richiedere $O(1)$ di tempo, allora $\leq |E|$ chiamate di Decrease_Key richiedono $O(E)$ in tempo tutte insieme $\implies$ tempo totale diventa $O(V\ln(V) + E)$ 
+Si supponga che Decrease-Key possa richiedere $O(1)$ di tempo, allora $\leq |E|$ chiamate di Decrease-Key richiedono $O(E)$ in tempo tutte insieme $\implies$ tempo totale diventa $O(V\ln(V) + E)$ 
+
+> [!info] Differenza tra Kruskal e Prim:
+> - **Kruskal**: guarda gli archi uno per uno in ordine di peso e unisce componenti diverse. È “edge-driven”.
+> - **Prim**: espande un unico albero da un vertice iniziale, aggiungendo ogni volta il miglior arco verso l’esterno. È “vertex/tree-driven”.
+> 
+> Entrambi usano il criterio del taglio, ma in modo diverso: Kruskal lavora sui tagli tra componenti, Prim sul taglio tra l’albero già costruito e il resto del grafo.
+

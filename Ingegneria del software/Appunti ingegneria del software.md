@@ -2001,15 +2001,15 @@ Oggi scendiamo di livello: come progettare le classi e le loro dipendenze, in mo
 In queste condizioni, il costo principale non è scrivere nuova logica, ma capire e cambiare quella esistente. I principi di design (come *SOLID*) servono come criteri operativi per ridurre accoppiamento, aumentare coesione e migliorare testabilità. 
 
 **Che cos’è SOLID?** SOLID è un acronimo che indica cinque principi: 
-1. Single Responsibility Principle (SRP) - principio di responsabilità singola 
-2. Open/Closed Principle (OCP) - principio aperto/chiuso 
-3. Liskov Substitution Principle (LSP) - principio di sostituzione di Liskov 
-4. Interface Segregation Principle (ISP) - principio di segregazione delle interfacce 
-5. Dependency Inversion Principle (DIP) - principio di inversione delle dipendenze 
+1. **Single Responsibility Principle (SRP):** principio di responsabilità singola 
+2. **Open/Closed Principle (OCP):** principio aperto/chiuso 
+3. **Liskov Substitution Principle (LSP):** principio di sostituzione di Liskov 
+4. **Interface Segregation Principle (ISP):** principio di segregazione delle interfacce 
+5. **Dependency Inversion Principle (DIP):** principio di inversione delle dipendenze 
 
 Non sono leggi assolute, ma linee guida per prendere decisioni migliori. 
 
-**SRP — Single Responsibility Principle:** *Definizione:* Una classe dovrebbe avere un solo motivo per cambiare. Per “motivo per cambiare” si intende una famiglia omogenea di modifiche (stesso tipo di responsabilità). Quando una classe mescola responsabilità diverse: 
+**SRP — Single Responsibility Principle:** Una classe dovrebbe avere un solo motivo per cambiare. Per “motivo per cambiare” si intende una famiglia omogenea di modifiche (stesso tipo di responsabilità). Quando una classe mescola responsabilità diverse: 
 - aumenta l’accoppiamento interno; 
 - crescono effetti collaterali e regressioni; 
 - test e manutenzione diventano più costosi. 
@@ -2058,15 +2058,15 @@ Criterio pratico per rilevare una violazione SRP: “quante ragioni indipendenti
   </div>
 </div>
 
-**OCP — Open/Closed Principle:** *Definizione:* Il software dovrebbe essere aperto all’estensione, ma chiuso alla modifica. Interpretazione operativa: 
+**OCP — Open/Closed Principle:** Il software dovrebbe essere aperto all’estensione, ma chiuso alla modifica. Interpretazione operativa: 
 - nuovo comportamento = aggiungere nuove classi/composizioni; 
 - codice stabile = evitare modifiche continue agli stessi metodi centrali. 
 
 OCP non significa “mai modificare nulla”, ma ridurre le modifiche invasive nelle parti già consolidate.
 
-Esempio in UniManager: • aggiungere un nuovo criterio di ordinamento senza riscrivere ServizioEsami.  
+Esempio in UniManager: aggiungere un nuovo criterio di ordinamento senza riscrivere ServizioEsami.  
 
-OCP nasce a causa di un problema ricorrente: • il requisito resta lo stesso, ma cambiano le varianti (nuovi casi, nuove regole, nuove modalità). Se ogni variante richiede di riaprire lo stesso componente centrale: 
+OCP nasce a causa di un problema ricorrente:  il requisito resta lo stesso, ma cambiano le varianti (nuovi casi, nuove regole, nuove modalità). Se ogni variante richiede di riaprire lo stesso componente centrale: 
 - aumenta il rischio di regressioni; 
 - i test da rieseguire crescono a ogni modifica; 
 - quel componente diventa un collo di bottiglia del team. 
@@ -2127,7 +2127,7 @@ Checklist rapida OCP:
 - i test esistenti restano validi senza riscritture massive? 
 - il comportamento variabile è confinato in componenti dedicati?  
 
-**LSP — Liskov Substitution Principle:** • *Definizione:* Le sottoclassi dovrebbero poter sostituire le superclassi senza cambiare il comportamento atteso del programma. In pratica: 
+**LSP — Liskov Substitution Principle:** Le sottoclassi dovrebbero poter sostituire le superclassi senza cambiare il comportamento atteso del programma. In pratica: 
 - il codice client deve poter usare la sottoclasse al posto della superclasse senza accorgersene; 
 - stessa chiamata, stesso significato, stesso tipo di esito. 
 
@@ -2184,7 +2184,7 @@ Le varianti devono cambiare la regola, non il significato del comportamento atte
 - servono if sul tipo concreto per evitare crash? 
 - una sottoclasse introduce eccezioni o vincoli non previsti?  
 
-**ISP — Interface Segregation Principle:** • *Definizione:* È meglio avere più interfacce piccole e specifiche che un’unica interfaccia “gigante” che fa di tutto. In pratica: 
+**ISP — Interface Segregation Principle:** È meglio avere più interfacce piccole e specifiche che un’unica interfaccia “gigante” che fa di tutto. In pratica: 
 - ogni client dovrebbe vedere solo le operazioni del proprio ruolo; 
 - le funzionalità non pertinenti vanno in interfacce separate. 
 
@@ -2223,7 +2223,7 @@ Conseguenza pratica: modifiche pensate per un ruolo impattano anche client di al
     <img src="Pasted image 20260401165415.png" style="width: 100%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
-Ogni client dipende solo da ciò che usa davvero. • I contratti sono più piccoli e chiari. • Le evoluzioni su un ruolo non forzano modifiche sugli altri.
+Ogni client dipende solo da ciò che usa davvero.  I contratti sono più piccoli e chiari.  Le evoluzioni su un ruolo non forzano modifiche sugli altri.
   </div>
 </div> 
 
@@ -2240,7 +2240,7 @@ Checklist rapida ISP:
 - un client dipende da operazioni che non usa? 
 - una modifica locale forza cambi in client di altri ruoli
 
-**DIP — Dependency Inversion Principle:** *Definizione:* I moduli di alto livello e quelli di basso livello dovrebbero dipendere da astrazioni; i dettagli concreti dovrebbero dipendere da tali astrazioni. In pratica: 
+**DIP — Dependency Inversion Principle:** I moduli di alto livello e quelli di basso livello dovrebbero dipendere da astrazioni; i dettagli concreti dovrebbero dipendere da tali astrazioni. In pratica: 
 - alto livello = logica applicativa/business, più astratta (es. ServizioEsami); 
 - basso livello = dettagli tecnici, più concreti (es. ArchivioEsamiSuFile); 
 - entrambi si collegano tramite un’astrazione comune (es. ArchivioEsami). 
@@ -2346,7 +2346,7 @@ Obiettivo: migliorare il design senza riscrivere tutto da zero.
 1. SRP: 
 	- ci sono classi che fanno sia business che I/O? 
 	- posso separare persistenza, log, presentazione? 
-2. OCP: •
+2. OCP: 
 	- ci sono grandi if/switch su tipo o modalità? 
 	- posso spostare logiche variabili in classi dedicate, evitando di toccare sempre lo stesso metodo? 
 3. LSP: 
@@ -2356,5 +2356,5 @@ Obiettivo: migliorare il design senza riscrivere tutto da zero.
 	- i client dipendono da metodi che non usano? 
 	- ci sono metodi vuoti o UnsupportedOperationException? 
 5. DIP: 
-- i servizi dipendono da classi concrete di repository? 
-- posso introdurre interfacce nel dominio e implementazioni nei layer esterni?
+	- i servizi dipendono da classi concrete di repository? 
+	- posso introdurre interfacce nel dominio e implementazioni nei layer esterni?
