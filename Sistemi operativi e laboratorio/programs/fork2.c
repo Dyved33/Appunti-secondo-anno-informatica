@@ -19,9 +19,12 @@ int main()
 	}	
 	else if (pid == 0) { /* child process */
 		/* execlp("/bin/ls","ls",NULL); */
-		int fd = open("etc/passwd", O_RDONLY);
+		int fd = open("/etc/passwd", O_RDONLY);
 		printf("Child. my pid = %d\n", getpid());
 		int x = execve("/usr/bin/ls", args, envs); 
+		//dopo execve il codice NON continua perché questo comando sostituisce il processo corrente
+
+		//se execve funziona il processo diventa ls e questo codice non esiste più
 		if (x) fprintf(stderr, "Errore:""Program failed to execute\n""|[%d]\n");
 		else fprintf(stdout, "Program executed successfully\n");
 		perror("Errore in execve");

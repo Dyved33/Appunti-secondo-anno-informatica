@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
     if (argc < 2)
     {
-        printf("Dammil il nome del file\n");
+        printf("Dammi il nome del file\n");
         return EXIT_FAILURE;
     }
 
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
                     char sWriteBuf[] = "Questa proviene da write()\n";
                     int iCount = strlen(sWriteBuf);
                     sReadBuf[iReadRet] = '\0';
-                    dup2(fd,1); // duplica fd su STDOUT_FILENO, ora scrivere su STDOUT_FILENO scrive su fd
+                    dup2(fd,1); // duplica fd su STDOUT_FILENO, ora invece di scrivere su STDOUT_FILENO scrive su fd
                     printf("Ho riletto per %d byte: %s", iReadRet, sReadBuf);//printf scrive sul descrittore 1
                     /* write(STDOUT_FILENO, sWriteBuf, iCount); */
                 }

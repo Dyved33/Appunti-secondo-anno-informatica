@@ -17,7 +17,7 @@ int main()
         pid = fork();
         if (pid == 0)
         {
-            close(pipefd[READ_END]);
+            close(pipefd[READ_END]); //bisogna sempre chiudere il lato del pipe che non si usa
             printf("Child: my pid is %d\n", getpid());
             sprintf(sBuf, "Hello from child process\n");
             if (write(pipefd[WRITE_END], sBuf, sizeof(sBuf)) != -1)
