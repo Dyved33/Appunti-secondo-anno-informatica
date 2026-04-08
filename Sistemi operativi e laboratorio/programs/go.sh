@@ -3,6 +3,6 @@
 echo "CIAO DALLO SCRIPT!"
 echo "MY_VAR = $MY_VAR"
 
-0<&3 cat
+cat 0<&3 #cat legge dal file con fd 3
 
 exit 0

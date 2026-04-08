@@ -912,3 +912,120 @@ Si supponga che Decrease-Key possa richiedere $O(1)$ di tempo, allora $\leq |E|$
 > 
 > Entrambi usano il criterio del taglio, ma in modo diverso: Kruskal lavora sui tagli tra componenti, Prim sul taglio tra l’albero già costruito e il resto del grafo.
 
+###### Single-source shortest path
+Come trovo il cammino minimo tra 2 punti su una mappa? Ho come input:
+- Un grafo ordinato $G = (V,E)$
+- Una funzione per il peso $w: E \rightarrow \mathbb{R}$    
+
+Peso del cammino minimo da $u$ a $v$: $\delta(u,v) = \begin{cases} \min \{ w(p) : u \xrightarrow{p} v \} & \text{se esiste un cammino } u \rightarrow v \\ \infty & \text{altrimenti} \end{cases}$ 
+
+Il cammino minimo da $u$ a $v$ è un qualsiasi cammino tale che $w(p) = \delta(u,v)$ 
+
+> [!example] Cammino minimo da $s$:
+> ![[Pasted image 20260408145605.png|200]]
+> 
+> Questo esempio mostra che il cammino minimo potrebbe essere unico. Mostra anche che, quando si guarda il cammino minimo da un vertice a tutti gli altri, i cammini minimi sono organizzati come un albero
+
+Va tutto bene finché nessun ciclo con costo negativo è raggiungibile dalla sorgente.
+- Se abbiamo un ciclo con costo negativo, possiamo continuare attorno a questo e avere $w(s,v) = -\infty$ per ogni $v$ nel ciclo
+- Non ci sono problemi finché questo tipo di cicli non è raggiungibile
+- Alcuni algoritmi lavorano solo se non ci sono archi con costo negativo nel grafo
+
+**Lemma:** ogni sotto cammino di un cammino minimo è un cammino minimo
+
+**Prova:** si usa la prova di correttezza taglia e incolla (cut-and-paste)
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260408150323.png" width="200">
+</div>
+
+Si supponga che esista un cammino più breve $x \xrightarrow{p'_{xy}} y$, allora $w(p'_{xy}) < w(p_{xy})$ 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260408150612.png" width="200">
+</div>
+
+Contraddice l'assunzione che $p$ sia il cammino minimo
+
+**Cicli:** un cammino minimo non può contenere cicli:
+- Già trattati i cicli a costo negativo
+- Se il costo è positivo $\implies$ possiamo ottenere un cammino minimo omettendo i cicli
+- Costo 0 $\implies$ si assume che le nostre soluzioni non li useranno
+
+**Output di un algoritmo per il cammino minimo con una singola sorgente:** per ogni vertice $v \in V$ 
+- $v.d = \delta(s,v)$
+	- Inizialmente $v.d = \infty$
+	- Si riduce con il progredire degli algoritmi, ma mantiene sempre $v.d \geq \delta(s,v)$ 
+	- Chiama $v.d$ una stima di un cammino minimo
+- $v.\pi =$ predecessore di $v$ nel cammino minimo da $s$
+	- Se non ci sono predecessori, $v.\pi = NIL$ 
+	- $\pi$ induce un albero (shortest-path tree)
+
+**Inizializzazione:** tutti gli algoritmi per i cammini minimi iniziano con:
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260408151622.png" width="200">
+</div>
+
+**Funzione per rilassare un arco $(u,v)$:** può la stima del cammino minimo per $v$ essere migliorata andando attraverso $u$ e prendendo $(u,v)$?
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260408152001.png" width="200"><img src="Pasted image 20260408152045.png" width="200">
+</div>
+
+Per ogni algoritmo per cammini minimi con una singola sorgente:
+- Si inizia chiamando Initialize-Single-Source
+- Poi si rilassano gli archi
+
+Gli algoritmi differiscono tra di loro nell'ordine e quante volte vengono rilassati gli archi
+
+**Proprietà dei cammini minimi:** basandosi sulla chiamata prima di Initialize-Single-Source e poi di Relax 0 o più volte:
+- *Disuguaglianza triangolare:* per ogni $(u,v) \in E$, abbiamo che $\delta(s,v) \leq \delta(s,u) + w(u,v)$ 
+- *Proprietà del limite superiore:* per ogni $v$ si ha sempre che $v.d \geq \delta(s.v)$. Una volta che $v.d$ scende fino a $\delta(s,v)$, questo non cambia mai
+- *Proprietà di no-path:* se $\delta(s,v) = \infty$, allora $v.d = \infty$ sempre
+- *Proprietà di convergenza:* se $s \rightsquigarrow u \rightarrow v$ è il cammino minimo, $u.d = \delta(s,u)$, e l'arco $(u,v)$ è rilassato, quindi $v.d = \delta(s,v)$ 
+- *Proprietà di path-relaxation:* sia $p = \langle v_0,v_2,…,v_k \rangle$ il cammino minimo da $s = v_0$ fino a $v_k$. Se gli archi di $p$ sono rilassati, nell'ordine $(v_0,v_1),(v_1,v_2),…,(v_{k-1},v_k)$, anche se mescolati con altri rilassamenti, allora $v_k.d = \delta(s,v_k)$ 
+
+**Algoritmo di Bellman-Ford:** 
+- Permette archi a costo negativo
+- Calcola $v.d$ e $v.\pi$ per ogni $v \in V$ 
+- Ritorna $TRUE$ se nessun ciclo di costo negativo sono raggiungibili da $s$, $FALSE$ altrimenti
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260408154712.png" width="200">
+</div>
+
+Tempo: $O(V^2 + VE)$. Il primo ciclo for compie $|V| - 1$ passi sugli archi, e ogni passo richiede $\Theta(V + E)$ in tempo. Usiamo $O$ piuttosto che $\Theta$ perché a volte sono sufficienti $< |V| - 1$
+
+> [!example]
+> ![[Screenshot From 2026-04-08 15-50-30.png|200]]
+
+**Cammino minimo da una sorgente singola in un grafo diretto e aciclico:** in un dag è garantito che non ci siano cicli a costo negativo
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260408160813.png" width="200">
+</div>
+
+- Tempo: $\Theta(V +E)$
+- Correttezza: poiché i vertici sono elaborati in ordine topologicamente ordinato, gli archi di ogni cammino devono essere rilassati in ordine di apparizione nel cammino $\implies$ gli archi su ogni cammino minimo sono rilassati in ordine $\implies$ per la proprietà di path-relaxation, è corretto
+
+> [!example]
+> ![[Pasted image 20260408161201.png|200]]
+
+**Algoritmo di Dijkstra:** non ci sono archi a costo negativo ed essenzialmente è una versione pesata del breadth-first-search:
+- Al posto di una coda FIFO, usa una coda di priorità
+- Le chiavi sono i pesi del cammino minimo $(v.d)$
+- Può essere pensato in ondate come il BFS
+- Un'onda viene emanata dalla sorgente
+- La prima volta che un'onda arriva ad un vertice, una nuova onda viene emanata dal vertice
+
+Ho due set di vertici:
+- $S =$ i vertici i cui pesi del cammino minimo finali sono determinati
+- $Q =$ coda di priorità $= V - S$
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260408162152.png" width="200">
+</div>
+
+- Sembra molto come l'algoritmo di Prim, ma calcola $v.d$ e usa i pesi del cammino minimo come chiave
+- L'algoritmo di Dijkstra può essere visto come "avido" poiché sceglie sempre il vertice "più leggero" ("più vicino"?) in $V - S$ da aggiungere a $S$

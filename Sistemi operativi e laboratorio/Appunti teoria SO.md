@@ -1272,3 +1272,157 @@ Ho 2 approcci possibili:
 2. Rifiuto di allocazione per le richieste di risorse che potrebbero determinare stallo
 
 In entrambi i casi è necessario conoscere le future richieste dei processi
+
+C’è bisogno quindi di un algoritmo detto **algoritmo del banchiere** che usa una serie di informazioni: 
+- Il vettore risorse, la quantità totale di ciascuna risorsa nel sistema; 
+- Il vettore disponibilità, indica quante di quelle risorse sono disponibili; 
+- Una matrice di richieste, che per ogni riga (che rappresenta un processo), mi dice quante risorse sta usando quel processo (le colonne sono il tipo di risorsa); 
+- Una matrice allocazione, dove ciascuna riga è sempre un processo che contiene l’allocazione attuale della risorsa della colonna per il processo della riga in cui ci troviamo. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260408120624.png" width="200">
+</div>
+
+Le 3 equazioni/disequazioni mostrano le relazioni fra questi dati definiti sopra, se io sommo le risorse attualmente usate in un processo e ci aggiungo le risorse disponibili rimaste inutilizzate ottengo $R_j$, cioè la quantità disponibile di quella risorsa, la seconda indica che chiaramente un processo non può richiedere più di quanto c’è al massimo di una risorsa, la terza indica chiaramente che in ogni momento un processo deve avere una quantità di risorse di ogni tipo minore di quella che ha dichiarato necessaria. Questi quindi sono i dati del problema, allora un possibile approccio è il seguente: inizia un nuovo processo $P_{n+1}$ solo se per ogni $j, R_j \geq C_{n+1,j} + \sum\limits^n_{i=1}C_{ij}$, cioè se ci sono risorse sufficienti per soddisfare tutti i processi. Questo però è inefficiente poiché assume che tutte le richieste di tutti i processi debbano essere soddisfatte simultaneamente. È più efficiente l'algoritmo del banchiere.
+
+**Algoritmo del banchiere:** L’algoritmo tiene conto dello stato del sistema, quindi i vettori sopra definiti $R$ e $V$ e le matrici $C$ e $A$, l’algoritmo controlla se esiste almeno una sequenza di allocazioni che porta a termine tutti i processi e rifiuta una richiesta se porta in uno stato insicuro per evitare lo stallo. Come determino se uno stallo è sicuro o meno?
+
+ESEMPIO?
+Abbiamo 4 processi con le loro specifiche matrici $A$, $C$, la matrice $C-A$ sono le risorse aggiuntive di cui avrà bisogno ogni processo per terminare, dopo questo nel vettore delle risorse disponibili mi saranno rimaste 0 1 1, la domanda è con queste risorse rimaste posso terminare un processo già esistente? SI, in questo caso il processo $p2$ a cui manca solo 1 della risorsa $R3$ per terminare, perciò l’assegnamo, termina $p2$ e le risorse allocate a p2 si azzerano e tornano nel vettore $V$. Con le nuove risorse ottenute posso chiudere anche il processo 1 e così via andrò poi a chiudere anche gli altri processi, lo stato è quindi sicuro. 
+
+INSERISCI IMMAGINI
+
+> [!example] Esempio di un'allocazione rifiutata:
+> IMMAGINE
+> In questo caso ad esempio le risorse di V verrebbero allocate, 1 di $R1$ e di $R3$ a $p1$, ma così non termineremmo né il processo $p1$, né sarebbe poi possibile con le risorse disponibili rimaste terminare gli altri processi, quindi quest’allocazione viene rifiutata.  
+
+```
+W <- V
+while c'è un processo P_i non spuntato, tale che C_ij - A_ij <= W_j per ogni j spunta P_j
+	for all j
+		W_j <- W_j + A_ij
+if tutti i processi sono spuntati
+	return SICURO
+else
+	return INSICURO
+```
+
+```C
+struct state{
+	int resource[m];
+	int available[m];
+	int claim[n][m];
+	int alloc[n][m];
+}
+
+if (alloc[i,*] + request[*] > claim[i,*])
+	<error>; //total request > claim
+else if (request[*] > available[*])
+	<suspend process>;
+else{
+	<define newstate by:
+	allc[i,*] = alloc[i,*] + request[*];
+	available[*] = available[*] - request[*] >;
+}
+
+if (safe(newstate))
+	<carry out allocation>;
+else{
+	<restore original state>;
+ 	<suspend process>;
+}
+```
+
+Lo stato è la struttura dei dati disponibili sui processi e le risorse allocate, il primo if controlla se c’è una richiesta di risorse maggiore a quelle veramente necessarie dichiarate nel claim. Il secondo if controlla che la richiesta non sia maggiore della quantità disponibile di quella risorsa. Passati questi due controlli definisco un nuovo stato cercando di allocare ad un processo le risorse necessarie e se il nuovo stato è safe mando a buon fine l’allocazione, altrimenti torno allo stato originale e sospendo il processo.
+
+Come controllo che uno stato è safe?
+```C
+boolean safe(state S){
+	int currentvail[m];
+	process rest[<number of processes>];
+	currentvail = available;
+	rest = {all processes};
+	possible = true;
+	while(possible){
+		<find a process Pk in rest così che claim[k,*] - 				alloc[k,*] <= current vail;
+		if(found){ //simula l'esecuzione di Pk
+			currentvail = currentvail + alloc[k,*];
+			rest = REST - {pK};
+		}
+		else possible = false;
+	}
+	return (rest == null)
+}
+```
+
+La procedura safe cerca nello stato che gli viene fornito se c’è un processo Pk che può essere completato tramite le risorse disponibili attualmente, se lo trova simula l’esecuzione di Pk e lo toglie dall’insieme dei processi.
+
+**Vantaggi e limiti dell'algoritmo del banchiere per evitare lo stallo:** 
+- *Vantaggi:* 
+	- Non richiede prerilascio e ripristino del processo
+	- È meno restrittivo della prevenzione
+- *Limitazioni:* 
+	- I processi devono stabilire in anticipo le risorse necessarie
+	- I processi devono essere indipendenti 
+	- Risorse allocabili in un numero fisso 
+	- Nessun processo può terminare prima di aver rilasciato le risorse
+
+**Rilevare lo stallo:** Nei casi in cui si previene o si evita del tutto lo stallo l’accesso alle risorse è limitato a causa delle restrizioni imposte a processi e assegnazioni per evitare lo stallo, quando invece lo stallo si rileva solo quando si verifica (deadlock detection) le risorse sono assegnate senza restrizioni, sono periodiche le verifiche dell’assenza di attesa circolare. I vantaggi della rilevazione sono:
+- Che la rilevazione dell’attesa circolare permette un ripristino precoce 
+- L’algoritmo è molto semplice
+
+Lo svantaggio della rilevazione è che:
+- Le verifiche vanno fatte frequentemente e consumano molto tempo di elaborazione.
+
+**Algoritmo di rilevazione dello stallo:** i dati del problema sono essenzialmente quelli necessari all'algoritmo del banchiere:
+- La matrice di allocazione $A = A_{ij}$
+- Il vettore delle risorse disponibili $V = V_j$
+- Una matrice delle richieste $Q = Q_{ij}$
+
+```C
+W <- V
+spunta tuttii processi P_i tali che A_ij = 0 per ogni j
+while c'è un processoP_i non spuntato tale che Q_ij <= W_j per ogni j spunta P_i
+	for all j
+		W_j <- W_j + A_ij
+```
+
+Al termine dell'algoritmo gli eventuali processi non spuntati sono in stallo.
+
+> [!example] 
+> IMMAGINE
+> Nell’esempio prima controlliamo se ci sono alcuni processi Pi tali che Aij = 0 in tutte le colonne, in questo caso P4 ha 0 risorse allocate e quindi viene spuntato, poi vediamo che sulla riga di P3, per ogni j gli elementi Qij sono <= Wj, quindi possiamo spuntare anche P3, le cui risorse allocate vengono liberate e assegnate a W che diventa (0,0,0,1,1), poi però guardando P2 e P1 entrambi non possono essere spuntati, dunque alla fine rimangono P1 e P2 non spuntati e quindi c’è lo stallo. 
+
+IMMAGINE TABELLA
+
+Preempts = interruzioni forzate dei processi
+
+**Strategie di ripristino:**
+- Terminare tutti i processi in stallo
+- Ripristinare tutti i processi in stallo a uno stato precedente (**checkpoint**), questo però necessita l’uso di meccanismi di salvataggio e riattivazione che rallentano l’esecuzione e che inoltre rischiano di riproporre lo stallo 
+- Terminare un processo alla volta finchè lo stallo non scompare (applicando una politica di costo minimo elencate sotto)
+- Revocare una risorsa alla volta finché lo stallo non scompare (sempre applicando una politica di costo minimo)
+
+Alcune politiche seguono:
+- Minimo tempo di elaborazione consumato (che usa meno CPU)
+- Minimo output prodotto
+- Massimo tempo di elaborazione rimanente (stimato)
+- Minima quantità di risorse allocate
+- Priorità
+
+**Strategia integrata (soluzione migliore):** Una strategia non deve per forza prendere uno dei metodi e usarlo per tutto, l’idea è di raggruppare le risorse in classi, usare l’assegnazione ordinata per prevenire l’attesa circolare fra classi di risorse e in ogni classe utilizzare il metodo più appropriato.
+
+> [!example] 
+> Classi di risorse:
+> - spazio di swap
+> - memoria principale
+> - risorse dispositivi
+> - canali di I/O
+> 
+> Assegnate nell'ordine indicato. 
+> - spazio di swap: assegnazione statica o rifiuto di esecuzione
+> - memoria principale: prevenzione tramite prerilascio
+> - risorse dispositivi: algoritmo del banchiere o assegnazione ordinata
+> - canali di I/O: assegnazione ordinata
+
+###### Gestione della memoria
