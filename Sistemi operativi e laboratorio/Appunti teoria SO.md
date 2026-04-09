@@ -1426,3 +1426,90 @@ Alcune politiche seguono:
 > - canali di I/O: assegnazione ordinata
 
 ###### Gestione della memoria
+**Compiti della gestione della memoria:**
+- Rilocazione: l nostro programma viene copiato nella memoria centrale, ma a priori non sappiamo in quale parte venga caricato, quindi nel nostro eseguibile gli indirizzi in cui andare a prelevare le istruzioni e i dati non ci possono stare, saranno indirizzi simbolici (logici), una volta caricati, questi indirizzi simbolici devono essere convertiti in indirizzi fisici
+- Protezione: il processo preleva l’istruzione, la esegue, scrive i risultati in memoria e passa all’istruzione successiva, quando fa queste operazioni è fondamentale che non esca dalla memoria assegnata al processo.
+- Condivisione
+- Organizzazione logica
+- Organizzazione fisica
+
+*Rilocazione:* il programmatore non sa quali altri programmi saranno presenti in memoria al momento dell 0 esecuzione. Deve essere possibile trasferire i programmi della memoria principale alla memoria secondari a viceversa (**swapping**). Pertanto è impossibile:
+	- Specificare in che parte della memoria sarà caricato il processo
+	- Richiedere che a ogni trasferimento sia caricato nella stessa posizione
+
+Il processo può essere rilocato in un’area di memoria differente. L’**entry point** è la prima istruzione del programma da cui parte, poi c’è il programma, poi c’è una parte riservata ai dati dove si salta quando nel programma ci si riferisce a quei dati, l’istruzione che fa il riferimento conterrà un indirizzo simbolico al dato richiesto. Questo è il modello più semplice di programma, dopodiché questo oggetto sarà trasferito in memoria principale, dove l’istruzione 0 corrisponderà a un certo indirizzo fisico della ram, l’indirizzo 1 a quella successiva e così via.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260409120551.png" width="200">
+</div>
+
+*Protezione:* I riferimenti di cui parlavamo prima alla memoria servono per leggere e scrivere i dati, come detto non sappiamo l’effettiva locazione del programma in memoria, quindi solo quando tentiamo di accedere un indirizzo possiamo realmente vedere se quell’indirizzo fa parte del processo, quindi i meccanismi di rilocazione devono anche contenere un supporto di sicurezza. CONTROLLA
+
+*Condivisione:* n alcuni sistemi è fortemente limitata, in altri è supportata. Ci sono programmi che vengono eseguiti da più processi, quindi in questo caso è utile permettere a questi processi di accedere entrambi alla stessa copia del codice. Il gestore della memoria quindi deve permettere un accesso controllato delle aree di memoria condivisa, senza compromettere la protezione. I meccanismi che supportano la rilocazione supportano anche la condivisione. CONTROLLA
+
+*Organizzazione logica:* la memoria principale è organizzata linearmente, i programmi sono scritti in moduli. L’**organizzazione logica modulare** permette che i moduli vengano scritti e compilati indipendentemente, possono avere differenti gradi di protezione (sola lettura o sola scrittura) e la condivisione a livello di moduli è più naturale dal punto di vista dell'utilizzatore. Lo strumento che meglio soddisfa questi requisiti è la **segmentazione**
+
+*Organizzazione fisica:* la differenza sostanziale tra la memoria principale (RAM) del sistema e la memoria secondaria (Il disco rigido nel PC), è che la memoria principale è volatile, veloce e costosa, la memoria secondaria invece è permanente, lenta, ma più economica quindi più accessibile a tutti. La memoria disponile per programma e dati potrebbe essere insufficiente. Il programmatore non sa quanto spazio sarà disponibile. Una possibilità è quella dell'**overlaying:** la stessa regione è assegnata a vari moduli sotto la responsabilità del programma. Meglio lasciare al sistema la responsabilità di spostare le informazioni fra memoria principale e secondaria. 
+
+Il gestore della memoria carica i processi nella memoria principale per essere eseguiti:
+- Realizza la memoria virtuale
+- Si basa su partizionamento, segmentazione e paginazione
+- CONTROLLA PARAGRAFO
+
+*Partizionamento:* È un metodo perlopiù obsoleto e che non prevede memoria virtuali, usa le partizioni fisse e le partizioni variabili. Si carica il sistema operativo nella RAM e ciò che resta di RAM viene diviso in partizioni uguali, poi carico il programma che occupa 4 megabyte e si cercherà una delle partizioni con grandezza minore o uguale a quella richiesta dal programma. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260409122327.png" width="200">
+</div>
+
+Nell’esempio sulla prima colonna abbiamo tutte partizioni da 8 mega, quindi possiamo far partire solo programmi da 8 mega, nella seconda invece abbiamo quantità differenti. I problemi di questo metodo stanno proprio nel fatto che un programma potrebbe essere troppo lungo per entrare in una partizione e quindi si userebbe fer forza l’overlay. Inoltre comporta un utilizzo inefficiente della memoria principale poiché ogni programma occupa un’intera partizione e quindi si limita anche il numero di processi attivi al numero di partizioni che abbiamo, si crea anche una **frammentazione interna**, cioè uno spreco di spazio poiché il programma può richiedere meno memoria di quella della partizione. Per allocare un processo ad una partizione o si crea una coda per ogni processo, oppure metto il processo in una singola coda che guarda tutte le partizioni
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260409122716.png" width="200">
+</div>
+
+*Segmentazione:* Un’alternativa sono le **partizioni dinamiche**, cioè le partizioni vengono create dinamicamente quando un processo è caricato in memoria, la ram che non è occupata dal sistema operativo dunque è un blocco unico che viene allocato man mano.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260409123538.png" width="200">
+</div>
+
+Questo, come si vede nella foto, provoca una **frammentazione esterna** che può essere risolta però con una compattazione della ram che viene liberata man mano che i processi finiscono. 
+
+Per il metodo di allocazione si possono avere 3 politiche di scelta del blocco: 
+- *Best-fit:* sceglie il blocco disponibile che ha la dimensione più simile a quella richiesta 
+- *First-fit:* sceglie il primo blocco di dimensione sufficiente, a partire dall’inizio della memoria
+- *Next-fit:* sceglie il primo blocco sufficiente a partire dall’ultima partizione creata 
+
+Il best-fit può sembrare il metodo migliore però con esso si creano un sacco di partizioni molto piccole, la first-fit invece tutto sommato funziona meglio, però con questa si cerca di usare sempre la prima parte della memoria, si potrebbe creare quindi una frammentazione concentrata sulla prima parte della memoria.
+
+IMMAGINE
+
+**Buddy system:** C’è però un meccanismo, il buddy system, un compromesso tra partizioni fisse e dinamiche che è più facile da gestire. Si hanno blocchi di dimensione 2 K, L <= K <= U, dove 2 U è lo spazio allocabile, 2 L è la dimensione dei blocchi allocabili. Un programma di dimensione l con 2 K-1 < l <= 2 K viene allocato in un blocco libero di dimensione 2 K, se non ce ne sono, un blocco di dimensione 2 K+1 è spezzato in due buddies di dimensione 2 K. Non appena due buddies sono contemporaneamente liberi sono riuniti in un unico blocco di dimensione doppia.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260409125952.png" width="200">
+</div>
+
+Gli indirizzi all’interno del nostro programma possono essere logici, ossia riferimenti a una locazione di memoria indipendente dall’assegnazione della memoria principale al processo, quindi il vero indirizzo del dato non è conosciuto al programmatore, l’indirizzo fisico invece è l’effettiva posizione del dato nella memoria principale, l’indirizzo relativo è l’indirizzo logico espresso come posizione relativa a un altro indirizzo noto. 
+
+*Rilocazione:* La rilocazione può essere **statica** se a un processo sarà sempre assegnata la stessa partizione, in questo caso si può usare un caricatore (loader) rilocante. Al caricamento tutti i riferimenti a indirizzi relativi sono sostituiti da indirizzi assoluti, determinati dall’indirizzo base del processo caricato. La rilocazione può essere invece **dinamica** se il processo può occupare differenti partizioni nel corso della sua vita (ad esempio partizioni variabili e caricamento dinamico), si ha chiaramente quando avviene lo swapping tra memoria principale e secondaria: - Quando l’immagine del processo è creata, viene caricata in una partizione; - Quando è trasferita in memoria secondaria e poi ricaricata in memoria, occuperà un’altra partizione; - In caso di compattamento della memoria, la partizione sarà ancora modificata. - Quindi le locazioni di memoria riferite dal programma variano ogni volta che il processo subisce uno swap. È necessaria la rilocazione dinamica con supporto hardware. CONTROLLA
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260409130119.png" width="200">
+</div>
+
+**Paginazione:** Nella paginazione la memoria principale è partizionata in blocchi di dimensione fissa detti frame, i programmi sono divisi in blocchi della stessa dimensione detti pagine, queste pagine sono poi caricate in frame grandi quanto la pagina.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260409131628.png" width="200">
+</div>
+
+Per ogni processo viene creata una tabella che contiene la posizione del frame per ogni pagina del processo, il processore accede alla tabella delle pagine del processo corrente per produrre l’indirizzo fisico. 
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+  <img src="Pasted image 20260409131719.png" style="max-width: 60%; height: auto;">
+  <img src="Screenshot From 2026-04-09 13-17-49.png" style="max-width: 60%; height: auto;">
+</div>
+
+Le 3 pagine sono lunghe ciascuna 1024 byte, l’ultima pagina ha uno spazio “sprecato” dovuto al fatto che il programma occupa 2700 byte, quindi all’ultima pagina se ne allocano 652 e il resto non servirà. L’indirizzo relativo 1502 rappresenta la casella indicata dalla freccia, l’indirizzo logico corrispondente è che, la casella appartiene alla pagina di numero 1, con offset = 478, ossia salterà i primi 1024 byte che appartengono alla prima pagina (la pagina 0) e partirà dal 1024 esimo byte applicandogli l’offset di 478 che ci permette di arrivare all’indirizzo 1502, {segmentazione la spiega la prox volta}

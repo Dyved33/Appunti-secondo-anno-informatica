@@ -1,5 +1,3 @@
-
-![[Recording 20260329175218.m4a]]
 ###### **Compilatori e Interpreti**
 La traduzione del codice sorgente in un linguaggio comprensibile dalla macchina può avvenire in modalità differenti (è anche possibile la traduzione da un linguaggio di programmazione a un altro):
 * **Compilatore:** Esegue la traduzione in blocco *prima* dell'esecuzione. Prende in input il **codice sorgente** e, tramite il traduttore, restituisce il **codice oggetto** (oppure delle notifiche di errore).
@@ -973,7 +971,9 @@ Quindi il processo che viene seguito è: pattern $\rightarrow$ genera/riconosce 
 > - l'analizzatore restituisce int, perché ha priorità maggiore
 > - alla successiva attivazione analizza `interesse = 5;`
 > - anche questo inizia con il lessema `int` ma non è il più lungo
-> - MANCA
+> - il più lungo lessema iniziale è interesse, che corrisponde al pattern del token identificatore
+> - l’analizzatore restituisce identificatore
+> - alla successiva attivazione analizza =5
 
 Il problema dell’analisi lessicale ha come dati: 
 - una sequenza finita di pattern
@@ -992,16 +992,121 @@ Con la costruzione dei sottoinsiemi otteniamo un'automa deterministico $A_D = \l
 - Gli stati di $A_D$ sono sottoinsiemi di $Q = \{i_0\} \cup \displaystyle\bigcup_{j=1}^n Q_j$
 - Si ha che $w$ sta nel linguaggio denotato da $E_j$ se e soltanto se $f_j \in \hat\delta(q_0,u)$
 
-Troviamo il più lungo prefisso $u$ di $w$ accettato da $A_D$ e il più piccolo indice $j$ tale che $f_j \in \hat\delta(q_0,u)$. Gli stati di $A_D$ sono sottoinsiemi di $Q$ tra i quali c'è $\emptyset$ che funge da 'pozzo'. L'ultimo transito da uno stato finale prima dell'ingresso nel pozzo individua il più lungo prefisso di $w$ accettato da $A_D$
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260409154305.png" width="200">
+</div>
 
-ESEMPIO
+Troviamo il più lungo prefisso $u$ di $w$ accettato da $A_D$ e il più piccolo indice $j$ tale che $f_j \in \hat\delta(q_0,u)$. Gli stati di $A_D$ sono sottoinsiemi di $Q$ tra i quali c'è $\emptyset$ che funge da 'pozzo'. L'ultimo transito da uno stato finale prima dell'ingresso nel pozzo individua il più lungo prefisso di $w$ accettato da $A_D$
 
 **Algoritmo:** 
 *Input:* l'automa deterministico $A_D$ e un puntatore start al test da analizzare
 *Output:* la massima lunghezza di un prefisso del testo accettato da $A_D$ e il token corrispondente
 
-PSEUDOCODICE
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260409154738.png" width="200">
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+  <img src="Pasted image 20260409154920.png" style="max-width: 60%; height: auto;">
+  <img src="Pasted image 20260409154935.png" style="max-width: 60%; height: auto;">
+  <img src="Pasted image 20260409155003.png" style="max-width: 60%; height: auto;">
+</div>
 
 **Lex:** è un generatore di analizzatori lessicali
 
-IMMAGINE
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260409155211.png" width="200">
+</div>
+###### Grammatiche regolari
+**Definizione:** una grammatica a struttura di frase $G = \langle V,\Sigma,P,S \rangle$ è di tipo 3 se tutte le produzioni hanno le forme: $X \rightarrow aY, X \rightarrow a, X,Y \in N, a \in \Sigma$. Nel caso in cui $S$ non compaia nei lati destri delle produzioni è ammessa anche la produzione $S \rightarrow \epsilon$ 
+
+**Osservazione:** la produzione $S \rightarrow \epsilon$ serve esclusivamente per generare la parola vuota
+
+> [!example] 
+> Sia $G = \langle V,\Sigma,P,S \rangle$, con $\Sigma = \{a,b\}, V = \Sigma \cup \{S,X\}$ e con le produzioni: $S \rightarrow aS, S \rightarrow bX, S \rightarrow b, X \rightarrow aX, X \rightarrow bS, X \rightarrow a$. Si ha per esempio, $abbab \in L(G)$. Tale grammatica è di tipo 3
+
+**Teorema:** un linguaggio è regolare se e soltanto se è generato da una grammatica di tipo 3
+
+**Osservazione:** data $G$, si può effettivamente costruire un automa  a stati finiti che accetta il linguaggio generato da $G$. Viceversa, dato un automa a stati finiti $A$, si può effettivamente costruire una grammatica di tipo 3 che genera il linguaggio accettato da $A$
+
+Sia $G = \langle V,\Sigma,P,S \rangle$ una grammatica di tipo 3, per semplicità supponiamo che non abbia la produzione $S \rightarrow \epsilon$. Costruiamo l'automa non deterministico A come segue:
+- Gli stati sono le variabili della grammatica G e la parola vuota
+- Per ogni produzione $X \rightarrow aY$, nel grafo di $A$ c'è la freccia $X \xrightarrow{a} Y$, per ogni produzione $X \rightarrow a$, nel grafo di $A$ c'è la freccia $X \xrightarrow{a} \epsilon$
+- Lo stato iniziale è $S$
+-  l'unico stato finale è $\epsilon$
+
+Si verifica che $L(G) = L(A)$
+
+**Inclusione $L(A) \subseteq L(G)$:** Sia $w \in L(A)$, scriviamo $w = a_1a_2…a_n$, con $a_1,a_2,…,a_n \in \Sigma, n \geq 1$. Nel grafo di $A$ ci sarà un cammino $S \xrightarrow{a_1} X_1 \xrightarrow{a_2} X_2 \xrightarrow{a_3}... \xrightarrow{a_{n-1}} X_{n-1} \xrightarrow{a_n} \epsilon$. Pertanto, nella grammatica $G$ ci saranno le produzioni $S → a_1 X_1,\ X_1 → a_2 X_2,\ …,\ X_{n-1} → a_n$ e quindi la derivazione $S \implies a_1X_1 \implies a_1a_2X_2 \implies … \implies a_1a_2…a_n = w$. Ne segue che $w \in L(G)$
+
+**Inclusione $L(G) \subseteq L(A)$:** Sia $w \in L(G)$, scriviamo $w = a_1a_2…a_n$, con $a_1,a_2,…,a_n \in \Sigma, n \geq 1$. La derivazione di $w$ in $G$ avrà necessariamente la forma $S \implies a_1X_1 \implies a_1a_2X_2 \implies … \implies a_1a_2…a_n = w$ con $S → a_1 X_1,\ X_1 → a_2 X_2,\ …,\ X_{n-1} → a_n$ produzioni di $G$. Pertanto nel grafo di $A$ ci sarà un cammino $S \xrightarrow{a_1} X_1 \xrightarrow{a_2} X_2 \xrightarrow{a_3}... \xrightarrow{a_{n-1}} X_{n-1} \xrightarrow{a_n} \epsilon$. Ne segue che $w \in L(A)$
+
+Quindi $L(G) = L(A)$
+
+**Dalla grammatica all'automa:** 
+**Osservazione:** se $S \rightarrow \epsilon$ è una produzione di $G$ (e quindi $S$ non campare nei lati destri delle produzioni), allora occorrerà aggiungere $S$ all'insieme degli stati finali di $A$ 
+
+**Dall'automa alla grammatica:** sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ un automa  astati finiti privo di $\epsilon-$transizioni. Per semplicità supponiamo che $\epsilon \notin L(A)$. Costruiamo la grammatica $G$ nel modo seguente:
+- Le variabili della grammatica $G$ sono gli stati dell'automa $A$ 
+- Per ogni freccia $X \xrightarrow{a} Y$ nel grafo di $A$ aggiungiamo a $G$ la produzione $X → aY$, se $Y$ è uno stato finale, aggiungiamo a $G$ anche la produzione $X → a$
+- Il simbolo iniziale è lo stato iniziale $S = q_0$
+
+Si verifica che $L(G) = L(A)$ (dimostrazione analoga alla precedente)
+
+**Osservazione:** se $\epsilon \in L(A)$ sarà necessario modificare la grammatica F in modo da fargli generare anche la parola vuota. Se però S compare nel alto destro di qualche produzione, non è possibile aggiungere la produzione $S \rightarrow \epsilon$. Dovremo pertanto prima introdurre una nuova variabile $S'$ le cui produzioni avranno gli stessi lati destri delle produzioni di $S$, prendere $S'$ come simbolo iniziale al posto di $S$ e, infine, aggiungere la produzione $S' → \epsilon$
+
+> [!example] 
+> Se $G$ ha le produzioni $S → aS, S →bX, S →b, X → aX, X → bS, X → a$, allora $L(G)$ è accettata dall'automa
+> 
+> ![[Pasted image 20260409162414.png|200]]
+
+> [!example]
+> ![[Pasted image 20260409162548.png|200]]
+
+**Definizione:** una grammatica si dice lineare se tutte le produzioni hanno la forma $X → uYv$ o $X → u$ con $X,Y \in N$ e $u,v \in \Sigma^*$
+
+Una grammatica si dice lineare destra se tutte le produzioni hanno la forma $X → uY$ o $X → u$ con $X,Y \in N$ e $u,v \in \Sigma^*$. In altre parole, una grammatica è lineare se i lati destri delle produzioni contengono al più una variabile; è lineare destra se tali variabili compaiono solo alla fine di tale termine
+
+Le grammatiche di tipo 3 considerate finora sono evidentemente lineari destre. Viceversa si può dimostrare che ogni grammatica lineare destra genera un linguaggio di tipo 3
+
+**Teorema:** un linguaggio è accettato da un automa a stati finiti se e solo se è generato da una grammatica lineare destra
+
+> [!example] 
+> Sia $G$ la grammatica con le produzioni $S → aaX, S → \epsilon, X → bbS$, l'automa che accetta $L(G)$ si ottiene nel modo seguente:
+> 
+> ![[Pasted image 20260409183732.png]]
+> 
+> La grammatica $G$, inoltre, è equivalente alla grammatica con le produzioni: $S' → \epsilon, S' → aY, S → aY, Y → aX, X → bZ, Z → bS, Z → b$
+###### Linguaggi non contestuali
+> [!example] sia $P$ il linguaggio delle palindrome sull'alfabeto $\Sigma = \{a,b\}$
+> 1. $\epsilon, a, b$ sono palindrome
+> 2. Per ogni palindroma $w$, le parole $awa$ e $bwb$ sono palindrome
+> 3. Ogni palindroma si ottiene su $\Sigma$ si ottiene applicando un numero finito di volte le regole 1 e 2:$P = \epsilon+a+b+aPa+bPb$
+> 
+> Abbiamo ottenuto un algoritmo per verificare, ricorsivamente, se una data parola è palindroma e un metodo per generare tutte le palindrome (grammatica): $S \rightarrow \epsilon, S \rightarrow a, S \rightarrow b, S \rightarrow aSa, S \rightarrow bSb$ 
+
+*Definizione:* una grammatica si dice non contestuale o di tipo 2 (CFG) se tutte le produzioni sono della forma: $X \rightarrow \alpha$, con $X \in N, \alpha \in V*$. Un linguaggio si dice non contestuale o di tipo 2 (CFL) se è generato da una grammatica non contestuale. MANCA
+
+> [!example]
+> MANCA
+
+MANCA QuALCOSA FORSE
+
+**Linguaggio di Dick:** $\Sigma_n = \{a_1,a_2,…,a_n,b_1,b-2,…,b_n\}$. Sia $G_n = \langle V,\Sigma_n, P, S \rangle$ la grammatica con unica variabile $S$ e produzioni MANCANO, il linguaggio $D_n$ generato  da $G_n$ è detto linguaggio di Dick
+
+> [!example]
+> Supponiamo $n = 2$ e poniamo $a_1 = (,b_1 =) , a_2 = [, b_2 =]$. Allora le parole $(),[], [()]([]) , (())[([]())]$ sono elementi di $D_2$, mentre $)($ non lo è. Sequenze di parentesi non ben bilanciate
+
+> [!example]
+> Costruiamo una grammatica che genera le espressioni regolari sull'alfabeto $\{a,b\}$
+> 1. $\emptyset,a,b$ sono espressioni regolari
+> 2. Se $E$ e $F$ sono espressioni regolari, allora lo sono anche $(E+F),(EF), E^*$
+> 3. Tutte le espressioni regolari sull'alfabeto $\{a,b\}$ si ottengono applicando un numero finito di volte le due regole precedenti
+> 
+> Pertanto prendiamo $\Sigma = \{a,b,\emptyset,(,),+,^*\}$ e produzioni MANCANO
+
+*Notazione:* si usa raggruppare le produzioni con lo stesso lato sinistro, separando i lati destri con una barra verticale
+
+> [!example]
+> $S \rightarrow a|b|\emptyset| (S+S)|(SS)|S^*$
+

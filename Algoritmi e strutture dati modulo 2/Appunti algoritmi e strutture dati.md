@@ -1028,4 +1028,17 @@ Ho due set di vertici:
 </div>
 
 - Sembra molto come l'algoritmo di Prim, ma calcola $v.d$ e usa i pesi del cammino minimo come chiave
-- L'algoritmo di Dijkstra può essere visto come "avido" poiché sceglie sempre il vertice "più leggero" ("più vicino"?) in $V - S$ da aggiungere a $S$
+- L'algoritmo di Dijkstra può essere visto come "avido" poiché sceglie sempre il vertice "più leggero" ("più vicino"?) in $V - S$ da aggiungere a $S$ 
+
+Correttezza: l'algoritmo estrae i vertici dall'heap in base alla distanza minore dalla sorgente. Induttivamente se l'algoritmo ha trovato il cammino minimo per qualche insieme $S$, il cammino minimo per arrivare al vertice più vicino in $V-S$ può essere trovato appendendo un solo arco ad un cammino a qualche vertice di $S$ 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260409144108.png" width="200">
+</div>
+
+Analisi: ho $|V|$ operazioni Insert e Extract-Min e $\leq |E|$ operazioni Decrease-Key. Come nell'algoritmo di Prim dipende dall'implementazione di una coda di priorità:
+- Nel caso di una binary heap ogni operazione richiede $O(1)$ in tempo $\implies O(E \lg(V))$ 
+- Nel caso di una Fibonacci heap:
+	- Ogni Extract-Min richiede $O(1)$ di tempo ammortizzato
+	- Ci sono $\Theta(V)$ operazioni Insert e Extract-Min, che richiedono $O(\lg(V))$ di tempo ammortizzato
+	- Perciò il tempo è $O(V \lg(V+E))$ 
