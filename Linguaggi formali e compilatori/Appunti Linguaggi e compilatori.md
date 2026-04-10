@@ -181,7 +181,7 @@ Ci si arresta solo quando i segnaposto non compaiono più. <u>Il concetto chiave
 Le grammatiche mi permettono di definire dei linguaggi (anche infiniti). Questa è una definizione operativa: la descrizione mi permette di derivare tutte le parole del linguaggio. 
  
 **Grammatiche equivalenti:** 
-**Definizione:** Due grammatiche si dicono equivalenti se generano lo stesso linguaggio.  
+*Definizione:* Due grammatiche si dicono equivalenti se generano lo stesso linguaggio.  
 Capire se una parola appartiene a un linguaggio (ricognizione) è molto importante perché ci permette di capire se il nostro codice è sintatticamente corretto (equivale a verificare se il nostro codice come sequenza di token, è una delle parole appartenenti al linguaggio e alla grammatica). A questo punto si pone la di generare un linguaggio e questo a sua volta genera 2 problemi:
 1. **Problema di ricognizione (la parola appartiene al linguaggio?):** Prende quindi in input una grammatica e una parola sull'alfabeto determinato dalla mia grammatica, e avrà come output SI se la parola è generata dalla grammatica oppure NO.
  - *Input:* una grammatica (linguaggio) $G = (V, \Sigma, P,S)$ e una parola *w* $\in$ $\Sigma^*$
@@ -199,12 +199,12 @@ La strategia è quindi quella di classificare (**gerarchia di Chomsky**) le nost
 Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più complessi ai più semplici)
 
 **Linguaggi di tipo 0:** 
-**Definizione:** le grammatiche a struttura di frase (in base alle loro regolo possono scrivere intere frasi e non solo singoli caratteri) si dicono anche *grammatiche di tipo 0*. I linguaggi generati da grammatiche di tipo 0 si dicono *linguaggi di tipo 0* oppure *linguaggi ricorsivamente numerabili*. Fanno parte di questo livello le grammatiche a struttura di frase. Queste grammatiche hanno la massima espressività possibile: <u>se io ho una procedura effettiva infinita che mi genera una lista di parole, quella lista di parole è un linguaggio di tipo 0.</u>
+*Definizione:* le grammatiche a struttura di frase (in base alle loro regolo possono scrivere intere frasi e non solo singoli caratteri) si dicono anche *grammatiche di tipo 0*. I linguaggi generati da grammatiche di tipo 0 si dicono *linguaggi di tipo 0* oppure *linguaggi ricorsivamente numerabili*. Fanno parte di questo livello le grammatiche a struttura di frase. Queste grammatiche hanno la massima espressività possibile: <u>se io ho una procedura effettiva infinita che mi genera una lista di parole, quella lista di parole è un linguaggio di tipo 0.</u>
 > [!example] 
 > ![[Screenshot From 2026-03-05 10-15-42.png|200]]
 
 **Linguaggi di tipo 1 (grammatiche sensibili al contesto / contestuali):**
-**Definizione:** una grammatica a struttura di frase si dice sensibile al contesto se le produzioni hanno la forma: $\alpha_1X\alpha_2 \to \alpha_1\beta\alpha_2$, con $X \in N$, $\alpha_1, \alpha_2, \beta \in V^*$ , $\beta \neq \epsilon$.  Ciò significa che le produzioni di queste grammatiche hanno il lato sx che contiene una variabile, mentre il lato dx si ottiene sostituendo quella variabile con una parola qualsiasi purché non vuota. Quindi mentre prima potevamo sostituire una parola con una parola, qui possiamo sostituire solo una lettera all'interno di una parola con una parola, che per di più non deve essere vuota (posso sostituire una variabile solo se è contenuta in un  contesto). I linguaggi generati da grammatiche di tipo *q* si dicono *linguaggi di tipo 1*  o anche *sensibili al contesto*.  A differenza dei linguaggi di tipo 0, per questo tipo di linguaggi esistono algoritmi che risolvono i problemi di parsing e ricognizione, ma sono molto costosi.
+*Definizione:* una grammatica a struttura di frase si dice sensibile al contesto se le produzioni hanno la forma: $\alpha_1X\alpha_2 \to \alpha_1\beta\alpha_2$, con $X \in N$, $\alpha_1, \alpha_2, \beta \in V^*$ , $\beta \neq \epsilon$.  Ciò significa che le produzioni di queste grammatiche hanno il lato sx che contiene una variabile, mentre il lato dx si ottiene sostituendo quella variabile con una parola qualsiasi purché non vuota. Quindi mentre prima potevamo sostituire una parola con una parola, qui possiamo sostituire solo una lettera all'interno di una parola con una parola, che per di più non deve essere vuota (posso sostituire una variabile solo se è contenuta in un  contesto). I linguaggi generati da grammatiche di tipo *q* si dicono *linguaggi di tipo 1*  o anche *sensibili al contesto*.  A differenza dei linguaggi di tipo 0, per questo tipo di linguaggi esistono algoritmi che risolvono i problemi di parsing e ricognizione, ma sono molto costosi.
 <div style="display: flex; align-items: flex-start; gap: 20px;">
   <div style="flex: 1;">
     <img src="Screenshot From 2026-03-05 10-22-40.png" style="width: 100%; border-radius: 8px;">
@@ -217,7 +217,7 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
 > ![[Screenshot From 2026-03-05 10-22-40.png|200]]
 
 **Grammatiche monotone (sempre di tipo 1):**
-**Definizione:** una grammatica si dice *monotona* se tutte le produzioni hanno la forma: $\alpha \to \beta$ con $|\alpha| \leq |\beta|$ . Cioè una grammatica in cui tutte le produzioni hanno il lato dx che ha lunghezza maggiore o uguale a quella del lato sx. Quindi non c’è più l’obbligo di sostituire singole variabili, ma c’è la sola regola che il lato dx non può essere più corto di quello sx. Inoltre: 
+*Definizione:* una grammatica si dice *monotona* se tutte le produzioni hanno la forma: $\alpha \to \beta$ con $|\alpha| \leq |\beta|$ . Cioè una grammatica in cui tutte le produzioni hanno il lato dx che ha lunghezza maggiore o uguale a quella del lato sx. Quindi non c’è più l’obbligo di sostituire singole variabili, ma c’è la sola regola che il lato dx non può essere più corto di quello sx. Inoltre: 
 - Le grammatiche sensibili al contesto sono monotone, perché in esse si sostituisce (all'interno del contesto) una variabile con qualcosa che non è vuoto, quindi quello che otterremo sarà qualcosa di più lungo o al massimo della stessa lunghezza di quello che già abbiamo.
 - Non tutte le grammatiche monotone sono sensibili al contesto
 - Ogni grammatica monotona è equivalente a una grammatica sensibile al contesto (che genera lo stesso linguaggio)
@@ -236,7 +236,7 @@ I linguaggi di tipo 2 costituiscono una sottoclasse propria dei linguaggi di tip
 Gli algoritmi di ricognizione e parsing per le grammatiche di tipo 2 si comportano abbastanza bene, alcuni sono moderatamente efficienti . La maggior parte dei linguaggi di programmazione sono generati da una grammatica non contestuale.
 
 **Linguaggi di tipo 3 Grammatiche regolari):** 
-**Definizione:** una grammatica a struttura di frase si dice *regolare* o di *tipo 3* se le produzioni hanno la forma $X \to aY$ oppure $X \to a$, con $X,Y \in N$, $a \in \Sigma$. Dunque Le produzioni hanno una forma ancora più semplice: a sx sempre una variabile, come nelle grammatiche di tipo 2, ma a dx ho un terminale da solo o un terminale seguito da una variabile. I linguaggi generati da grammatiche di tipo 3 si dicono *linguaggi di tipo 3* o anche *regolari*. I linguaggi di tipo 3 costituiscono una sottoclasse dei linguaggi di tipo 2 perché le produzioni a sx hanno una singola variabile. Quindi un linguaggio generato da una grammatica di tipo 3, è anche un linguaggio generato da una grammatica di tipo 2. Anche in questo caso, però, ci sono linguaggi di tipo 2 che non sono linguaggi di tipo 3.
+*Definizione:* una grammatica a struttura di frase si dice *regolare* o di *tipo 3* se le produzioni hanno la forma $X \to aY$ oppure $X \to a$, con $X,Y \in N$, $a \in \Sigma$. Dunque Le produzioni hanno una forma ancora più semplice: a sx sempre una variabile, come nelle grammatiche di tipo 2, ma a dx ho un terminale da solo o un terminale seguito da una variabile. I linguaggi generati da grammatiche di tipo 3 si dicono *linguaggi di tipo 3* o anche *regolari*. I linguaggi di tipo 3 costituiscono una sottoclasse dei linguaggi di tipo 2 perché le produzioni a sx hanno una singola variabile. Quindi un linguaggio generato da una grammatica di tipo 3, è anche un linguaggio generato da una grammatica di tipo 2. Anche in questo caso, però, ci sono linguaggi di tipo 2 che non sono linguaggi di tipo 3.
 > [!example]
 > ![[Pasted image 20260305103801.png|200]]
 
@@ -249,7 +249,7 @@ Un automa è un dispositivo che può raggiungere un certo numero finito di confi
 
 Terminata la lettura del nastro, in base allo stato raggiunto (se è uno stato accettante o meno) , accetta o rifiuta la parola letta. Le parole accettate costituiscono un linguaggio di tipo 3 che, a sua volta, è sempre accettato da un automa a stati finiti. Questo algoritmo è lineare e in tempo reale, perché ad ogni cella letta so se tutto ciò che è venuto prima è stato accettato o meno.
 
-**Definizione:** un *automa a stati finiti deterministico* è una quintupla $A = (Q, \Sigma, \delta, q_0, F)$ ove:
+*Definizione:* un *automa a stati finiti deterministico* è una quintupla $A = (Q, \Sigma, \delta, q_0, F)$ ove:
 - $Q$ è un insieme finito, detto insieme degli stati = tutte le configurazioni che il dispositivo può assumere
 - $\Sigma$ è un alfabeto detto alfabeto di input
 - $\delta$: $Q \times \Sigma \to Q$ è la funzione di transizione  = legge con cui i nostri stati cambiano in base ad uno stato precedente e alla lettera scritta sul nastro
@@ -265,7 +265,7 @@ Per ogni $q \in Q, u, v \in \Sigma^*$,  si ha $\hat{\delta}(q,uv) = \hat{\delta}
 > [!example] ![[Screenshot From 2026-03-05 21-47-18.png|200]]
 
 **Linguaggio accettato:**
-**Definizione:** una parola $w \in \Sigma^*$ è accettata da $A$ se $\hat{\delta}(q_0, w) \in F$. L'insieme delle parole accettate da $A$ si dice linguaggio riconosciuto (o accettato) da $A$ e si denota come $L(A) = \{w \in \Sigma^* | \hat{\delta}(q_0,w) \in F\}$ 
+*Definizione:* una parola $w \in \Sigma^*$ è accettata da $A$ se $\hat{\delta}(q_0, w) \in F$. L'insieme delle parole accettate da $A$ si dice linguaggio riconosciuto (o accettato) da $A$ e si denota come $L(A) = \{w \in \Sigma^* | \hat{\delta}(q_0,w) \in F\}$ 
 
 **Grafo di un automa:** A ogni automa $A = (Q, \Sigma, \delta, q_0, F)$ associamo un grafo diretto con frecce etichettate:
 - I vertici sono gli stati
@@ -291,7 +291,7 @@ Se da questa definizione togliessi l'aspetto degli archi (cioè che da ogni vert
 
 **Sintesi:** Possiamo definire Automi a Stati finiti non Deterministici, dei meccanismi che non hanno la restrizione dei modelli deterministici: un meccanismo che può assumere un numero predefinito di configurazioni interne, che ha un nastro di input, ma che ad ogni passo non esegue più una sola transizione ben determinata ma dispone di un ventaglio di possibilità e può quindi eseguire varie transizioni (o nessuna). L’input viene accettato se tra le tante computazioni possibili c’è n’è almeno una che termina in uno stato finale. Quindi una parola viene rifiutata se tutte le computazioni terminano in uno stato non finale o terminano prima che il nastro sia esaurito. 
 
-**Definizione:** un automa a stati finiti non deterministico è una quintupla $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ dove:
+*Definizione:* un automa a stati finiti non deterministico è una quintupla $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ dove:
 - Q è l'insieme degli stati
 - $\Sigma$ è l'alfabeto di input
 - $\delta: Q \times \Sigma \to \wp(Q)$ è la funzione di transizione
@@ -319,7 +319,7 @@ Apparentemente questo tipo di progettazione non ci da nessun vantaggio, perché 
 > [!example] ![[Pasted image 20260306110859.png|200]]
 
 **Teorema:** Sia $A$ un automa a stati finiti non deterministico, esiste effettivamente un equivalente automa a stati finiti deterministico $A’$ tale che $L (A) = L (A’)$, cioè esiste l’automa deterministico e l’algoritmo per costruire questo automa a partire dall'automa non deterministico. Quindi, prima andremo a disegnare l’automa a stati non deterministico (prima immagine con più percorsi in verde e rosso), cosa che risulta molto più facile rispetto al crearne uno deterministico, e poi sapremo che esiste l’algoritmo in grado di trasformare quel grafo nel grafo di un automa a stati deterministico (seconda immagine con colonne). 
-**Dimostrazione:** Gli stati dell’automa deterministico registreranno l’insieme gli stati raggiungibili dalle computazioni dell’automa non deterministico sul medesimo input $\rightarrow$ Accetto se fra questi ce n’è uno finale
+*Dimostrazione:* Gli stati dell’automa deterministico registreranno l’insieme gli stati raggiungibili dalle computazioni dell’automa non deterministico sul medesimo input $\rightarrow$ Accetto se fra questi ce n’è uno finale
 
 **Costruzione:** Sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ l'automa non deterministico. Definisco l'automa deterministico $A' = \langle Q', \Sigma, \delta', s_0, F' \rangle$ come segue: 
 - L'insieme degli stati è l'insieme $Q' = \wp(Q)$ costituito dai sottoinsiemi di $Q$ (uno stato dell' $A'$ deterministico è in realtà un'insieme di stati dell' $A$ non deterministico)
@@ -327,7 +327,7 @@ Apparentemente questo tipo di progettazione non ci da nessun vantaggio, perché 
 - Gli stati finali sono tutti i sottoinsiemi di $Q$ che contengono almeno un elemento di $F$ (quindi almeno uno stato finale dell' $A$ di partenza), cioè: $F' = \{s \in \wp(Q) | s \cap F \neq \emptyset \}$ 
 - La funzione di transizione $\delta'(s,a) = \bigcup\limits_{q \in s} \delta(q,a), s \in \wp(Q), a \in \Sigma$ (prende in input uno stato dell' $A$, cioè un insieme degli stati dell'automa non-deterministico, e una lettera $a$)
 
-**Dimostrazione:** per ogni $w \in \Sigma^*$ risulta che $\hat{\delta'}(s_0,w) = \{q \in Q | \text{nel grafo di A c'è un cammino da}\ q_0 \ \text{a} \ q \ \text{con etichetta} \ w\}$ (dimostrazione per induzione sulla lunghezza di $w$). Pertanto sono equivalenti: 
+*Dimostrazione:* per ogni $w \in \Sigma^*$ risulta che $\hat{\delta'}(s_0,w) = \{q \in Q | \text{nel grafo di A c'è un cammino da}\ q_0 \ \text{a} \ q \ \text{con etichetta} \ w\}$ (dimostrazione per induzione sulla lunghezza di $w$). Pertanto sono equivalenti: 
 - $w\ \text{è accettata da} \ A$
 - $\hat{\delta'}(s_0,w) \ \text{contiene uno stato di} \ F$
 - $\hat{\delta'}(s_0,w) \in F'$
@@ -336,7 +336,7 @@ $\implies L(A) = L(A')$
 
 Come abbiamo accennato precedentemente, però, sarebbero presenti troppi stati da controllare (se $Q=n$, allora $Q’=2^n$). Per fortuna <u>non tutti questi stati sono necessari: possiamo definire uno stato necessario/accessibile come un cammino nel grafo dell’automa che, dallo stato iniziale, mi porta a $q$. Tutti gli altri stati si dicono inaccessibili.</u>
 
-**Definizione:** sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ un automa a stati finiti deterministico. Uno stato $q \in Q$ si dice *accessibile* se $q = \hat{\delta}(q_0,w)$ per qualche $w \in \Sigma^*$.
+*Definizione:* sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ un automa a stati finiti deterministico. Uno stato $q \in Q$ si dice *accessibile* se $q = \hat{\delta}(q_0,w)$ per qualche $w \in \Sigma^*$.
 Se io elimino tutti questi stati inaccessibili e restringo la funzione di transizione (delta cappello) solo agli stati accessibili, ottengo un automa con un numero di stati più piccolo, equivalente a quello di partenza, che accetta lo stesso linguaggio di quello di partenza.
 > [!example] 
 > ![[Screenshot From 2026-03-06 11-26-56.png|200]] 
@@ -376,11 +376,11 @@ Ci si convince facilmente a questo punto che:
 
 **Teorema:** Sia $A$ un automa a stati finiti non deterministico con $\epsilon$-transizioni. Esiste effettivamente un automa a stati finiti deterministico $A'$ tale che $L(A) = L(A')$ (accetta lo stesso linguaggio)
 
-**Dimostrazione:** Gli stati dell’automa deterministico registreranno l’insieme degli stati raggiungibili dalle computazioni dell’automa non deterministico sul medesimo input. Accetto la parola se fra questi ce uno finale
+*Dimostrazione:* Gli stati dell’automa deterministico registreranno l’insieme degli stati raggiungibili dalle computazioni dell’automa non deterministico sul medesimo input. Accetto la parola se fra questi ce uno finale
 
 **$\epsilon$-chiusura:** Se però con l’automa a stati finiti non deterministico le nostre computazioni si limitavano alla potenza-numero-di-lettere della parola, ora teoricamente posso avere anche infinite ε-transizioni (la concatenazione di un miliardo di ε, è sempre una parola vuota). Quindi bisogna utilizzare una tecnica per trattare queste ε-transizioni: la ε-chiusura di uno stato. 
 
-**Definizione:** sia $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ un automa a stati finiti non deterministico con $\epsilon$-transizioni, la $\epsilon$-chiusura di uno stato $q \in Q$ è il più piccolo sottoinsieme $C_{\epsilon}(q)$ di $Q$ tale che:
+*Definizione:* sia $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ un automa a stati finiti non deterministico con $\epsilon$-transizioni, la $\epsilon$-chiusura di uno stato $q \in Q$ è il più piccolo sottoinsieme $C_{\epsilon}(q)$ di $Q$ tale che:
 - $q \in C_{\epsilon}(q)$
 - Per ogni $p \in C_{\epsilon}(q)$, $\delta(p,\epsilon) \subseteq C_{\epsilon}(q)$
 
@@ -409,7 +409,7 @@ return R
 - Gli stati finali sono tutti i sottoinsiemi di Q che contengono almeno un elemento di $F$, cioè: $F' = \{s \in \wp(Q) | s \cap F \neq \emptyset\}$ (sottoinsiemi che contengono almeno uno stato finale dell' $A$ precedente)
 - La funzione di transizione è $\delta'(s,a): C_{\epsilon}(\bigcup\limits_{p \in s} \delta(p,a))$, $s \in \wp(Q)$, $a \in \Sigma$ (insieme di tutti quegli stati che posso raggiungere in $A$ partendo da uno qualunque degli stati di $s$ e poi seguendo la freccia con etichetta a, e poi tute le frecce che voglio con etichetta $\epsilon$)
 
-**Dimostrazione:** Per ogni $w \in \Sigma^*$ risulta che $\hat{\delta'}(s_0,w) = \{q \in Q |$ nel grafo di $A$  c'è un cammino da $q_0$ a $q$ con etichetta $w$ $\}$. Pertanto sono equivalenti:
+*Dimostrazione:* Per ogni $w \in \Sigma^*$ risulta che $\hat{\delta'}(s_0,w) = \{q \in Q |$ nel grafo di $A$  c'è un cammino da $q_0$ a $q$ con etichetta $w$ $\}$. Pertanto sono equivalenti:
 - $w$ è accettata da $A$
 - $\hat{\delta'}(s_0,w)$ contiene uno stato di $F$
 - $\hat{\delta'}(s_0,w) \in F'$
@@ -454,7 +454,7 @@ La teoria dei linguaggi formali può essere vista come l’arte di rappresentare
   <img src="Screenshot From 2026-03-14 16-51-56.png" width="400">
 </div>
 
-**Osservazione:** unione, concatenazione e chiusura di Kleene sono dette operazioni regolari
+*Osservazione:* unione, concatenazione e chiusura di Kleene sono dette operazioni regolari
 
 Quindi, i linguaggi finiti li sappiamo definire facendo una semplice lista delle parole; con questi linguaggi finiti posso poi fare le operazioni di unione e concatenazione ed ottenere nuovi linguaggi finiti, e con la chiusura di Kleene ottengo nuovi linguaggi infiniti. Con questi linguaggi infiniti posso fare altre operazioni di unione e concatenazione, ottenendo altri linguaggi sempre più complessi. Questo vuol dire che posso scrivere la definizione dei linguaggi infiniti semplicemente indicando le operazioni che eseguo per ottenerli: ovvero le espressioni regolari. <u>Le espressioni sono parole che costruisco partendo dalle lettere dell’alfabeto e dal simbolo ∅, seguendo le regole.</u> Rappresentano quindi una sequenza di operazioni fatte a partire dall’alfabeto iniziale. 
 
@@ -465,7 +465,7 @@ Quindi, i linguaggi finiti li sappiamo definire facendo una semplice lista delle
 >> - $\emptyset^* = \{\epsilon\}$
 >> - $\epsilon^* = \{\epsilon\}$
 
-**Definizione:** sia $\hat\Sigma$ l'alfabeto ottenuto aggiungendo a $\Sigma$ le lettere $\emptyset, +, *, (,), . \implies$ si dicono *espressioni regolari* sull'alfabeto $\Sigma$ le parole sull'alfabeto $\hat\Sigma$ che si ottengono applicando un numero finito di volte le regole seguenti regole:
+*Definizione:* sia $\hat\Sigma$ l'alfabeto ottenuto aggiungendo a $\Sigma$ le lettere $\emptyset, +, *, (,), . \implies$ si dicono *espressioni regolari* sull'alfabeto $\Sigma$ le parole sull'alfabeto $\hat\Sigma$ che si ottengono applicando un numero finito di volte le regole seguenti regole:
 1. Ogni lettera $a \in \Sigma$ è un'espressione regolare, $\emptyset$ è un'espressione regolare
 2. Se $E$ e $F$ sono espressioni regolari, allora $(E+F), (EF)$ e $E^*$ sono espressioni regolari.
 
@@ -473,15 +473,15 @@ A ogni espressione regolare è associato un linguaggio, detto *linguaggio denota
 1. Per ogni $a \in \Sigma$, l'espressione regolare $a$ denota il linguaggio $\{a\}$; l'espressione regolare $\emptyset$ denota il linguaggio vuoto
 2. Detti $L_E$ e $L_F$ i linguaggi denotati dalle espressioni regolari $E$ e $F$, i linguaggi denotati dalle espressioni regolari $E+F, (EF), E^*$ sono, rispettivamente, $L_E \cup L_F, L_EL_F, L_{E^*}$
 
-**Definizione:** i linguaggi denotati da espressioni regolari si dicono *linguaggi regolari* (i linguaggi di tipo 0 sono detti anche linguaggi regolari)
+*Definizione:* i linguaggi denotati da espressioni regolari si dicono *linguaggi regolari* (i linguaggi di tipo 0 sono detti anche linguaggi regolari)
 
-**Osservazione:** la classe dei linguaggi regolari è la più piccola famiglia di linguaggi che:
+*Osservazione:* la classe dei linguaggi regolari è la più piccola famiglia di linguaggi che:
 - Contiene i linguaggi finiti
 - è chiusa per le operazioni regolari
 
 Perché se due linguaggi sono denotati da espressioni regolari, la loro unione sarà denotata anche lei da un’espressione regolare. Lo stesso per la concatenazione. La chiusura di Kleene sarà denotata dall’espressione regolare del linguaggio con la * vicino
 
-**Osservazione:** possiamo omettere le parentesi, rispettando la priorità:
+*Osservazione:* possiamo omettere le parentesi, rispettando la priorità:
 - Chiusura di Kleene
 - Concatenazione
 - Somma
@@ -579,7 +579,7 @@ Allora $A$ accetta il linguaggio denotato da $E^*$
 > ![[Pasted image 20260313112221.png|200]]
 
 **L'algoritmo di sintesi**
-**Proposizione:** data un'espressione regolare $G$, si può effettivamente costruire un'automa a stati finiti che riconosce il linguaggio denotato da $G$:
+*Proposizione:* data un'espressione regolare $G$, si può effettivamente costruire un'automa a stati finiti che riconosce il linguaggio denotato da $G$:
 1. se $G$ è un’espressione regolare di base (lettera o insieme vuoto), allora restituisco l’automa corrispondente; 
 2. se $G = (E + F)$, allora calcolo gli automi $A_1$ e $A_2$ corrispondenti a $E$ e $F$; costruisco l’automa dell’espressione $(E + F)$; 
 3. se $G = (EF)$, allora calcolo gli automi $A_1$ e $A_2$ corrispondenti a $E$ e $F$; costruisco l’automa dell’espressione $(EF)$; 
@@ -600,7 +600,7 @@ Esempio completo nelle slide del prof
 
 Per ogni $i, j, k$ con $0 \leq k < i, j \leq n$ (indici i e j compresi tra 1 e n, mentre k compreso tra 0 e n) consideriamo l’insieme $L_{ijk}$ contenente le seguenti parole: *le etichette dei cammini nel grafo di $A$ che iniziano in $q_i$, terminano in $q_j$, e attraversano solo stati di indice $\leq k$* (che attraversi soltanto, non che parta o arrivi in uno di questi stati)
 
-**Osservazione:** $L(A)= \bigcup\limits_{q_j \in F} L_{1jn}$. Quindi, se riesco a trovare espressioni regolari per tutti gli $L_{ijk}$, avrò anche un’espressione regolare di $L(A)$
+*Osservazione:* $L(A)= \bigcup\limits_{q_j \in F} L_{1jn}$. Quindi, se riesco a trovare espressioni regolari per tutti gli $L_{ijk}$, avrò anche un’espressione regolare di $L(A)$
 
 > [!example] ![[Pasted image 20260319110515.png|200]]
 > - $q_2$ stato iniziale
@@ -658,22 +658,22 @@ Tutti che attraversano solo stati di indice $\leq k-1$
 
 > [!example] > ![[Pasted image 20260319181524.png]]
 ###### Operazioni booleane
-**Proposizione:** la classe dei linguaggi regolari è un’algebra Booleana (altra conseguenza del teorema di Kleene). Ciò significa che i linguaggi regolari si comportano come insiemi normali e puoi fare operazioni logiche come OR, AND e NOT (e il risultato è sempre un linguaggio regolare)
+*Proposizione:* la classe dei linguaggi regolari è un’algebra Booleana (altra conseguenza del teorema di Kleene). Ciò significa che i linguaggi regolari si comportano come insiemi normali e puoi fare operazioni logiche come OR, AND e NOT (e il risultato è sempre un linguaggio regolare)
 
-**Dimostrazione:** Ci sono delle operazioni che sono naturali sulle espressioni regolari e altre operazioni che sono naturali sugli automi a stati finiti. Come abbiamo detto in precedenza, infatti, la famiglia dei linguaggi regolari è chiusa per le operazioni di unione, concatenazione e chiusura di Kleene. È anche chiusa per complemento ed intersezione, quindi per tutte le operazioni booleane.
+*Dimostrazione:* Ci sono delle operazioni che sono naturali sulle espressioni regolari e altre operazioni che sono naturali sugli automi a stati finiti. Come abbiamo detto in precedenza, infatti, la famiglia dei linguaggi regolari è chiusa per le operazioni di unione, concatenazione e chiusura di Kleene. È anche chiusa per complemento ed intersezione, quindi per tutte le operazioni booleane.
 - *Unione:* L’unione dei linguaggi denotati dalle espressioni $E$ e $F$ è denotato dall’espressione $E$ + $F$. 
 - *Complemento:* Per il Teorema di Kleene, un linguaggio regolare è accettato da un automa a stati finiti deterministico. Il complemento è accettato dall’automa ottenuto scambiando stati finali e non. Quindi, per il Teorema di Kleene, è regolare 
 - *Intersezione:* L’intersezione si esprime per mezzo di unione e complemento: $L \cap M = \Sigma^* - ((\Sigma^* -L) \cup (\Sigma^* - M))$
 
-**Osservazione:** anche la differenza insiemistica si esprime per mezzo di unione e completamento: $L - M = \Sigma^* - ((\Sigma^* -L) \cup M)$ 
+*Osservazione:* anche la differenza insiemistica si esprime per mezzo di unione e completamento: $L - M = \Sigma^* - ((\Sigma^* -L) \cup M)$ 
 
-**Osservazione:** Date due espressioni regolari, posso effettivamente trovare espressioni regolari per l’unione, l’intersezione e i complementi dei linguaggi da esse denotati (devo però passare obbligatoriamente per gli automi).
+*Osservazione:* Date due espressioni regolari, posso effettivamente trovare espressioni regolari per l’unione, l’intersezione e i complementi dei linguaggi da esse denotati (devo però passare obbligatoriamente per gli automi).
 
 **Equivalenza di espressioni regolari:** Date due espressioni regolari ho il problema di decidere se queste sono equivalenti o meno
 
 > [!example] $a^* + (a^*ba^*)^* = (a+b)^*$ descrivono lo stesso linguaggio
 
-**Osservazioni:** dati due insiemi $X,Y$ sono uguali se e solo se $(X-Y) \cup (Y-X) = \emptyset$ 
+*Osservazione:* dati due insiemi $X,Y$ sono uguali se e solo se $(X-Y) \cup (Y-X) = \emptyset$ 
 
 La soluzione al mio problema è: date le espressioni regolari $E,F$, voglio sapere se $L_E = L_F$
 1. Calcolare automi deterministici che accettano i linguaggi $L_E$ e $L_F$ denotati da $E$ e $F$, rispettivamente; 
@@ -693,9 +693,9 @@ Due parole sono uguali per un linguaggio se aggiungendo lo stesso suffisso a des
 
 **Equivalenza:** insieme sul quale è definita una relazione **riflessiva** ($x \sim x$), **simmetrica** ($x \sim y \implies y \sim x$) e **transitiva** ($x \sim y, y \sim z \implies x \sim z$). Ogni equivalenza divide l’insieme in **classi di equivalenza**, e queste classi formano una **partizione**. Quindi un equivalenza corrisponde ad una partizione, ogni elemento appartiene ad una sola classe e classi diverse non si intersecano
 
-**Osservazione:** ogni equivalenza su un insieme $S$ determina una partizione dell’insieme $S$ in classi di equivalenza. Viceversa, ogni partizione dell’insieme $S$ è associata a un’equivalenza di cui le parti sono classi di equivalenza
+*Osservazione:* ogni equivalenza su un insieme $S$ determina una partizione dell’insieme $S$ in classi di equivalenza. Viceversa, ogni partizione dell’insieme $S$ è associata a un’equivalenza di cui le parti sono classi di equivalenza
 
-**Definizione:** sia $\Sigma$ un alfabeto. Una relazione di equivalenza $\sim$ su $\Sigma^*$ si dice una congruenza destra (risp. Sinistra) se per ogni $u, v \in \Sigma^*$ tali che $u \sim v$ e per ogni lettera $a \in \Sigma$, si ha $ua \sim va$ (risp. $au \ \sim \ av$). <u>Una relazione che sia contemporaneamente una congruenza destra e una congruenza sinistra si dice congruenza.</u> In altre parole qui non abbiamo solo un insieme, ma un insieme che ha un’operazione definita su di esso. Ogni volta che si va a concatenare una lettera a dx di due parole equivalenti ottengo due parole equivalenti (rispettivamente per la congruenza sx).
+*Definizione:* sia $\Sigma$ un alfabeto. Una relazione di equivalenza $\sim$ su $\Sigma^*$ si dice una congruenza destra (risp. Sinistra) se per ogni $u, v \in \Sigma^*$ tali che $u \sim v$ e per ogni lettera $a \in \Sigma$, si ha $ua \sim va$ (risp. $au \ \sim \ av$). <u>Una relazione che sia contemporaneamente una congruenza destra e una congruenza sinistra si dice congruenza.</u> In altre parole qui non abbiamo solo un insieme, ma un insieme che ha un’operazione definita su di esso. Ogni volta che si va a concatenare una lettera a dx di due parole equivalenti ottengo due parole equivalenti (rispettivamente per la congruenza sx).
 
 > [!example] Si considerino le relazione $\sim$ su $\Sigma^*$ definite da:
 > 1. $u \sim v$ se $u$ e $v$ iniziano con la stessa lettera (o $u$ = $v$ = $\epsilon$)
@@ -707,7 +707,7 @@ Due parole sono uguali per un linguaggio se aggiungendo lo stesso suffisso a des
 
 **Equivalenza di Nerode:**
 
-**Definizione:** sia $L$ un linguaggio sull’alfabeto $\Sigma$. L’equivalenza di Nerode associata al linguaggio $L$ è la relazione $N_L$ definita in $\Sigma^*$ da: $u \ N_L \ v$ se per ogni $y \in \Sigma^*$*, $uy \in L \iff vy \in L$. Cioè, $u \ N_L \ v$ se $u$ e $v$ sono equivalenti e se hanno gli stessi completamenti a destra per entrare in $L$. 
+*Definizione:* sia $L$ un linguaggio sull’alfabeto $\Sigma$. L’equivalenza di Nerode associata al linguaggio $L$ è la relazione $N_L$ definita in $\Sigma^*$ da: $u \ N_L \ v$ se per ogni $y \in \Sigma^*$*, $uy \in L \iff vy \in L$. Cioè, $u \ N_L \ v$ se $u$ e $v$ sono equivalenti e se hanno gli stessi completamenti a destra per entrare in $L$. 
 
 Quindi diciamo che due parole sono equivalenti se le parole che mi permettono di completare la prima ($u$, a dx) dentro una parola di $L$, sono esattamente le stesse che mi permettono di completare $v$ in una parola di $L$. Questo teorema ci da una caratterizzazione vera e propria dei linguaggi regolari sottoforma algebrica: un linguaggio è regolare se lo posso ottenere come unione di classi di una congruenza dx di indice finito.
 
@@ -718,13 +718,13 @@ $N_L$ è la relazione che identifica precisamente gli stati dell'automa minimo:
 **Lemma:** sia $L \subseteq \Sigma^*$ un linguaggio
 1. La relazione $N_L$ è una congruenza destra. Quindi se $uN_Lv$ allora per ogni lettera $a$: $uaN_Lva$
 
-**Dimostrazione:** $N_L$ è un’equivalenza. Dobbiamo verificare che per ogni $u, v \in \Sigma^*$ , $a \in \Sigma$, se $u N_L v$, allora $ua \ N_L \ va$. Invero sia $u \ N_L \ v$ e $a \in \Sigma$. Dalla definizione di $N_L$ si ha $uy \in L \iff vy \in L$ per ogni $y \in \Sigma^*$ Sostituendo $y$ con $ay$, ottengo $uay \in L \iff vay \in L$ Quindi si ha anche $ua \ N_L \ va$. Cioè ogni parola è in un’equivalenza $N_L$ con sé stessa (prop. Riflessiva) perché i suoi completamenti in $L$ sono gli stessi suoi completamenti in $L$. Se $u$ e $v$ hanno gli stessi completamenti, allora $v$ e $u$ avranno gli 25 stessi completamenti (prop. Simmetrica). Se $u$ e $v$ hanno gli stessi completamenti, e $v$ e $w$ hanno gli stessi completamenti, allora $u$ e $w$ hanno gli stessi completamenti (prop. Transitiva).
+*Dimostrazione:* $N_L$ è un’equivalenza. Dobbiamo verificare che per ogni $u, v \in \Sigma^*$ , $a \in \Sigma$, se $u N_L v$, allora $ua \ N_L \ va$. Invero sia $u \ N_L \ v$ e $a \in \Sigma$. Dalla definizione di $N_L$ si ha $uy \in L \iff vy \in L$ per ogni $y \in \Sigma^*$ Sostituendo $y$ con $ay$, ottengo $uay \in L \iff vay \in L$ Quindi si ha anche $ua \ N_L \ va$. Cioè ogni parola è in un’equivalenza $N_L$ con sé stessa (prop. Riflessiva) perché i suoi completamenti in $L$ sono gli stessi suoi completamenti in $L$. Se $u$ e $v$ hanno gli stessi completamenti, allora $v$ e $u$ avranno gli 25 stessi completamenti (prop. Simmetrica). Se $u$ e $v$ hanno gli stessi completamenti, e $v$ e $w$ hanno gli stessi completamenti, allora $u$ e $w$ hanno gli stessi completamenti (prop. Transitiva).
 
 2. $L$ è unione di classi di equivalenza di $N_L$. Se $uN_Lv$ allora prendendo $y = \epsilon$: $u \in L \iff v \in L$. Quindi una classe di equivalenza non può "tagliare" il linguaggio a metà:
 	- O sta tutto dentro $L$
 	- Oppure sta tutta fuori
 
-**Dimostrazione:** Sia $u \ N_L \ v$. Allora $uy \in L \iff vy \in L$ per ogni $y \in \Sigma^*$ . Prendendo $y = \epsilon$ ottengo $u \in L \iff v \in L$. Quindi ogni classe di equivalenza o sta tutta dentro L o sta tutta nel complemento. Cioè il linguaggio $L$ si può decomporre in classi di equivalenza $N_L$. In altre parole, $N_L$ è un’equivalenza quindi ci determina quella partizione in classi di equivalenza dell’insieme $\Sigma^*$. Ci sono queste famiglie di parole che sono tutte equivalenti tra loro, ogni parola sta in una classe di equivalenza e classi equivalenza diverse non hanno elementi comuni. Una classe di equivalenza o è contenuta dentro $L$ (quindi è l’unione di alcune classi di equivalenza), oppure è interamente fuori da $L$. Quello che non può succedere è che una classe di equivalenza sia a cavallo: qualche elemento in $L$ e qualche elemento fuori dal linguaggio $L$.
+*Dimostrazione:* Sia $u \ N_L \ v$. Allora $uy \in L \iff vy \in L$ per ogni $y \in \Sigma^*$ . Prendendo $y = \epsilon$ ottengo $u \in L \iff v \in L$. Quindi ogni classe di equivalenza o sta tutta dentro L o sta tutta nel complemento. Cioè il linguaggio $L$ si può decomporre in classi di equivalenza $N_L$. In altre parole, $N_L$ è un’equivalenza quindi ci determina quella partizione in classi di equivalenza dell’insieme $\Sigma^*$. Ci sono queste famiglie di parole che sono tutte equivalenti tra loro, ogni parola sta in una classe di equivalenza e classi equivalenza diverse non hanno elementi comuni. Una classe di equivalenza o è contenuta dentro $L$ (quindi è l’unione di alcune classi di equivalenza), oppure è interamente fuori da $L$. Quello che non può succedere è che una classe di equivalenza sia a cavallo: qualche elemento in $L$ e qualche elemento fuori dal linguaggio $L$.
 
 **Teorema di Myhill-Nerode (1958):** Sia $L$ un linguaggio sull’alfabeto $\Sigma$, le seguenti proposizioni sono equivalenti:
 1. $L$ è regolare
@@ -791,7 +791,7 @@ Dimostrazione circolare per dimostrare che le 3 condizioni suddette siano equiva
   <img src="Pasted image 20260320112259.png" width="200">
 </div>
 
-**Proposizione:** Sia $L$ un linguaggio regolare. L’automa di Nerode di $L$ è un automa deterministico che accetta $L$ col minimo numero di stati possibile. 
+*Proposizione:* Sia $L$ un linguaggio regolare. L’automa di Nerode di $L$ è un automa deterministico che accetta $L$ col minimo numero di stati possibile. 
 
 Il punto finale è il seguente:
 - ogni stato di un DFA corrisponde, in sostanza, a una classe di parole indistinguibili;
@@ -800,7 +800,7 @@ Il punto finale è il seguente:
 
 Per questo l’automa di Nerode è il **minimo**.
 
-**Dimostrazione:** 
+*Dimostrazione:* 
 - Sia $A$ l’automa deterministico che accetta $L$ col minimo numero di stati possibile e sia n tale numero; 
 - nella dimostrazione 1. $\implies$ 2. si è visto che $L$ è unione di classi di una congruenza destra $\sim$ di indice n; 
 - nella dimostrazione 2. $\implies$ 3. si è visto che l’indice di $N_L$ è minore o uguale di quello di $\sim$; 
@@ -902,7 +902,7 @@ L’automa minimo di $L$ si ottiene nel modo seguente:
 > 	- ma allora $xy^2z \notin L$, il che è assurdo
 > - pertanto $L$ NON è regolare
 
-**Dimostrazione:** 
+*Dimostrazione:* 
 - Per il teorema di Kleene, $L$ è accettato da un automa a stati finiti $A$
 - Sia $n$ il numero degli stati
 - Sia $w \in L$ e $|w| \geq n$. Scriviamo $w = a_1 a_2...a_k$, con $a_1,a_2,...,a_k \in A, k \geq n$ ($k$ numero di lettere, quindi abbiamo preso una parola che abbia lunghezza $\geq n$)
@@ -1018,16 +1018,16 @@ Troviamo il più lungo prefisso $u$ di $w$ accettato da $A_D$ e il più piccolo 
   <img src="Pasted image 20260409155211.png" width="200">
 </div>
 ###### Grammatiche regolari
-**Definizione:** una grammatica a struttura di frase $G = \langle V,\Sigma,P,S \rangle$ è di tipo 3 se tutte le produzioni hanno le forme: $X \rightarrow aY, X \rightarrow a, X,Y \in N, a \in \Sigma$. Nel caso in cui $S$ non compaia nei lati destri delle produzioni è ammessa anche la produzione $S \rightarrow \epsilon$ 
+*Definizione:* una grammatica a struttura di frase $G = \langle V,\Sigma,P,S \rangle$ è di tipo 3 se tutte le produzioni hanno le forme: $X \rightarrow aY, X \rightarrow a, X,Y \in N, a \in \Sigma$. Nel caso in cui $S$ non compaia nei lati destri delle produzioni è ammessa anche la produzione $S \rightarrow \epsilon$ 
 
-**Osservazione:** la produzione $S \rightarrow \epsilon$ serve esclusivamente per generare la parola vuota
+*Osservazione:* la produzione $S \rightarrow \epsilon$ serve esclusivamente per generare la parola vuota
 
 > [!example] 
 > Sia $G = \langle V,\Sigma,P,S \rangle$, con $\Sigma = \{a,b\}, V = \Sigma \cup \{S,X\}$ e con le produzioni: $S \rightarrow aS, S \rightarrow bX, S \rightarrow b, X \rightarrow aX, X \rightarrow bS, X \rightarrow a$. Si ha per esempio, $abbab \in L(G)$. Tale grammatica è di tipo 3
 
 **Teorema:** un linguaggio è regolare se e soltanto se è generato da una grammatica di tipo 3
 
-**Osservazione:** data $G$, si può effettivamente costruire un automa  a stati finiti che accetta il linguaggio generato da $G$. Viceversa, dato un automa a stati finiti $A$, si può effettivamente costruire una grammatica di tipo 3 che genera il linguaggio accettato da $A$
+*Osservazione:* data $G$, si può effettivamente costruire un automa  a stati finiti che accetta il linguaggio generato da $G$. Viceversa, dato un automa a stati finiti $A$, si può effettivamente costruire una grammatica di tipo 3 che genera il linguaggio accettato da $A$
 
 Sia $G = \langle V,\Sigma,P,S \rangle$ una grammatica di tipo 3, per semplicità supponiamo che non abbia la produzione $S \rightarrow \epsilon$. Costruiamo l'automa non deterministico A come segue:
 - Gli stati sono le variabili della grammatica G e la parola vuota
@@ -1044,7 +1044,7 @@ Si verifica che $L(G) = L(A)$
 Quindi $L(G) = L(A)$
 
 **Dalla grammatica all'automa:** 
-**Osservazione:** se $S \rightarrow \epsilon$ è una produzione di $G$ (e quindi $S$ non campare nei lati destri delle produzioni), allora occorrerà aggiungere $S$ all'insieme degli stati finali di $A$ 
+*Osservazione:* se $S \rightarrow \epsilon$ è una produzione di $G$ (e quindi $S$ non campare nei lati destri delle produzioni), allora occorrerà aggiungere $S$ all'insieme degli stati finali di $A$ 
 
 **Dall'automa alla grammatica:** sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ un automa  astati finiti privo di $\epsilon-$transizioni. Per semplicità supponiamo che $\epsilon \notin L(A)$. Costruiamo la grammatica $G$ nel modo seguente:
 - Le variabili della grammatica $G$ sono gli stati dell'automa $A$ 
@@ -1053,7 +1053,7 @@ Quindi $L(G) = L(A)$
 
 Si verifica che $L(G) = L(A)$ (dimostrazione analoga alla precedente)
 
-**Osservazione:** se $\epsilon \in L(A)$ sarà necessario modificare la grammatica F in modo da fargli generare anche la parola vuota. Se però S compare nel alto destro di qualche produzione, non è possibile aggiungere la produzione $S \rightarrow \epsilon$. Dovremo pertanto prima introdurre una nuova variabile $S'$ le cui produzioni avranno gli stessi lati destri delle produzioni di $S$, prendere $S'$ come simbolo iniziale al posto di $S$ e, infine, aggiungere la produzione $S' → \epsilon$
+*Osservazione:* se $\epsilon \in L(A)$ sarà necessario modificare la grammatica F in modo da fargli generare anche la parola vuota. Se però S compare nel alto destro di qualche produzione, non è possibile aggiungere la produzione $S \rightarrow \epsilon$. Dovremo pertanto prima introdurre una nuova variabile $S'$ le cui produzioni avranno gli stessi lati destri delle produzioni di $S$, prendere $S'$ come simbolo iniziale al posto di $S$ e, infine, aggiungere la produzione $S' → \epsilon$
 
 > [!example] 
 > Se $G$ ha le produzioni $S → aS, S →bX, S →b, X → aX, X → bS, X → a$, allora $L(G)$ è accettata dall'automa
@@ -1063,7 +1063,7 @@ Si verifica che $L(G) = L(A)$ (dimostrazione analoga alla precedente)
 > [!example]
 > ![[Pasted image 20260409162548.png|200]]
 
-**Definizione:** una grammatica si dice lineare se tutte le produzioni hanno la forma $X → uYv$ o $X → u$ con $X,Y \in N$ e $u,v \in \Sigma^*$
+*Definizione:* una grammatica si dice lineare se tutte le produzioni hanno la forma $X → uYv$ o $X → u$ con $X,Y \in N$ e $u,v \in \Sigma^*$
 
 Una grammatica si dice lineare destra se tutte le produzioni hanno la forma $X → uY$ o $X → u$ con $X,Y \in N$ e $u,v \in \Sigma^*$. In altre parole, una grammatica è lineare se i lati destri delle produzioni contengono al più una variabile; è lineare destra se tali variabili compaiono solo alla fine di tale termine
 
@@ -1105,8 +1105,100 @@ MANCA QuALCOSA FORSE
 > 
 > Pertanto prendiamo $\Sigma = \{a,b,\emptyset,(,),+,^*\}$ e produzioni MANCANO
 
-*Notazione:* si usa raggruppare le produzioni con lo stesso lato sinistro, separando i lati destri con una barra verticale
+*Notazione:* si usa raggruppare le produzioni con lo stesso lato sinistro, separando i lati destri con una barra verticale. Per esempio $S \rightarrow a|b|\emptyset| (S+S)|(SS)|S^*$
+
+> [!example] $L = \{w \in \Sigma^* | |w|_a = |w|_b\}$
+> Consideriamo i linguaggi $L_a = \{w \in \Sigma^* | |w|_a = |w|_b + 1\}$, $L_b = \{w \in \Sigma^* | |w|_b = |w|_a + 1\}$. Verifichiamo le identità: $L = aL_b + bL_a + \epsilon, L_a = LaL, L_b = LbL$
+> - ogni $w \in L$ si scrive $w = au$ con $u \in L_b$ o $w = bu$ con $u \in L_a$ o $w = \epsilon$
+> - ogni $w \in L_b$ si scrive $w = ubv$ con $u,v \in L$
+> 
+> IMMAGINE
+> 
+> Quindi $L$ è generato dalla grammatica con produzioni $S → aB | bA | \epsilon, A → SaS, B → SbS$
+
+**Alberi di derivazione:** sono alberi con radice e con etichette sui nodi e i figli di ciascun nodo sono ordinati (da sinistra a destra). Ciò determina un ordinamenti totale delle foglie
+
+*Definizione:* $T$ è un albero di derivazione della grammatica $G$ se verifica le seguenti condizioni:
+1. L'etichetta della radice è $S$
+2. Le etichette dei nodi interni sono elementi si $N$
+3. Le etichette delle foglie sono elementi di $\Sigma \cup {\epsilon}$
+4. Le foglie con etichetta $\epsilon$ sono 'figli unici'
+5. Se in nodo con etichetta $X$ ha figli etichettati nell'ordine $\alpha_1,…\alpha_k$, allora X → $\alpha_1,…\alpha_k$, allora MANCA
+
+> [!example] Nell'esempio di prima: $S → aB | bA | \epsilon, A → SaS, B → SbS$
+> IMMAGINE
+
+*Proposizione:* siano $G$ una grammatica non contestuale e $w \in \Sigma^*$. Si ha $w \in L(G)$ se e solo se esiste un albero di derivazione di $G$ associato a $w$
+
+> [!example] $S → aB | bA | \epsilon, A → SaS, B → SbS$
+> La parola $ba$ ha 2 derivazioni:
+> 1. $S \implies bA \implies bSaS \implies baS \implies ba$
+> 2. $S \implies bA \implies bSaS \implies bSa \implies manca$
 
 > [!example]
-> $S \rightarrow a|b|\emptyset| (S+S)|(SS)|S^*$
+> Sia $G$ la grammatica con $\Sigma = \{0,1,*,+\}, N = \{S\}$ e produzioni $S → S + S | S * S | 0 | 1$, allora $L(G) = (\{0,1\},\{+,*\})^*\{0,1\}$. La parola $1+1*0$ ha 2 alberi di derivazione:
+> IMMAGINE
+> Dal punto di vista 'semantico' il primo corrisponde alla 'computazione' di $1+(1*0)$ e il secondo alla 'computazione' di $(1+1)*0$
+
+**Grammatiche ambigue:** 
+*Definizione:* una grammatica si dice non ambigua se a ogni parola del linguaggio generato corrisponde un'unico albero di derivazione
+
+> [!example] 
+> Si $G'$ la grammatica con $\Sigma = \{0,1,*,+\}, N = \{S,P,X\}$ e produzioni $S → P+S|P, P → X*P|X, X → 0|1$ MANCA
+> 
+
+*Definizione:* un linguaggio non contestuale si dice inerentemente ambiguo se non è generato da nessuna grammatica non contestuale non ambigua
+
+> [!example] 
+> Sia $G$ la grammatica con le produzioni $S → XA | AY, X → aXb| ab, A → aA|a, Y → bYa |ba$. Si ha  $L = \{ a^mb^ma^n|m,n > 0\} \cup \{a^mb^na^n|m,n > 0\}$. $G$ è ambigua IMMAGINE
+
+###### Semplificazioni nelle grammatiche non contestuali
+Ho due problemi: 
+- di ricognizione: stabilire se una parola fa parte del linguaggio generato
+- di parsing: data una parola che è nel linguaggio, trovare una derivazione
+
+Sono in generale molto complessi, ma si semplificano se si evitano:
+1. $X → \epsilon$ ($\epsilon$-produzioni)
+2. $X → Y$ (produzioni unarie)
+3. Le variabili che no compaiono nelle forme sentenziali (inaccessibili)
+4. Le variabili da cui non si derivano parole prive di variabili (improduttive)
+
+**$\epsilon-$produzioni e produzioni unarie:** 
+*Definizione:* sia $G$ una grammatica non contestuale. Le produzioni della forma $X → \epsilon$ se dicono $\epsilon-$produzioni. Le produzioni della forma $X → Y$, con $X, Y$ variabili si dicono produzioni unarie
+
+> [!example] Sia $G$ la grammatica con N = MANCA
+
+*Osservazione:* in assenza di $\epsilon-$produzioni e produzioni unarie, se $\alpha \implies \beta$, allora 
+- $|\beta| > |\alpha|$
+- $|\beta| = |\alpha|$ ma $\beta$ contiene un terminale in più di $\alpha$ 
+
+Pertanto, una parola di lunghezza n può essere generata in $2n − 1$ passi al più (perché ad ogni passo o la mia forma sentenziale si allunga, oppure una variabile viene sostituita da un terminale).
+
+*Proposizione:* ogni linguaggio non contestuale è effettivamente generato da una grammatica non contestuale priva di $\epsilon-$produzioni, eccettuata, eventualmente, la produzione $S → \epsilon$, ove $S$ è il simbolo iniziale. Inoltre, si può assumere che il simbolo iniziale non compaia nei lati destri delle produzioni
+
+**Costruzione della grammatica:**
+*Definizione:* una variabile $X$ di una grammatica $G$ si dice annullabile se $X \implies^* \epsilon$. Quando andiamo a costruire una grammatica possiamo avere diversi casi:
+1. *$S$ non è annullabile:* a partire da $G$ costruiamo una nuova grammatica $G'$ nel modo seguente:
+	1. Aggiungiamo tutte le produzioni ottenute cancellando dei lati destri delle produzioni di $G$ una o più occorrenze di variabili annullabili
+	2. Cancelliamo le $\epsilon-$produzioni
+
+In questo modo la grammatica $G'$ è equivalente a $G$
+
+2. *$S$ è annullabile:* a partire da $G$ costruiamo una nuova grammatica $G'$ nel modo seguente:
+	1. Procedendo come nel caso precedente si ottiene una grammatica che genera le stesse parole di $G$ eccetto $\epsilon$
+	2. Se $S$ non compare nei lati destri, basta aggiungere la produzione $s → \epsilon$
+	3. Se $S$ compare nei lati destri si aggiungono una nuova variabile $S'$, che sarà il nuovo simbolo iniziale e le produzioni $S' → \epsilon$ e $S' → S$. In questo modo ho fatto scomparire il simbolo iniziale dei lati destri delle produzioni e posso aggiungere $\epsilon$
+
+**Ricerca delle variabili annullabili:** costruiamo gli insiemi di variabili $W_n$ come segue: $W_1 = \{X \in N |$ c'è una produzione $X → \epsilon \ in \ P\}$, $W_n = \{X \in N |$ c'è una produzione $X → \gamma \ in \ P \ con \gamma \in W^*_{n-1}\}$, $n \geq 2$ 
+
+*Osservazione:* MANCA
+
+**Algoritmo:** inizialmente ho in input una grammatica non contestuale $G = \langle V, \Sigma, S, P \rangle$ MANCA
+
+> [!example] 
+> Sia $G$ la grammatica con $N = \{S,O,P,E\}$, $\Sigma = \{a,b,x\}$ e con le produzioni: $S → aOb, O → P | aOb | OO, P → x | E, E → \epsilon$
+> 
+> IMMAGINE
+> 
+> Le variabili annullabili sono: $E,P,O$. Quindi $G$ è equivalente alla grammatica con le produzioni: $S → aOb | ab, O → P | aOb | OO | ab | O, P → x | E$
 

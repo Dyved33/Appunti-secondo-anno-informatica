@@ -407,6 +407,10 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 | `!!`              | ripete l’ultimo comando eseguito                                                                                                           |
 **Bash: Metacaratteri:** si tratta di caratteri che separano le parole. Un metacarattere può essere: spazio, tab, newline, `|`, `&`,`;`,`(`, `)`, `<`, `>` (da *Bash Reference Manual*). Questi caratteri hanno un significato per la shell, come anche i caratteri `*`, `?`, `Ctrl + d (EOF)`, `Ctrl + c`, `'`,…
 
+> [!info] i caratteri `*` e `?` sono **metacaratteri** (wildcard) utilizzati per l'espansione dei nomi di file (globbing) e per il pattern matching nelle stringhe
+> - `?` rappresenta esattamente un singolo carattere qualsiasi, per cui il pattern `lettera?` corrisponde solo a nomi come `lettera1` o `lettera2`, ma non a `lettera10` o `lettera` 
+> - `*` rappresenta qualsiasi sequenza di caratteri (inclusa una sequenza vuota), quindi `*.txt` corrisponde a tutti i file che terminano con `.txt`, mentre `*` corrisponde a tutti i file nella directory corrente
+
 > [!tip]
 > Se si desidera usare questi caratteri come testo normale, devono essere racchiusi tra **apici** (quoting) per evitare che la Bash li interpreti.
 
@@ -1172,3 +1176,4 @@ int main()
 > - `|` (pipe):  passa lo stdout del comando precedente allo stdin del comando successivo, i comandi vengono eseguiti in maniera concorrente
 > - `&&` (AND logico): collega i comandi così che il secondo in successione venga eseguito subito dopo il primo. Se il primo comando fallisce, allora il resto viene saltato
 > - `&` (background):  va posto dopo un comando e esegue quest‘ultimo in modo asincrono, consentendo alla shell di continuare immediatamente senza attendere il completamento del processo (ATTENZIONE! NON legge eventuali input da terminale come password) 
+
