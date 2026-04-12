@@ -1,5 +1,5 @@
 {
-  "userId": "8129c5cc-864b-4b2f-87c6-d749f0226a66",
+  "userId": "2d39f447-3530-422c-a496-afa543b9c8df",
   "isPlusUser": false,
   "plusLicenseKey": "",
   "openAIApiKey": "",
@@ -423,7 +423,6 @@
   "selfHostUrl": "",
   "selfHostApiKey": "",
   "miyoServerUrl": "",
-  "miyoVaultName": "",
   "selfHostSearchProvider": "firecrawl",
   "firecrawlApiKey": "",
   "perplexityApiKey": "",

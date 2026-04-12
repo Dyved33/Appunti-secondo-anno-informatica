@@ -302,7 +302,7 @@ Un processo può avere multiple sequenze di istruzioni (*threads*) che possono e
     <img src="Screenshot From 2026-03-05 13-28-52.png" style="width: 100%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
-    Supponiamo che venga creato il processo P 0 che è in stato di running. Ad un certo punto si verifica un'interruzione e tutte le informazioni del processo vengono salvate nel PCB 0. Queste saranno ricaricate dal sistema di gestione delle interruzioni dopo che il processore avrà terminato un altro processo P 1 (ricaricato da PCB 1 quando magari P 1 era stato interrotto precedentemente). A questo punto può accadere una nuova interruzione, si salva lo stato di P 1 dentro a PCB 1 e si ricarica lo stato contenuto in PCB 0 (si riprende esecuzione di P 0). Questo ci permette di usare il sistema in maniera efficiente purché le operazioni di salvataggio e ricarica degli stati del processore siano eseguite in maniera efficiente.
+    Supponiamo che venga creato il processo P 0 che è in stato di running. Ad un certo punto si verifica un'interruzione e tutte le informazioni del processo vengono salvate nel PCB 0. Queste saranno ricaricate dal sistema di gestione delle interruzioni dopo che il processore avrà terminato un altro processo P1 (ricaricato da PCB 1 quando magari P1 era stato interrotto precedentemente). A questo punto può accadere una nuova interruzione, si salva lo stato di P1 dentro a PCB 1 e si ricarica lo stato contenuto in PCB 0 (si riprende esecuzione di P 0). Questo ci permette di usare il sistema in maniera efficiente purché le operazioni di salvataggio e ricarica degli stati del processore siano eseguite in maniera efficiente.
   </div>
 </div>
 
@@ -436,8 +436,7 @@ Gli stati del thread sono gli stessi dei processi (in esecuzione, pronto e in at
 | M: N     | Combina gli attributi di 1: M e M: 1                                                                                                                       |
 
 ###### Legge di Amdahl
-$\text{speedup} = \frac{\text{tempo di esecuzione su un processore}}{\text{tempo di esecuzione su N processori}} = \frac{1}{(1-f)+ \frac{f}{n}}$
-La legge di Amdahl stabilisce che il miglioramento massimo delle prestazioni di un sistema, grazie alla parallelizzazione (uso di più processori), è limitato dalla parte del software che non può essere parallelizzata. In breve: l'algoritmo, non il numero di processori, determina il limite massimo di velocità.
+$$\text{speedup} = \frac{\text{tempo di esecuzione su un processore}}{\text{tempo di esecuzione su N processori}} = \frac{1}{(1-f)+ \frac{f}{n}}$$La legge di Amdahl stabilisce che il miglioramento massimo delle prestazioni di un sistema, grazie alla parallelizzazione (uso di più processori), è limitato dalla parte del software che non può essere parallelizzata. In breve: l'algoritmo, non il numero di processori, determina il limite massimo di velocità.
 
 Il vantaggio lo hanno:
 - Applicazioni multithread native (pochi processi e molti thread)
@@ -475,7 +474,7 @@ Vengono generate le seguenti difficoltà:
 - Allocazione ottimale delle risorse
 - Debugging (può comparire un errore specifico dovuto a una serie di eventi sfortunati che si verifica raramente e sarà difficile da ri-individuare)
 
-> [!info] L’uniprocessore prende il processo P 1, esegue chin=getchar(), sospende l’esecuzione di P 1 passando a P 2, rifà getchar() e cambia chin, stampa chout, poi si ritorna al processo P 1, dove chout = chin, ma chin è stato cambiato da P 2, perciò verrà stampato nuovamente il secondo carattere. Se un solo processo alla volta potesse eseguire la procedura P 2 va in stato di block perchè la risorsa (in questo caso la procedura) non è disponibile poiché usata da un altro processo. La computazione va avanti finché viene ripreso P 1, viene conclusa la procedura e si ritorna a P 2 con la risorsa ora disponibile, i due caratteri ora sono stampati in ordine. Anche nel multiprocessore ci sarebbe questo problema.
+> [!info] L’uniprocessore prende il processo P1, esegue chin=getchar(), sospende l’esecuzione di P1 passando a P2, rifà getchar() e cambia chin, stampa chout, poi si ritorna al processo P1, dove chout = chin, ma chin è stato cambiato da P2, perciò verrà stampato nuovamente il secondo carattere. Se un solo processo alla volta potesse eseguire la procedura P2 va in stato di block perchè la risorsa (in questo caso la procedura) non è disponibile poiché usata da un altro processo. La computazione va avanti finché viene ripreso P1, viene conclusa la procedura e si ritorna a P2 con la risorsa ora disponibile, i due caratteri ora sono stampati in ordine. Anche nel multiprocessore ci sarebbe questo problema.
 > ![[Screenshot From 2026-03-18 19-47-13.png|200]]
 > ![[Screenshot From 2026-03-18 19-47-24.png|200]]
 > ![[Screenshot From 2026-03-18 19-48-41.png|200]] > 
@@ -484,7 +483,7 @@ Vengono generate le seguenti difficoltà:
 
 **Race condition:** si verifica quando più processi o threads leggono e scrivono dati in modo che il risultato finale dipenda dall'ordine di esecuzione delle istruzioni dei processi
 
-> [!example] I processi P 1 e P 2 assegnano rispettivamente 1 e 2 alla variabile condivisa a. Il valore finale sarà quello del ‘secondo arrivato’. I processi P 1 e P 2 condividono le variabili b e c con valori iniziali b = 1, c = 2. P 1 esegue b = b + c, P 2 esegue c = b + c. Se arriva primo P 1, avremo b = 3; c = 5. Nel caso opposto, b = 4; c = 3
+> [!example] I processi P1 e P2 assegnano rispettivamente 1 e 2 alla variabile condivisa a. Il valore finale sarà quello del ‘secondo arrivato’. I processi P1 e P2 condividono le variabili b e c con valori iniziali b = 1, c = 2. P1 esegue b = b + c, P2 esegue c = b + c. Se arriva primo P1, avremo b = 3; c = 5. Nel caso opposto, b = 4; c = 3
 
 **Compiti del SO:** La concorrenza quindi può portare a problemi, è compito del sistema operativo fare in modo che la concorrenza si svolga nella maniera corretta:
 - Tenere traccia dei processi (PCB)
@@ -529,8 +528,8 @@ void P2 {
 **Collaborazione tramite la condivisione di risorse:** in questo caso i processi interagiscono senza conoscersi, ma usano e modificano i dati condivisi. Il risultato di un processo può dipendere dalle azioni di un altro e anche qui i tempi di elaborazione ne sono influenzati. I problemi sono sempre gli stessi, la mutua esclusione, poiché il meccanismo di controllo deve assicurare l’integrità dei dati (tranne per le operazioni di lettura), la deadlock e la starvation, ma anche un problema di data coherence. I processi modificano dei dati condivisi e se uno dei processi sbaglia a modificare i dati essi diventano incoerenti e portano a errori anche gli altri processi.
 
 > [!example] 
-> P 1: a = a + 1, b = b + 1
-> P 2: b = 2 * b, a = 2 * b
+> P1: a = a + 1, b = b + 1
+> P2: b = 2 * b, a = 2 * b
 > Posso ottenere situazioni come: a = a + 1, b = 2 * b, b = b + 1, a = 2 * b $\implies$ due risultati diversi
 
 **Collaborazione per condivisione (condivisione per scambio di messaggi):** in questo caso i processi collaborano per un obiettivo comune e la comunicazione permette di sincronizzarsi e coordinarsi. Ci sono delle primitive che consentono a un processo di mandare informazioni a un altro processo o di riceverle fornite dal kernel o dal linguaggio di programmazione. In questo caso il risultato è sicuramente influenzato da ciò che il processo riceve, così come il tempo di elaborazione che è limitato a quando il processo riceve l’informazione necessaria. In questo caso non c’è problema di mutua esclusione poiché i processi non condividono dati, si hanno però sempre problemi di deadlock e starvation.
@@ -678,7 +677,7 @@ void P0() {
 ```
 
 ###### Semafori
-I semafori sono i meccanismi utilizzati per sincronizzare l’accesso alle sezioni critiche dei processi. Sono formati da una variabile con valore intero, una coda e tre operazioni:
+I semafori sono i meccanismi utilizzati per sincronizzare l’accesso alle sezioni critiche dei processi (porzione di codice in cui un processo accede a dati o risorse condivise tra più flussi di esecuzione). Sono formati da una variabile con valore intero, una coda e tre operazioni:
 - Inizializzazione a un valore non negativo 
 - *semWait:* decrementa il calore del semaforo. Se il valore diventa negativo, il processo è sospeso e inserito nella coda
 - *semSignal:* incrementa il valore del semaforo. Se il valore non diventa positivo, uno dei processi della coda è riattivato
@@ -788,7 +787,7 @@ Anche il meccanismo dei messaggi consente la sincronizzazione per realizzare la 
 - *Send (destination, message):* un processo invia informazioni in forma di messaggio a un altro processo designato come destinatario
 - *Receive (source, message):* un processo riceve informazioni indicando il mittente e l’indirizzo in cui salvare il messaggio
 
-**Caratteristiche dei sistemi di messaggistica:** La sincronizzazione per la send è bloccante se il processo a cui si vuole mandare non attende un messaggio, quindi si blocca l’esecuzione del send, è non bloccante quando il messaggio viene mandato correttamente. Il receive allo stesso modo è bloccante quando si tenta di ricevere un messaggio indiretto senza che sia stato ancora mandato, non bloccante quando il messaggio già c’è, oppure si testa per la presenza di messaggi (ci sono situazioni in cui sia la send che la receive sono bloccanti). Per la send tipicamente l’indirizzamento è diretto, il processo specifica a quale processo inviare il messaggio, la receive può avere un indirizzamento esplicito (dal processo X prelevo il messaggio) o implicito. Quando il processo esegue una receive, se c’è un messaggio per questo processo, prende il messaggio e l’identificativo del processo che l’ha mandato. Il formato dei messaggi può essere di lunghezza fissa o variabile, inoltre l’organizzazione delle code dei messaggi è FIFO, oppure può esserci una gestione tramite priorità.
+**Caratteristiche dei sistemi di messaggistica:** La sincronizzazione per la send è bloccante se il processo a cui si vuole mandare non attende un messaggio, quindi si blocca l’esecuzione del send, è non bloccante quando il messaggio viene mandato correttamente. Il receive allo stesso modo è bloccante quando si tenta di ricevere un messaggio indiretto senza che sia stato ancora mandato, non bloccante quando il messaggio già c’è, oppure si testa per la presenza di messaggi (ci sono situazioni in cui sia la send che la receive sono bloccanti). Per la send tipicamente l’indirizzamento è diretto: il processo specifica a quale processo inviare il messaggio. La receive può avere un indirizzamento esplicito (dal processo X prelevo il messaggio) o implicito. Quando il processo esegue una receive, se c’è un messaggio per questo processo, prende il messaggio e l’identificativo del processo che l’ha mandato. Il formato dei messaggi può essere di lunghezza fissa o variabile, inoltre l’organizzazione delle code dei messaggi è FIFO, oppure può esserci una gestione tramite priorità.
 
 **Sincronizzazione:** il destinatario non può ricevere il messaggio prima che questo sia stato inviato. Quando si esegue la receive:
 - Se è presente un messaggio, il processo lo riceve e continua l’esecuzione
@@ -996,7 +995,12 @@ All’interno del monitor stanno le variabili di condizione, variabili accessibi
 > - procedure per accedervi
 > - variabili di condizione per sincronizzare i thread
 > 
-> In particolare servono per evitare race condition, mutua esclusione e coordinare i thread
+> In particolare servono per evitare race condition, mutua esclusione e coordinare i thread.
+> Immagina il monitor come una stanza con una sola porta:> 
+> - se un thread entra → gli altri devono aspettare
+> - quando esce → un altro può entrare
+> 
+> Quindi: l'accesso è mutualmente esclusivo ed è gestito automaticamente dal sistema. All'interno di un monitor trovo variabili condivise, funzioni che accedono ai dati e variabili di condizione che servono per aspettare eventi
 
 Problema del produttore/consumatore:
 ```C
@@ -1117,10 +1121,7 @@ void main() {
 }
 ```
 
-**Scambio di messaggio:** Un server, chiamato anche controller gestisce le informazioni che vengpono condivise. A sx si ha il programma del processo lettore e scrittore, il processo lettore ha una variabile rmsg con un messaggio che deve leggere il lettore e invia questo messaggio a una mailbox chiamata readrequest (un contenitore che conterrà tutte le richieste da parte dello scrittore). Fatto questo
-si mette in attesa sulla sua porta (mailbox indice i) e quando avrà ricevuto il messaggio di risposta dal controllo leggerà e poi invierà il messaggio lettura terminata in un’altra mailbox denominata finish. Il processo scrittore funziona allo stesso modo, con la differenza che invece di readrequest avrà
-writerequest. Se c’è una richiesta di lettura viene prelevato il messaggio, decrementato il contatore, e in risposta al messaggio ricevuto si invia un messaggio di ricezione. Quando il contatore arriva a 0 si manda allo scrittore il messaggio OK e ci si mette in attesa del messaggio di terminata scrittura,
-dopodiché il contatore viene portato a 100. Al termine si ha un while b(count <0). Finché il count è <0 ci si mette in attesa dei messaggi di lavoro terminato e mano mano si incrementa il contatore. Quindi in questo modo il diritto di accesso alla lettura e alla scrittura la dà un processo ben preciso, ovvero il controllore, e non c’è più la necessità di realizzare la mutua esclusione poiché è il controllore stesso che gestisce il tutto. In questo senso i meccanismi operativi basati su meccanismi client server sono più sicuri, un solo processo che sbaglia le operazioni di mutua esclusione rendono il dato condiviso
+**Scambio di messaggio:** Un server, chiamato anche controller, gestisce le informazioni che vengono condivise. A sinistra si ha il programma del processo lettore e scrittore, il processo lettore ha una variabile rmsg con un messaggio che deve leggere il lettore e invia questo messaggio a una mailbox chiamata readrequest (un contenitore che conterrà tutte le richieste da parte dello scrittore). Fatto questo si mette in attesa sulla sua porta (mailbox indice i) e quando avrà ricevuto il messaggio di risposta dal controllo leggerà e poi invierà il messaggio lettura terminata in un’altra mailbox denominata finish. Il processo scrittore funziona allo stesso modo, con la differenza che invece di readrequest avrà writerequest. Se c’è una richiesta di lettura viene prelevato il messaggio, decrementato il contatore, e in risposta al messaggio ricevuto si invia un messaggio di ricezione. Quando il contatore arriva a 0 si manda allo scrittore il messaggio OK e ci si mette in attesa del messaggio di terminata scrittura, dopodiché il contatore viene portato a 100. Al termine si ha un while(count <0), finché il count è <0 ci si mette in attesa dei messaggi di lavoro terminato e mano mano si incrementa il contatore. Quindi in questo modo il diritto di accesso alla lettura e alla scrittura la dà un processo ben preciso, ovvero il controllore, e non c’è più la necessità di realizzare la mutua esclusione poiché è il controllore stesso che gestisce il tutto. In questo senso i meccanismi operativi basati su meccanismi client server sono più sicuri, un solo processo che sbaglia le operazioni di mutua esclusione rendono il dato condiviso
 
 ```C
 void reader(int i) { 
@@ -1179,7 +1180,7 @@ void controller () {
 ```
 
 ###### Stallo
-**Definizione:** un insieme di processi è in stallo (*deadlock*) se ogni processo è in attesa di un evento che può essere generato solo da un altro processo dell'insieme, nel caso generale non c’è una soluzione efficiente per la deadlock
+*Definizione:* un insieme di processi è in stallo (*deadlock*) se ogni processo è in attesa di un evento che può essere generato solo da un altro processo dell'insieme, nel caso generale non c’è una soluzione efficiente per la deadlock
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
   <div style="flex: 1;">
@@ -1195,7 +1196,7 @@ void controller () {
     <img src="Pasted image 20260326171121.png" style="width: 100%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
-  La deadlock avviene se una delle due frecce si interseca con una delle aree tratteggiate, da questa situazione come scritto la deadlock è inevitabile se si entra nell’area grigia poichè poi le frecce andranno per forza nelle aree tratteggiate
+  La deadlock avviene se una delle due frecce si interseca con una delle aree tratteggiate. Da questa situazione, come scritto la deadlock è inevitabile se si entra nell’area grigia poiché poi le frecce andranno per forza nelle aree tratteggiate
   </div>
 </div>
 
@@ -1204,7 +1205,7 @@ void controller () {
     <img src="Pasted image 20260326171200.png" style="width: 100%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
-  In questa foto invece è sempre possibile evitare la deadlock. Per i processi concorrenti non c’è modo di prevedere chi avanzerà per primo e chi per secondo, se la deadlock succede ci si ritrova in una situazione complicata.
+  In questa foto invece è sempre possibile evitare la deadlock facendo in modo che il processo P prenda A e la rilasci prima di prendere B e lo stesso faccia il processo Q con la risorsa B prima di prendere la A. Per i processi concorrenti non c’è modo di prevedere chi avanzerà per primo e chi per secondo, se la deadlock succede ci si ritrova in una situazione complicata.
   </div>
 </div>
 
@@ -1212,26 +1213,26 @@ void controller () {
 1. *Risorse riutilizzabili:* utilizzabili da un processo alla volta e non vengono distrutte dal loro utilizzo (una volta finito il processo vengono restituite). Per esempio sono processore, canali I/O, memoria, files, semafori
 2. *Risorse consumabili:* possono essere create (prodotte) e distrutte (consumate), come le interruzioni, i segnali, i messaggi, i dati in buffer ecc…
 
-> [!example] Esempio risorse utilizzabili: 
-> Due processi competono per l’uso di un file D e un dispositivo T, p 1 richiede prima D e lo blocca, p 2 richiede prima T e lo blocca, poi però i processi richiedono subito rispettivamente T e D, che però ora sono bloccati dall’altro processo, perciò ora ci troviamo nella situazione di stallo descritta prima. 
+> [!example] Esempio risorse riutilizzabili: 
+> Due processi competono per l’uso di un file D e un dispositivo T, P1 richiede prima D e lo blocca, P2 richiede prima T e lo blocca, poi però i processi richiedono subito rispettivamente T e D, che però ora sono bloccati dall’altro processo, perciò ora ci troviamo nella situazione di stallo descritta prima. 
 > 
 > ![[Pasted image 20260326171336.png|200]]
 > 
-> Se però si invertisse l’ordine in cui sono richieste T e D in modo tale che entrambi i processi richiedono le risorse T e D nello stesso ordine, così p 1 prende subito sia T che D, fa ciò che deve fare e sblocca le risorse a p 2 che aveva trovato T subito occupato ed era rimasto perciò in attesa.
+> Se però si invertisse l’ordine in cui sono richieste T e D in modo tale che entrambi i processi richiedono le risorse T e D nello stesso ordine, così P1 prende subito sia T che D, fa ciò che deve fare e sblocca le risorse a P2 che aveva trovato T subito occupato ed era rimasto perciò in attesa.
 
 > [!example] Esempio risorse consumabili: 
 > Due processi si scambiano messaggi:
 > 
 > ![[Pasted image 20260326171425.png|200]]
 > 
-> Receive è una funzione bloccante, p 1 attende che p 2 mandi un messaggio,ma allo stesso tempo p 2 attende che p 1 mandi un messaggio, quindi attendono messaggi che non arriveranno mai poiché entrambi in attesa. 
+> Receive è una funzione bloccante, P1 attende che P2 mandi un messaggio,ma allo stesso tempo P2 attende che P1 mandi un messaggio, quindi attendono messaggi che non arriveranno mai poiché entrambi in attesa. 
 
 **Grafo di allocazione delle risorse:**
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260326171512.png" width="300">
 </div>
 
-> [!info]
+> [!example]
 >  L’esempio dell’incrocio delle auto che non sanno chi debba passare per primo può essere rappresentato così: 
 > 
 > ![[Pasted image 20260326171549.png|200]]
@@ -1283,19 +1284,27 @@ C’è bisogno quindi di un algoritmo detto **algoritmo del banchiere** che usa 
   <img src="Pasted image 20260408120624.png" width="200">
 </div>
 
-Le 3 equazioni/disequazioni mostrano le relazioni fra questi dati definiti sopra, se io sommo le risorse attualmente usate in un processo e ci aggiungo le risorse disponibili rimaste inutilizzate ottengo $R_j$, cioè la quantità disponibile di quella risorsa, la seconda indica che chiaramente un processo non può richiedere più di quanto c’è al massimo di una risorsa, la terza indica chiaramente che in ogni momento un processo deve avere una quantità di risorse di ogni tipo minore di quella che ha dichiarato necessaria. Questi quindi sono i dati del problema, allora un possibile approccio è il seguente: inizia un nuovo processo $P_{n+1}$ solo se per ogni $j, R_j \geq C_{n+1,j} + \sum\limits^n_{i=1}C_{ij}$, cioè se ci sono risorse sufficienti per soddisfare tutti i processi. Questo però è inefficiente poiché assume che tutte le richieste di tutti i processi debbano essere soddisfatte simultaneamente. È più efficiente l'algoritmo del banchiere.
+Le 3 equazioni/disequazioni mostrano le relazioni fra questi dati definiti sopra: se io sommo le risorse attualmente usate in un processo e ci aggiungo le risorse disponibili rimaste inutilizzate ottengo $R_j$, cioè la quantità disponibile di quella risorsa, la seconda indica che chiaramente un processo non può richiedere più di quanto c’è al massimo di una risorsa, la terza indica chiaramente che in ogni momento un processo deve avere una quantità di risorse di ogni tipo minore o uguale di quella che ha dichiarato necessaria. Questi quindi sono i dati del problema, allora un possibile approccio è il seguente: inizia un nuovo processo $P_{n+1}$ solo se per ogni $j, R_j \geq C_{n+1,j} + \sum\limits^n_{i=1}C_{ij}$, cioè se ci sono risorse sufficienti per soddisfare tutti i processi. Questo però è inefficiente poiché assume che tutte le richieste di tutti i processi debbano essere soddisfatte simultaneamente. È più efficiente l'algoritmo del banchiere.
 
 **Algoritmo del banchiere:** L’algoritmo tiene conto dello stato del sistema, quindi i vettori sopra definiti $R$ e $V$ e le matrici $C$ e $A$, l’algoritmo controlla se esiste almeno una sequenza di allocazioni che porta a termine tutti i processi e rifiuta una richiesta se porta in uno stato insicuro per evitare lo stallo. Come determino se uno stallo è sicuro o meno?
 
-ESEMPIO?
-Abbiamo 4 processi con le loro specifiche matrici $A$, $C$, la matrice $C-A$ sono le risorse aggiuntive di cui avrà bisogno ogni processo per terminare, dopo questo nel vettore delle risorse disponibili mi saranno rimaste 0 1 1, la domanda è con queste risorse rimaste posso terminare un processo già esistente? SI, in questo caso il processo $p2$ a cui manca solo 1 della risorsa $R3$ per terminare, perciò l’assegnamo, termina $p2$ e le risorse allocate a p2 si azzerano e tornano nel vettore $V$. Con le nuove risorse ottenute posso chiudere anche il processo 1 e così via andrò poi a chiudere anche gli altri processi, lo stato è quindi sicuro. 
-
-INSERISCI IMMAGINI
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260412122813.png" style="width: 100%; border-radius: 8px;">
+    <img src="Pasted image 20260412122835.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  Abbiamo 4 processi con le loro specifiche matrici A e C, la matrice C-A sono le risorse aggiuntive di cui avrà bisogno ogni processo per terminare, dopo questo nel vettore delle risorse disponibili mi saranno rimaste 0 1 1, la domanda è con queste risorse rimaste posso terminare un processo già esistente? SI, in questo caso il processo p2 a cui manca solo 1 della risorsa R3 per terminare, perciò l’assegnamo, termina p2 e le risorse allocate a p2 si azzerano e tornano nel vettore V. Con le nuove risorse ottenute posso chiudere anche il processo 1 e così via andrò poi a chiudere anche gli altri processi, lo stato è quindi sicuro.
+  </div>
+</div>
+ 
 
 > [!example] Esempio di un'allocazione rifiutata:
-> IMMAGINE
+> ![[Pasted image 20260412122427.png|200]]
+> 
 > In questo caso ad esempio le risorse di V verrebbero allocate, 1 di $R1$ e di $R3$ a $p1$, ma così non termineremmo né il processo $p1$, né sarebbe poi possibile con le risorse disponibili rimaste terminare gli altri processi, quindi quest’allocazione viene rifiutata.  
 
+Rilevazione di uno stato sicuro:
 ```
 W <- V
 while c'è un processo P_i non spuntato, tale che C_ij - A_ij <= W_j per ogni j spunta P_j
@@ -1307,6 +1316,7 @@ else
 	return INSICURO
 ```
 
+Algoritmo del banchiere:
 ```C
 struct state{
 	int resource[m];
@@ -1367,7 +1377,7 @@ La procedura safe cerca nello stato che gli viene fornito se c’è un processo 
 	- Risorse allocabili in un numero fisso 
 	- Nessun processo può terminare prima di aver rilasciato le risorse
 
-**Rilevare lo stallo:** Nei casi in cui si previene o si evita del tutto lo stallo l’accesso alle risorse è limitato a causa delle restrizioni imposte a processi e assegnazioni per evitare lo stallo, quando invece lo stallo si rileva solo quando si verifica (deadlock detection) le risorse sono assegnate senza restrizioni, sono periodiche le verifiche dell’assenza di attesa circolare. I vantaggi della rilevazione sono:
+**Rilevare lo stallo:** Nei casi in cui si previene o si evita del tutto lo stallo l’accesso alle risorse è limitato a causa delle restrizioni imposte a processi e assegnazioni per evitare lo stallo, quando invece lo stallo si rileva solo quando si verifica (deadlock detection) le risorse sono assegnate senza restrizioni. Sono periodiche le verifiche dell’assenza di attesa circolare. I vantaggi della rilevazione sono:
 - Che la rilevazione dell’attesa circolare permette un ripristino precoce 
 - L’algoritmo è molto semplice
 
@@ -1390,17 +1400,20 @@ while c'è un processoP_i non spuntato tale che Q_ij <= W_j per ogni j spunta P_
 Al termine dell'algoritmo gli eventuali processi non spuntati sono in stallo.
 
 > [!example] 
-> IMMAGINE
+> ![[Pasted image 20260412123253.png|200]]
+> 
 > Nell’esempio prima controlliamo se ci sono alcuni processi Pi tali che Aij = 0 in tutte le colonne, in questo caso P4 ha 0 risorse allocate e quindi viene spuntato, poi vediamo che sulla riga di P3, per ogni j gli elementi Qij sono <= Wj, quindi possiamo spuntare anche P3, le cui risorse allocate vengono liberate e assegnate a W che diventa (0,0,0,1,1), poi però guardando P2 e P1 entrambi non possono essere spuntati, dunque alla fine rimangono P1 e P2 non spuntati e quindi c’è lo stallo. 
 
-IMMAGINE TABELLA
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260412123322.png" width="200">
+</div>
 
 Preempts = interruzioni forzate dei processi
 
 **Strategie di ripristino:**
 - Terminare tutti i processi in stallo
 - Ripristinare tutti i processi in stallo a uno stato precedente (**checkpoint**), questo però necessita l’uso di meccanismi di salvataggio e riattivazione che rallentano l’esecuzione e che inoltre rischiano di riproporre lo stallo 
-- Terminare un processo alla volta finchè lo stallo non scompare (applicando una politica di costo minimo elencate sotto)
+- Terminare un processo alla volta finché lo stallo non scompare (applicando una politica di costo minimo elencate sotto)
 - Revocare una risorsa alla volta finché lo stallo non scompare (sempre applicando una politica di costo minimo)
 
 Alcune politiche seguono:
@@ -1425,19 +1438,27 @@ Alcune politiche seguono:
 > - risorse dispositivi: algoritmo del banchiere o assegnazione ordinata
 > - canali di I/O: assegnazione ordinata
 
+> [!info] Sintesi algoritmo del banchiere:
+> Idea di base: Il sistema si comporta come una banca:> 
+> - ogni processo = un cliente
+> - le risorse = soldi
+> - ogni processo dichiara quanto al massimo potrà chiedere
+> 
+> Il sistema concede risorse solo se rimane in uno stato sicuro. L'obiettivo è di evitare il deadlock, cioè una situazione in cui: tutti i processi sono bloccati e nessuno può proseguire
 ###### Gestione della memoria
-**Compiti della gestione della memoria:**
-- Rilocazione: l nostro programma viene copiato nella memoria centrale, ma a priori non sappiamo in quale parte venga caricato, quindi nel nostro eseguibile gli indirizzi in cui andare a prelevare le istruzioni e i dati non ci possono stare, saranno indirizzi simbolici (logici), una volta caricati, questi indirizzi simbolici devono essere convertiti in indirizzi fisici
-- Protezione: il processo preleva l’istruzione, la esegue, scrive i risultati in memoria e passa all’istruzione successiva, quando fa queste operazioni è fondamentale che non esca dalla memoria assegnata al processo.
+**Compiti della gestione della memoria:** Un programma per essere eseguito va caricato in memoria, i
+principali compiti sono:
+- *Rilocazione:* il nostro programma viene copiato nella memoria centrale, ma a priori non sappiamo in quale parte venga caricato, quindi nel nostro eseguibile gli indirizzi in cui andare a prelevare le istruzioni e i dati non ci possono stare, saranno indirizzi simbolici (logici), una volta caricati, questi indirizzi simbolici devono essere convertiti in indirizzi fisici
+- *Protezione:* il processo preleva l’istruzione, la esegue, scrive i risultati in memoria e passa all’istruzione successiva, quando fa queste operazioni è fondamentale che non esca dalla memoria assegnata al processo.
 - Condivisione
 - Organizzazione logica
 - Organizzazione fisica
 
-*Rilocazione:* il programmatore non sa quali altri programmi saranno presenti in memoria al momento dell 0 esecuzione. Deve essere possibile trasferire i programmi della memoria principale alla memoria secondari a viceversa (**swapping**). Pertanto è impossibile:
+*Rilocazione:* il programmatore non sa quali altri programmi saranno presenti nella memoria principale del calcolatore al momento dell' esecuzione. Deve essere possibile trasferire i programmi della memoria principale alla memoria secondaria e viceversa (**swapping**). Pertanto è impossibile:
 	- Specificare in che parte della memoria sarà caricato il processo
 	- Richiedere che a ogni trasferimento sia caricato nella stessa posizione
 
-Il processo può essere rilocato in un’area di memoria differente. L’**entry point** è la prima istruzione del programma da cui parte, poi c’è il programma, poi c’è una parte riservata ai dati dove si salta quando nel programma ci si riferisce a quei dati, l’istruzione che fa il riferimento conterrà un indirizzo simbolico al dato richiesto. Questo è il modello più semplice di programma, dopodiché questo oggetto sarà trasferito in memoria principale, dove l’istruzione 0 corrisponderà a un certo indirizzo fisico della ram, l’indirizzo 1 a quella successiva e così via.
+Il processo può essere rilocato in un’area di memoria differente. L’**entry point** è la prima istruzione del programma da cui parte, poi c’è il programma, poi c’è una parte riservata ai dati dove si salta quando nel programma ci si riferisce a quei dati. L’istruzione che fa il riferimento conterrà un indirizzo simbolico al dato richiesto. Questo è il modello più semplice di programma, dopodiché questo oggetto sarà trasferito in memoria principale, dove l’istruzione 0 corrisponderà a un certo indirizzo fisico della ram, l’indirizzo 1 a quella successiva e così via.
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260409120551.png" width="200">
@@ -1445,16 +1466,16 @@ Il processo può essere rilocato in un’area di memoria differente. L’**entry
 
 *Protezione:* I riferimenti di cui parlavamo prima alla memoria servono per leggere e scrivere i dati, come detto non sappiamo l’effettiva locazione del programma in memoria, quindi solo quando tentiamo di accedere un indirizzo possiamo realmente vedere se quell’indirizzo fa parte del processo, quindi i meccanismi di rilocazione devono anche contenere un supporto di sicurezza. CONTROLLA
 
-*Condivisione:* n alcuni sistemi è fortemente limitata, in altri è supportata. Ci sono programmi che vengono eseguiti da più processi, quindi in questo caso è utile permettere a questi processi di accedere entrambi alla stessa copia del codice. Il gestore della memoria quindi deve permettere un accesso controllato delle aree di memoria condivisa, senza compromettere la protezione. I meccanismi che supportano la rilocazione supportano anche la condivisione. CONTROLLA
+*Condivisione:* in alcuni sistemi è fortemente limitata, in altri è supportata. Ci sono programmi che vengono eseguiti da più processi, quindi in questo caso è utile permettere a questi processi di accedere entrambi alla stessa copia del codice. Il gestore della memoria quindi deve permettere un accesso controllato delle aree di memoria condivisa, senza compromettere la protezione. I meccanismi che supportano la rilocazione supportano anche la condivisione. 
 
 *Organizzazione logica:* la memoria principale è organizzata linearmente, i programmi sono scritti in moduli. L’**organizzazione logica modulare** permette che i moduli vengano scritti e compilati indipendentemente, possono avere differenti gradi di protezione (sola lettura o sola scrittura) e la condivisione a livello di moduli è più naturale dal punto di vista dell'utilizzatore. Lo strumento che meglio soddisfa questi requisiti è la **segmentazione**
 
-*Organizzazione fisica:* la differenza sostanziale tra la memoria principale (RAM) del sistema e la memoria secondaria (Il disco rigido nel PC), è che la memoria principale è volatile, veloce e costosa, la memoria secondaria invece è permanente, lenta, ma più economica quindi più accessibile a tutti. La memoria disponile per programma e dati potrebbe essere insufficiente. Il programmatore non sa quanto spazio sarà disponibile. Una possibilità è quella dell'**overlaying:** la stessa regione è assegnata a vari moduli sotto la responsabilità del programma. Meglio lasciare al sistema la responsabilità di spostare le informazioni fra memoria principale e secondaria. 
+*Organizzazione fisica:* la differenza sostanziale tra la memoria principale (RAM) del sistema e la memoria secondaria (Il disco rigido nel PC), è che la memoria principale è volatile, veloce e costosa, la memoria secondaria invece è permanente, lenta, ma più economica quindi più accessibile a tutti. La memoria disponile per programma e dati potrebbe essere insufficiente e il programmatore non sa quanto spazio sarà disponibile. In altre parole il programma da eseguire deve stare almeno parzialmente nella RAM, perché
+altrimenti sarebbe troppo lento accedervi istruzione per istruzione. Il problema sta nel fatto che potrebbe non esserci RAM sufficiente nel programma: un motivo è la multiprogrammazione, potremmo avere tanti processi in avanzamento, un altro motivo è il fatto che alcuni programmi potrebbero richiedere più spazio di quello che abbiamo disponibile. Una possibilità è quella dell'**overlaying:** la stessa regione è assegnata a vari moduli sotto la responsabilità del programma. Meglio lasciare al sistema la responsabilità di spostare le informazioni fra memoria principale e secondaria. 
 
 Il gestore della memoria carica i processi nella memoria principale per essere eseguiti:
 - Realizza la memoria virtuale
 - Si basa su partizionamento, segmentazione e paginazione
-- CONTROLLA PARAGRAFO
 
 *Partizionamento:* È un metodo perlopiù obsoleto e che non prevede memoria virtuali, usa le partizioni fisse e le partizioni variabili. Si carica il sistema operativo nella RAM e ciò che resta di RAM viene diviso in partizioni uguali, poi carico il programma che occupa 4 megabyte e si cercherà una delle partizioni con grandezza minore o uguale a quella richiesta dal programma. 
 
@@ -1462,19 +1483,19 @@ Il gestore della memoria carica i processi nella memoria principale per essere e
   <img src="Pasted image 20260409122327.png" width="200">
 </div>
 
-Nell’esempio sulla prima colonna abbiamo tutte partizioni da 8 mega, quindi possiamo far partire solo programmi da 8 mega, nella seconda invece abbiamo quantità differenti. I problemi di questo metodo stanno proprio nel fatto che un programma potrebbe essere troppo lungo per entrare in una partizione e quindi si userebbe fer forza l’overlay. Inoltre comporta un utilizzo inefficiente della memoria principale poiché ogni programma occupa un’intera partizione e quindi si limita anche il numero di processi attivi al numero di partizioni che abbiamo, si crea anche una **frammentazione interna**, cioè uno spreco di spazio poiché il programma può richiedere meno memoria di quella della partizione. Per allocare un processo ad una partizione o si crea una coda per ogni processo, oppure metto il processo in una singola coda che guarda tutte le partizioni
+Nell’esempio sulla prima colonna abbiamo tutte partizioni da 8 mega, quindi possiamo far partire solo programmi da 8 mega, nella seconda invece abbiamo quantità differenti. I problemi di questo metodo stanno proprio nel fatto che un programma potrebbe essere troppo lungo per entrare in una partizione e quindi si usa fer forza l’overlay. Inoltre comporta un utilizzo inefficiente della memoria principale poiché ogni programma occupa un’intera partizione e quindi si limita anche il numero di processi attivi al numero di partizioni che abbiamo. Si crea anche una **frammentazione interna**, cioè uno spreco di spazio poiché il programma può richiedere meno memoria di quella della partizione. Per allocare un processo ad una partizione o si crea una coda per ogni processo, oppure metto il processo in una singola coda che guarda tutte le partizioni. L'algoritmo di allocazione è:
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260409122716.png" width="200">
 </div>
 
-*Segmentazione:* Un’alternativa sono le **partizioni dinamiche**, cioè le partizioni vengono create dinamicamente quando un processo è caricato in memoria, la ram che non è occupata dal sistema operativo dunque è un blocco unico che viene allocato man mano.
+*Segmentazione:* Un’alternativa sono le **partizioni dinamiche**, cioè le partizioni vengono create dinamicamente quando un processo è caricato in memoria, la RAM che non è occupata dal sistema operativo dunque è un blocco unico che viene allocato man mano.
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260409123538.png" width="200">
 </div>
 
-Questo, come si vede nella foto, provoca una **frammentazione esterna** che può essere risolta però con una compattazione della ram che viene liberata man mano che i processi finiscono. 
+Questo, come si vede nella foto, provoca una **frammentazione esterna** che può essere risolta però con una compattazione della RAM che viene liberata man mano che i processi finiscono. 
 
 Per il metodo di allocazione si possono avere 3 politiche di scelta del blocco: 
 - *Best-fit:* sceglie il blocco disponibile che ha la dimensione più simile a quella richiesta 
@@ -1483,33 +1504,41 @@ Per il metodo di allocazione si possono avere 3 politiche di scelta del blocco:
 
 Il best-fit può sembrare il metodo migliore però con esso si creano un sacco di partizioni molto piccole, la first-fit invece tutto sommato funziona meglio, però con questa si cerca di usare sempre la prima parte della memoria, si potrebbe creare quindi una frammentazione concentrata sulla prima parte della memoria.
 
-IMMAGINE
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260412125200.png" width="200">
+</div>
 
-**Buddy system:** C’è però un meccanismo, il buddy system, un compromesso tra partizioni fisse e dinamiche che è più facile da gestire. Si hanno blocchi di dimensione 2 K, L <= K <= U, dove 2 U è lo spazio allocabile, 2 L è la dimensione dei blocchi allocabili. Un programma di dimensione l con 2 K-1 < l <= 2 K viene allocato in un blocco libero di dimensione 2 K, se non ce ne sono, un blocco di dimensione 2 K+1 è spezzato in due buddies di dimensione 2 K. Non appena due buddies sono contemporaneamente liberi sono riuniti in un unico blocco di dimensione doppia.
+**Buddy system:** C’è però un meccanismo, il buddy system, un compromesso tra partizioni fisse e dinamiche che è più facile da gestire. Si hanno blocchi di dimensione $2^K, L \leq K \leq U$, dove $2U$ è lo spazio allocabile, $2L$ è la dimensione dei blocchi allocabili. Un programma di dimensione $l$ con $2^{K-1} < l \leq 2^K$ viene allocato in un blocco libero di dimensione $2K$, se non ce ne sono, un blocco di dimensione $2^{K+1}$ è spezzato in due buddies di dimensione $2K$. Non appena due buddies sono contemporaneamente liberi sono riuniti in un unico blocco di dimensione doppia.
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260409125952.png" width="200">
 </div>
 
-Gli indirizzi all’interno del nostro programma possono essere logici, ossia riferimenti a una locazione di memoria indipendente dall’assegnazione della memoria principale al processo, quindi il vero indirizzo del dato non è conosciuto al programmatore, l’indirizzo fisico invece è l’effettiva posizione del dato nella memoria principale, l’indirizzo relativo è l’indirizzo logico espresso come posizione relativa a un altro indirizzo noto. 
+Gli indirizzi all’interno del nostro programma possono essere logici, ossia riferimenti a una locazione di memoria indipendente dall’assegnazione della memoria principale al processo, quindi il vero indirizzo del dato non è conosciuto al programmatore. L’indirizzo fisico, invece, è l’effettiva posizione del dato nella memoria principale e l’indirizzo relativo è l’indirizzo logico espresso come posizione relativa a un altro indirizzo noto. 
 
-*Rilocazione:* La rilocazione può essere **statica** se a un processo sarà sempre assegnata la stessa partizione, in questo caso si può usare un caricatore (loader) rilocante. Al caricamento tutti i riferimenti a indirizzi relativi sono sostituiti da indirizzi assoluti, determinati dall’indirizzo base del processo caricato. La rilocazione può essere invece **dinamica** se il processo può occupare differenti partizioni nel corso della sua vita (ad esempio partizioni variabili e caricamento dinamico), si ha chiaramente quando avviene lo swapping tra memoria principale e secondaria: - Quando l’immagine del processo è creata, viene caricata in una partizione; - Quando è trasferita in memoria secondaria e poi ricaricata in memoria, occuperà un’altra partizione; - In caso di compattamento della memoria, la partizione sarà ancora modificata. - Quindi le locazioni di memoria riferite dal programma variano ogni volta che il processo subisce uno swap. È necessaria la rilocazione dinamica con supporto hardware. CONTROLLA
+*Rilocazione:* La rilocazione può essere **statica** se a un processo sarà sempre assegnata la stessa partizione, in questo caso si può usare un caricatore (**loader**) rilocante. Al caricamento tutti i riferimenti a indirizzi relativi sono sostituiti da indirizzi assoluti, determinati dall’indirizzo base del processo caricato. La rilocazione può essere anche **dinamica** se il processo può occupare differenti partizioni nel corso della sua vita (ad esempio partizioni variabili e caricamento dinamico). Si ha  quando avviene lo swapping tra memoria principale e secondaria: 
+- Quando l’immagine del processo è creata, viene caricata in una partizione; 
+- Quando è trasferita in memoria secondaria e poi ricaricata in memoria, occuperà un’altra partizione; 
+- In caso di compattamento della memoria, la partizione sarà ancora modificata. 
+- Quindi le locazioni di memoria riferite dal programma variano ogni volta che il processo subisce uno swap. 
+
+È necessaria la rilocazione dinamica con supporto hardware. 
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260409130119.png" width="200">
 </div>
 
-**Paginazione:** Nella paginazione la memoria principale è partizionata in blocchi di dimensione fissa detti frame, i programmi sono divisi in blocchi della stessa dimensione detti pagine, queste pagine sono poi caricate in frame grandi quanto la pagina.
+**Paginazione:** Nella paginazione la memoria principale è partizionata in blocchi di dimensione fissa detti **frame**. I programmi sono divisi in blocchi della stessa dimensione detti pagine, queste pagine sono poi caricate in frame grandi quanto la pagina (non necessariamente contigui).
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260409131628.png" width="200">
 </div>
 
-Per ogni processo viene creata una tabella che contiene la posizione del frame per ogni pagina del processo, il processore accede alla tabella delle pagine del processo corrente per produrre l’indirizzo fisico. 
+Per ogni processo viene creata una tabella che contiene la posizione del frame per ogni pagina del processo. Il processore accede alla tabella delle pagine del processo corrente per produrre l’indirizzo fisico. 
 
 <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
   <img src="Pasted image 20260409131719.png" style="max-width: 60%; height: auto;">
   <img src="Screenshot From 2026-04-09 13-17-49.png" style="max-width: 60%; height: auto;">
 </div>
 
-Le 3 pagine sono lunghe ciascuna 1024 byte, l’ultima pagina ha uno spazio “sprecato” dovuto al fatto che il programma occupa 2700 byte, quindi all’ultima pagina se ne allocano 652 e il resto non servirà. L’indirizzo relativo 1502 rappresenta la casella indicata dalla freccia, l’indirizzo logico corrispondente è che, la casella appartiene alla pagina di numero 1, con offset = 478, ossia salterà i primi 1024 byte che appartengono alla prima pagina (la pagina 0) e partirà dal 1024 esimo byte applicandogli l’offset di 478 che ci permette di arrivare all’indirizzo 1502, {segmentazione la spiega la prox volta}
+Le 3 pagine sono lunghe ciascuna 1024 byte, l’ultima pagina ha uno spazio “sprecato” dovuto al fatto che il programma occupa 2700 byte, quindi all’ultima pagina se ne allocano 652 e il resto non servirà. L’indirizzo relativo 1502 rappresenta la casella indicata dalla freccia, l’indirizzo logico corrispondente è che, la casella appartiene alla pagina di numero 1, con offset = 478, ossia salterà i primi 1024 byte che appartengono alla prima pagina (la pagina 0) e partirà dal 1024-esimo byte applicandogli l’offset di 478 che ci permette di arrivare all’indirizzo 1502, 

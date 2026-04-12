@@ -773,8 +773,57 @@ exit $RET
 
 > [!attention] Nei file bash (e nella shell in generale), non bisogna mettere spazi attorno al segno di uguale quando si definisce una variabile perché **bash usa gli spazi per separare i comandi dai loro argomenti** (nome variabile verrebbe interpretato come nome di un comando da eseguire e `=` e il `valore` della variabile verrebbero interpretati come argomenti di questo comando)
 
-**Scripting:** 
-- Possiamo passare ad uno script degli argomenti
+**Script e il suo contenuto:** uno script è un file di testo che conditene comandi per la shell. Se eseguito la shell esegue i comandi contenuti. Viene usato per automatizzare operazioni senza dover sempre ripetere la scrittura dei comandi che le eseguono
+
+> [!example]
+> bash:~$ cat sc1.sh
+> 
+> cd /etc
+> 
+> echo "Ora siamo in /etc"
+> 
+> bash:~$
+
+Per eseguire uno script posso:
+- `bash sc1.sh` 
+- oppure renderlo eseguibile aggiungendo il permesso di esecuzione x: `chmod u+x sc1.sh` e richiamandolo con `./sc1.sh` (se nella directory corrente) 
+- lo script è eseguito in una subshell 
+- `source sc1.sh` (o . sc1.sh) che fa un'altra cosa: "legge" lo script e ne esegue i comandi all'interno della shell corrente
+
+La *shabang line* è la prima riga dello script ,indica l'interprete dei comandi contenuti: `#!/bin/bash`. Il carattere `#` è usato in generale per inserire commenti nel codice dello script
+
+Quando si parla di variabili, come in qualsiasi linguaggio di programmazione, si tratta di coppie NOME - VALORE. Non sono tipizzate e non ammettono dichiarazione, si definiscono assegnando un valore:es. VAR 1=“Waiting…”, VAR 2=10. Una volta definite si referenziano anteponendo un $ prima del nome: es. echo `$VAR1`, `VAR2=$VAR1`
+
+Possiamo passare ad uno script degli argomenti, per lo script sono variabili nella forma `$n` dove n è un intero da 0 in poi. `$0` contiene il nome dello script e gli altri argomenti (se passati) sono da `$1` a `$n` dove n è il loro numero. Quelli oltre il nono devono essere referenziati nella forma `${n}` (per es.: $10 è sostituito col primo + il carattere "0" e non il decimo) 
+
+> [!info]  
+> - il numero di argomenti passati è nella variabile `$#`
+> - il comando interno `shift` rinomina i parametri posizionali (argomenti) decrementando l'intero che li identifica. Cioè `$2` diventa `$1`, `$3` diventa `$2` e così via (utile nel parsing degli argomenti)
+
+Le variabili della shell non sono visibili ai processi figli (anche script) o alle sottoshell, a meno che non siano state esportate (con comando `export`) e siano quindi state inserite nell'environment (variabili d'ambiente).
+
+Esistono alcune variabili speciali:
+- `$0`: nome dello script 
+- `$*`: tutti gli argomenti passati allo script in una sola parola ("$*" equivale a "$1 $2 $3 …") 
+- `$@`: come il precedente ma ogni argomento in una parola distinta ("$@" equivale a "$1" "$2" "$3" …) 
+- `$#`: numero di argomenti passati
+- `$!`: PID dell'ultimo comando eseguito in background 
+- `$_`: ultimo argomento passato al comando precedente 
+- `$?`: valore di ritorno del comando precedente 
+- `$$`: process identifier (PID) della shell, tranne che per una subshell tra `()` per cui torna il PID del chiamante. Si può utilizzare la variabile BASHPID
+
+La shell riconosce certi caratteri come "speciali" e li "interpreta", cioè attribuisce loro un significato diverso dal carattere in sé. Possiamo prevenire questo comportamento col quoting: `\`. La shell ignora il significato "speciale" del carattere preceduto da `\`. Per certi comandi `\` ottiene l'effetto contrario, cioè abilita un significato speciale per il carattere che lo segue. Per es. per avere comportamenti simili al C (inserire un newline in una stringa, etc.)
+
+| Sequenze di escape | Uso per echo e sed                   |
+| ------------------ | ------------------------------------ |
+| `\n`               | Newline                              |
+| `\r`               | Return                               |
+| `\t`               | Tab                                  |
+| `\v`               | Vertical tab                         |
+| `\b`               | Backspace                            |
+| `\a`               | Alert (beep or flash)                |
+| `\0xx`             | Traduce all'equivalente ottale ACSII |
+Inoltre il quoting con singolo apice preserva il significato letterale dei caratteri, mentre quello con doppi apici preserva il significato letterale dei caratteri, eccezion fatta per '$', ''' e '\'. Sostituisce quindi le variabili e i comandi racchiusi da apici obliqui.
 
 > [!info] echo ls stampa ls (cioè ciò che c’è dopo echo)
 > 'echo ls' (Alt Gr + ') stampa invece il contenuto di ls
@@ -1176,4 +1225,56 @@ int main()
 > - `|` (pipe):  passa lo stdout del comando precedente allo stdin del comando successivo, i comandi vengono eseguiti in maniera concorrente
 > - `&&` (AND logico): collega i comandi così che il secondo in successione venga eseguito subito dopo il primo. Se il primo comando fallisce, allora il resto viene saltato
 > - `&` (background):  va posto dopo un comando e esegue quest‘ultimo in modo asincrono, consentendo alla shell di continuare immediatamente senza attendere il completamento del processo (ATTENZIONE! NON legge eventuali input da terminale come password) 
+
+###### Bash scripting
+**`-if`:** 
+> [!example] 
+> ```
+> if grep -q Bash file 
+> then 
+> 	echo "occurrence(s) found" 
+> else 
+> 	echo "Bash string not found!" 
+> fi 
+> ```
+> verifica se il comando grep va a buon fine (cioè se ritorna 0, non true…)
+
+`&&, ||, !` (and, or, not) si possono usare per combinare gli exit status nelle condizioni 
+
+> [!example]
+> ```
+> if grep str 1 testo.txt && grep str 2 testo.txt 
+> then 
+> 	echo "entrambe presenti" 
+> fi
+> ```
+
+**`test`:** Con test possiamo confrontare stringhe ed interi, testare alcune proprietà dei file (esistenza, permessi, etc.). Possiamo combinare logicamente le condizioni (-o, -a)
+
+> [!example] 
+> ```
+> if test -d dir1 
+> then 
+> 	echo "la directory esiste" 
+> else 
+> 	echo "la directory non esiste" 
+> fi
+> ```
+
+> [!info] Confronti tra interi (tratto da man test): 
+> - INTEGER1 -eq INTEGER2: INTEGER1 is equal to INTEGER2 
+> - INTEGER1 -ge INTEGER2: INTEGER1 is greater than or equal to INTEGER2
+> - INTEGER1 -gt INTEGER2: INTEGER1 is greater than INTEGER2 
+> - INTEGER1 -le INTEGER2: INTEGER1 is less than or equal to INTEGER2
+> - INTEGER1 -lt INTEGER2: INTEGER1 is less than INTEGER2
+> - INTEGER1 -ne INTEGER2: INTEGER1 is not equal to INTEGER2
+
+> [!info] Opzioni per i file 
+> - `-a file` o `-e file:` Vero se il file esiste 
+> - `-d file:` Vero se il file esiste ed è una directory 
+> - `-f file:` Vero se il file esiste ed è un file regolare 
+> - `-h file:` Vero se il file esiste ed è un link simbolico 
+> - `-r file`: Vero se il file esiste ed è leggibile 
+> - `-w file:` Vero se il file esiste ed è scrivibile 
+> - `-x file`: Vero se il file esiste ed è eseguibile
 

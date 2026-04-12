@@ -663,7 +663,7 @@ Ogni radice scelta dal secondo DFS può raggiungere solo:
 
 Visitando i vertici di $(G^T)^{SCC}$ in ordine inverso rispetto all’ordinamento topologico
 ###### Disjoint-set data structures
-Le strutture dati per insiemi disgiunti (o union find) mantengono la collezione $\mathscr{S} = \{S_1,…,S_k\}$ di insiemi disgiunti e dinamici. Ogni set è identificato da un rappresentante, il quale è un qualche membro dell'insieme. Non importa quale membro sia il rappresentante, fintanto che se si chiede due volte quale sia il rappresentate si ottenga la stessa risposta (senza cambiare il set)
+Le strutture dati per insiemi disgiunti (o union find) mantengono la collezione $\mathscr{S} = \{S_1,…,S_k\}$ di insiemi disgiunti e dinamici. Ogni set è identificato da un rappresentante, il quale è un qualche membro dell'insieme. Non importa quale membro sia il rappresentante, fintanto che, se si chiede due volte quale sia il rappresentate, si ottenga la stessa risposta (senza cambiare il set)
 
 **Operazioni:** 
 - Make-Set(X): crea un nuovo set $S_i = \{x\}$  e aggiunge $S_i$ a $\mathscr{S}$
@@ -793,7 +793,7 @@ Uno spanning tree il cui peso sia minimo (tra tutti gli spanning trees) è chiam
 > [!example] 
 > ![[Pasted image 20260401180919.png|200]]
 > 
-> In questo esempio c'è più di un MST. Ad esempio se rimpiazzassi l'arco $(e,f)$ con l'arco $(c,e$ avrei un MST diverso con lo stesso peso
+> In questo esempio c'è più di un MST. Ad esempio se rimpiazzassi l'arco $(e,f)$ con l'arco $(c,e)$ avrei un MST diverso con lo stesso peso
 
 **Proprietà di un MST:**
 - Ha $|V| -1$ archi
@@ -880,6 +880,15 @@ Assumendo che l'implementazione di una struttura dati a insiemi disgiunti (disjo
 - $E \leq |V|^2 \implies \lg|E| = O(2 \ln(V)) = O(\ln(V))$ 
 - Perciò il tempo è $O(E\ln(V))$ (se gli archi sono già ordinati $O(E\alpha(V))$ che è quasi lineare)
 
+> [!info] Sintesi:
+> Idea: aggiungi **gli archi più leggeri possibile**, evitando di creare cicli.
+> 1. Ordina tutti gli archi per peso crescente
+> 2. Inizializza una foresta (ogni nodo è un albero separato)
+> 3. Per ogni arco (in ordine crescente):
+>     - se collega due componenti diverse → **aggiungilo**
+>     - se crea un ciclo → **scartalo**
+> 4. Fermati quando hai n−1 archi (con n nodi)
+
 **Algoritmo di Prim:**
 Costruisce un solo albero alla volta, in questo modo $A$ è sempre un albero e inizia da una "radice" arbitraria $r$. Ad ogni passo si trova un light edge che connette $A$ ad un vertice isolato. Un arco, in questo modo, deve essere sicuro per $A$ e può essere aggiunto.
 
@@ -933,7 +942,7 @@ Va tutto bene finché nessun ciclo con costo negativo è raggiungibile dalla sor
 
 **Lemma:** ogni sotto cammino di un cammino minimo è un cammino minimo
 
-**Prova:** si usa la prova di correttezza taglia e incolla (cut-and-paste)
+**Prova:** si usa la prova di correttezza taglia e incolla (*cut-and-paste*)
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260408150323.png" width="200">
@@ -977,7 +986,7 @@ Per ogni algoritmo per cammini minimi con una singola sorgente:
 - Si inizia chiamando Initialize-Single-Source
 - Poi si rilassano gli archi
 
-Gli algoritmi differiscono tra di loro nell'ordine e quante volte vengono rilassati gli archi
+Gli algoritmi differiscono tra di loro nell'ordine e quante volte vengono rilassati gli archi. Ciò significa verificare se passando da un certo nodo si trova un cammino più corto per arrivare a un altro nodo e, se sì, aggiornare la distanza.
 
 **Proprietà dei cammini minimi:** basandosi sulla chiamata prima di Initialize-Single-Source e poi di Relax 0 o più volte:
 - *Disuguaglianza triangolare:* per ogni $(u,v) \in E$, abbiamo che $\delta(s,v) \leq \delta(s,u) + w(u,v)$ 

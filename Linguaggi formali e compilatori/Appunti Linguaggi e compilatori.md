@@ -95,7 +95,7 @@ Per poter costruire delle regole rigorose, dobbiamo prima definire matematicamen
     * **Suffisso:** Se $y=\epsilon$, allora $v$ si trova alla fine ed è detto suffisso.
     * **Fattore Proprio:** Diremo che $v$ è un fattore proprio se $v\ne w$.
 ###### Linguaggi e grammatiche
-**Linguaggio Formale (Definizione Rigorosa):** Ogni sottoinsieme di $\Sigma^{*}$ si dice **linguaggio formale** (o semplicemente linguaggio) sull'alfabeto $\Sigma$. Possono esserci linguaggi limitati come $L_{1}=\{a,ab,abb\}$, linguaggi infiniti come $L_{2}=\{ab^{n}a|n\ge0\}$, l'insieme vuoto $L_{3}=\emptyset$ o l'intero universo $L_{4}=\Sigma^{*}$.
+Linguaggio Formale:* Ogni sottoinsieme di $\Sigma^{*}$ si dice **linguaggio formale** (o semplicemente linguaggio) sull'alfabeto $\Sigma$. Possono esserci linguaggi limitati come $L_{1}=\{a,ab,abb\}$, linguaggi infiniti come $L_{2}=\{ab^{n}a|n\ge0\}$, l'insieme vuoto $L_{3}=\emptyset$ o l'intero universo $L_{4}=\Sigma^{*}$.
 
 **L'Intuizione: Il Gioco delle Sostituzioni:** Per capire operativamente come le "regole finite" possano generare "linguaggi infiniti", analizziamo un esempio pratico basato sul linguaggio naturale. Vogliamo generare liste di nomi come "Aldo, Bianca e Carlo". Le regole logiche che governano queste frasi sono:
 1.  I nomi sono separati da virgola, tranne gli ultimi due che sono separati dalla congiunzione 'e'.
@@ -691,25 +691,24 @@ La soluzione al mio problema è: date le espressioni regolari $E,F$, voglio sape
 ###### Automa minimo
 Due parole sono uguali per un linguaggio se aggiungendo lo stesso suffisso a destra si comportano sempre nello stesso modo rispetto all'appartenenza a $L$. Da questa idea nasce l'automa minimo. Si tratta di un’automa deterministico con il minor numero possibile di stati. <u>L’automa di Nerode di un linguaggio regolare L è un automa deterministico che accetta L col minimo numero di stati possibile</u>. Quindi definisco prima la congruenza di Nerode, così da definire un’equivalenza cioè una partizione dell’insieme $\Sigma^*$ in un numero finito di classi di equivalenza. Costruisco in seguito un automa minimo partendo da queste classi di equivalenza, che accetta il linguaggio $L$. 
 
-**Equivalenza:** insieme sul quale è definita una relazione **riflessiva** ($x \sim x$), **simmetrica** ($x \sim y \implies y \sim x$) e **transitiva** ($x \sim y, y \sim z \implies x \sim z$). Ogni equivalenza divide l’insieme in **classi di equivalenza**, e queste classi formano una **partizione**. Quindi un equivalenza corrisponde ad una partizione, ogni elemento appartiene ad una sola classe e classi diverse non si intersecano
+**Equivalenza:** insieme sul quale è definita una relazione **riflessiva** ($x \sim x$), **simmetrica** ($x \sim y \implies y \sim x$) e **transitiva** ($x \sim y, y \sim z \implies x \sim z$). Ogni equivalenza divide l’insieme in **classi di equivalenza** (ogni stato sostituisce un singolo stato nell'automa finale), e queste classi formano una **partizione**. Quindi un equivalenza corrisponde ad una partizione, ogni elemento appartiene ad una sola classe e classi diverse non si intersecano. In altre parole 2 stati sono equivalenti se e solo se, per qualsiasi stringa in ingresso, portano l'automa rispettivamente a stati entrambi accettanti o entrambi non accettanti.
 
 *Osservazione:* ogni equivalenza su un insieme $S$ determina una partizione dell’insieme $S$ in classi di equivalenza. Viceversa, ogni partizione dell’insieme $S$ è associata a un’equivalenza di cui le parti sono classi di equivalenza
 
 *Definizione:* sia $\Sigma$ un alfabeto. Una relazione di equivalenza $\sim$ su $\Sigma^*$ si dice una congruenza destra (risp. Sinistra) se per ogni $u, v \in \Sigma^*$ tali che $u \sim v$ e per ogni lettera $a \in \Sigma$, si ha $ua \sim va$ (risp. $au \ \sim \ av$). <u>Una relazione che sia contemporaneamente una congruenza destra e una congruenza sinistra si dice congruenza.</u> In altre parole qui non abbiamo solo un insieme, ma un insieme che ha un’operazione definita su di esso. Ogni volta che si va a concatenare una lettera a dx di due parole equivalenti ottengo due parole equivalenti (rispettivamente per la congruenza sx).
 
-> [!example] Si considerino le relazione $\sim$ su $\Sigma^*$ definite da:
+> [!info] Si considerino le relazione $\sim$ su $\Sigma^*$ definite da:
 > 1. $u \sim v$ se $u$ e $v$ iniziano con la stessa lettera (o $u$ = $v$ = $\epsilon$)
 > 2. $u \sim v$ se $u$ e $v$ terminano con la stessa lettera (o $u$ = $v$ = $\epsilon$)
 > 3. $u \sim v$ se $u$ e $v$ hanno la stessa lunghezza
-> 4. $u \sim v$ se $u$ e  $v$ le prime due lettere di u sono una permutazione delle prime due lettere di $v$ (o $u = v$)
+> 4. $u \sim v$ se le prime due lettere di $u$ sono una permutazione delle prime due lettere di $v$ (o $u = v$)
 > 
 > Per es. $abaa \sim bab, aababb \sim aaabaa \ \text{ma} \ aababb \not\sim baaabaa$
 
 **Equivalenza di Nerode:**
-
 *Definizione:* sia $L$ un linguaggio sull’alfabeto $\Sigma$. L’equivalenza di Nerode associata al linguaggio $L$ è la relazione $N_L$ definita in $\Sigma^*$ da: $u \ N_L \ v$ se per ogni $y \in \Sigma^*$*, $uy \in L \iff vy \in L$. Cioè, $u \ N_L \ v$ se $u$ e $v$ sono equivalenti e se hanno gli stessi completamenti a destra per entrare in $L$. 
 
-Quindi diciamo che due parole sono equivalenti se le parole che mi permettono di completare la prima ($u$, a dx) dentro una parola di $L$, sono esattamente le stesse che mi permettono di completare $v$ in una parola di $L$. Questo teorema ci da una caratterizzazione vera e propria dei linguaggi regolari sottoforma algebrica: un linguaggio è regolare se lo posso ottenere come unione di classi di una congruenza dx di indice finito.
+Quindi diciamo che due parole sono equivalenti se le parole che mi permettono di completare la prima ($u$, a dx) dentro una parola di $L$, sono esattamente le stesse che mi permettono di completare $v$ in una parola di $L$. Questo teorema ci da una caratterizzazione vera e propria dei linguaggi regolari in forma algebrica: un linguaggio è regolare se lo posso ottenere come unione di classi di una congruenza dx di indice finito.
 
 $N_L$ è la relazione che identifica precisamente gli stati dell'automa minimo:
 - Due parole stanno nella stessa classe se portano allo stesso "stato logico" rispetto a $L$
@@ -742,9 +741,9 @@ Posso vedere queste classi come gli stati di un automa, in cui la transizione co
     <img src="Pasted image 20260320102535.png" style="width: 100%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
-  L'ovale  rappresenta l'insieme di tutte le parole sull'alfabeto sigma. Viene partizionato in 2 parti:
-  <li>1. Linguaggio L, cioè le parole che stanno nel linguaggio L</li>
-  <li>2. Le parole che stanno fuori da linguaggio L e che non appartengono ad esso</li>
+  L'ovale  rappresenta l'insieme di tutte le parole sull'alfabeto Sigma. Viene partizionato in 2 parti:
+  <li>Linguaggio L, cioè le parole che stanno nel linguaggio L</li>
+  <li>Le parole che stanno fuori da linguaggio L e che non appartengono ad esso</li>
   
   Sopra a questo ovale diviso in un numero finito di pezzi, ci costruiremo sopra l'automa del linguaggio L
   </div>
@@ -919,24 +918,30 @@ L’automa minimo di $L$ si ottiene nel modo seguente:
 ###### Analisi lessicale
 Come abbiamo visto inizialmente, l’analisi è la prima fase nella compilazione di un codice sorgente. Dobbiamo identificare gli elementi atomici che costituiscono il nostro codice e individuare a quale categoria lessicale fanno riferimento. Il programma sorgente viene dato in pasto all’Analizzatore lessicale, che restituirà un token al Parser ogni volta che questo deve procedere con la sua analisi sintattica. Contemporaneamente, all’invio del token, l’analizzatore scriverà nella tabella dei simboli gli attributi del token, che poi potranno essere recuperati dal parser.
 
-IMMAGINE
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260411093231.png" width="200">
+</div>
 
 **Perché analisi lessicale e sintattica devono essere separate?** E’ importante separare l’analisi lessicale da quella sintattica perché si ha un’enorme semplificazione nella progettazione del compilatore, una maggiore efficienza e portabilità (perché cambiando sistema, cambia la gestione dell’input) rispetto a che se fossero svolte insieme.
 
-- *Token:* è un simbolo astratto che rappresenta un'unità lessicale (es.una parola chiave, un identificatore, una costante numerica,...). I simboli processati dal parser sono i token. A ogni token viene associato un pattern (classe/simbolo che rappresenta il ruolo del lessema es. KEyWORD, IDENTIFIER,...)
+- *Token:* è un simbolo astratto che rappresenta un'unità lessicale (es.una parola chiave, un identificatore, una costante numerica,...). I simboli processati dal parser sono i token. A ogni token viene associato un pattern (classe/simbolo che rappresenta il ruolo del lessema)
 - *Lessema:* è una sequenza di caratteri di un codice sergente associato a un token. L'analizzatore lessicale identifica i lessemi come istanze del token a cui sono associati (stringa reale del programma)
 - *Pattern:* è una descrizione della forma che i lessemi possono avere per poter essere associati ad un determinato token. In pratica si tratta di un'espressione regolare (Il pattern è la regola che descrive tutti i lessemi validi per un certo token.)
 
 Quindi il processo che viene seguito è: pattern $\rightarrow$ genera/riconosce $\rightarrow$ lessemi $\rightarrow$ classificati come $\rightarrow$ token. Preso come esempio y = x + 42;
 
-| Lessema | Token      | Pattern  |
-| ------- | ---------- | -------- |
-| `y`     | IDENTIFIER | Letter   |
-| `=`     | ASSIGN     | `=`      |
-| `x`     | IDENTIFIER | Letter   |
-| `+`     | PLUS       | `+`      |
-| 42      | NUMBER     | `digit+` |
-| `;`     | SEMICOLON  | `;`      |
+| Lessema | Token      | Pattern                                    |
+| ------- | ---------- | ------------------------------------------ |
+| `y`     | IDENTIFIER | Letter (parola che inizia con una lettera) |
+| `=`     | ASSIGN     | `=`                                        |
+| `x`     | IDENTIFIER | Letter                                     |
+| `+`     | PLUS       | `+`                                        |
+| 42      | NUMBER     | `digit+`                                   |
+| `;`     | SEMICOLON  | `;`                                        |
+> [!info] Sintesi
+> - i lessemi sono ciò che leggo nel codice
+> - i token sono delle etichette astratte
+> - i pattern sono delle regole (regex) che definiscono i lessemi
 
 **Attributi del token:** se più di un lessema è associato al medesimo pattern è necessario tenere traccia di ulteriori informazioni sul particolare lessema letto dall'analizzatore lessicale. Tali informazioni sono registrate nella *tabella dei simboli*
 
@@ -1007,9 +1012,9 @@ Troviamo il più lungo prefisso $u$ di $w$ accettato da $A_D$ e il più piccolo 
 </div>
 
 <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-  <img src="Pasted image 20260409154920.png" style="max-width: 60%; height: auto;">
-  <img src="Pasted image 20260409154935.png" style="max-width: 60%; height: auto;">
-  <img src="Pasted image 20260409155003.png" style="max-width: 60%; height: auto;">
+  <img src="Pasted image 20260409154920.png" style="max-width: 50%; height: auto;">
+  <img src="Pasted image 20260409154935.png" style="max-width: 50%; height: auto;">
+  <img src="Pasted image 20260409155003.png" style="max-width: 50%; height: auto;">
 </div>
 
 **Lex:** è un generatore di analizzatori lessicali
@@ -1033,7 +1038,7 @@ Sia $G = \langle V,\Sigma,P,S \rangle$ una grammatica di tipo 3, per semplicità
 - Gli stati sono le variabili della grammatica G e la parola vuota
 - Per ogni produzione $X \rightarrow aY$, nel grafo di $A$ c'è la freccia $X \xrightarrow{a} Y$, per ogni produzione $X \rightarrow a$, nel grafo di $A$ c'è la freccia $X \xrightarrow{a} \epsilon$
 - Lo stato iniziale è $S$
--  l'unico stato finale è $\epsilon$
+- L'unico stato finale è $\epsilon$
 
 Si verifica che $L(G) = L(A)$
 
@@ -1044,16 +1049,17 @@ Si verifica che $L(G) = L(A)$
 Quindi $L(G) = L(A)$
 
 **Dalla grammatica all'automa:** 
+
 *Osservazione:* se $S \rightarrow \epsilon$ è una produzione di $G$ (e quindi $S$ non campare nei lati destri delle produzioni), allora occorrerà aggiungere $S$ all'insieme degli stati finali di $A$ 
 
-**Dall'automa alla grammatica:** sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ un automa  astati finiti privo di $\epsilon-$transizioni. Per semplicità supponiamo che $\epsilon \notin L(A)$. Costruiamo la grammatica $G$ nel modo seguente:
+**Dall'automa alla grammatica:** sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ un automa a stati finiti privo di $\epsilon-$transizioni. Per semplicità supponiamo che $\epsilon \notin L(A)$. Costruiamo la grammatica $G$ nel modo seguente:
 - Le variabili della grammatica $G$ sono gli stati dell'automa $A$ 
 - Per ogni freccia $X \xrightarrow{a} Y$ nel grafo di $A$ aggiungiamo a $G$ la produzione $X → aY$, se $Y$ è uno stato finale, aggiungiamo a $G$ anche la produzione $X → a$
 - Il simbolo iniziale è lo stato iniziale $S = q_0$
 
 Si verifica che $L(G) = L(A)$ (dimostrazione analoga alla precedente)
 
-*Osservazione:* se $\epsilon \in L(A)$ sarà necessario modificare la grammatica F in modo da fargli generare anche la parola vuota. Se però S compare nel alto destro di qualche produzione, non è possibile aggiungere la produzione $S \rightarrow \epsilon$. Dovremo pertanto prima introdurre una nuova variabile $S'$ le cui produzioni avranno gli stessi lati destri delle produzioni di $S$, prendere $S'$ come simbolo iniziale al posto di $S$ e, infine, aggiungere la produzione $S' → \epsilon$
+*Osservazione:* se $\epsilon \in L(A)$ sarà necessario modificare la grammatica $F$ in modo da fargli generare anche la parola vuota. Se però S compare nel alto destro di qualche produzione, non è possibile aggiungere la produzione $S \rightarrow \epsilon$. Dovremo pertanto prima introdurre una nuova variabile $S'$ le cui produzioni avranno gli stessi lati destri delle produzioni di $S$, prendere $S'$ come simbolo iniziale al posto di $S$ e, infine, aggiungere la produzione $S' → \epsilon$
 
 > [!example] 
 > Se $G$ ha le produzioni $S → aS, S →bX, S →b, X → aX, X → bS, X → a$, allora $L(G)$ è accettata dall'automa
@@ -1072,12 +1078,14 @@ Le grammatiche di tipo 3 considerate finora sono evidentemente lineari destre. V
 **Teorema:** un linguaggio è accettato da un automa a stati finiti se e solo se è generato da una grammatica lineare destra
 
 > [!example] 
-> Sia $G$ la grammatica con le produzioni $S → aaX, S → \epsilon, X → bbS$, l'automa che accetta $L(G)$ si ottiene nel modo seguente:
+> Sia $G$ la grammatica con le produzioni $S → aaX, S → \epsilon, X → bbS$, l'automa che accetta $L(G)$ si ottiene nel modo seguente (altrimenti non avrei delle etichette su ogni arco ma delle parole):
 > 
 > ![[Pasted image 20260409183732.png]]
 > 
 > La grammatica $G$, inoltre, è equivalente alla grammatica con le produzioni: $S' → \epsilon, S' → aY, S → aY, Y → aX, X → bZ, Z → bS, Z → b$
 ###### Linguaggi non contestuali
+Sono linguaggi di tipo 2, e lo strumento necessario che ci permette di eseguire l’analisi sintattica.
+
 > [!example] sia $P$ il linguaggio delle palindrome sull'alfabeto $\Sigma = \{a,b\}$
 > 1. $\epsilon, a, b$ sono palindrome
 > 2. Per ogni palindroma $w$, le parole $awa$ e $bwb$ sono palindrome
@@ -1085,73 +1093,89 @@ Le grammatiche di tipo 3 considerate finora sono evidentemente lineari destre. V
 > 
 > Abbiamo ottenuto un algoritmo per verificare, ricorsivamente, se una data parola è palindroma e un metodo per generare tutte le palindrome (grammatica): $S \rightarrow \epsilon, S \rightarrow a, S \rightarrow b, S \rightarrow aSa, S \rightarrow bSb$ 
 
-*Definizione:* una grammatica si dice non contestuale o di tipo 2 (CFG) se tutte le produzioni sono della forma: $X \rightarrow \alpha$, con $X \in N, \alpha \in V*$. Un linguaggio si dice non contestuale o di tipo 2 (CFL) se è generato da una grammatica non contestuale. MANCA
+*Definizione:* una grammatica si dice non contestuale o di tipo 2 (CFG) se tutte le produzioni sono della forma: $X \rightarrow \alpha$, con $X \in N, \alpha \in V^*$ (cioè se hanno a sinistra una singola variabile). Un linguaggio si dice non contestuale o di tipo 2 (CFL) se è generato da una grammatica non contestuale. 
+
+*Osservazione:* ogni grammatica lineare destra, e in generale le grammatiche lineari, sono non contestuali, perché a sx delle produzioni c’è sempre una variabile da sola. Quindi, dato che sono generati da grammatiche regolari dx, i linguaggi regolari sono non contestuali. Essi costituiscono un sotto insieme dei linguaggi non contestuali. Non vale l’inverso.
 
 > [!example]
-> MANCA
+> Sia $G$ la grammatica con le produzioni $S → \epsilon, S → aSb$. Si ha $S \implies aSb \implies aaSbb \implies … \implies a^nSb^n \implies a^nb^n$. Quindi $L(G) = \{a^nb^n | n \geq 0\}$. Pertanto $\{a^nb^n | n \geq 0\}$ è un linguaggio non contestuale. Invece non è un linguaggio regolare
 
-MANCA QuALCOSA FORSE
+*Proposizione:* la classe dei linguaggi regolari è strettamente inclusa in quella dei linguaggi non-contestuali
 
-**Linguaggio di Dick:** $\Sigma_n = \{a_1,a_2,…,a_n,b_1,b-2,…,b_n\}$. Sia $G_n = \langle V,\Sigma_n, P, S \rangle$ la grammatica con unica variabile $S$ e produzioni MANCANO, il linguaggio $D_n$ generato  da $G_n$ è detto linguaggio di Dick
+Fra tutti i linguaggi non contestuali ce n’è uno che rappresenta l’archetipo di questo tipo di linguaggi: il linguaggio Dick. Si usa raggruppare le produzioni con lo stesso lato sinistro, separando i lati destri con una barra verticale. Per esempio: $S → a|b|\emptyset | (S+S) | (SS) | S^*$
+
+**Linguaggio di Dick:** $\Sigma_n = \{a_1,a_2,…,a_n,b_1,b-2,…,b_n\}$. Sia $G_n = \langle V,\Sigma_n, P, S \rangle$ la grammatica con unica variabile $S$ e produzioni $S → a_iSb_i, i = 1,2,…,n$, $S → SS$, $S → \epsilon$, il linguaggio $D_n$ generato  da $G_n$ è detto linguaggio di Dick
 
 > [!example]
 > Supponiamo $n = 2$ e poniamo $a_1 = (,b_1 =) , a_2 = [, b_2 =]$. Allora le parole $(),[], [()]([]) , (())[([]())]$ sono elementi di $D_2$, mentre $)($ non lo è. Sequenze di parentesi non ben bilanciate
 
-> [!example]
+> [!info]
 > Costruiamo una grammatica che genera le espressioni regolari sull'alfabeto $\{a,b\}$
 > 1. $\emptyset,a,b$ sono espressioni regolari
 > 2. Se $E$ e $F$ sono espressioni regolari, allora lo sono anche $(E+F),(EF), E^*$
 > 3. Tutte le espressioni regolari sull'alfabeto $\{a,b\}$ si ottengono applicando un numero finito di volte le due regole precedenti
 > 
-> Pertanto prendiamo $\Sigma = \{a,b,\emptyset,(,),+,^*\}$ e produzioni MANCANO
+> Pertanto prendiamo $\Sigma = \{a,b,\emptyset,(,),+,^*\}$ e produzioni $S →a, S → b, S → \emptyset, S → (S+S), S → (SS), S → S^*$
 
 *Notazione:* si usa raggruppare le produzioni con lo stesso lato sinistro, separando i lati destri con una barra verticale. Per esempio $S \rightarrow a|b|\emptyset| (S+S)|(SS)|S^*$
 
-> [!example] $L = \{w \in \Sigma^* | |w|_a = |w|_b\}$
-> Consideriamo i linguaggi $L_a = \{w \in \Sigma^* | |w|_a = |w|_b + 1\}$, $L_b = \{w \in \Sigma^* | |w|_b = |w|_a + 1\}$. Verifichiamo le identità: $L = aL_b + bL_a + \epsilon, L_a = LaL, L_b = LbL$
+> [!example] $L = \{w \in \Sigma^* | |w|_a = |w|_b\}$ cioè stesso numero di $a$ e di $b$ in qualunque ordine
+> Consideriamo i linguaggi $L_a = \{w \in \Sigma^* | |w|_a = |w|_b + 1\}$, $L_b = \{w \in \Sigma^* | |w|_b = |w|_a + 1\}$, rispettivamente una $a$ e una $b$ in più. Verifichiamo le identità: $L = aL_b + bL_a + \epsilon, L_a = LaL, L_b = LbL$
 > - ogni $w \in L$ si scrive $w = au$ con $u \in L_b$ o $w = bu$ con $u \in L_a$ o $w = \epsilon$
 > - ogni $w \in L_b$ si scrive $w = ubv$ con $u,v \in L$
 > 
-> IMMAGINE
+> ![[Pasted image 20260411094136.png|200]]
 > 
 > Quindi $L$ è generato dalla grammatica con produzioni $S → aB | bA | \epsilon, A → SaS, B → SbS$
 
-**Alberi di derivazione:** sono alberi con radice e con etichette sui nodi e i figli di ciascun nodo sono ordinati (da sinistra a destra). Ciò determina un ordinamenti totale delle foglie
+**Alberi di derivazione:** sono alberi con radice e con etichette sui nodi e i figli di ciascun nodo sono ordinati (da sinistra a destra). Ciò determina un ordinamento totale delle foglie. Sono una rappresentazione di una derivazione di una parola in una grammatica non contestuale.
 
 *Definizione:* $T$ è un albero di derivazione della grammatica $G$ se verifica le seguenti condizioni:
 1. L'etichetta della radice è $S$
 2. Le etichette dei nodi interni sono elementi si $N$
-3. Le etichette delle foglie sono elementi di $\Sigma \cup {\epsilon}$
+3. Le etichette delle foglie sono elementi di $\Sigma \cup \{\epsilon\}$ (simboli terminali o parola vuota)
 4. Le foglie con etichetta $\epsilon$ sono 'figli unici'
-5. Se in nodo con etichetta $X$ ha figli etichettati nell'ordine $\alpha_1,…\alpha_k$, allora X → $\alpha_1,…\alpha_k$, allora MANCA
+5. Se in nodo con etichetta $X$ ha figli etichettati nell'ordine $\alpha_1,…\alpha_k$, allora X → $\alpha_1,…,\alpha_k$ è una produzione di $G$
 
-> [!example] Nell'esempio di prima: $S → aB | bA | \epsilon, A → SaS, B → SbS$
-> IMMAGINE
+La parola che si ottiene leggendo, nell'ordine, le etichette delle foglie è la parola associata a $T$
+
+> [!example] Nell'esempio di prima: 
+> ![[Pasted image 20260411094509.png|200]]
 
 *Proposizione:* siano $G$ una grammatica non contestuale e $w \in \Sigma^*$. Si ha $w \in L(G)$ se e solo se esiste un albero di derivazione di $G$ associato a $w$
 
 > [!example] $S → aB | bA | \epsilon, A → SaS, B → SbS$
 > La parola $ba$ ha 2 derivazioni:
 > 1. $S \implies bA \implies bSaS \implies baS \implies ba$
-> 2. $S \implies bA \implies bSaS \implies bSa \implies manca$
+> 2. $S \implies bA \implies bSaS \implies bSa \implies ba$
+> 
+> Ma un solo albero:
+> 
+> ![[Pasted image 20260411094606.png|200]]
 
 > [!example]
 > Sia $G$ la grammatica con $\Sigma = \{0,1,*,+\}, N = \{S\}$ e produzioni $S → S + S | S * S | 0 | 1$, allora $L(G) = (\{0,1\},\{+,*\})^*\{0,1\}$. La parola $1+1*0$ ha 2 alberi di derivazione:
-> IMMAGINE
+> 
+> ![[Pasted image 20260411094639.png|200]]
+> 
 > Dal punto di vista 'semantico' il primo corrisponde alla 'computazione' di $1+(1*0)$ e il secondo alla 'computazione' di $(1+1)*0$
 
 **Grammatiche ambigue:** 
-*Definizione:* una grammatica si dice non ambigua se a ogni parola del linguaggio generato corrisponde un'unico albero di derivazione
+*Definizione:* una grammatica si dice NON ambigua se a ogni parola del linguaggio generato corrisponde un'unico albero di derivazione. Al contrario, le grammatiche ambigue sono quelle grammatiche dove ad ogni parola del linguaggio generato corrispondono più alberi di derivazione.
 
 > [!example] 
-> Si $G'$ la grammatica con $\Sigma = \{0,1,*,+\}, N = \{S,P,X\}$ e produzioni $S → P+S|P, P → X*P|X, X → 0|1$ MANCA
+> Si $G'$ la grammatica con $\Sigma = \{0,1,*,+\}, N = \{S,P,X\}$ e produzioni $S → P+S|P, P → X*P|X, X → 0|1$. È equivalente a quella dell'esempio precedente ma non ambigua
 > 
+> ![[Pasted image 20260411094747.png|200]] 
 
 *Definizione:* un linguaggio non contestuale si dice inerentemente ambiguo se non è generato da nessuna grammatica non contestuale non ambigua
 
 > [!example] 
-> Sia $G$ la grammatica con le produzioni $S → XA | AY, X → aXb| ab, A → aA|a, Y → bYa |ba$. Si ha  $L = \{ a^mb^ma^n|m,n > 0\} \cup \{a^mb^na^n|m,n > 0\}$. $G$ è ambigua IMMAGINE
-
+> Sia $G$ la grammatica con le produzioni $S → XA | AY, X → aXb| ab, A → aA|a, Y → bYa |ba$. Si ha  $L = \{ a^mb^ma^n|m,n > 0\} \cup \{a^mb^na^n|m,n > 0\}$. $G$ è ambigua 
+> 
+> ![[Pasted image 20260411094824.png|200]]
+> 
+> $L$ è inerentemente ambiguo
 ###### Semplificazioni nelle grammatiche non contestuali
 Ho due problemi: 
 - di ricognizione: stabilire se una parola fa parte del linguaggio generato
@@ -1160,11 +1184,13 @@ Ho due problemi:
 Sono in generale molto complessi, ma si semplificano se si evitano:
 1. $X → \epsilon$ ($\epsilon$-produzioni)
 2. $X → Y$ (produzioni unarie)
-3. Le variabili che no compaiono nelle forme sentenziali (inaccessibili)
+3. Le variabili che non compaiono nelle forme sentenziali (inaccessibili)
 4. Le variabili da cui non si derivano parole prive di variabili (improduttive)
 
 **$\epsilon-$produzioni e produzioni unarie:** 
-*Definizione:* sia $G$ una grammatica non contestuale. Le produzioni della forma $X → \epsilon$ se dicono $\epsilon-$produzioni. Le produzioni della forma $X → Y$, con $X, Y$ variabili si dicono produzioni unarie
+*Definizione:* sia $G$ una grammatica non contestuale. Le produzioni della forma $X → \epsilon$ si dicono $\epsilon-$produzioni. Le produzioni della forma $X → Y$, con $X, Y$ variabili si dicono produzioni unarie
+
+L’ideale sarebbe avere a sinistra sempre una variabile, e a destra avere o un terminale, o una sequenza di almeno due lettere variabile-terminale.
 
 > [!example] Sia $G$ la grammatica con N = MANCA
 
@@ -1174,7 +1200,7 @@ Sono in generale molto complessi, ma si semplificano se si evitano:
 
 Pertanto, una parola di lunghezza n può essere generata in $2n − 1$ passi al più (perché ad ogni passo o la mia forma sentenziale si allunga, oppure una variabile viene sostituita da un terminale).
 
-*Proposizione:* ogni linguaggio non contestuale è effettivamente generato da una grammatica non contestuale priva di $\epsilon-$produzioni, eccettuata, eventualmente, la produzione $S → \epsilon$, ove $S$ è il simbolo iniziale. Inoltre, si può assumere che il simbolo iniziale non compaia nei lati destri delle produzioni
+*Proposizione:* ogni linguaggio non contestuale è effettivamente generato da una grammatica non contestuale priva di $\epsilon-$produzioni, eccettuata, eventualmente, la produzione $S → \epsilon$, ove $S$ è il simbolo iniziale. Inoltre, si può assumere che il simbolo iniziale non compaia nei lati destri delle produzioni. Visto che le parole vuote ci servono nella generazione dei nostri linguaggi, dobbiamo mantenere la possibilità di effettuare una $\epsilon-$produzione. La possiamo mettere al primo passo $S → \epsilon$, e solo se S non compare nei lati destri delle produzioni. Quindi questa produzione $S → \epsilon$, c’è, ma è come se non ci fosse perché viene utilizzata solo ed unicamente per generare la parola vuota. Se non la uso al primo passo, non la posso utilizzare più.
 
 **Costruzione della grammatica:**
 *Definizione:* una variabile $X$ di una grammatica $G$ si dice annullabile se $X \implies^* \epsilon$. Quando andiamo a costruire una grammatica possiamo avere diversi casi:
@@ -1186,10 +1212,10 @@ In questo modo la grammatica $G'$ è equivalente a $G$
 
 2. *$S$ è annullabile:* a partire da $G$ costruiamo una nuova grammatica $G'$ nel modo seguente:
 	1. Procedendo come nel caso precedente si ottiene una grammatica che genera le stesse parole di $G$ eccetto $\epsilon$
-	2. Se $S$ non compare nei lati destri, basta aggiungere la produzione $s → \epsilon$
+	2. Se $S$ non compare nei lati destri, basta aggiungere la produzione $S → \epsilon$
 	3. Se $S$ compare nei lati destri si aggiungono una nuova variabile $S'$, che sarà il nuovo simbolo iniziale e le produzioni $S' → \epsilon$ e $S' → S$. In questo modo ho fatto scomparire il simbolo iniziale dei lati destri delle produzioni e posso aggiungere $\epsilon$
 
-**Ricerca delle variabili annullabili:** costruiamo gli insiemi di variabili $W_n$ come segue: $W_1 = \{X \in N |$ c'è una produzione $X → \epsilon \ in \ P\}$, $W_n = \{X \in N |$ c'è una produzione $X → \gamma \ in \ P \ con \gamma \in W^*_{n-1}\}$, $n \geq 2$ 
+**Ricerca delle variabili annullabili:** costruiamo gli insiemi di variabili $W_n$ come segue: $W_1 = \{X \in N |$ c'è una produzione $X → \epsilon \ in \ P\}$, $W_n = \{X \in N |$ c'è una produzione $X → \gamma \ in \ P \ con \ \gamma \in W^*_{n-1}\}$, $n \geq 2$ 
 
 *Osservazione:* MANCA
 
