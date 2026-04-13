@@ -2358,3 +2358,234 @@ Obiettivo: migliorare il design senza riscrivere tutto da zero.
 5. DIP: 
 	- i servizi dipendono da classi concrete di repository? 
 	- posso introdurre interfacce nel dominio e implementazioni nei layer esterni?
+
+###### Design patterns essenziali-strategy e factory method
+Nella lezione precedente abbiamo visto tutti e cinque i principi SOLID. Questi principi ci dicono come dovrebbe essere un buon design: 
+- classi con ruoli chiari; 
+- codice estendibile senza modificare quello già scritto; 
+- dipendenze dirette da astrazioni e non da dettagli concreti. 
+
+Domande naturali: 
+- quali soluzioni concrete possiamo usare per mettere in pratica questi principi? 
+- come riconoscere schemi ricorrenti di buona progettazione? 
+
+In questa lezione vedremo due pattern che realizzano nella pratica questi principi: 
+- **Strategy** soprattutto a supporto di OCP, 
+- **Factory Method** molto legato a **DIP** (e a OCP sulla creazione).  
+
+**Design pattern:** I design pattern nascono da problemi che si ripetono: 
+- varianti di comportamento gestite con `if/else` crescenti; 
+- creazione di oggetti sparsa in molti punti del codice. 
+
+Un pattern fornisce: 
+- una struttura riusabile; 
+- un linguaggio condiviso nel team; 
+- una soluzione coerente con principi come OCP e DIP. 
+
+Criterio pratico: 
+- usare un pattern quando semplifica evoluzione e manutenzione; 
+- evitarlo quando aggiunge astrazione senza variabilità reale.  
+
+Oggi ci concentriamo su due pattern fondamentali e trasversali: 
+- *Strategy:* rendere intercambiabili i comportamenti (es. diversi criteri di ordinamento degli appelli in UniManager), in linea con OCP (nuovi comportamenti senza modificare il contesto). 
+- *Factory Method:* centralizzare e strutturare la creazione degli oggetti (es. creazione di diverse tipologie di ExamSession in UniManager), aiutando a rispettare DIP (dipendere da ExamSession, non dalle sue sottoclassi). 
+
+L’idea non è memorizzare definizioni, ma: 
+- riconoscere quando un problema è adatto a questi pattern; 
+- saperli usare per mantenere il codice pulito, estensibile e coerente con i principi SOLID visti nella lezione precedente.  
+
+**Strategy:** contesto tipico:
+- una classe deve eseguire un certo comportamento; 
+- esistono varie alternative per implementarlo; 
+- vorremmo poter cambiare questo comportamento senza modificare la classe. 
+
+Strategy propone di: 
+- estrarre il comportamento in un’interfaccia separata; 
+- avere più strategie concrete intercambiabili; 
+- far sì che il contesto usi sempre l’interfaccia, non le implementazioni concrete. 
+
+Effetto: 
+- Strategy permette di iniettare comportamenti diversi senza toccare il codice del contesto. 
+- È uno strumento concreto per applicare OCP e ridurre dipendenze rigide verso implementazioni specifiche.  
+
+> [!example] grandi `if/else` per i comportamenti 
+> Nell'esempio di UniManager vogliamo ordinare gli appelli: 
+> - per data; 
+> - per corso; 
+> - per numero di iscritti. 
+> 
+> ![[Pasted image 20260413182522.png|200]]
+> 
+>Problemi: ogni volta che vogliamo aggiungere un nuovo criterio dobbiamo modificare il metodo: il codice non è pensato per essere esteso facilmente. Il metodo, inoltre, cresce sempre di più ed è difficile da mantenere e testare.  
+>
+>Idea: 
+> - definire un’interfaccia SortStrategy; 
+> - avere implementazioni diverse per ogni criterio; 
+> - lasciare che un ExamSessionService usi sempre una SortStrategy.
+> 
+> ![[Pasted image 20260413182647.png|200]]
+> 
+> ![[Pasted image 20260413182709.png|200]]
+> 
+> ![[Pasted image 20260413182751.png|200]]
+> 
+> Il contesto non conosce le implementazioni concrete, usa sempre e solo l’interfaccia SortStrategy.
+> 
+> Strategie intercambiabili a runtime:
+> 
+> ![[Pasted image 20260413182906.png|200]]
+> 
+> Il codice che usa ExamSessionService può: 
+> - cambiare la strategia in base a una scelta dell’utente; 
+> - selezionare la strategia da configurazione; 
+> - sostituire le strategie senza modificare il servizio.
+> 
+> Secondo esempio Strategy: politiche di ammissione:
+> 
+> ![[Pasted image 20260413183043.png|200]]
+> 
+> - Il contesto cambia politica senza modificare il servizio. 
+> - Nuova regola: nuova classe, non nuovo `if/else`.
+> 
+> Terzo esempio Strategy: costo spedizione (e-commerce):
+> 
+> ![[Pasted image 20260413183137.png|200]]
+> 
+> - Cambia la politica di spedizione, non il CheckoutService. 
+> - Stessa struttura del pattern, dominio completamente diverso.
+
+**Strategy: vantaggi principali (collegamento a SOLID):** 
+- *OCP (Open/Closed):* 
+	- per aggiungere un nuovo criterio basta creare una nuova SortStrategy; 
+	- il contesto non si modifica: si estende senza toccare codice esistente. 
+- *DIP (Dependency Inversion):* 
+	- il contesto dipende dall’interfaccia SortStrategy, non dalle classi concrete; 
+	- riduce dipendenze rigide e rende la sostituzione delle strategie più semplice. 
+- *SRP (Single Responsibility):* 
+	- il contesto non deve “conoscere” tutti i criteri di ordinamento; 
+	- ogni criterio è confinato in una classe dedicata con un compito chiaro. 
+- *Testabilità:* 
+	- strategie testabili in isolamento; nel contesto si possono usare strategie fittizie.  
+	
+**Strategy: errori tipici (rischi su SOLID):** 
+- *Introdurre Strategy senza varianti reali:* 
+	- aggiunge classi senza beneficio: aumenta complessità senza migliorare OCP/DIP. 
+- *Strategie troppo grandi o “onnivore”:* 
+	- una Strategy dovrebbe incapsulare un comportamento specifico; 
+	- se dentro finisce “mezza applicazione”, si perde SRP. 
+- *Contesto che continua a fare if/else sulle strategie:* 
+	- es. controlli sul tipo concreto (instanceof) o switch sul criterio; 
+	- si indebolisce OCP e spesso anche DIP. 
+- *Dipendenze concrete nelle strategie:* 
+	- se ogni Strategy istanzia direttamente servizi o repository concreti, si rischia una violazione di DIP (dipendenze dai dettagli).  
+	
+Con Strategy abbiamo visto come rendere flessibili i comportamenti di un oggetto: 
+- criteri di ordinamento intercambiabili; 
+- possibilità di cambiare logica senza toccare il codice del servizio. 
+
+Ma in un sistema reale esiste un’altra fonte comune di rigidità: la creazione degli oggetti. Spesso troviamo: 
+- molti new sparsi per il codice; 
+- istanze create in modi diversi e difficili da uniformare; 
+- dipendenze concrete “nascoste” dentro i costruttori. 
+
+Domanda successiva naturale: • possiamo rendere flessibile anche il modo in cui gli oggetti vengono creati?  
+
+**Factory Method:** Definiamo: 
+- un prodotto astratto (es. ExamSession); 
+- una o più sottoclassi concrete (es. WrittenSession, OralSession); 
+- una classe Creator che espone un metodo di fabbrica (il Factory Method) per creare il prodotto. 
+
+Il codice che usa il Creator: 
+- lavora solo con il tipo astratto; 
+- non conosce i dettagli delle classi concrete. 
+
+Effetto: 
+- la decisione su quale sottoclasse istanziare è concentrata nel Factory Method; 
+- il resto del codice può dipendere solo dal tipo astratto: questo va nella direzione di DIP e OCP.  
+
+> [!example] UniManager: creazione di ExamSession 
+> Immaginiamo di avere varie tipologie di appello: 
+> - WrittenSession (scritto); 
+> - OralSession (orale); 
+> - MixedSession (scritto + orale, non mostrata nei diagrammi per brevità). 
+> - 
+> Senza Factory Method: 
+> - il codice farebbe new WrittenSession(...) o new OralSession(...) in molti punti diversi; 
+> - cambiare il modo in cui creiamo le sessioni richiederebbe modifiche in tante classi. 
+> 
+> Con Factory Method: 
+> - concentriamo la creazione in un creator (o pochi creator); 
+> - il resto del sistema dipende solo da ExamSession.  
+> 
+> ![[Pasted image 20260413183852.png|200]]
+> 
+> Factory Method in Java: prodotto astratto:
+> 
+> ![[Pasted image 20260413183915.png|200]]
+> 
+> - ExamSession è il tipo astratto comune usato dal client. 
+> - WrittenSession/OralSession cambiano il dettaglio concreto ma rispettano lo stesso contratto. 
+> - Il client lavora sul tipo astratto, non sulla sottoclasse concreta.
+> 
+> Factory Method in Java: Creator e ConcreteCreator
+> 
+> ![[Pasted image 20260413184114.png|200]]
+> 
+> - ExamSessionCreator definisce il flusso comune e delega il punto variabile a createSession(). 
+> - I concrete creator (WrittenSessionCreator, OralSessionCreator) decidono quale prodotto concreto istanziare. 
+> - La creazione resta estendibile: nuovo tipo di appello = nuovo creator, senza modificare il client.
+> 
+> Uso del Factory method
+> 
+> ![[Pasted image 20260413184201.png|200]]
+> 
+> - Per cambiare il tipo di sessione basta fornire un ExamSessionCreator diverso. 
+> - Nessuna modifica al codice di ExamManagementService.  
+> 
+> Secondo esempio Factory Method: nuova tipologia di appello
+>  
+> ![[Pasted image 20260413184445.png|200]]  
+> 
+> Terzo esempio Factory Method: parser documenti 
+> 
+> ![[Pasted image 20260413184506.png|200]]
+> 
+> - Prodotto: Documento; concreti: DocumentoCsv/DocumentoJson. 
+> - Flusso comune in parse(), varia solo la creazione del prodotto concreto. 
+> - Nuovo formato (XmlParser) senza toccare il client.  
+
+**Factory Method: vantaggi principali (collegamento a SOLID):** 
+- *DIP (Dependency Inversion):* 
+	- il client lavora con ExamSession e ExamSessionCreator, non con WrittenSession/OralSession; 
+	- la scelta della classe concreta è confinata nel Factory Method. 
+- *OCP (Open/Closed):* 
+	- per aggiungere un nuovo tipo di sessione si estende con nuove sottoclassi/creator; 
+	- il codice che usa il prodotto non va modificato. 
+- *SRP (Single Responsibility):* 
+	- la creazione non è sparsa nel codice: è centralizzata nel Creator; 
+	- il servizio si concentra sulla logica applicativa, non sui dettagli costruttivi. 
+- *Coerenza del processo di creazione:* 
+	- eventuali passi comuni (validazioni, log, notifiche) stanno in un punto solo.  
+	
+**Factory Method: errori tipici (rischi su SOLID):** 
+- *Creator che diventa un “God object”:* 
+	- se nel Creator finiscono troppe responsabilità oltre alla creazione, si rischia di violare SRP. 
+- *Il client continua a conoscere le classi concrete:* 
+	- se compaiono comunque new WrittenSession(...) in giro, si perde il beneficio su DIP. 
+- *Esplosione di sottoclassi senza bisogno reale:* 
+	- troppi Creator “micro” possono aumentare complessità senza vero guadagno; 
+	- meglio introdurlo quando la creazione varia davvero.  
+	
+**Strategy vs Factory Method:** 
+- *Strategy:* 
+	- incapsula un comportamento variabile; 
+	- il contesto delega l’esecuzione di un’operazione a una Strategy; 
+	- esempio UniManager: criterio di ordinamento degli appelli. 
+- *Factory Method:*
+	- incapsula la creazione di oggetti (prodotti); 
+	- il client delega la scelta della classe concreta al Factory Method; 
+	- esempio UniManager: creazione di diverse tipologie di appello (ExamSession). 
+- *In comune:* 
+	- favoriscono OCP: estendere (nuove strategie / nuovi prodotti) senza modificare i client; 
+	- favoriscono DIP: dipendenza da astrazioni (SortStrategy, ExamSession, Creator); 
+	- aiutano SRP: separano responsabilità (comportamenti / creazione) dal resto della logica.
