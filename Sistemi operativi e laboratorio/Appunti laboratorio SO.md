@@ -1278,19 +1278,185 @@ int main()
 > - `-w file:` Vero se il file esiste ed è scrivibile 
 > - `-x file`: Vero se il file esiste ed è eseguibile
 
-DALLA SLIDE 8 CREDO
+**`if [...]:`**  
+> [!example] 
+> ```bash
+> if [ -f file 1 ] 
+> then 
+> 	echo "file 1 esiste" 
+> else 
+> 	echo "file 1 non esiste" 
+> fi 
+> ```
 
-Scripting: if [ ... ] if [ -f file 1 ] then echo "file 1 esiste" else echo "file 1 non esiste" fi • [] è sinonimo di test • è builtin 8 Scripting: if [[ ... ]] if [[ -f file1 ]] then echo "file 1 esiste" else echo "file 1 non esiste" fi • [[ ]] è simile a [ ]; possiamo considerarlo un test esteso e con sintassi più familiare al programmatore 9 Scripting: costrutti condizionali if [[ $a -lt $b ]] • considerato dalla Bash come un unico elemento con un valore di ritorno • alcune espansioni (es.: *) non sono attuate. Le variabili e i comandi sono sostituiti • alcuni errori logici sono evitati. Per es. posso usare &&, ||, < e > 10 Scripting: if (( ... )) if (( var 1 > var 2+10 )) then # ^ ^ Note: Not $var 1, $var2… echo "$var 1 is greater than $var2 + 10" else echo "$var 1 is less/equal than/to $var2 + 10" fi • per valutare espressioni artimetiche 11 Scripting: costrutto case • analogo al switch/case del C: case "$VAR 1" in "a") echo "VAR 1 = a";; "b") echo "VAR 1 = a";; *) echo "Nulla di tutto questo";; esac 12 Scripting: costrutto case • in generale: ```
+`[]` è sinonimo di `test`, è builtin 
 
+**`if [[...]]:`** 
+> [!example] 
+> ```bash
+> if [[ -f file 1 ]]
+> then 
+> 	echo "file 1 esiste" 
+> else 
+> 	echo "file 1 non esiste" 
+> fi 
+> ```
+
+`[[ ]]` è simile a `[ ]`, possiamo considerarlo un test esteso e con sintassi più familiare al programmatore 
+
+**Costrutti condizionali:** `if [[ $a -lt $b ]]` considerato dalla Bash come un unico elemento con un valore di ritorno. Alcune espansioni non sono attuate e le variabili e i comandi sono sostituiti. Alcuni errori logici sono evitati. Per es. posso usare `&&`, `||`, `<` e `>` 
+
+**`if ((...)):`** 
+> [!example] 
+> ```bash
+> if (( var 1 > var 2+10 )) 
+> then # ^ ^ Note: Not $var 1, $var2… 
+> 	echo "$var 1 is greater than $var2 + 10" 
+> else 
+> 	echo "$var 1 is less/equal than/to $var2 + 10" 
+> fi
+> ```
+
+Si usa per valutare espressioni aritmetiche 
+
+**Costrutto case:** analogo al switch/case del C: 
+> [!example]
+> ```bash
+>  case "$VAR 1" in 
+> 	 "a") echo "VAR 1 = a";; 
+> 	 "b") echo "VAR 1 = a";; 
+> 	 *) echo "Nulla di tutto questo";; 
+>  esac
+> ``` 
+
+in generale la struttura è:
+
+```bash
+case <expr> in
+	<pattern 1>)
+		<comandi>;;
+	<pattern 2>)
+		<comandi>;;
+		...
+	<pattern n>)
+		<comandi>;;
+	*) <comandi>;; # default, i.e. anything else 
+esac
 ```
-case in
-```
 
-Scripting: iterazioni • while test-commands; do commands; done Permane nel ciclo finché il valore di ritorno dei test-commands è 0. while torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi • until test-commands; do commands; done Permane nel ciclo finché il valore di ritorno dei test-commands è diverso 0. until torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi • for i [in words … ]; do commands; done Per ogni stringa presente nell’espansione di words esegue commands. Ad ogni ciclo $i contiene la stringa corrente. for torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi. Se la clausola in non è specificata for considera le stringhe derivanti dall'espansione di $@ • for (( expr1; expr2; expr3 )); do commands; done Sintassi C-like. Es.: for ((i=1;i<=10;i++)); do ls file$i; done • break e continue: analoghi ad altri linguaggi 14 Scripting: for • itera l'esecuzione di un blocco di istruzioni • la variabile di loop assume ad ogni iterazione un valore diverso in base agli argomenti passati • non specifichiamo quante iterazioni fare (come in C) ma una lista di valori che la variabile di loop deve assumere 15 Scripting: for for _[ in ]; do .... done • se la clausola in non è specificata si assumono come la lista degli argomenti dello script ($@) 16 Scripting: for • la shell espande • for esegue un ciclo per ogni elemento nell'espansione (il separatore tra gli elementi è il primo carattere della variabile IFS, di default spazio) • ad ogni iterazione _contiene l'elemento corrente • for ha come valore di ritorno quello dell’ultimo comando eseguito (o 0 se nessun comando è stato eseguito)__
+**Iterazioni:** 
+- `while test-commands; do commands; done`>: Permane nel ciclo finché il valore di ritorno dei test-commands è 0. `while` torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi
+- `until test-commands; do commands; done`: Permane nel ciclo finché il valore di ritorno dei test-commands è diverso 0. `until` torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi 
+- `for i [in words … ]; do commands; done`: Per ogni stringa presente nell’espansione di words esegue commands. Ad ogni ciclo `$i` contiene la stringa corrente. `for` torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi. Se la clausola in non è specificata `for` considera le stringhe derivanti dall'espansione di `$@` 
+- `for (( expr1; expr2; expr3 )); do commands; done`: Sintassi C-like. 
 
-Scripting: for root@dbserver :~# ls -w 1 1.sh 1.txt dead.letter upgrade-stretch 1.script upgrade-stretch 1.time root@dbserver :~# cat 1.sh #!/bin/bash for i in * ; do echo "La variabile \$i contiene: ${i}" done root@dbserver :~# ./1.sh La variabile $i contiene: 1.sh La variabile $i contiene: 1.txt La variabile $i contiene: dead.letter La variabile $i contiene: upgrade-stretch 1.script La variabile $i contiene: upgrade-stretch 1.time root@dbserver :~# 18 Scripting: for C like for ((i=0; i<=10; i++)); do echo $i done stampa i numeri da 1 a 10 19 Scripting: for da linea di comando root@dbserver :~# for((i=0; i<=10; i++)); do echo $i; done 0 1 2 3 4 5 6 7 8 9 10 root@dbserver :~# 20 Scripting: while • itera fin quando una condizione è vera: root@dbserver :~# cat 2.sh #!/bin/bash COUNT=0 while test $COUNT -lt 5; do echo $COUNT COUNT=$((COUNT+1)) done root@dbserver :~# ./2.sh 0 1 2 3 4 root@dbserver :~#
+> [!example] 
+> ```bash
+> for ((i=1;i<=10;i++)); 
+> do 
+> 	ls file$i; 
+> done 
+> ```
 
-Scripting: while • altro esempio: itera all'infinito, interrompibile con Ctrl+c: while test 1; do clear df -h sleep 5 done 22 BASH: comando (interno) read • per acquisire input, per esempio da tastiera: user1@host1 :~$ read -p "Inserisci un saluto: " var 1 Inserisci un saluto: Ciao user1@host1 :~$ echo $var1 Ciao user1@host1:~$ set |grep var 1 var 1=Ciao user1@host1 :~$ L'opzione -p visualizza un prompt prima di attendere per l'input P.S.: in generale per avere l'help su di un comando interno: help comando 23 BASH: comando read. Osservazione... • read ha l'opzione -u che permette di redirigere l'input da un file descriptor invece che da stdin. Si consideri questo esempio: user1@host1 :~$ exec 3< testo.txt user1@host1 :~$ while read -u 3 linea ; do echo $linea; done fabio ciccio pippo user1@host1:~$ exec, in generale, esegue il comando passato come argomento creando un processo che sostituisce la shell corrente. Senza questo argomento qualsiasi redirezione è operata nella shell corrente. In questo caso testo.txt è aperto in lettura con fd 3. read -u 3 fa si che read prenda l'input da testo.txt invece che da stdin 24 BASH: comando read. Osservazione... • .... in altre parole exec e read -u possono essere utilizzati in una shell, e quindi in uno script, per aprire in lettura (o scrittura) un file e per elaborarne (o scriverne) il contenuto
+- `break e continue`: analoghi ad altri linguaggi 
+
+`for`: itera l'esecuzione di un blocco di istruzioni. La variabile di loop assume ad ogni iterazione un valore diverso in base agli argomenti passati. Non specifichiamo quante iterazioni fare (come in C) ma una lista di valori che la variabile di loop deve assumere 
+
+> [!example]
+> ```bash
+> for <i> [ in <lista> ]; do
+> 	<comando 1>
+> 	<comando 2>
+> 	...
+> 	<comando n>
+> done
+> ``` 
+
+Se la clausola in non è specificata si assumono come la lista degli argomenti dello script (`$@`) 
+
+- la shell espande 
+- `for` esegue un ciclo per ogni elemento nell'espansione (il separatore tra gli elementi è il primo carattere della variabile IFS, di default spazio) 
+- ad ogni iterazione `<i>` contiene l'elemento corrente 
+- `for` ha come valore di ritorno quello dell’ultimo comando eseguito (o 0 se nessun comando è stato eseguito)
+
+> [!example]
+> ```bash
+> for root@dbserver :~# ls -w1 
+> 1.sh 
+> 1.txt 
+> dead.letter 
+> upgrade-stretch1.script 
+> upgrade-stretch1.time 
+> root@dbserver :~# cat 1.sh 
+> #!/bin/bash 
+> for i in * ; do 
+> 	echo "La variabile \$i contiene: ${i}" 
+> done 
+> root@dbserver :~# ./1.sh 
+> La variabile $i contiene: 1.sh 
+> La variabile $i contiene: 1.txt 
+> La variabile $i contiene: dead.letter 
+> La variabile $i contiene: upgrade-stretch 1.script 
+> La variabile $i contiene: upgrade-stretch 1.time 
+> root@dbserver :~# 
+>```
+ 
+> [!example] 
+> ```bash
+> for ((i=0; i<=10; i++)); 
+> do 
+> 	echo $i 
+> done
+> ``` 
+> stampa i numeri da 1 a 10 
+ 
+> [!example] for da linea di comando 
+> ```bash
+> root@dbserver :~# for((i=0; i<=10; i++)); do echo $i; done 
+> 0
+> 1 
+> 2 
+> 3 
+> 4 
+> 5 
+> 6 
+> 7 
+> 8 
+> 9 
+> 10 
+> root@dbserver:~# 
+> ``` 
+
+`while`: itera fin quando una condizione è vera: 
+
+> [!example] 
+> ```bash
+> root@dbserver :~# cat 2.sh 
+> #!/bin/bash 
+> COUNT=0 
+> while test $COUNT -lt 5; do 
+> 	echo $COUNT 
+> 	COUNT=$((COUNT+1)) 
+> done 
+> root@dbserver:~# ./2.sh 
+> 0 
+> 1 
+> 2 
+> 3 
+> 4 
+> root@dbserver :~#
+> ```
+
+> [!example] itera all'infinito, interrompibile con Ctrl+c: 
+> ```bash
+> while test 1; do 
+> 	clear 
+> 	df -h 
+> 	sleep 5 
+> done
+> ``` 
+
+BASH: comando (interno) read • per acquisire input, per esempio da tastiera: user1@host1 :~$ read -p "Inserisci un saluto: " var 1 Inserisci un saluto: Ciao user1@host1 :~$ echo $var1 Ciao user1@host1:~$ set |grep var 1 var 1=Ciao user1@host1 :~$ L'opzione -p visualizza un prompt prima di attendere per l'input P.S.: in generale per avere l'help su di un comando interno: help comando 23 BASH: comando read. Osservazione... • read ha l'opzione -u che permette di redirigere l'input da un file descriptor invece che da stdin. Si consideri questo esempio: user1@host1 :~$ exec 3< testo.txt user1@host1 :~$ while read -u 3 linea ; do echo $linea; done fabio ciccio pippo user1@host1:~$ exec, in generale, esegue il comando passato come argomento creando un processo che sostituisce la shell corrente. Senza questo argomento qualsiasi redirezione è operata nella shell corrente. In questo caso testo.txt è aperto in lettura con fd 3. read -u 3 fa si che read prenda l'input da testo.txt invece che da stdin 24 BASH: comando read. Osservazione... • .... in altre parole exec e read -u possono essere utilizzati in una shell, e quindi in uno script, per aprire in lettura (o scrittura) un file e per elaborarne (o scriverne) il contenuto
 
 Array: Definizioni: area[11]=23 area[13]=37 # indici anche non adiacenti area[51]=UFOs area 2=( zero one two three four ) declare -a array 1 • gli elementi si referenziano tra parentesi graffe: echo ${area[11]} echo ${area2[0]} # visualizza "zero"; # indici zero-based se # non specificati Array 26 fabio@fabiopc:~$ area[11]=23 fabio@fabiopc :~$ area[13]=37 fabio@fabiopc :~$ area[51]=UFOs fabio@fabiopc :~$ area 2=( zero one two three ) fabio@fabiopc :~$ set|grep area area=([1]="0" [11]="23" [13]="37" [51]="UFOs") area 2=([0]="zero" [1]="one" [2]="two" [3]="three) fabio@fabiopc :~$ echo ${area 2[0]} ${area[51]} zero UFOs fabio@fabiopc:~$ fabio@fabiopc :~$ echo ${area2[@]} # tutti gli elementi zero one two three four fabio@fabiopc:~$ echo ${area2[*]} # tutti gli elementi zero one two three four fabio@fabiopc:~$ Array 27 • per determinare il numero di elementi di un array si usa la sintassi ${#arrayname[@]}: fabio@fabiopc:~$ area 2=( zero one two three four ) fabio@fabiopc :~$ echo ${#area2[@]} 5 fabio@fabiopc:~$ • unset nomearray per cancellare l'array Array 28 BASH: Funzioni • Una funzione è un insieme di comandi che può essere richiamato più volte ed è identificato dal nome della funzione stessa. Richiamabile come un comando interno • sono eseguite nella shell corrente (non subshell) • Lo scopo è di evitare di riscrivere lo stesso codice più volte e rendere gli script più comprensibili • Rispetto ad altri linguaggi il supporto di Bash per le funzioni è più limitato
 
@@ -1393,8 +1559,9 @@ Attributi NON condivisi (per-thread):
 > 	int arg 1 = 1; 
 > 	char arg 2[] = "Ciao"; 
 > 	pthread_create(&th 1, NULL, (void *)thread 1, (void *)&arg 1);
-> 	 pthread_create(&th 2, NULL, (void *)thread 2, (void *)arg 2);
-> 	  sleep(2); return; 
+> 	pthread_create(&th 2, NULL, (void *)thread 2, (void *)arg 2);
+> 	sleep(2); 
+> 	return; 
 > }
 > ``` 
 > - variabili globali condivise tra threads 
@@ -1406,6 +1573,43 @@ Attributi NON condivisi (per-thread):
 
 Le risorse allocate per un thread joinable sono rilasciate solo se un altro thread chiama `pthread_join(3)` per attenderlo. Se nessun `join` viene fatto il thread terminato è in stato zombie e le risorse sono rilasciate solo all'uscita dal processo. Se i threads zombie si accumulano oltre misura non sarà più possible creare altri thread. Ogni thread nel processo può attendere con `pthread_join(3)` qualsiasi altro thread (del processo stesso). Non c'è per i threads un'operazione analoga a quella vista per i processi child (`fork(2)`): `waitpid(-1, &status, 0)` cioè una chiamata che esegue join su qualsiasi thread termini 
 
-Pthreads: thread detached • E' possibile creare un thread detached modificandone gli attributi in fase di creazione con pthread_attr_setdetachstate(3) oppure richiamando pthread_detach(3) per un thread già creato • le risorse allocate per un thread detached sono subito liberate alla sua terminazione • non è possibile eseguire il join ad un thread detached per ottenere il suo exit status, né è possibile renderlo joinable • creare thread detached può essere utile quando non ci curiamo dell'exit status dei thread; per esempio nello sviluppo di certi daemon 22 Pthreads: conclusioni su join e detach • quindi, una tra pthread_join() e pthread_detach()* dovrebbe essere chiamata per ogni thread creato affinché le risorse vengano liberate • fermo restando che, all'uscita del processo, tutte le risorse dei thread sono liberate comunque (*): se non è stato creato già detached settandone gli attributi
+**Thread detached:** E' possibile creare un thread detached modificandone gli attributi in fase di creazione con `pthread_attr_setdetachstate(3)` oppure richiamando `pthread_detach(3)` per un thread già creato. Le risorse allocate per un thread detached sono subito liberate alla sua terminazione. Non è possibile eseguire il `join` ad un thread detached per ottenere il suo exit status, né è possibile renderlo joinable. Creare thread detached può essere utile quando non ci curiamo dell'exit status dei thread; per esempio nello sviluppo di certi daemon 
 
-Pthreads: joining threads int pthread_join(pthread_t thread, void **retval); • Attende che il thread specificato da thread termini (se è joinable) • se retval non è NULL riceve il valore tornato da pthread_exit(3) oppure PTHREAD_CANCELED se il thread è stato cancellato • se più thread cercano simultaneamente di fare il join allo stesso thread il risultato non è definito (dallo standard) 24 Pthreads: detaching threads int pthread_detach(pthread_t thread); • rende il thread specificato da thread detached 25 Pthreads: mt 1.c con join #include #include #include int iCondivisa = 13; void thread 1(int *arg) { int iLocale = 101; printf("Sono il primo thread. Parametro = %d, var. condivisa = %d, locale = %d\n", *arg, iCondivisa, iLocale); pthread_exit((void *)1000); } void thread 2(char *arg) { int iLocale = 202; printf("Sono il secondo thread. Parametro = \"%s\", var. condivisa = %d, locale = %d\n", arg, iCondivisa, iLocale); pthread_exit((void *)2000); } void main() { pthread_t th 1, th 2; int arg 1 = 1; char arg 2[] = "Ciao"; long l 1, l 2; pthread_create(&th 1, NULL, (void *)thread 1, (void *)&arg 1); pthread_create(&th 2, NULL, (void *)thread 2, (void *)arg 2); pthread_join(th 1, (void **)&l 1); pthread_join(th 2, (void **)&l 2); printf("\nRitorno thread 1 = %ld\nRitorno thread 2 = %ld\n", l 1, l 2); return; }
+**Conclusioni su join e detach:** una tra `pthread_join()` e `pthread_detach()*` dovrebbe essere chiamata per ogni thread creato affinché le risorse vengano liberate, anche se, all'uscita del processo, tutte le risorse dei thread sono liberate comunque 
+
+**Joining threads:** `int pthread_join(pthread_t thread, void **retval);` Attende che il thread specificato da thread termini (se è joinable). Se retval non è NULL riceve il valore tornato da `pthread_exit(3)` oppure `PTHREAD_CANCELED` se il thread è stato cancellato. Se più thread cercano simultaneamente di fare il join allo stesso thread il risultato non è definito 
+
+**Detaching threads:** `int pthread_detach(pthread_t thread);` rende il thread specificato da thread detached 
+
+> [!example] mt 1.c con join 
+> ```C
+> #include <pthread.h> 
+> #include <stdio.h>
+> #include <unistd.h>
+> 
+> int iCondivisa = 13; 
+> void thread 1(int *arg) { 
+> 	int iLocale = 101; 
+> 	printf("Sono il primo thread. Parametro = %d, var. condivisa = %d, locale = %d\n", *arg, iCondivisa, iLocale); 
+> 	pthread_exit((void *)1000);
+> } 
+> 
+> void thread 2(char *arg) { 
+> 	 int iLocale = 202; 
+> 	 printf("Sono il secondo thread. Parametro = \"%s\", var. condivisa = %d, locale = %d\n", arg, iCondivisa, iLocale); 
+> 	 pthread_exit((void *)2000); 
+> } 
+> 
+> void main() { 
+> 	pthread_t th 1, th 2; 
+> 	int arg 1 = 1; 
+> 	char arg 2[] = "Ciao"; 
+> 	long l 1, l 2; 
+> 	pthread_create(&th 1, NULL, (void *)thread 1, (void *)&arg 1); 
+> 	pthread_create(&th 2, NULL, (void *)thread 2, (void *)arg 2); 
+> 	pthread_join(th 1, (void **)&l 1); 
+> 	pthread_join(th 2, (void **)&l 2); 
+> 	printf("\nRitorno thread 1 = %ld\nRitorno thread 2 = %ld\n", l 1, l 2); 
+> 	return; 
+> }
+> ```

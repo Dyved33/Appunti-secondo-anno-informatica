@@ -1,6 +1,6 @@
 ###### Alberi binari
 Le linked lists vanno bene per rappresentare delle relazioni lineari (non tutte le relazioni sono lineari). In particolare ci concentriamo sul problema di rappresentare un albero costruito a partire da una linked data structure. Ogni nodo dell'albero è un oggetto e supponiamo che ogni nodo dell'albero contenga un attributo chiave (key). L'altro attributo d'interesse sono i puntatori che connettono ogni nodo agli altri. Un **albero binario** è un grafo non orientato rappresentato con i puntatori, caratterizzato dal fatto che ogni nodo ha al massimo due figli, uno destro e uno sinistro:
- - Ogni nodo è definito con 3 puntatori, $p,\space left,\space right$, in cui $p$ è il puntatore al nodo padre; il nodo $left$ è il puntatore al figlio sinistro e il nodo $right$ è il puntatore al figlio destro.
+ - Ogni nodo è definito con 3 puntatori, $p,\space left,\space right$, in cui $p$ è  il puntatore al nodo padre; il nodo $left$ è il puntatore al figlio sinistro e il nodo $right$ è il puntatore al figlio destro.
  - Se il nodo $x$ non ha figli sinistri, il puntatore $left$ è inizializzato a $NIL$. Analogamente per il caso destro.
  - La radice ha il puntatore $p$ inizializzato a $NIL$.
  - La radice dell' intero albero $T$ è puntata dal parametro $T.root$.
@@ -23,7 +23,7 @@ Le linked lists vanno bene per rappresentare delle relazioni lineari (non tutte 
 - Invece di avere un puntatore per ogni figlio, ogni nodo ha solo due puntatori
 	- $left \_ child$ : figlio sinistro.
 	- $right\_sibling$: fratello destro.
--  Se il nodo non ha figli allora $left\_child = NIL$
+- Se il nodo non ha figli allora $left\_child = NIL$
 - Se il nodo non ha fratelli destri allora $right\_sibling = NIL$
 ###### Albero binario di ricerca
 Si tratta di un albero binario nel quale le chiavi (cioè le informazioni contenute nei nodi) sono sempre contenute in modo da soddisfare le proprietà dell'albero.
