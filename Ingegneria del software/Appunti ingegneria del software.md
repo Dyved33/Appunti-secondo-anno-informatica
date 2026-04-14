@@ -2488,7 +2488,7 @@ Ma in un sistema reale esiste un’altra fonte comune di rigidità: la creazione
 - istanze create in modi diversi e difficili da uniformare; 
 - dipendenze concrete “nascoste” dentro i costruttori. 
 
-Domanda successiva naturale: • possiamo rendere flessibile anche il modo in cui gli oggetti vengono creati?  
+Domanda successiva naturale:  possiamo rendere flessibile anche il modo in cui gli oggetti vengono creati?  
 
 **Factory Method:** Definiamo: 
 - un prodotto astratto (es. ExamSession); 
@@ -2589,3 +2589,206 @@ Effetto:
 	- favoriscono OCP: estendere (nuove strategie / nuovi prodotti) senza modificare i client; 
 	- favoriscono DIP: dipendenza da astrazioni (SortStrategy, ExamSession, Creator); 
 	- aiutano SRP: separano responsabilità (comportamenti / creazione) dal resto della logica.
+
+###### Design Patterns essenziali— Adapter e Observer
+Abbiamo visto: 
+- Strategy: rendere intercambiabili i comportamenti; 
+- Factory Method: centralizzare e strutturare la creazione degli oggetti. 
+
+Questi pattern agivano soprattutto: 
+- “dentro” al sistema; 
+- su logiche di dominio e creazione. 
+
+Ora affrontiamo due problemi diversi ma altrettanto comuni: 
+- come parlare con il mondo esterno senza contaminare il dominio interno (Adapter); 
+- come reagire a eventi interni senza creare dipendenze rigide tra classi (Observer). 
+
+Obiettivo: riconoscere quando questi pattern emergono “da soli” mentre il sistema cresce e si collega ad altri componenti.  
+
+**Adapter:** 
+Il nostro sistema è costruito attorno a interfacce interne pulite. Le sorgenti esterne (CSV, JSON, API) espongono interfacce diverse. Effetti tipici: 
+- formati incompatibili; 
+- strutture dati grezze; 
+- gestione I/O o eccezioni non allineata al nostro dominio. 
+
+Obiettivo: integrare queste sorgenti senza “sporcare” il codice del dominio.  
+
+> [!example] Esempi dal caso UniManager: 
+> Libreria LegacyCsvLibrary: 
+> - restituisce solo List; 
+> - formati di data non uniformi; 
+> - API con metodi statici e dettagli I/O esposti. 
+> 
+> Libreria o servizio JSON: 
+> - restituisce strutture grezze (Map); 
+> - formati temporali diversi (ISO, timestamp, timezone); 
+> - gestione di errori di rete e codici HTTP. 
+> 
+Queste differenze non devono “trapelare” dentro il dominio.
+  
+**Adapter:** Definiamo una interfaccia Target interna (es. ExamSessionImporter). Per ogni sorgente (CSV, JSON, API,…) realizziamo un Adapter dedicato. Ogni Adapter: 
+- implementa l’interfaccia Target; 
+- incapsula la libreria esterna (‘Adaptee’); 
+- converte i dati grezzi in oggetti di dominio. 
+
+Il dominio usa sempre il Target e resta indipendente dalla tecnologia esterna.  
+
+**UniManager: CSV e JSON come sorgenti esterne:** UniManager vuole ottenere sempre una List. Le fonti possono essere diverse: 
+- file CSV letti da LegacyCsvLibrary; 
+- file JSON o API con LegacyJsonLibrary. 
+
+Problema: senza Adapter, il servizio dovrebbe conoscere formati, parsing, eccezioni, convenzioni di entrambe. Soluzione: due Adapter: 
+- CsvImporterAdapter; 
+- JsonImporterAdapter; 
+
+che implementano la stessa interfaccia ExamSessionImporter.  
+
+In UniManager il dominio vede sempre e solo: 
+- un’interfaccia (ExamSessionImporter), 
+- un tipo di ritorno (List). 
+
+Integrazioni diverse (CSV, JSON, API) sono intercambiabili. Possiamo aggiungere nuovi formati senza toccare il dominio. Tutta la logica di mapping e parsing resta confinata negli Adapter.  
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260414094231.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260414094437.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260414094507.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260414094537.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260414094622.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260414094654.png" width="200">
+</div>
+
+*Vantaggi:*
+- *DIP (Dependency Inversion):* 
+	- ExamSessionService dipende dall’interfaccia ExamSessionImporter; 
+	- le librerie esterne restano “dietro” gli Adapter. 
+- *OCP (Open/Closed):* 
+	- per supportare un nuovo formato (XML, API diversa,…) basta aggiungere un nuovo Adapter; 
+	- il servizio che importa non cambia. 
+- *SRP (Single Responsibility):* 
+	- parsing, conversione e mapping sono confinati nell’Adapter; 
+	- il dominio e i servizi non si riempiono di dettagli I/O e formati. 
+- *Testabilità e manutenzione:* 
+	- Adapter testabile in isolamento; 
+	- il servizio può usare importer fittizi nei test.  
+	
+*Errori tipici:* 
+- Adapter che fa troppo: se oltre a convertire dati inizia a contenere logica di dominio, si viola SRP. 
+- Service che dipende comunque dalla libreria esterna: se il dominio usa tipi della libreria (es. String[] o Map ovunque), si indebolisce DIP. 
+- If/else sui formati dentro il servizio: scegliere CSV/JSON con switch nel servizio porta a modifiche frequenti: peggiora OCP.  
+
+**Observer:** Con Adapter abbiamo gestito l’integrazione con l’esterno. Ora il problema è interno: come reagire a un evento? Il contesto tipico è: 
+- una classe genera un evento (es. nuovo appello); 
+- più componenti vogliono essere informati. 
+
+Soluzione ingenua: la classe chiama direttamente tutti gli altri (sendEmail(), updateUi(), writeLog(),…). Conseguenze: 
+- la classe finisce per conoscere troppi dettagli su altri componenti; 
+- il codice diventa più difficile da mantenere e capire; 
+- aggiungere un nuovo comportamento richiede modifiche al codice esistente.  
+
+Il pattern Observer separa: 
+- il Subject, che produce gli eventi; 
+- gli Observer, che vogliono essere notificati. 
+
+Meccanismo: 
+- gli Observer si registrano presso il Subject; 
+- quando qualcosa cambia, il Subject chiama un unico metodo (notifyObservers()) che notifica tutti gli iscritti; 
+- il Subject non conosce i dettagli di cosa faranno gli Observer. 
+
+Effetto: 
+- possiamo aggiungere/rimuovere osservatori senza modificare il Subject; 
+- il sistema diventa più estendibile e testabile.  
+
+> [!example] UniManager: notificare la creazione di un appello 
+> In UniManager, la creazione di un nuovo ExamSession deve attivare più reazioni: 
+> - aggiornare la vista, 
+> - inviare notifiche agli studenti, 
+> - scrivere un log. 
+> 
+> Il servizio che crea l’appello non deve conoscere questi dettagli. Con Observer: 
+> - ExamEventPublisher funge da Subject; 
+> - EmailNotifier, UiRefresher, LoggingObserver sono Observer che reagiscono indipendentemente.  
+
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-04-14 09-53-59.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260414095536.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260414095611.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260414095640.png" width="200">
+</div>
+
+*Vantaggi:* 
+- *DIP (Dependency Inversion):* 
+	- il Subject dipende dall’interfaccia ExamEventObserver, non dagli observer concreti; 
+	- le reazioni (email, log, UI, . . . ) restano dettagli sostituibili. 
+- *OCP (Open/Closed):* 
+	- nuove reazioni all’evento si aggiungono registrando un nuovo Observer; 
+	- il codice che genera l’evento non va modificato. 
+- *SRP (Single Responsibility):* 
+	- il servizio si concentra sulla logica principale (creare l’appello); 
+	- le reazioni all’evento stanno in classi separate, ognuna con un compito specifico. 
+- *Testabilità:* 
+	- nei test si possono usare observer fake e verificare che la notifica avvenga correttamente.  
+	
+*Errori tipici:* 
+- Subject che conosce gli observer concreti: se istanzia direttamente new EmailNotifier(), perde DIP. 
+- Observer con responsabilità miste: se un singolo observer gestisce email + log + UI, si perde SRP. 
+- Notifiche “a cascata” difficili da controllare: 
+	- se gli observer generano altri eventi senza regole chiare, il sistema diventa fragile; 
+	- spesso si finisce a “patchare” codice esistente, andando contro OCP.  
+	
+**Adapter vs Observer:** 
+- *Adapter:*
+	- risolve problemi di incompatibilità di interfacce; 
+	- tipico per integrare librerie, servizi, formati dati esterni; 
+	- es. UniManager: import di appelli da CSV/JSON con un’interfaccia interna pulita. 
+- *Observer:*
+	- risolve problemi di notifica di eventi; 
+	- tipico per disaccoppiare chi produce un evento da chi reagisce; 
+	- es. UniManager: notifiche agli studenti e aggiornamento viste quando viene creato un nuovo appello. 
+- *In comune:* 
+	- proteggono il codice da dipendenze rigide; 
+	- spostano la complessità nei confini del sistema (integrazione, eventi); 
+	- rendono il design più modulare e evolvibile.  
+	
+**Design Pattern essenziali:** 
+
+| Pattern        | Problema che risolve                                                                 | Esempi in UniManager                                                       |
+| -------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| Strategy       | Comportamenti che possono variare nel tempo; evita lunghi blocchi `if/else.`         | Ordinamento degli appelli secondo criteri diversi (data, corso, iscritti). |
+| Factory Method | Creazione di oggetti che può richiedere logiche diverse; centralizza la costruzione. | Creazione di diverse tipologie di ExamSession (Written, Oral).             |
+| Adapter        | Integrazione di librerie/formati esterni incompatibili con il dominio interno.       | Import di appelli da CSV/JSON tramite ExamSessionImporter.                 |
+| Observer       | Notificare cambiamenti senza accoppiamento rigido tra componenti.                    | Avvisare studenti, viste e log quando viene creato un nuovo appello.       |
+I pattern affrontano quattro problemi distinti: comportamenti, creazione, integrazione ed eventi. Insieme costituiscono la base per un design evolvibile.
+
+> [!info] Sintesi:
+> - Adapter e Observer affrontano due problemi ricorrenti diversi: integrazione con esterni ed eventi interni tra componenti. 
+> - Adapter protegge il dominio da formati e librerie incompatibili, spostando la complessità ai confini del sistema. 
+> - Observer consente di reagire a cambiamenti senza legare direttamente chi produce l’evento a tutti i componenti interessati. 
+> - Entrambi i pattern favoriscono estendibilità e riduzione dell’accoppiamento, in linea con OCP e DIP. 
+> - Il beneficio dei pattern dipende da come vengono applicati: migliorano il design se rispondono a una variabilità reale. 
+> - Gli esempi su UniManager mostrano come questi pattern preparino il sistema a integrazioni e notifiche future.
+
