@@ -1278,3 +1278,134 @@ int main()
 > - `-w file:` Vero se il file esiste ed è scrivibile 
 > - `-x file`: Vero se il file esiste ed è eseguibile
 
+DALLA SLIDE 8 CREDO
+
+Scripting: if [ ... ] if [ -f file 1 ] then echo "file 1 esiste" else echo "file 1 non esiste" fi • [] è sinonimo di test • è builtin 8 Scripting: if [[ ... ]] if [[ -f file1 ]] then echo "file 1 esiste" else echo "file 1 non esiste" fi • [[ ]] è simile a [ ]; possiamo considerarlo un test esteso e con sintassi più familiare al programmatore 9 Scripting: costrutti condizionali if [[ $a -lt $b ]] • considerato dalla Bash come un unico elemento con un valore di ritorno • alcune espansioni (es.: *) non sono attuate. Le variabili e i comandi sono sostituiti • alcuni errori logici sono evitati. Per es. posso usare &&, ||, < e > 10 Scripting: if (( ... )) if (( var 1 > var 2+10 )) then # ^ ^ Note: Not $var 1, $var2… echo "$var 1 is greater than $var2 + 10" else echo "$var 1 is less/equal than/to $var2 + 10" fi • per valutare espressioni artimetiche 11 Scripting: costrutto case • analogo al switch/case del C: case "$VAR 1" in "a") echo "VAR 1 = a";; "b") echo "VAR 1 = a";; *) echo "Nulla di tutto questo";; esac 12 Scripting: costrutto case • in generale: ```
+
+```
+case in
+```
+
+Scripting: iterazioni • while test-commands; do commands; done Permane nel ciclo finché il valore di ritorno dei test-commands è 0. while torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi • until test-commands; do commands; done Permane nel ciclo finché il valore di ritorno dei test-commands è diverso 0. until torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi • for i [in words … ]; do commands; done Per ogni stringa presente nell’espansione di words esegue commands. Ad ogni ciclo $i contiene la stringa corrente. for torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi. Se la clausola in non è specificata for considera le stringhe derivanti dall'espansione di $@ • for (( expr1; expr2; expr3 )); do commands; done Sintassi C-like. Es.: for ((i=1;i<=10;i++)); do ls file$i; done • break e continue: analoghi ad altri linguaggi 14 Scripting: for • itera l'esecuzione di un blocco di istruzioni • la variabile di loop assume ad ogni iterazione un valore diverso in base agli argomenti passati • non specifichiamo quante iterazioni fare (come in C) ma una lista di valori che la variabile di loop deve assumere 15 Scripting: for for _[ in ]; do .... done • se la clausola in non è specificata si assumono come la lista degli argomenti dello script ($@) 16 Scripting: for • la shell espande • for esegue un ciclo per ogni elemento nell'espansione (il separatore tra gli elementi è il primo carattere della variabile IFS, di default spazio) • ad ogni iterazione _contiene l'elemento corrente • for ha come valore di ritorno quello dell’ultimo comando eseguito (o 0 se nessun comando è stato eseguito)__
+
+Scripting: for root@dbserver :~# ls -w 1 1.sh 1.txt dead.letter upgrade-stretch 1.script upgrade-stretch 1.time root@dbserver :~# cat 1.sh #!/bin/bash for i in * ; do echo "La variabile \$i contiene: ${i}" done root@dbserver :~# ./1.sh La variabile $i contiene: 1.sh La variabile $i contiene: 1.txt La variabile $i contiene: dead.letter La variabile $i contiene: upgrade-stretch 1.script La variabile $i contiene: upgrade-stretch 1.time root@dbserver :~# 18 Scripting: for C like for ((i=0; i<=10; i++)); do echo $i done stampa i numeri da 1 a 10 19 Scripting: for da linea di comando root@dbserver :~# for((i=0; i<=10; i++)); do echo $i; done 0 1 2 3 4 5 6 7 8 9 10 root@dbserver :~# 20 Scripting: while • itera fin quando una condizione è vera: root@dbserver :~# cat 2.sh #!/bin/bash COUNT=0 while test $COUNT -lt 5; do echo $COUNT COUNT=$((COUNT+1)) done root@dbserver :~# ./2.sh 0 1 2 3 4 root@dbserver :~#
+
+Scripting: while • altro esempio: itera all'infinito, interrompibile con Ctrl+c: while test 1; do clear df -h sleep 5 done 22 BASH: comando (interno) read • per acquisire input, per esempio da tastiera: user1@host1 :~$ read -p "Inserisci un saluto: " var 1 Inserisci un saluto: Ciao user1@host1 :~$ echo $var1 Ciao user1@host1:~$ set |grep var 1 var 1=Ciao user1@host1 :~$ L'opzione -p visualizza un prompt prima di attendere per l'input P.S.: in generale per avere l'help su di un comando interno: help comando 23 BASH: comando read. Osservazione... • read ha l'opzione -u che permette di redirigere l'input da un file descriptor invece che da stdin. Si consideri questo esempio: user1@host1 :~$ exec 3< testo.txt user1@host1 :~$ while read -u 3 linea ; do echo $linea; done fabio ciccio pippo user1@host1:~$ exec, in generale, esegue il comando passato come argomento creando un processo che sostituisce la shell corrente. Senza questo argomento qualsiasi redirezione è operata nella shell corrente. In questo caso testo.txt è aperto in lettura con fd 3. read -u 3 fa si che read prenda l'input da testo.txt invece che da stdin 24 BASH: comando read. Osservazione... • .... in altre parole exec e read -u possono essere utilizzati in una shell, e quindi in uno script, per aprire in lettura (o scrittura) un file e per elaborarne (o scriverne) il contenuto
+
+Array: Definizioni: area[11]=23 area[13]=37 # indici anche non adiacenti area[51]=UFOs area 2=( zero one two three four ) declare -a array 1 • gli elementi si referenziano tra parentesi graffe: echo ${area[11]} echo ${area2[0]} # visualizza "zero"; # indici zero-based se # non specificati Array 26 fabio@fabiopc:~$ area[11]=23 fabio@fabiopc :~$ area[13]=37 fabio@fabiopc :~$ area[51]=UFOs fabio@fabiopc :~$ area 2=( zero one two three ) fabio@fabiopc :~$ set|grep area area=([1]="0" [11]="23" [13]="37" [51]="UFOs") area 2=([0]="zero" [1]="one" [2]="two" [3]="three) fabio@fabiopc :~$ echo ${area 2[0]} ${area[51]} zero UFOs fabio@fabiopc:~$ fabio@fabiopc :~$ echo ${area2[@]} # tutti gli elementi zero one two three four fabio@fabiopc:~$ echo ${area2[*]} # tutti gli elementi zero one two three four fabio@fabiopc:~$ Array 27 • per determinare il numero di elementi di un array si usa la sintassi ${#arrayname[@]}: fabio@fabiopc:~$ area 2=( zero one two three four ) fabio@fabiopc :~$ echo ${#area2[@]} 5 fabio@fabiopc:~$ • unset nomearray per cancellare l'array Array 28 BASH: Funzioni • Una funzione è un insieme di comandi che può essere richiamato più volte ed è identificato dal nome della funzione stessa. Richiamabile come un comando interno • sono eseguite nella shell corrente (non subshell) • Lo scopo è di evitare di riscrivere lo stesso codice più volte e rendere gli script più comprensibili • Rispetto ad altri linguaggi il supporto di Bash per le funzioni è più limitato
+
+BASH: Funzioni • cancellabili con unset • Per vedere le funzioni definite: bash:~$ declare -f visualizza il nome di tutte le funzioni ed il loro codice bash:~$ declare -F visualizza solo i nomi di tutte le funzioni bash:~$ type -all name_function fornisce nome e codice della funzione di nome name_function 30 BASH: Funzioni: definizione • due differenti formati. Il primo: function_name () { commands } oppure, a linea singola: function_name () { commands; } • Il secondo: function function_name { commands } oppure, a linea singola: function function_name { commands; } • non solo negli script ma anche a linea di comando 31 Funzioni: alcune note • The commands between the curly braces ({}) are called the body of the function. The curly braces must be separated from the body by spaces or newlines. • Defining a function doesn’t execute it. To invoke a bash function, simply use the function name. Commands between the curly braces are executed whenever the function is called in the shell script. • The function definition must be placed before any calls to the function. • When using single line “compacted” functions, a semicolon ';' must follow the last command in the function
+
+Funzioni: Hello World #!/bin/bash hello_world () { echo 'hello, world' } hello_world 33 Funzioni: Visibilita delle Variabili • In Bash di default tutte le variabili sono definite come globali, anche se dichiarate all'interno di una funzione • E' possibile accedere alle variabili globali da qualsiasi punto dello script, indipendentemente dall'ambito • Variabili locali possono essere dichiarate all'interno del corpo della funzione con la parola chiave local e possono essere utilizzate solo all'interno di quella funzione • È possibile avere variabili locali con lo stesso nome in funzioni diverse 34 Funzioni: Visibilita delle Variabili: Esempio #!/bin/bash var 1='A' var 2='B' my_function () { local var 1='C' var 2='D' echo "Inside function: var 1: $var 1, var 2: $var 2" } echo "Before executing function: var 1: $var 1, var 2: $var 2" my_function echo "After executing function: var 1: $var 1, var 2: $var 2" 35 Funzioni: Visibilita delle Variabili: Esempio • Output dell'esempio precedente: Before executing function: var 1: A, var 2: B Inside function: var 1: C, var 2: D After executing function: var 1: A, var 2: D
+
+Funzioni: Argomenti • vale quanto detto per i parametri posizionali passati ad uno script: – sono variabili nella forma $n dove n è un intero da 0 in poi – $0 contiene il nome della funzione – gli altri argomenti (se passati) sono da $1 a $n dove n è il loro numero – quelli oltre il nono devono essere referenziati nella forma ${n} (per es.: $10 è sostituito col primo + il carattere "0" e non il decimo) 37 Funzioni: Argomenti • Esempio: fabio@fabiopc:~$ cat sc 11.sh #!/bin/bash greeting () { echo "Grettings from $0:" while test $# -gt 0; do echo -e "Hello $1" shift done } greeting Fabio Paolo Mario fabio@fabiopc:~$ ./sc 11.sh Grettings from ./sc 11.sh: Hello Fabio Hello Paolo Hello Mario fabio@fabiopc :~$ 38 Funzioni: valore di ritorno • di default il valore restituito da una funzione è lo stato dell'ultima istruzione eseguita, 0 per successo e un numero decimale diverso da zero, nell'intervallo 1 - 255, in caso di errore • le funzioni Bash non consentono di assegnare il valore restituito ad una variabile a piacimento; viene invece assegnato alla variabile $?. • possiamo specificare un valore "arbitrario" da restituire utilizzando la parola chiave return. L'istruzione return termina la funzione: #!/bin/bash my_function () { echo "some result" return 55 } my_function echo $? Output: some result 55 39 Funzioni: valore di ritorno • per assegnare il valore di ritorno ad una variabile arbitraria dobbiamo utilizzare altri metodi • il primo: assegnare un valore ad una variabile globale: #!/bin/bash my_function () { func_result="some result" } my_function echo $func_result Output: some result
+
+Funzioni: valore di ritorno • il secondo: inviare il ritorno a stdout: #!/bin/bash my_function () { local func_result="some result" echo "$func_result" } func_result="$(my_function)" # oppure `my_function` echo $func_result Output: some result
+###### Threads
+**Posix threads:** sono parti di uno stesso programma eseguite contemporaneamente e schedulate indipendentemente l'una dall'altra. In altre parole sono "più tracce di esecuzione concorrenti in un singolo processo". Un singolo processo può "contenere" più threads. Questi condividono la memoria globale (data and heap) ma ognuno ha il proprio stack. Non è un'implementazione, ma uno standard. Sono implementati in molti SO, ma con delle differenze (vengono definiti una serie di interfacce come funzioni, file header per la programmazione di threads). Sono conosciuti come POSIX Threads o Pthreads 
+
+> [!info] `man 7 pthreads`
+
+Nel corso del tempo due implementazioni nella GNU C library:
+- *LinuxThreads:* Implementazione originale. Non più supportata (a partire da glibc 2.4) 
+- NPTL (Native POSIX Threads Library) 
+	- implementazione "più moderna" 
+	- più rispondente allo standard POSIX.1 
+	- prestazioni migliori se si crea un gran numero di threads 
+	- disponibile a partire da glibc 2.3.2 e richiede caratteristiche presenti a partire da Linux 2.6 
+
+Per determinare la versione di glibc: `ldd --version`. Per conoscere quale implementazione dei threads: `getconf GNU_LIBPTHREAD_VERSION` 
+
+POSIX.1 richiede che i seguenti attributi siano condivisi tra i threads di uno stesso processo: 
+- process ID 
+- parent process ID 
+- process group ID and session ID 
+- controlling terminal 
+- user and group IDs 
+- open file descriptors 
+- record locks (see fcntl(2)) 
+- signal dispositions 
+- file mode creation mask (umask(2)) 
+- current directory (chdir(2)) and root directory (chroot(2)) 
+- interval timers (setitimer(2)) and POSIX timers (timer_create(2)) 
+- nice value (setpriority(2)) 
+- resource limits (setrlimit(2)) 
+- measurements of the consumption of CPU time (times(2)) and resources (getrusage(2)) 
+
+Attributi NON condivisi (per-thread):
+- thread ID (the pthread_t data type) 
+- signal mask (pthread_sigmask(3)) 
+- the errno variable 
+- alternate signal stack (sigaltstack(2)) 
+- real-time scheduling policy and priority (sched(7))
+
+**Posix Threads: ritorno delle funzioni:** La maggior parte delle funzioni pthreads tornano 0 se non ci sono errori ed un codice di errore altrimenti. Questo codice di errore ha lo stesso significato dei valori convenzionali di errno, ma le funzioni Pthreads NON settano errno. POSIX.1-2001 stabilisce che EINTR non può essere ritornato 
+
+**Threads IDs:** Ogni thread ha un unico thread ID* utilizzabile nelle funzioni pthreads. Questo viene tornato al chiamante da pthread_create(3) o può essere ottenuto con pthread_self(3). Gli ID sono unici nel processo ma non nel sistema. Il SO riusa gli ID di thread terminati, ma se un'applicazione usa un ID di un thread terminato il risultato non è definito
+
+**Thread Safety:** 
+- *POSIX Safety Concepts:* definiscono se una funzione può essere chiamata in determinati contesti senza che si verifichino comportamenti indesiderati 
+- *MT-Safe (MT sta per Multi-threading) o Thread-Safe:* una funzione lo è se può essere chiamata contemporaneamente da più thread senza modificare il comportamento. MT-Safe non significa che l'esecuzione sia atomica, né che usi alcun meccanismo di sincronizzazione nell'accesso alla memoria. È possible che chiamare più funzioni MT-Safe in sequenza possa sortire effetti diversi da un'esecuzione atomica delle stesse; chiamate concorrenti da altri thread possono interferire 
+
+> [!info] vedi man 7 attributes per chiarimenti su MT-Safe
+
+**Compilazione:** 
+- includere `pthread.h `
+- se richiesto compilare col flag `-pthread` 
+
+**Creazione di threads:** `#include <pthread.h> int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg);` 
+- avvia un nuovo thread nel processo chiamante 
+- imposta in thread il thread ID del thread creato che può essere utilizzato dalle altre funzioni pthreads
+- il thread avvia l'esecuzione chiamando la funzione `start_routine` 
+- `arg` viene passato come unico argomento a `start_routine` 
+- un esempio d'uso in `man 3 pthread_create` 
+- `attr` punta ad una struttura di tipo `pthread_attr_t` che può essere usata per settare alcuni attributi del nuovo thread, per esempio per crearlo `detached` 
+- `attr` può essere inizializzata con `pthread_attr_init(3).`
+- Se è NULL sono usati gli attributi di default 
+- `pthread_create(3)` torna 0 per successo; un codice di errore altrimenti 
+
+**Terminazione di un thread:** un thread può terminare: 
+- Se il thread chiama p`thread_exit(3)` specificando un codice d'uscita, che sarà disponibile per un altro thread del processo che abbia chiamato `pthread_join(3)` 
+- quando `start_routine()` (vedi `pthread_create()`) termina con return. Equivalente a chiamare `pthread_exit(3)` 
+- è cancellato con `pthread_cancel(3)` 
+- un thread chiama `exit(3)` o quello principale chiama return. L'intero processo termina (e tutti i suoi threads)! 
+
+`pthread_exit(void *retval);` termina il thread chiamante. Se il thread è joinable, il valore ritornato in `retval` è reso disponibile ad altro thread del processo che chiami `pthread_join(3)`. Il valore cui `retval` punta non dovrebbe essere allocato nello stack del thread chiamante, perché dopo la terminazione del thread il contenuto dello stack è "undefined"
+
+> [!example] mt 1.c 
+> ```C
+> #include #include #include 
+> int iCondivisa = 13; 
+> void thread 1(int *arg) { 
+> 	int iLocale = 101; 
+> 	printf("Sono il primo thread. Argomento = %d, var. condivisa = %d, locale = %d\n", *arg, iCondivisa, iLocale); 
+> 	pthread_exit(NULL); 
+> } 
+> 
+> void thread 2(char *arg) { 
+> 	int iLocale = 202; 
+> 	printf("Sono il secondo thread. Argomento = \"%s\", var. condivisa = %d, locale = %d\n", arg, iCondivisa, iLocale);
+> 	 pthread_exit(NULL); 
+> } 
+> 
+> void main() { 
+> 	pthread_t th 1, th 2; 
+> 	int arg 1 = 1; 
+> 	char arg 2[] = "Ciao"; 
+> 	pthread_create(&th 1, NULL, (void *)thread 1, (void *)&arg 1);
+> 	 pthread_create(&th 2, NULL, (void *)thread 2, (void *)arg 2);
+> 	  sleep(2); return; 
+> }
+> ``` 
+> - variabili globali condivise tra threads 
+> - comunicazione tra threads realizzabile con le risorse (variabili) condivise ma non c'è nessuna sincronizzazione 
+> - stack (var. locali) specifico per ogni thread 
+> - nessun vincolo alla schedulazione dei threads. POSIX definisce funzioni che consentono di modificare schedulazione e priorità 
+
+**`join e detach`:** un thread può essere joinable o detached. Di default i threads sono creati joinable. Se un thread è joinable un altro thread può richiamare `pthread_join(3)` per attendere che termini e per ottenere il suo exit status 
+
+Le risorse allocate per un thread joinable sono rilasciate solo se un altro thread chiama `pthread_join(3)` per attenderlo. Se nessun `join` viene fatto il thread terminato è in stato zombie e le risorse sono rilasciate solo all'uscita dal processo. Se i threads zombie si accumulano oltre misura non sarà più possible creare altri thread. Ogni thread nel processo può attendere con `pthread_join(3)` qualsiasi altro thread (del processo stesso). Non c'è per i threads un'operazione analoga a quella vista per i processi child (`fork(2)`): `waitpid(-1, &status, 0)` cioè una chiamata che esegue join su qualsiasi thread termini 
+
+Pthreads: thread detached • E' possibile creare un thread detached modificandone gli attributi in fase di creazione con pthread_attr_setdetachstate(3) oppure richiamando pthread_detach(3) per un thread già creato • le risorse allocate per un thread detached sono subito liberate alla sua terminazione • non è possibile eseguire il join ad un thread detached per ottenere il suo exit status, né è possibile renderlo joinable • creare thread detached può essere utile quando non ci curiamo dell'exit status dei thread; per esempio nello sviluppo di certi daemon 22 Pthreads: conclusioni su join e detach • quindi, una tra pthread_join() e pthread_detach()* dovrebbe essere chiamata per ogni thread creato affinché le risorse vengano liberate • fermo restando che, all'uscita del processo, tutte le risorse dei thread sono liberate comunque (*): se non è stato creato già detached settandone gli attributi
+
+Pthreads: joining threads int pthread_join(pthread_t thread, void **retval); • Attende che il thread specificato da thread termini (se è joinable) • se retval non è NULL riceve il valore tornato da pthread_exit(3) oppure PTHREAD_CANCELED se il thread è stato cancellato • se più thread cercano simultaneamente di fare il join allo stesso thread il risultato non è definito (dallo standard) 24 Pthreads: detaching threads int pthread_detach(pthread_t thread); • rende il thread specificato da thread detached 25 Pthreads: mt 1.c con join #include #include #include int iCondivisa = 13; void thread 1(int *arg) { int iLocale = 101; printf("Sono il primo thread. Parametro = %d, var. condivisa = %d, locale = %d\n", *arg, iCondivisa, iLocale); pthread_exit((void *)1000); } void thread 2(char *arg) { int iLocale = 202; printf("Sono il secondo thread. Parametro = \"%s\", var. condivisa = %d, locale = %d\n", arg, iCondivisa, iLocale); pthread_exit((void *)2000); } void main() { pthread_t th 1, th 2; int arg 1 = 1; char arg 2[] = "Ciao"; long l 1, l 2; pthread_create(&th 1, NULL, (void *)thread 1, (void *)&arg 1); pthread_create(&th 2, NULL, (void *)thread 2, (void *)arg 2); pthread_join(th 1, (void **)&l 1); pthread_join(th 2, (void **)&l 2); printf("\nRitorno thread 1 = %ld\nRitorno thread 2 = %ld\n", l 1, l 2); return; }
