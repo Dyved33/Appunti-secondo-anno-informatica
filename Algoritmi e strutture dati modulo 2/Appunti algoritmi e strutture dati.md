@@ -1,5 +1,4 @@
-###### Alberi binari
-Le linked lists vanno bene per rappresentare delle relazioni lineari (non tutte le relazioni sono lineari). In particolare ci concentriamo sul problema di rappresentare un albero costruito a partire da una linked data structure. Ogni nodo dell'albero è un oggetto e supponiamo che ogni nodo dell'albero contenga un attributo chiave (key). L'altro attributo d'interesse sono i puntatori che connettono ogni nodo agli altri. Un **albero binario** è un grafo non orientato rappresentato con i puntatori, caratterizzato dal fatto che ogni nodo ha al massimo due figli, uno destro e uno sinistro:
+###### Alberi binariLe linked lists vanno bene per rappresentare delle relazioni lineari (non tutte le relazioni sono lineari). In particolare ci concentriamo sul problema di rappresentare un albero costruito a partire da una linked data structure. Ogni nodo dell'albero è un oggetto e supponiamo che ogni nodo dell'albero contenga un attributo chiave (key). L'altro attributo d'interesse sono i puntatori che connettono ogni nodo agli altri. Un **albero binario** è un grafo non orientato rappresentato con i puntatori, caratterizzato dal fatto che ogni nodo ha al massimo due figli, uno destro e uno sinistro:
  - Ogni nodo è definito con 3 puntatori, $p,\space left,\space right$, in cui $p$ è  il puntatore al nodo padre; il nodo $left$ è il puntatore al figlio sinistro e il nodo $right$ è il puntatore al figlio destro.
  - Se il nodo $x$ non ha figli sinistri, il puntatore $left$ è inizializzato a $NIL$. Analogamente per il caso destro.
  - La radice ha il puntatore $p$ inizializzato a $NIL$.
@@ -92,7 +91,7 @@ treeMaximum(x)
 
 Le proprietà degli alberi di ricerca binaria mi garantiscono la correttezza di questi metodi.
 
-**Successore e predecessore:** Il successore di un nodo x è il nodo con la chiave più grande della *x.key*. Si definisce un successore il successivo nodo visitato in un inorder tree walk. La struttura degli alberi binari di ricerca mi permette di determinare il successore senza comparare le chiavi dei nodi. Tale procedura ritorna il puntatore al nodo successivo se esiste, altrimenti ritorna $NIL$.  
+**Successore e predecessore:** Il successore di un nodo x è il nodo con la chiave più grande della *x.key*. Si definisce un successore il successivo nodo visitato in un in-order tree walk. La struttura degli alberi binari di ricerca mi permette di determinare il successore senza comparare le chiavi dei nodi. Tale procedura ritorna il puntatore al nodo successivo se esiste, altrimenti ritorna $NIL$.  
 
 ~~~
 treeSuccessor(x)
@@ -150,8 +149,9 @@ La procedura inizia alla radice dell'albero e il puntatore x traccia un percorso
 <div style="display: flex; justify-content: center;">
   <img src="Screenshot From 2026-02-25 12-00-33.png" width="190">
  </div>
-     - *y* si trova nel sotto-albero destro di *z*, ma non è il "figlio" destro
-    <div style="display: flex; justify-content: center;">
+	 - *y* si trova nel sotto-albero destro di *z*, ma non è il "figlio" destro
+    
+<div style="display: flex; justify-content: center;">
   <img src="Screenshot From 2026-02-25 12-02-18.png" width="190">
 </div>
 La procedura di eliminazione di un nodo richiede come argomenti i puntatori a *T* e a *z*.
@@ -190,25 +190,26 @@ transplant(T,u,v)
   v.p = u.p
 ~~~
 
-> [!info] N.B. Sia l'algoritmo di inserimento che quello di eliminazione richiedono tempo $O(h)$ per alberi di altezza h
+> [!info] N.B. Sia l'algoritmo di inserimento che quello di eliminazione richiedono tempo $O(h)$ per alberi di altezza hpiòà98
 ###### Red-black trees
 Il set di operazioni viste nella scorsa lezione sono veloci se l'altezza dell'albero di ricerca è piccola. Viceversa se l'altezza fosse un valore più grande le stesse operazioni sarebbero veloci tanto quanto una linked list. In questo contesto vengono introdotti gli alberi di ricerca bilanciati (**red-black trees**) che garantiscono delle operazioni che impiegano $O(log(n))$ di tempo nel caso peggiore.
 
 **Proprietà:** 
 -  Un red-black tree è un albero di ricerca binaria con un ulteriore informazione per ogni nodo: il colore del nodo, il quale può essere o rosso o nero.
 -  Vincolando il colore del nodo ogni cammino semplice dalla radice alle foglie di un albero, ci si assicura che nessun cammino del genere sia più lungo del doppio di qualsiasi altro (dovrebbe voler dire che il cammino più lungo possibile è circa il doppio del cammino più corto possibile)
--  L'albero è approssimativamente  *bilanciato* (non ci sono foglie addossate a destra o a sinistra)
--  L'altezza di un red-black tree con n chiavi è al massimo $2*log(n+1)$ che ha costo $O(log(n))$
+- L'albero è approssimativamente  *bilanciato* (non ci sono foglie addossate a destra o a sinistra)
+- L'altezza di un red-black tree con n chiavi è al massimo $2*log(n+1)$ che ha costo $O(log(n))$
 
 **Struttura:**
 -  Ogni nodo dell'albero contiene gli attributi : colore, chiave, $left, right \ e\ p$
 -  Se un figlio o un genitore di un nodo non esistono, il puntatore corrispondente (attributo del nodo) contiene il valore $NIL$ (questi valori possono essere pensati come i puntatori alle foglie)
 - Un red-black tree è un albero di ricerca binaria che soddisfa le seguenti proprietà:
-   1.  Ogni nodo o è nero o è rosso
+   1. Ogni nodo o è nero o è rosso
    2. La radice è nera
    3. Ogni foglia ($NIL$) è nera
    4. Se un nodo è rosso $=>$ entrambi i suoi figli sono neri
    5. Per ogni nodo, ogni cammino semplice discendente dal nodo fino alle foglie contiene lo stesso numero di nodi neri
+
 - Si usa una singola sentinella per rappresentare $NIL$.  La sentinella $T.NIL$ è un oggetto con gli stessi attributi di un normale nodo dell'albero. L'attributo colore della sentinella è il nero e gli altri attributi possono prendere valori arbitrari
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
