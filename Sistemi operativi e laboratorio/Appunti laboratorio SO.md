@@ -1456,17 +1456,204 @@ Se la clausola in non è specificata si assumono come la lista degli argomenti d
 > done
 > ``` 
 
-BASH: comando (interno) read • per acquisire input, per esempio da tastiera: user1@host1 :~$ read -p "Inserisci un saluto: " var 1 Inserisci un saluto: Ciao user1@host1 :~$ echo $var1 Ciao user1@host1:~$ set |grep var 1 var 1=Ciao user1@host1 :~$ L'opzione -p visualizza un prompt prima di attendere per l'input P.S.: in generale per avere l'help su di un comando interno: help comando 23 BASH: comando read. Osservazione... • read ha l'opzione -u che permette di redirigere l'input da un file descriptor invece che da stdin. Si consideri questo esempio: user1@host1 :~$ exec 3< testo.txt user1@host1 :~$ while read -u 3 linea ; do echo $linea; done fabio ciccio pippo user1@host1:~$ exec, in generale, esegue il comando passato come argomento creando un processo che sostituisce la shell corrente. Senza questo argomento qualsiasi redirezione è operata nella shell corrente. In questo caso testo.txt è aperto in lettura con fd 3. read -u 3 fa si che read prenda l'input da testo.txt invece che da stdin 24 BASH: comando read. Osservazione... • .... in altre parole exec e read -u possono essere utilizzati in una shell, e quindi in uno script, per aprire in lettura (o scrittura) un file e per elaborarne (o scriverne) il contenuto
+**`read` (comando interno):** serve per acquisire input, per esempio, da tastiera: 
+> [!example] 
+> ```bash
+> user1@host1:~$ read -p "Inserisci un saluto: " var1 
+> Inserisci un saluto: Ciao 
+> user1@host1:~$ echo $var1 
+> Ciao 
+> user1@host1:~$ set |grep var 1 
+> var 1=Ciao 
+> user1@host1:~$ 
+> ```
 
-Array: Definizioni: area[11]=23 area[13]=37 # indici anche non adiacenti area[51]=UFOs area 2=( zero one two three four ) declare -a array 1 • gli elementi si referenziano tra parentesi graffe: echo ${area[11]} echo ${area2[0]} # visualizza "zero"; # indici zero-based se # non specificati Array 26 fabio@fabiopc:~$ area[11]=23 fabio@fabiopc :~$ area[13]=37 fabio@fabiopc :~$ area[51]=UFOs fabio@fabiopc :~$ area 2=( zero one two three ) fabio@fabiopc :~$ set|grep area area=([1]="0" [11]="23" [13]="37" [51]="UFOs") area 2=([0]="zero" [1]="one" [2]="two" [3]="three) fabio@fabiopc :~$ echo ${area 2[0]} ${area[51]} zero UFOs fabio@fabiopc:~$ fabio@fabiopc :~$ echo ${area2[@]} # tutti gli elementi zero one two three four fabio@fabiopc:~$ echo ${area2[*]} # tutti gli elementi zero one two three four fabio@fabiopc:~$ Array 27 • per determinare il numero di elementi di un array si usa la sintassi ${#arrayname[@]}: fabio@fabiopc:~$ area 2=( zero one two three four ) fabio@fabiopc :~$ echo ${#area2[@]} 5 fabio@fabiopc:~$ • unset nomearray per cancellare l'array Array 28 BASH: Funzioni • Una funzione è un insieme di comandi che può essere richiamato più volte ed è identificato dal nome della funzione stessa. Richiamabile come un comando interno • sono eseguite nella shell corrente (non subshell) • Lo scopo è di evitare di riscrivere lo stesso codice più volte e rendere gli script più comprensibili • Rispetto ad altri linguaggi il supporto di Bash per le funzioni è più limitato
+L'opzione `-p` visualizza un prompt prima di attendere per l'input. In generale per avere l'help su di un comando interno: `help comando`. `read` ha l'opzione `-u` che permette di redirigere l'input da un file descriptor invece che da stdin. 
 
-BASH: Funzioni • cancellabili con unset • Per vedere le funzioni definite: bash:~$ declare -f visualizza il nome di tutte le funzioni ed il loro codice bash:~$ declare -F visualizza solo i nomi di tutte le funzioni bash:~$ type -all name_function fornisce nome e codice della funzione di nome name_function 30 BASH: Funzioni: definizione • due differenti formati. Il primo: function_name () { commands } oppure, a linea singola: function_name () { commands; } • Il secondo: function function_name { commands } oppure, a linea singola: function function_name { commands; } • non solo negli script ma anche a linea di comando 31 Funzioni: alcune note • The commands between the curly braces ({}) are called the body of the function. The curly braces must be separated from the body by spaces or newlines. • Defining a function doesn’t execute it. To invoke a bash function, simply use the function name. Commands between the curly braces are executed whenever the function is called in the shell script. • The function definition must be placed before any calls to the function. • When using single line “compacted” functions, a semicolon ';' must follow the last command in the function
+> [!example]
+> ```bash
+> user1@host1:~$ exec 3< testo.txt 
+> user1@host1:~$ while read -u 3 linea ; do echo $linea; done 
+> fabio 
+> ciccio 
+> pippo 
+> user1@host1:~$
+> ``` 
 
-Funzioni: Hello World #!/bin/bash hello_world () { echo 'hello, world' } hello_world 33 Funzioni: Visibilita delle Variabili • In Bash di default tutte le variabili sono definite come globali, anche se dichiarate all'interno di una funzione • E' possibile accedere alle variabili globali da qualsiasi punto dello script, indipendentemente dall'ambito • Variabili locali possono essere dichiarate all'interno del corpo della funzione con la parola chiave local e possono essere utilizzate solo all'interno di quella funzione • È possibile avere variabili locali con lo stesso nome in funzioni diverse 34 Funzioni: Visibilita delle Variabili: Esempio #!/bin/bash var 1='A' var 2='B' my_function () { local var 1='C' var 2='D' echo "Inside function: var 1: $var 1, var 2: $var 2" } echo "Before executing function: var 1: $var 1, var 2: $var 2" my_function echo "After executing function: var 1: $var 1, var 2: $var 2" 35 Funzioni: Visibilita delle Variabili: Esempio • Output dell'esempio precedente: Before executing function: var 1: A, var 2: B Inside function: var 1: C, var 2: D After executing function: var 1: A, var 2: D
+`exec`, in generale, esegue il comando passato come argomento creando un processo che sostituisce la shell corrente. Senza questo argomento qualsiasi redirezione è operata nella shell corrente. In questo caso testo.txt è aperto in lettura con fd = 3. `read -u 3` fa si che `read` prenda l'input da testo.txt invece che da stdin 
 
-Funzioni: Argomenti • vale quanto detto per i parametri posizionali passati ad uno script: – sono variabili nella forma $n dove n è un intero da 0 in poi – $0 contiene il nome della funzione – gli altri argomenti (se passati) sono da $1 a $n dove n è il loro numero – quelli oltre il nono devono essere referenziati nella forma ${n} (per es.: $10 è sostituito col primo + il carattere "0" e non il decimo) 37 Funzioni: Argomenti • Esempio: fabio@fabiopc:~$ cat sc 11.sh #!/bin/bash greeting () { echo "Grettings from $0:" while test $# -gt 0; do echo -e "Hello $1" shift done } greeting Fabio Paolo Mario fabio@fabiopc:~$ ./sc 11.sh Grettings from ./sc 11.sh: Hello Fabio Hello Paolo Hello Mario fabio@fabiopc :~$ 38 Funzioni: valore di ritorno • di default il valore restituito da una funzione è lo stato dell'ultima istruzione eseguita, 0 per successo e un numero decimale diverso da zero, nell'intervallo 1 - 255, in caso di errore • le funzioni Bash non consentono di assegnare il valore restituito ad una variabile a piacimento; viene invece assegnato alla variabile $?. • possiamo specificare un valore "arbitrario" da restituire utilizzando la parola chiave return. L'istruzione return termina la funzione: #!/bin/bash my_function () { echo "some result" return 55 } my_function echo $? Output: some result 55 39 Funzioni: valore di ritorno • per assegnare il valore di ritorno ad una variabile arbitraria dobbiamo utilizzare altri metodi • il primo: assegnare un valore ad una variabile globale: #!/bin/bash my_function () { func_result="some result" } my_function echo $func_result Output: some result
+> [!info] In altre parole `exec` e `read -u` possono essere utilizzati in una shell, e quindi in uno script, per aprire in lettura (o scrittura) un file e per elaborarne (o scriverne) il contenuto
 
-Funzioni: valore di ritorno • il secondo: inviare il ritorno a stdout: #!/bin/bash my_function () { local func_result="some result" echo "$func_result" } func_result="$(my_function)" # oppure `my_function` echo $func_result Output: some result
+**Array:** Per definirne uno la sintassi è:
+
+```bash
+area[11]=23 
+area[13]=37 # indici anche non adiacenti 
+area[51]=UFOs 
+area2=( zero one two three four ) 
+declare -a array1 
+```
+
+Gli elementi si referenziano tra parentesi graffe: 
+
+```bash
+echo ${area[11]} 
+echo ${area2[0]} # visualizza "zero"; 
+# indici zero-based se non specificati 
+```
+
+> [!example] 
+> ```bash
+> fabio@fabiopc:~$ area[11] =23 
+> fabio@fabiopc:~$ area[13]=37 
+> fabio@fabiopc:~$ area[51]=UFOs 
+> fabio@fabiopc:~$ area 2=( zero one two three ) 
+> fabio@fabiopc:~$ set|grep area 
+> area=([1]="0" [11]="23" [13]="37" [51]="UFOs") 
+> area 2=([0]="zero" [1]="one" [2]="two" [3]="three) 
+> fabio@fabiopc:~$ echo ${area 2[0]} ${area[51]} zero UFOs fabio@fabiopc:~$ 
+> fabio@fabiopc:~$ echo ${area2[@]} # tutti gli elementi 
+> zero one two three four 
+> fabio@fabiopc:~$ echo ${area2[*]} # tutti gli elementi 
+> zero one two three four 
+> fabio@fabiopc:~$ 
+> ```
+
+Per determinare il numero di elementi di un array si usa la sintassi `${ #arrayname [@]}:`, mentre si usa `unset nomearray` per cancellare l'array
+
+> [!example]
+> ```bash
+> fabio@fabiopc:~$ area 2=( zero one two three four ) 
+> fabio@fabiopc:~$ echo ${ #area2 [@]} 
+> 5 
+> fabio@fabiopc:~$
+> ```
+
+**Funzioni:** Una funzione è un insieme di comandi che può essere richiamato più volte ed è identificato dal nome della funzione stessa, richiamabile come un comando interno. Sono eseguite nella shell corrente (non subshell) e lo scopo è di evitare di riscrivere lo stesso codice più volte e rendere gli script più comprensibili. Rispetto ad altri linguaggi il supporto di Bash per le funzioni è più limitato:
+- Cancellabili con `unset` 
+- Per vedere le funzioni definite: 
+	- `bash:~$ declare -f`: visualizza il nome di tutte le funzioni ed il loro codice
+	- `bash:~$ declare -F`: visualizza solo i nomi di tutte le funzioni 
+	- `bash:~$ type -all name_function`: fornisce nome e codice della funzione di nome name_function  
+	
+Per definire una funzione ho due differenti formati:
+- `function_name () { commands }` oppure, a linea singola, `function_name () { commands; }` 
+- `function function_name { commands }` oppure, a linea singola, `function function_name { commands; }` 
+- non solo negli script ma anche a linea di comando 
+
+> [!info] Note da https://linuxize.com/post/bash-functions/
+> - The commands between the curly braces (`{}`) are called the body of the function. The curly braces must be separated from the body by spaces or newlines. 
+> - Defining a function doesn’t execute it. To invoke a bash function, simply use the function name. Commands between the curly braces are executed whenever the function is called in the shell script. 
+> - The function definition must be placed before any calls to the function. 
+> - When using single line “compacted” functions, a semicolon `;` must follow the last command in the function
+
+> [!example] 
+> ```bash
+> #!/bin/bash 
+> hello_world () { 
+> 	echo 'hello, world' 
+> } 
+> 
+> hello_world 
+> ```
+
+In Bash di default tutte le variabili sono definite come globali, anche se dichiarate all'interno di una funzione. È possibile accedere alle variabili globali da qualsiasi punto dello script, indipendentemente dall'ambito. Le variabili locali possono essere dichiarate all'interno del corpo della funzione con la parola chiave `local` e possono essere utilizzate solo all'interno di quella funzione. È possibile avere variabili locali con lo stesso nome in funzioni diverse 
+
+> [!example] 
+> ```bash
+> #!/bin/bash 
+> var 1='A' 
+> var 2='B' 
+> 
+> my_function () { 
+> 	local var 1='C' 
+> 	var 2='D' 
+> 	echo "Inside function: var 1: $var 1, var 2: $var 2" 
+> } 
+> 
+> echo "Before executing function: var 1: $var 1, var 2: $var 2" 
+> 
+> my_function 
+> 
+> echo "After executing function: var 1: $var 1, var 2: $var 2"
+> 
+> Before executing function: var 1: A, var 2: B 
+> Inside function: var 1: C, var 2: D 
+> After executing function: var 1: A, var 2: D
+> ```
+
+Per quanto riguarda gli argomenti vale quanto detto per i parametri posizionali passati ad uno script: 
+- sono variabili nella forma `$n` dove n è un intero da 0 in poi 
+- `$0` contiene il nome della funzione 
+- gli altri argomenti (se passati) sono da `$1` a `$n` dove n è il loro numero 
+- quelli oltre il nono devono essere referenziati nella forma `${n}` (per es.: `$10` è sostituito col primo + il carattere "0" e non il decimo) 
+
+> [!example]
+> ```bash
+> fabio@fabiopc:~$ cat sc11.sh 
+> #!/bin/bash 
+> 
+> greeting () { 
+> 	echo "Grettings from $0:" 
+> 	while test $# -gt 0; do 
+> 		echo -e "Hello $1" 
+> 		shift 
+> 	done 
+> } 
+> 
+> greeting Fabio Paolo Mario 
+> fabio@fabiopc:~$ ./sc11.sh 
+> Grettings from ./sc11.sh: 
+> Hello Fabio 
+> Hello Paolo 
+> Hello Mario 
+> fabio@fabiopc:~$ 
+> ```
+
+Di default il valore restituito da una funzione è lo stato dell'ultima istruzione eseguita, 0 per successo e un numero decimale diverso da zero, nell'intervallo 1 - 255, in caso di errore. Le funzioni Bash non consentono di assegnare il valore restituito ad una variabile a piacimento; viene invece assegnato alla variabile `$?`. Possiamo specificare un valore "arbitrario" da restituire utilizzando la parola chiave `return`. L'istruzione return termina la funzione: 
+
+> [!example]
+> ```bash
+> #!/bin/bash 
+> my_function () { 
+> 	echo "some result" 
+> 	return 55 } 
+> my_function 
+> echo $? 
+> 
+> some result 
+> 55 
+> ```
+
+Per assegnare il valore di ritorno ad una variabile arbitraria dobbiamo utilizzare altri metodi:
+- Assegnare un valore ad una variabile globale: 
+
+> [!example] 
+> ```bash
+> #!/bin/bash 
+> my_function () { 
+> 	func_result="some result" 
+> } 
+> my_function 
+> echo $func_result 
+> 
+> some result
+> ```
+
+- inviare il ritorno a stdout: 
+
+> [!example]
+> ```bash
+> #!/bin/bash 
+> my_function () { 
+> 	local func_result="some result" 
+> 	echo "$func_result" 
+> } 
+> func_result="$(my_function)" # oppure `my_function` 
+> echo $func_result 
+> 
+> some result
+> ```
 ###### Threads
 **Posix threads:** sono parti di uno stesso programma eseguite contemporaneamente e schedulate indipendentemente l'una dall'altra. In altre parole sono "più tracce di esecuzione concorrenti in un singolo processo". Un singolo processo può "contenere" più threads. Questi condividono la memoria globale (data and heap) ma ognuno ha il proprio stack. Non è un'implementazione, ma uno standard. Sono implementati in molti SO, ma con delle differenze (vengono definiti una serie di interfacce come funzioni, file header per la programmazione di threads). Sono conosciuti come POSIX Threads o Pthreads 
 
