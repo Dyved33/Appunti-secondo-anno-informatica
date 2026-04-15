@@ -2359,7 +2359,7 @@ Obiettivo: migliorare il design senza riscrivere tutto da zero.
 	- i servizi dipendono da classi concrete di repository? 
 	- posso introdurre interfacce nel dominio e implementazioni nei layer esterni?
 
-###### Design patterns essenziali-strategy e factory method
+###### Design patterns essenziali: strategy e factory method
 Nella lezione precedente abbiamo visto tutti e cinque i principi SOLID. Questi principi ci dicono come dovrebbe essere un buon design: 
 - classi con ruoli chiari; 
 - codice estendibile senza modificare quello già scritto; 
@@ -2590,7 +2590,7 @@ Effetto:
 	- favoriscono DIP: dipendenza da astrazioni (SortStrategy, ExamSession, Creator); 
 	- aiutano SRP: separano responsabilità (comportamenti / creazione) dal resto della logica.
 
-###### Design Patterns essenziali— Adapter e Observer
+###### Design Patterns essenziali: Adapter e Observer
 Abbiamo visto: 
 - Strategy: rendere intercambiabili i comportamenti; 
 - Factory Method: centralizzare e strutturare la creazione degli oggetti. 
@@ -2791,4 +2791,357 @@ I pattern affrontano quattro problemi distinti: comportamenti, creazione, integr
 > - Entrambi i pattern favoriscono estendibilità e riduzione dell’accoppiamento, in linea con OCP e DIP. 
 > - Il beneficio dei pattern dipende da come vengono applicati: migliorano il design se rispondono a una variabilità reale. 
 > - Gli esempi su UniManager mostrano come questi pattern preparino il sistema a integrazioni e notifiche future.
+
+###### Qualità del design: code smells
+**Perché parlare di qualità interna?** Un software può funzionare ed essere comunque difficile da mantenere e da far crescere nel tempo. La qualità interna determina in modo diretto: 
+- quanto è semplice correggere bug senza introdurre effetti collaterali; 
+- quanto è facile aggiungere nuove funzionalità senza “toccare tutto”; 
+- quanto si capisce il codice dopo settimane/mesi (anche da parte di chi non lo ha scritto). 
+
+Nella pratica, la qualità interna è ciò che rende un progetto: 
+- evolvibile invece che fragile, 
+- leggibile invece che opaco, 
+- modulare invece che intrecciato, 
+- più testabile e quindi più sicuro da modificare.  
+
+**Qualità esterna vs qualità interna:** 
+- *Qualità esterna:* ciò che percepisce l’utente finale (funzionalità offerte, prestazioni, affidabilità, esperienza d’uso). 
+- *Qualità interna:* proprietà strutturali del codice (chiarezza, organizzazione, modularità, dipendenze sane). 
+
+Effetto tipico nei progetti reali: oggi funziona → domani costa troppo cambiarlo o estenderlo. In questa lezione ci concentriamo in particolare su: 
+- segnali che indicano un design che sta lentamente peggiorando; 
+- strumenti concettuali per riconoscerli e intervenire in anticipo.  
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260415160609.png" width="200">
+</div>
+
+**Come leggere il design:** 
+- *Coesione:* quanto gli elementi di uno stesso modulo/classe stanno bene insieme e lavorano per un unico scopo. Se c'è alta coesione allora avrò una classe focalizzata, più facile da capire e testare. 
+- *Accoppiamento:* quanto un modulo/classe dipende dagli altri. Se ho basso accoppiamento allora ci saranno meno dipendenze rigide, cambiamenti più locali. 
+
+Regola pratica: alta coesione + basso accoppiamento.  
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260415160835.png" width="200">
+</div>
+
+**Coesione:** misura la “compattezza” delle responsabilità assegnate a un modulo o a una classe. Un modulo realmente coeso: 
+- ha un obiettivo chiaro e facilmente esplicitabile; 
+- contiene responsabilità dello stesso tipo e tra loro correlate; 
+- si può descrivere in modo naturale con una singola frase. 
+
+Segnali tipici di bassa coesione: 
+- una classe che offre molte funzionalità non correlate tra loro; 
+- metodi che lavorano su concetti diversi e che non condividono un filo logico comune; 
+- nomi generici (Manager, Utils, Helper) che cercano di “coprire tutto” senza un ruolo preciso.  
+
+**Accoppiamento:** misura quanto un modulo dipende da altri moduli e dalle loro decisioni interne. Un accoppiamento elevato significa: 
+- conoscere e sfruttare dettagli interni di altri componenti; 
+- vincolarsi a implementazioni concrete invece che a contratti astratti; 
+- amplificare l’effetto di una modifica anche lontano dal punto di intervento. 
+
+Segnali tipici di alto accoppiamento: 
+- accesso diretto a campi interni e strutture dati di altre classi; 
+- catene di chiamate lunghe (train wreck); 
+- dipendenze diffuse “ovunque” verso componenti instabili o tecnologici.  
+
+Nei progetti reali emergono spesso due problemi ricorrenti, che tendono a rafforzarsi a vicenda se non vengono controllati: 
+1. classi che crescono troppo nel tempo, accumulando responsabilità diverse → bassa coesione; 
+2. componenti sempre più intrecciati tra loro, con dipendenze diffuse → alto accoppiamento. 
+
+Una regola pratica utile per diagnosticare la situazione è la seguente: 
+- se per cambiare una parte A è necessario capire anche B, C, D, allora l’accoppiamento è probabilmente eccessivo; 
+- se una classe ha “troppe ragioni per cambiare” in contesti diversi, allora la sua coesione è probabilmente insufficiente. 
+
+L’obiettivo del buon design è mantenere questi due aspetti in equilibrio, così che ogni modulo possa evolvere in modo il più possibile indipendente.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260415161143.png" width="200">
+</div>
+
+Spesso il problema non è che il codice sia “sbagliato” o non funzionante, ma che risulti scomodo da leggere, capire e modificare. Situazioni tipiche in cui emerge questa sensazione: 
+- metodi troppo lunghi, con molti passaggi e livelli di dettaglio mescolati; 
+- classi che crescono a ogni nuova feature senza una struttura chiara; 
+- logiche di dominio mescolate con dettagli tecnici o di presentazione. 
+
+Questa sensazione di disagio è in realtà preziosa, non è una prova matematica di errore, ma è un segnale da prendere sul serio e verificare usando criteri progettuali e strumenti concettuali.  
+
+**Code smells:** sono indicatori di possibili problemi nella struttura e nell’organizzazione del design. Non sono bug né errori di funzionamento: 
+- il programma continua a funzionare correttamente; 
+- ma il design mostra segnali di tensione e perdita di chiarezza. 
+
+Sono particolarmente utili perché: 
+- aiutano a individuare il degrado del design prima che diventi evidente o ingestibile; 
+- suggeriscono punti del codice in cui il refactoring può portare il maggior beneficio.  
+
+**Smells e refactoring:** 
+- Smell → ipotesi di problema nel design: qualcosa suggerisce che la struttura non sia ottimale. 
+- Refactoring → intervento disciplinato per migliorare la struttura senza cambiare il comportamento osservabile. 
+
+L'idea chiave è che gli smells non dicono “cambia qui” in modo automatico, ma dicono “qui vale la pena guardare meglio e fare una verifica”. In pratica, il flusso di lavoro tipico è: 
+- si osserva il codice e si riconoscono possibili segnali; 
+- si formula una diagnosi (quale problema progettuale c’è sotto?); 
+- si applicano refactoring mirati, piccoli e controllati.  
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260415172553.png" width="200">
+</div>
+
+Gli smell che vedremo sono:
+- *Large Class:* troppe responsabilità nella stessa classe. 
+- *Long Method:* metodo troppo lungo e difficile da manutenere. 
+- *Feature Envy:* metodo che usa più dati di un’altra classe che della propria. 
+- *Data Clumps:* gruppi di parametri che ricorrono sempre insieme. 
+- *God Object:* classe centrale che coordina, decide e conosce troppo. 
+- *Duplicated Code:* stessa logica copiata in più punti. 
+- *Primitive Obsession:* uso eccessivo di tipi primitivi al posto di concetti di dominio. 
+- *Divergent Change:* una classe cambia per motivi eterogenei. 
+- *Shotgun Surgery:* una modifica richiede piccoli cambi sparsi in molti file.  
+
+**Large Class:** Una Large Class è una classe che accumula troppe responsabilità e, di conseguenza, troppe ragioni diverse per cambiare nel tempo. Effetti tipici che emergono in questi casi: 
+- bassa coesione, perché le responsabilità non sono omogenee; 
+- maggiore difficoltà di test, poiché è complesso isolare i comportamenti; 
+- modifiche rischiose, perché molte funzionalità “passano tutte di lì”. 
+
+Questo smell si accompagna spesso a: 
+- nomi generici (`*Manager`, `*Service`) che non chiariscono il ruolo reale; 
+- una crescita “per accumulo” di metodi, senza una struttura progettuale chiara. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260415172849.png" width="200">
+</div>
+
+> [!example]
+> ![[Pasted image 20260415173015.png|200]] 
+> 
+> - Una sola classe copre dominio, persistenza e presentazione.
+> - Ogni nuova richiesta tende a finire nello stesso punto.
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260415173252.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  <b>Large class (refactoring)</b>
+  <li>Obiettivo: separare per responsabilità e per motivo di cambiamento.</li>
+  <li>Decomposizione esplicita: dominio, persistenza e presentazione.</li> 
+  <li>Effetto: classi più coese e modifiche più locali.</li>
+  </div>
+</div>
+
+**Long Method:** Un Long Method è un metodo che cresce oltre misura e tende a concentrare troppa logica in un unico punto del codice. Tipicamente mescola tra loro: 
+- livelli di astrazione diversi (alto livello e dettagli operativi); 
+- logica di business e dettagli tecnici o infrastrutturali; 
+- casi normali ed eccezioni gestiti nello stesso flusso lineare. 
+
+Effetti tipici di questo smell: 
+- è difficile capire “che cosa fa” davvero il metodo nel suo insieme; 
+- è difficile riusare o testare singole parti della logica; 
+- aumenta la probabilità di introdurre bug quando si modifica anche solo un passaggio. 
+
+Refactoring tipico e consigliato: **Extract Method**.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260415173426.png" width="200">
+</div>
+
+> [!example]
+> ![[Pasted image 20260415173549.png|200]]
+>- Validazione, regole, persistenza, audit e output nello stesso metodo.
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260415173748.png" style="width: 100%; border-radius: 8px;">
+  </div> 
+  <div style="flex: 1.5;">
+  <b>Long method (refactoring)</b>
+  <li>Refactoring applicato: <b>Extract method</b> </li>
+  <li>Ogni step ha nome esplicito e responsabilità unica</li> 
+  <li>Il metodo principale torna leggibile a livello di processo</li>
+  </div>
+</div>
+
+**Feature Envy:** Un Feature Envy si verifica quando un metodo utilizza più dati e comportamenti di un’altra classe che non quelli della classe in cui è definito. Indicazione progettuale tipica: 
+- la responsabilità è probabilmente posizionata nel posto sbagliato; 
+- il modello concettuale risulta sbilanciato o mal distribuito. 
+
+Sintomi comuni di questo smell: 
+- catene di accessi del tipo `a.getB().getC().getX()`, che rivelano una conoscenza eccessiva della struttura interna altrui; 
+- un metodo che “conosce troppo” lo stato e i dettagli di un altro oggetto. 
+
+Refactoring tipici: **Move Method** oppure **Extract Class**. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260415174018.png" width="200">
+</div>
+
+> [!example]
+> ![[Pasted image 20260415174120.png|200]]
+> - Il metodo usa quasi solo dati interni di ExamSession, Course, Room, Teacher. 
+> - La responsabilità di formattazione è nel posto sbagliato.  
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260415174223.png" style="width: 100%; border-radius: 8px;">
+  </div>  
+  <div style="flex: 1.5;">
+  <b>Long method (refactoring)</b>
+  <li>Refactoring applicato: <b>Move method</b> </li>
+  <li>Il comportamento torna vicino ai dati che usa davvero</li> 
+  </div>
+</div>
+
+**Data Clumps:** I Data Clumps sono gruppi di variabili che compaiono sempre insieme e vengono passati in giro come un unico “pacchetto”, anche se nel codice restano separati. Situazioni tipiche: 
+- gli stessi parametri ripetuti in molti metodi e costruttori; 
+- le stesse variabili che “viaggiano insieme” tra classi e servizi. 
+
+Questo smell spesso indica che nel modello manca un concetto: un’entità o, più spesso, un Value Object che rappresenti quel gruppo in modo esplicito. Il refactoring tipico è quello di introdurre un **Value Object** (es. StudentId, ExamInfo, ExamDescriptor,…). 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260415174407.png" width="200">
+</div>
+
+> [!example]
+> ![[Pasted image 20260415174452.png|200]]
+> - Lo stesso blocco di parametri si ripete in più metodi. 
+> - Manca un concetto esplicito nel modello.  
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260415174703.png" style="width: 100%; border-radius: 8px;">
+  </div>  
+  <div style="flex: 1.5;">
+  <b>Data clumps (refactoring)</b>
+  <li>Refactoring applicato: <b>Introduce value object</b> </li>
+  <li>Firma più corta, semantica più chiara, validazioni centralizzabili</li> 
+  <li>In questo esempio introduciamo anche StudentDescriptor per accorpare i dati studente che viaggiano insieme</li>
+  </div>
+</div>
+
+**God Object:** Un God Object è una classe “onnipotente” che finisce per diventare il centro operativo del sistema e concentra decisioni che dovrebbero essere distribuite. In pratica è una classe che: 
+- coordina tutto (orchestrazione di molte parti), 
+- decide tutto (regole e policy sparse), 
+- sa tutto (conoscenza di dettagli interni di molti moduli). 
+
+Tipicamente produce effetti molto negativi: 
+- accoppia tra loro parti del sistema che dovrebbero restare separate; 
+- diventa un collo di bottiglia cognitivo: per capire il sistema bisogna passare da lì; 
+- impedisce modularità e testabilità, perché è difficile isolarla e simulare dipendenze. 
+
+È spesso la forma estrema di Large Class + responsabilità non distribuite (tutto viene “assorbito” in un punto). 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260415174855.png" width="200">
+</div> 
+
+> [!example]
+> ![[Pasted image 20260415174953.png|200]]
+> - Una sola classe concentra dominio, I/O, reportistica e presentazione. 
+> - Ogni modulo finisce per dipendere da questo punto centrale.  
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260415175116.png" style="width: 100%; border-radius: 8px;">
+  </div>   
+  <div style="flex: 1.5;">
+  <b>God object (refactoring)</b>
+  <li>I ruoli sono separati in servizi distinti</li>
+  <li>Il caso d'uso non passa più da una classe onnicomprensiva</li> 
+  </div>
+</div>
+
+**Duplicated Code:** Il Duplicated Code compare quando la stessa logica è copiata in più punti. Effetti tipici: 
+- ogni correzione va ripetuta in più file/metodi; 
+- alto rischio di inconsistenza tra copie quasi uguali. 
+
+Indizio operativo: “copia e incolla” usato per introdurre varianti minime. Refactoring tipici: **Extract Method, Extract Class, Template Method**.  
+
+> [!example]
+> ![[Pasted image 20260415175258.png|200]]
+> - Le prime tre regole sono duplicate. 
+> - La variante reale è solo l’ultima condizione.  
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260415175424.png" style="width: 100%; border-radius: 8px;">
+  </div>   
+  <div style="flex: 1.5;">
+  <b>Duplicated code (refactoring)</b>
+  <li>Regole comuni in un punto solo</li>
+  <li>Le variabili restano piccole e controllabili</li> 
+  </div>
+</div>
+
+**Primitive Obsession:** Riguarda l'uso eccessivo di tipi primitivi (String, int, double) al posto di concetti di dominio. Effetti tipici: 
+- validazioni sparse e duplicate; 
+- parametri poco autoesplicativi; 
+- errori di scambio tra campi semanticamente diversi. 
+
+Refactoring tipici: **Replace Data Value with Object, Introduce Value Object**.  
+
+> [!example]
+> ![[Pasted image 20260415175614.png|200]]
+> - I parametri sono primitivi, ma rappresentano concetti di dominio. 
+> - Le regole di validazione non sono incapsulate.  
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260415175734.png" style="width: 100%; border-radius: 8px;">
+  </div>   
+  <div style="flex: 1.5;"> 
+  <b>Primitive obsession (refactoring)</b>
+  <li>I vincoli diventano parte del modello</li>
+  <li>La firma del metodo è più espressiva e robusta</li> 
+  </div>
+</div>
+
+**Divergent Change:** Divergent Change si ha quando una singola classe viene modificata per motivi diversi e non correlati. Il segnale tipico è che ogni nuova richiesta (report, validazione, persistenza, UI) tocca sempre la stessa classe. L'effetto è quello di forte instabilità locale e regressioni frequenti. Il refactoring tipico: separare responsabilità per asse di cambiamento.  
+
+> [!example]
+> ![[Pasted image 20260415175911.png|200]]
+> - Quattro motivi di cambiamento nella stessa classe
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260415180102.png" style="width: 100%; border-radius: 8px;">
+  </div>   
+  <div style="flex: 1.5;"> 
+  <b>Divergent change (refactoring)</b>
+  <li>Ogni classe di cambiamento ha una classe dedicata</li>
+  <li>Le modifiche eterogenee non ricadono più nello stesso file</li> 
+  </div>
+</div>
+
+**Shotgun Surgery:** Shotgun Surgery è il caso opposto del Divergent Change: una modifica concettualmente unica richiede tanti cambi minori in classi diverse. Segnali tipici: 
+- pull request con molti file toccati per una feature piccola; 
+- rischio elevato di dimenticare un punto. 
+
+Refactoring tipico: accorpare comportamento correlato e chiarire i confini.  
+
+> [!example]
+>  - Nuova regola: “uno studente non può iscriversi a due appelli nello stesso slot orario”. 
+>  - Implementazione dispersa:
+>  
+> ![[Pasted image 20260415180214.png|200]]
+> - Una sola regola di dominio impatta troppi punti diversi.
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260415180453.png" style="width: 100%; border-radius: 8px;">
+  </div>   
+  <div style="flex: 1.5;"> 
+  <b>Shotgun surgery (refactoring)</b>
+  <li>La regola è centralizzata in una policy unica</li>
+  <li>I moduli delegano: una modifica tocca pochi punti</li> 
+  </div>
+</div>
+
+> [!info] Riepilogo:
+> - La qualità interna del design incide direttamente sulla capacità di mantenere, testare ed evolvere il software nel tempo. 
+> - Coesione e accoppiamento sono criteri pratici per leggere la “salute” del codice oltre il solo comportamento corretto. 
+> - I code smells non sono prove definitive di errore, ma segnali utili per individuare zone a rischio del design. 
+> - Riconoscere presto gli smells aiuta a intervenire con refactoring prima che il degrado diventi architetturale. 
+> - I miglioramenti di design spesso non cambiano il comportamento esterno, ma riducono fragilità e costo delle modifiche future. 
+> - Gli esempi su UniManager mostrano come collegare osservazione degli smells e refactoring concreto.
 
