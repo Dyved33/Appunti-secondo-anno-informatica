@@ -3144,12 +3144,278 @@ Refactoring tipico: accorpare comportamento correlato e chiarire i confini.
 > - Riconoscere presto gli smells aiuta a intervenire con refactoring prima che il degrado diventi architetturale. 
 > - I miglioramenti di design spesso non cambiano il comportamento esterno, ma riducono fragilità e costo delle modifiche future. 
 > - Gli esempi su UniManager mostrano come collegare osservazione degli smells e refactoring concreto.
-
 ###### Documentazione essenziale
-Documentazione: non “archivio”, ma attrito • La documentazione viene talvolta trattata come attività accessoria. • In realtà è uno strumento di ingegneria: • riduce incomprensioni; • accelera onboarding e passaggi di consegne; • rende il progetto manutenibile e accogliente. • Obiettivo pratico: meno attrito tra persone e codice ⇒ più qualità e meno errori. Persone nuovi membri, reviewer, chi riaprirà il progetto in futuro Codice dominio, servizi, infrastruttura Documentazione essenziale README + design doc + decision log + Javadoc obiettivo: rendere le scelte leggibili e ripetibili Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 3 / 34 A chi serve davvero la documentazione • A chi ha già lavorato sul progetto, quando: • lo riapre dopo settimane o mesi; • deve intervenire rapidamente su un bug o una modifica senza ricordare tutti i vincoli progettuali. • A chi entra successivamente nel progetto: • un onboarding più rapido riduce domande ricorrenti, incomprensioni e interventi correttivi. • A chi valuta, estende o integra il progetto: • consente di comprendere scelte architetturali e trade-off senza dover analizzare l’intero codice sorgente. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 4 / 34 Il set minimo: documentazione essenziale • Non è necessario “documentare tutto” né descrivere ogni dettaglio del sistema. • È invece fondamentale mantenere un insieme ridotto ma significativo di documenti sempre coerenti con il codice: • README: punto di ingresso al progetto, guida all’onboarding e all’avvio rapido per chi lo utilizza o lo esplora per la prima volta. • Design document: descrizione delle principali scelte architetturali, dei vincoli e delle motivazioni che le hanno guidate. • Decision log: tracciamento delle decisioni tecniche rilevanti, utile per comprendere perché è stata scelta una soluzione rispetto ad altre. • Documentazione API mirata (Javadoc, docstring, godoc, . . . ): descrive i contratti delle API pubbliche e i comportamenti rilevanti per l’uso corretto del codice. • Regola pratica di riferimento: • poco, chiaro e aggiornato → più utile di una documentazione ampia ma obsoleta. • Terminologia: ADR (Architecture Decision Record) indica una nota breve che registra una singola decisione architetturale. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 5 / 34 Documentazione come codice (docs-as-code) • La documentazione essenziale non vive “fuori” dal progetto: • sta nel repository, versionata insieme al codice. • Scelta pratica: • Markdown (.md) per documenti operativi brevi (README, ADR, note tecniche); • LaTeX per documenti più strutturati e versionati (relazioni, report tecnici, slide, documenti di progetto). • Conseguenza positiva: • quando il codice cambia, la documentazione “si vede” che va aggiornata (stesso commit, stessa responsabilità). • Anti-pattern ricorrente: • documento Word / Drive separato ⇒ divergenza rapida ⇒ perdita di fiducia. • Effetto pratico: • la documentazione si aggiorna insieme al codice e resta allineata nel tempo. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 6 / 34 README: il primo documento che si legge • Rappresenta la porta di ingresso al repository ed è spesso il primo punto di contatto con il progetto. • Non è un biglietto da visita “estetico”, ma un documento operativo orientato all’uso. • È uno strumento di onboarding tecnico: • consente di ottenere rapidamente un primo risultato funzionante e verificabile. • Un README ben scritto contribuisce a ridurre: • tempo perso nella fase di setup e configurazione; • errori di esecuzione dovuti a istruzioni incomplete; • domande ripetitive e interventi di supporto non necessari. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 7 / 34 Le 4 domande a cui deve rispondere • Che cos’è il progetto? • fornisce il contesto generale e l’ambito applicativo; • permette di capire subito se il progetto è rilevante per chi lo sta esplorando. • Cosa fa il progetto? • descrive le funzionalità principali in modo sintetico; • evita descrizioni prolisse: poche righe sono più efficaci di una spiegazione lunga e dispersiva. • Come si esegue? • spiega come ottenere un’installazione funzionante; • include un quickstart riproducibile, verificabile passo dopo passo. • Come si contribuisce? • chiarisce regole minime di collaborazione; • riduce errori dovuti a stili incoerenti o test mancanti. Che cos’è? Cosa fa? Come si esegue? Come si contribuisce? se anche una sola risposta manca o è ambigua, l’onboarding rallenta sensibilmente Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 8 / 34 Struttura consigliata (template mentale) • Overview • introduce il progetto in un paragrafo chiaro; • evidenzia obiettivi e funzionalità principali. • Quickstart • fornisce comandi reali e immediatamente eseguibili; • porta rapidamente a un primo risultato funzionante. • Usage • mostra 1–2 esempi rappresentativi di utilizzo; • chiarisce il comportamento senza aprire il codice. • Configurazione • documenta variabili, file e dipendenze rilevanti; • chiarisce cosa è personalizzabile e come. • Test • spiega come eseguire la suite di test; • rende verificabile il corretto funzionamento. • Contributing • definisce regole minime per contribuire in modo coerente; • riduce attriti su branch, review e stile del codice. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 9 / 34 README anti-pattern (cose che lo rovinano) • Wall of text: assenza di sezioni chiare e di un quickstart immediato, che rende difficile individuare le informazioni essenziali. • Istruzioni vaghe: indicazioni generiche come “installare le dipendenze” senza specificare strumenti, versioni o comandi concreti. • Comandi non verificati o incompleti: esempi che non funzionano o che producono errori non documentati. • Duplicazioni e incoerenze: stesse informazioni ripetute in più punti del README con contenuti non allineati tra loro. • README usato come contenitore indistinto: accumulo di informazioni eterogenee che lo rende lungo, confuso e poco leggibile. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 10 / 34 README leggibile: Markdown essenziale • Il README è quasi sempre scritto in Markdown: • non serve conoscerlo tutto, basta un sottoinsieme essenziale. • Elementi fondamentali per la leggibilità: • # Titolo principale: identifica chiaramente il progetto. • ## Sezioni: struttura logica (Quickstart, Usage, Contributing). • ### Sottosezioni: dettagli senza appesantire. • Enfasi testuale: • **grassetto** per concetti chiave e parole guida; • *corsivo* per chiarimenti o termini secondari; • ‘codice‘ per comandi, file, classi, opzioni CLI. • Regola pratica: • se una sezione è lunga più di una schermata, probabilmente va spezzata con un titolo ##. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 11 / 34 UniManager: README (estratto esemplificativo) 1 # UniManager 2 3 **UniManager** is a *small teaching project* used to discuss 4 software design, architecture boundaries, and documentation practices. 5 6 ## Overview 7 - Manage courses, exam sessions, enrollments, and grades. 8 - Keep ‘domain/‘ independent from CLI and persistence. 9 - Provide a simple baseline for discussing architecture in class. 10 11 ### Main goals 12 1. clear architecture boundaries 13 2. testability-first 14 3. evolvability over time 15 16 ## Quickstart 17 Requirements: JDK 17+, Maven 3.8+ 18 19 $ git clone https://github.com//unimanager.git 20 $ cd unimanager 21 $ mvn test 22 $ mvn exec:java -Dexec.mainClass="unimanager.cli.Main" 23 24 ### Project structure 25 - ‘src/main/java/unimanager/domain‘ 26 - ‘src/main/java/unimanager/application‘ 27 - ‘src/main/java/unimanager/interfaces‘ 1 2 ## Usage (CLI) 3 ### Record an exam grade 4 $ unimanager exam record \ 5 --student s 123 \ 6 --course INF 101 \ 7 --date 2025-10-10 \ 8 --room A 1 \ 9 --grade 28 10 11 ### Help 12 $ unimanager --help 13 14 ## Docs 15 - [Design doc](docs/design/unimanager-architecture.md) 16 - [ADR index](docs/decisions/README.md) 17 - [API notes](docs/api/README.md) 18 19 ## Contributing 20 - Run ‘mvn test‘ before pushing. 21 - Keep ‘domain/‘ independent from CLI and persistence. 22 - Add/update ADR for non-trivial decisions. 23 - Update README if setup or commands change. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 12 / 34 Regola pratica per il README • Se una persona che entra nel progetto non riesce a: • clonare il repository; • eseguire il progetto senza ambiguità; • ottenere un output minimo e verificabile; • allora il README non sta svolgendo correttamente la funzione di onboarding. • Obiettivo concreto del README: • ridurre al minimo il time-to-first-success, ovvero il tempo necessario per arrivare a un primo risultato funzionante. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 13 / 34 Design document: cos’è (e cosa non è) • Documento breve (indicativamente 1–3 pagine) che descrive: • le principali scelte architetturali del sistema; • le alternative progettuali considerate durante la progettazione; • i vincoli e i trade-off che hanno guidato le decisioni. • Non è una descrizione esaustiva di ogni classe, metodo o dettaglio implementativo. • Valore principale del design document: • preservare il ragionamento progettuale alla base delle scelte, rendendolo comprensibile anche a chi arriverà sul progetto in un secondo momento. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 14 / 34 Quando serve davvero un design doc • Un design document è particolarmente utile quando una scelta progettuale è: • difficile o costosa da modificare in seguito; • rilevante per più moduli o parti del sistema; • soggetta a discussioni ricorrenti nel tempo. • Esempi tipici di decisioni da documentare: • organizzazione dei layer e definizione dei boundary; • strategie di persistenza (in-memory vs database); • formati di input e output e loro stabilità nel tempo; • policy di gestione degli errori ed eccezioni. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 15 / 34 Struttura di un design doc leggero • Contesto e obiettivi: descrivono il problema da risolvere e i risultati che il progetto intende ottenere. • Non-obiettivi: chiariscono esplicitamente cosa il design document non intende affrontare o risolvere. • Proposta: presenta la soluzione architetturale adottata, idealmente supportata da una singola figura riassuntiva. • Alternative considerate: elencano le opzioni valutate e i motivi per cui non sono state scelte. • Conseguenze: analizzano vantaggi, svantaggi e rischi introdotti dalla soluzione proposta. • Piano di adozione: descrive come e quando la soluzione viene introdotta, se è prevista una migrazione o un’evoluzione graduale. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 16 / 34 Esempio design doc (1/3): contesto e vincoli • Estratto sintetico di un design document applicato a UniManager. • Contesto: progetto didattico utilizzato per discutere aspetti di design, organizzazione dei servizi applicativi e definizione dei boundary architetturali. • Obiettivo principale: mantenere il dominio applicativo indipendente sia dall’interfaccia utente (CLI) sia dai meccanismi di persistenza. • Vincoli progettuali: • semplicità: struttura leggibile e comprensibile dagli studenti; • testabilità: utilizzo di repository in-memory per facilitare i test automatici; • estendibilità: supporto a interfacce diverse nel tempo (CLI iniziale, GUI o API in una fase successiva). Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 17 / 34 Esempio design doc (2/3): proposta architetturale • Separazione a livello di responsabilità: • Domain: entità e regole del dominio. • Application: servizi (use case) e orchestrazione. • Infrastructure/Interfaces: repository concreti, CLI/UI. • Principio: dipendenze verso l’interno (dominio stabile). Interfaces / Infrastructure CLI, UI, repository impl, IO Application servizi, use case, orchestrazione Domain entità, value object, regole il dominio non deve conoscere CLI e persistenza Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 18 / 34 UML minimale: pochi elementi, ben scelti • Un diagramma UML inserito in un design document deve essere: • minimale, con un numero limitato di elementi (circa 6–10); • leggibile a colpo d’occhio, senza sovraccaricare la vista; • focalizzato su relazioni, responsabilità e dipendenze principali. • Non è necessario rappresentare: • ogni campo, getter o dettaglio implementativo; • aspetti che non contribuiscono a chiarire la struttura complessiva. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 19 / 34 Esempio design doc (3/3): UML minimale • Rappresentazione essenziale per chiarire: • boundary tra Domain, Application e Interfaces/Infrastructure; • dipendenze consentite (verso l’interno). ≪uses≫ ≪uses≫ ≪uses≫ Domain Student Course ExamSession Application ExamService StudentService Interfaces CLI (UI/API) Infrastructure InMemoryRepo DbRepo Il dominio non dipende da CLI o persistenza; le dipendenze puntano verso l’interno. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 20 / 34 Decision log: una memoria storica del progetto • Il codice descrive che cosa è stato realizzato e come il sistema funziona oggi. • Spesso però non esplicita perché sono state prese certe decisioni: • quali alternative erano disponibili al momento della scelta? • quali vincoli (tecnici o organizzativi) hanno guidato la decisione? • quali conseguenze e compromessi vengono accettati nel tempo? • Il decision log affronta il problema con note brevi, tracciabili e cronologiche, utili per ricostruire il contesto anche a distanza di mesi. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 21 / 34 Formato semplice (stile ADR) • Ogni decisione viene registrata in un file autonomo, che include: • ID e data (per riferimenti e ordine cronologico); • decisione presa, formulata in modo chiaro; • contesto che ha portato alla scelta; • alternative considerate e scartate; • conseguenze accettate (pro e contro). • Un buon ADR dovrebbe essere: • compatto (mezza pagina o una pagina al massimo); • facilmente linkabile da task e revisioni tecniche; • semplice da aggiornare se la decisione evolve. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 22 / 34 Esempio ADR — UniManager #001 (estratto) 1 ADR-001 (2025-10-01) 2 Title: Repository interfaces + InMemory implementation 3 4 Decision 5 Define StudentRepository and ExamRepository as interfaces. 6 Provide an InMemory*Repository implementation for the course. 7 8 Context 9 The system requires testability and a clear separation between 10 domain/application logic and infrastructure concerns. 11 12 Alternatives 13 A) Use a database immediately (e.g., JDBC / ORM). 14 B) Use file-based persistence (CSV / JSON). 15 C) Keep everything in memory. 16 17 Consequences 18 Fast tests, simple setup, clean architectural boundaries. 19 Not persistent across runs. 20 Future work: introduce a database adapter. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 23 / 34 Ogni informazione al posto giusto • Regola pratica: mettere l’informazione dove serve a chi la userà. • Gerarchia (dal più “vicino al codice” al più “panoramico”): • Javadoc accanto a classi e metodi: descrive contratti e comportamento osservabile delle API. • README alla radice del repository: è il punto di ingresso (quickstart, usage, contributing). • Design doc in /docs/design/: chiarisce architettura, vincoli e trade-off. • Decision log (ADR) in /docs/decisions/ADR-001.md, ADR-002.md, . . . : conserva la memoria storica delle decisioni non banali. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 24 / 34 Documentazione del codice: Javadoc mirata • Documentare il codice non significa commentare ogni riga né spiegare ciò che è già evidente dalla lettura. • Una Javadoc realmente utile si concentra su: • uso: come e quando chiamare l’API correttamente; • contratto: che cosa il metodo o la classe garantisce; • effetti: side effects rilevanti e interazioni con la persistenza; • casi di errore: condizioni anomale ed eccezioni significative. • Obiettivo pratico: • comprendere il comportamento dell’API senza dover aprire o analizzare l’implementazione. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 25 / 34 Cosa documentare davvero (priorità) • API pubbliche e stabili: punti di accesso pensati per essere usati da altri moduli o da codice esterno. • Classi con responsabilità non banale: componenti che incarnano regole di dominio, coordinano più oggetti o svolgono ruoli centrali nel sistema. • Metodi che presentano almeno una delle seguenti caratteristiche: • effetti collaterali importanti (persistenza, I/O, modifiche di stato); • invarianti o precondizioni che devono essere rispettate; • eccezioni significative che il chiamante deve gestire; • regole di business non ovvie o non immediatamente deducibili dal nome.
+La documentazione viene talvolta trattata come attività accessoria. In realtà è uno strumento di ingegneria: 
+- riduce incomprensioni; 
+- accelera onboarding e passaggi di consegne; 
+- rende il progetto manutenibile e accogliente. 
 
-Cosa evitare (commenti che invecchiano) • Commenti che ripetono il codice senza aggiungere informazione: • ad esempio spiegazioni ovvie come “incrementa i” sopra i++. • Commenti di tipo procedurale, che descrivono ogni singolo passo: • diventano rapidamente falsi o fuorvianti non appena l’implementazione cambia. • La “bugia della documentazione”: • un commento non aggiornato è un bug informativo: induce chi legge a fare scelte sbagliate o a perdere tempo. • per questo la Javadoc deve privilegiare i contratti (più stabili), non i dettagli interni (più volatili). • Javadoc eccessivamente lunga o verbosa: • se entra nei dettagli interni del codice, smette di descrivere un contratto. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 27 / 34 Esempio: Javadoc su ExamService (mirata all’uso) 1 package unimanager.service; 2 3 import unimanager.domain.ExamDescriptor; 4 5 /** 6 * Application service for exam registration and grade recording. 7 *
+Obiettivo pratico: meno attrito tra persone e codice ⇒ più qualità e meno errori. 
 
-8 * This service implements a single use case: ensure a student exists, 9 * register them to an exam session, and optionally record a passing grade. 10 *
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260416171322.png" width="200">
+</div>
 
-11 */ 12 public class ExamService { 13 14 // repositories injected (interfaces) 15 16 /** 17 * Registers a student to the exam described by {@code exam} and records 18 * the grade if it is passing. 19 * 20 * @param studentId unique student identifier (non-null, non-empty) 21 * @param studentName student name (required if the student does not exist yet) 22 * @param exam exam descriptor (non-null) 23 * @param grade grade to record; passing threshold is 18 24 * @return a human-readable outcome message for the caller (CLI/UI) 25 * @throws IllegalArgumentException if input parameters are invalid 26 */ 27 public String registerAndRecord(String studentId, String studentName, ExamDescriptor exam, int grade) { 28 29 // implementation 30 return "OK"; 31 } 32 } Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 28 / 34 Nota importante: “ritorna un esito”, non stampa • La documentazione dell’API deve rendere esplicito che il servizio: • ritorna un esito (valore o risultato strutturato), • non si occupa della presentazione dell’output. • La Javadoc dovrebbe chiarire: • che cosa viene restituito e con quale significato; • perché la formattazione e la stampa sono responsabilità della CLI/UI. • Benefici progettuali: • separazione chiara tra logica applicativa e interfaccia; • maggiore testabilità (nessun output nel mezzo del caso d’uso); • riuso della stessa logica in contesti diversi: CLI oggi, GUI o API domani. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 29 / 34 Come si integra nel ciclo di vita del progetto • README: viene aggiornato quando cambiano il setup, i comandi di esecuzione o le modalità di utilizzo. • Design document: viene aggiornato quando cambiano i boundary, l’architettura complessiva o i vincoli principali. • Decision log: viene aggiornato ogni volta che viene presa una decisione non banale e difficilmente reversibile. • Javadoc: viene aggiornata quando cambia il contratto delle API pubbliche o il loro comportamento osservabile. • Tutti questi elementi: • non sono documentazione “aggiuntiva” o burocratica; • fanno parte integrante del processo di sviluppo del software. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 30 / 34 Definition of Done della documentazione • Una feature non è davvero completata se il codice cambia ma la documentazione resta indietro. • Regola operativa per ogni modifica rilevante: • se cambia setup/uso → aggiornare README; • se cambiano confini o scelte architetturali → aggiornare design doc; • se c’è una decisione non banale → aggiungere/aggiornare ADR; • se cambia il contratto API → aggiornare Javadoc. • DoD minima: codice, test e documentazione coerenti nello stesso merge. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 31 / 34 Ownership: chi mantiene cosa • README: ownership del team, revisione obbligatoria quando cambiano uso/setup. • Design doc: ownership dei responsabili architetturali del modulo. • ADR: ownership di chi propone la decisione, con review tecnica. • Javadoc: ownership di chi modifica API pubbliche e servizi applicativi. • Principio: ogni documento deve avere un proprietario esplicito, non “di nessuno”. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 32 / 34 Errori frequenti in fase di consegna • README con quickstart non riproducibile (comandi mancanti o versioni assenti). • Design doc descrittivo ma senza alternative e trade-off. • ADR che registra solo la decisione finale senza contesto. • Javadoc che copia l’implementazione invece di esplicitare il contratto. • Documenti aggiornati in momenti diversi: codice e testo divergono. Francesco Betti Sorbelli L-31 - Ingegneria del Software – a.a. 2025/2026 16 aprile 2026 33 / 34 Riepilogo • La documentazione essenziale riduce attrito operativo: aiuta onboarding, manutenzione e passaggi di consegne. • README, design document, decision log e Javadoc rispondono a bisogni diversi e complementari di comunicazione tecnica. • Il valore della documentazione dipende dalla sua utilità pratica e dall’allineamento con il codice, non dalla quantità di pagine. • README e quickstart supportano l’uso del progetto; design document e decision log spiegano perché il sistema è fatto così. • La Javadoc è più utile quando chiarisce contratto e comportamento osservabile delle API, non i dettagli interni. • Tenere la documentazione aggiornata è parte del lavoro di sviluppo e prepara meglio testing, CI e manutenzione.
+**A chi serve davvero la documentazione?** 
+1. A chi ha già lavorato sul progetto, quando: 
+	- lo riapre dopo settimane o mesi; 
+	- deve intervenire rapidamente su un bug o una modifica senza ricordare tutti i vincoli progettuali. 
+2. A chi entra successivamente nel progetto: 
+	- un onboarding più rapido riduce domande ricorrenti, incomprensioni e interventi correttivi. 
+3. A chi valuta, estende o integra il progetto: 
+	- consente di comprendere scelte architetturali e trade-off senza dover analizzare l’intero codice sorgente.  
+
+**Documentazione essenziale:** Non è necessario “documentare tutto” né descrivere ogni dettaglio del sistema. È invece fondamentale mantenere un insieme ridotto ma significativo di documenti sempre coerenti con il codice: 
+- *README:* punto di ingresso al progetto, guida all’onboarding e all’avvio rapido per chi lo utilizza o lo esplora per la prima volta. 
+- *Design document:* descrizione delle principali scelte architetturali, dei vincoli e delle motivazioni che le hanno guidate. 
+- *Decision log:* tracciamento delle decisioni tecniche rilevanti, utile per comprendere perché è stata scelta una soluzione rispetto ad altre. 
+- *Documentazione API mirata (Javadoc, docstring, godoc,…):* descrive i contratti delle API pubbliche e i comportamenti rilevanti per l’uso corretto del codice. 
+
+Regola pratica di riferimento: 
+- poco, chiaro e aggiornato → più utile di una documentazione ampia ma obsoleta. 
+- **Terminologia: ADR** (Architecture Decision Record) indica una nota breve che registra una singola decisione architetturale.  
+
+**Documentazione come codice (docs-as-code):** La documentazione essenziale non vive “fuori” dal progetto, ma sta nel repository, versionata insieme al codice. Una scelta pratica ricade su: 
+- Markdown (.md) per documenti operativi brevi (README, ADR, note tecniche); 
+- LaTeX per documenti più strutturati e versionati (relazioni, report tecnici, slide, documenti di progetto). 
+
+Quando il codice cambia, la documentazione “si vede” che va aggiornata (stesso commit, stessa responsabilità). Un anti-pattern ricorrente è: documento Word / Drive separato ⇒ divergenza rapida ⇒ perdita di fiducia. L'effetto pratico è che la documentazione si aggiorna insieme al codice e resta allineata nel tempo.  
+
+**README, il primo documento che si legge:** Rappresenta la porta di ingresso al repository ed è spesso il primo punto di contatto con il progetto. Si tratta di un documento operativo orientato all’uso (uno strumento di onboarding tecnico). Consente di ottenere rapidamente un primo risultato funzionante e verificabile. Un README ben scritto contribuisce a ridurre: 
+- tempo perso nella fase di setup e configurazione; 
+- errori di esecuzione dovuti a istruzioni incomplete; 
+- domande ripetitive e interventi di supporto non necessari.  
+
+**Le 4 domande a cui deve rispondere:** 
+1. *Che cos’è il progetto? *
+	- fornisce il contesto generale e l’ambito applicativo; 
+	- permette di capire subito se il progetto è rilevante per chi lo sta esplorando. 
+2. *Cosa fa il progetto? *
+	- descrive le funzionalità principali in modo sintetico; 
+	- evita descrizioni prolisse: poche righe sono più efficaci di una spiegazione lunga e dispersiva. 
+3. *Come si esegue?* 
+	- spiega come ottenere un’installazione funzionante; 
+	- include un quickstart riproducibile, verificabile passo dopo passo. 
+4. *Come si contribuisce? *
+	- chiarisce regole minime di collaborazione; 
+	- riduce errori dovuti a stili incoerenti o test mancanti. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260416173728.png" width="200">
+</div>
+
+**Struttura consigliata (template mentale):** 
+- *Overview:*
+	- introduce il progetto in un paragrafo chiaro; 
+	- evidenzia obiettivi e funzionalità principali. 
+- *Quickstart:*
+	- fornisce comandi reali e immediatamente eseguibili;
+	- porta rapidamente a un primo risultato funzionante. 
+- *Usage:*
+	- mostra 1–2 esempi rappresentativi di utilizzo; 
+	- chiarisce il comportamento senza aprire il codice. 
+- *Configurazione:*
+	- documenta variabili, file e dipendenze rilevanti; 
+	- chiarisce cosa è personalizzabile e come. 
+- *Test:* 
+	- spiega come eseguire la suite di test; 
+	- rende verificabile il corretto funzionamento. 
+- *Contributing:*
+	- definisce regole minime per contribuire in modo coerente; 
+	- riduce attriti su branch, review e stile del codice.  
+
+**README anti-pattern (cose che lo rovinano):** 
+- *Wall of text:* assenza di sezioni chiare e di un quickstart immediato, che rende difficile individuare le informazioni essenziali. 
+- *Istruzioni vaghe:* indicazioni generiche come “installare le dipendenze” senza specificare strumenti, versioni o comandi concreti. 
+- *Comandi non verificati o incompleti:* esempi che non funzionano o che producono errori non documentati. 
+- *Duplicazioni e incoerenze:* stesse informazioni ripetute in più punti del README con contenuti non allineati tra loro. 
+- *README usato come contenitore indistinto:* accumulo di informazioni eterogenee che lo rende lungo, confuso e poco leggibile.  
+
+**README leggibile, Markdown essenziale:** Il README è quasi sempre scritto in Markdown (non serve conoscerlo tutto, basta un sottoinsieme essenziale). Elementi fondamentali per la leggibilità sono: 
+- `# Titolo principale`: identifica chiaramente il progetto. 
+- `## Sezioni`: struttura logica (Quickstart, Usage, Contributing). 
+- `### Sottosezioni`: dettagli senza appesantire. 
+
+Enfasi testuale: 
+- `**grassetto**` per concetti chiave e parole guida; 
+- `*corsivo*` per chiarimenti o termini secondari; 
+- `‘codice‘` per comandi, file, classi, opzioni CLI. 
+
+Regola pratica: se una sezione è lunga più di una schermata, probabilmente va spezzata con un titolo `##.`  
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260416174312.png" width="200">
+</div>
+
+**Regola pratica per il README:** Se una persona che entra nel progetto non riesce a: 
+- clonare il repository; 
+- eseguire il progetto senza ambiguità; 
+- ottenere un output minimo e verificabile; 
+
+allora il README non sta svolgendo correttamente la funzione di onboarding. L'obiettivo concreto del README è di ridurre al minimo il time-to-first-success, ovvero il tempo necessario per arrivare a un primo risultato funzionante.  
+
+**Design document:** È un documento breve (indicativamente 1–3 pagine) che descrive: 
+- le principali scelte architetturali del sistema; 
+- le alternative progettuali considerate durante la progettazione; 
+- i vincoli e i trade-off che hanno guidato le decisioni. 
+
+Non è una descrizione esaustiva di ogni classe, metodo o dettaglio implementativo. Il valore principale del design document è di preservare il ragionamento progettuale alla base delle scelte, rendendolo comprensibile anche a chi arriverà sul progetto in un secondo momento.  
+
+**Quando serve davvero un design doc?** Un design document è particolarmente utile quando una scelta progettuale è: 
+- difficile o costosa da modificare in seguito; 
+- rilevante per più moduli o parti del sistema; 
+- soggetta a discussioni ricorrenti nel tempo. 
+
+Esempi tipici di decisioni da documentare: 
+- organizzazione dei layer e definizione dei boundary; 
+- strategie di persistenza (in-memory vs database); 
+- formati di input e output e loro stabilità nel tempo; 
+- policy di gestione degli errori ed eccezioni.  
+
+**Struttura di un design doc leggero:** 
+- *Contesto e obiettivi:* descrivono il problema da risolvere e i risultati che il progetto intende ottenere. 
+- *Non-obiettivi:* chiariscono esplicitamente cosa il design document non intende affrontare o risolvere. 
+- *Proposta:* presenta la soluzione architetturale adottata, idealmente supportata da una singola figura riassuntiva. 
+- *Alternative considerate:* elencano le opzioni valutate e i motivi per cui non sono state scelte. •
+- *Conseguenze:* analizzano vantaggi, svantaggi e rischi introdotti dalla soluzione proposta. 
+- *Piano di adozione:* descrive come e quando la soluzione viene introdotta, se è prevista una migrazione o un’evoluzione graduale.  
+
+> [!example] Esempio design doc: 
+> Estratto sintetico di un design document applicato a UniManager. 
+> - *Contesto:* progetto didattico utilizzato per discutere aspetti di design, organizzazione dei servizi applicativi e definizione dei boundary architetturali. 
+> - *Obiettivo principale:* mantenere il dominio applicativo indipendente sia dall’interfaccia utente (CLI) sia dai meccanismi di persistenza. 
+> - *Vincoli progettuali:* 
+> 	- **semplicità:** struttura leggibile e comprensibile dagli studenti; 
+> 	- **testabilità:** utilizzo di repository in-memory per facilitare i test automatici; 
+> 	- **estendibilità:** supporto a interfacce diverse nel tempo (CLI iniziale, GUI o API in una fase successiva). 
+> 	
+> Proposta architetturale: separazione a livello di responsabilità: 
+>    - **Domain:** entità e regole del dominio. 
+>    - **Application:** servizi (use case) e orchestrazione. 
+>    - **Infrastructure/Interfaces:** repository concreti, CLI/UI.
+>    
+> Principio: dipendenze verso l’interno (dominio stabile).    
+> ![[Pasted image 20260416175022.png|200]]
+ 
+**UML minimale:** Un diagramma UML inserito in un design document deve essere: 
+- minimale, con un numero limitato di elementi (circa 6–10); 
+- leggibile a colpo d’occhio, senza sovraccaricare la vista; 
+- focalizzato su relazioni, responsabilità e dipendenze principali. 
+
+Non è necessario rappresentare: 
+- ogni campo, getter o dettaglio implementativo; 
+- aspetti che non contribuiscono a chiarire la struttura complessiva.  
+
+> [!example] Conmtinuo dell'esempio precedente con UML minimale:
+> Rappresentazione essenziale per chiarire: 
+> - boundary tra Domain, Application e Interfaces/Infrastructure; 
+> - dipendenze consentite (verso l’interno). 
+> 
+> ![[Pasted image 20260416181229.png|200]]
+
+**Decision log:** Il codice descrive che cosa è stato realizzato e come il sistema funziona oggi. Spesso però non esplicita perché sono state prese certe decisioni: 
+- quali alternative erano disponibili al momento della scelta? 
+- quali vincoli (tecnici o organizzativi) hanno guidato la decisione? 
+- quali conseguenze e compromessi vengono accettati nel tempo? 
+
+Il decision log affronta il problema con note brevi, tracciabili e cronologiche, utili per ricostruire il contesto anche a distanza di mesi.  
+
+**Formato semplice (stile ADR):** Ogni decisione viene registrata in un file autonomo, che include: 
+- **ID e data** (per riferimenti e ordine cronologico); 
+- *decisione* presa, formulata in modo chiaro; 
+- *contesto* che ha portato alla scelta; 
+- **alternative considerate** e scartate; 
+- **conseguenze** accettate (pro e contro). 
+
+Un buon ADR dovrebbe essere: 
+- **compatto** (mezza pagina o una pagina al massimo); 
+- facilmente **linkabile** da task e revisioni tecniche; 
+- semplice da **aggiornare** se la decisione evolve.  
+
+> [!example] Esempio ADR:
+> ![[Screenshot From 2026-04-16 18-15-00.png|200]]
+
+**Regola pratica:** mettere l’informazione dove serve a chi la userà. Per questo è bene usare una gerarchia (dal più “vicino al codice” al più “panoramico”): 
+- **Javadoc** accanto a classi e metodi: descrive contratti e comportamento osservabile delle API. 
+- **README** alla radice del repository: è il punto di ingresso (quickstart, usage, contributing). 
+- **Design doc** in /docs/design/: chiarisce architettura, vincoli e trade-off. 
+- **Decision log (ADR)** in /docs/decisions/ADR-001.md, ADR-002.md,…: conserva la memoria storica delle decisioni non banali.  
+
+**Documentazione del codice, Javadoc mirata:** Documentare il codice non significa commentare ogni riga né spiegare ciò che è già evidente dalla lettura. Una Javadoc realmente utile si concentra su: 
+- **uso:** come e quando chiamare l’API correttamente; 
+- **contratto:** che cosa il metodo o la classe garantisce; 
+- **effetti:** side effects rilevanti e interazioni con la persistenza; 
+- **casi di errore:** condizioni anomale ed eccezioni significative. 
+
+L'obiettivo pratico è quello di comprendere il comportamento dell’API senza dover aprire o analizzare l’implementazione.  
+
+**Priorità nella documentazione:** 
+1. **API pubbliche e stabili:** punti di accesso pensati per essere usati da altri moduli o da codice esterno.  
+2. **Classi con responsabilità non banale:** componenti che incarnano regole di dominio, coordinano più oggetti o svolgono ruoli centrali nel sistema. 
+3. **Metodi che presentano almeno una delle seguenti caratteristiche:** 
+	- effetti collaterali importanti (persistenza, I/O, modifiche di stato); 
+	- invarianti o precondizioni che devono essere rispettate; 
+	- eccezioni significative che il chiamante deve gestire; 
+	- regole di business non ovvie o non immediatamente deducibili dal nome.
+
+**Cosa evitare:** 
+- Commenti che ripetono il codice senza aggiungere informazione, ad esempio spiegazioni ovvie come “incrementa i” sopra i++. 
+- Commenti di tipo procedurale, che descrivono ogni singolo passo quindi che diventano rapidamente falsi o fuorvianti non appena l’implementazione cambia. 
+- La “bugia della documentazione”, un commento non aggiornato è un bug informativo e per questo induce chi legge a fare scelte sbagliate o a perdere tempo. La Javadoc deve quindi privilegiare i contratti (più stabili), non i dettagli interni (più volatili). 
+- Javadoc eccessivamente lunga o verbosa. Se entra nei dettagli interni del codice, smette di descrivere un contratto.  
+
+> [!example] Javadoc su ExamService (mirata all’uso) 
+> ![[Pasted image 20260416182151.png|200]] 
+
+La documentazione dell’API deve rendere esplicito che il servizio: 
+- ritorna un esito (valore o risultato strutturato), 
+- non si occupa della presentazione dell’output. 
+
+La Javadoc dovrebbe chiarire: 
+- che cosa viene restituito e con quale significato; 
+- perché la formattazione e la stampa sono responsabilità della CLI/UI. 
+
+Benefici progettuali: 
+- separazione chiara tra logica applicativa e interfaccia; 
+- maggiore testabilità (nessun output nel mezzo del caso d’uso); 
+- riuso della stessa logica in contesti diversi: CLI oggi, GUI o API domani.  
+
+**Come si integra nel ciclo di vita del progetto:** 
+- **README:** viene aggiornato quando cambiano il setup, i comandi di esecuzione o le modalità di utilizzo. 
+- **Design document:** viene aggiornato quando cambiano i boundary, l’architettura complessiva o i vincoli principali. 
+- **Decision log:** viene aggiornato ogni volta che viene presa una decisione non banale e difficilmente reversibile. 
+- **Javadoc:** viene aggiornata quando cambia il contratto delle API pubbliche o il loro comportamento osservabile. 
+
+Tutti questi elementi non sono documentazione “aggiuntiva” o burocratica, ma fanno parte integrante del processo di sviluppo del software.  
+
+**Definition of Done della documentazione:** Una feature non è davvero completata se il codice cambia ma la documentazione resta indietro. Regola operativa per ogni modifica rilevante: 
+- se cambia setup/uso → aggiornare **README**; 
+- se cambiano confini o scelte architetturali → aggiornare **design doc**; 
+- se c’è una decisione non banale → aggiungere/aggiornare **ADR**; 
+- se cambia il contratto API → aggiornare **Javadoc**. 
+
+DoD minima: codice, test e documentazione coerenti nello stesso merge.  
+
+**Ownership, chi mantiene cosa:** 
+- **README:** ownership del team, revisione obbligatoria quando cambiano uso/setup. 
+- **Design doc:** ownership dei responsabili architetturali del modulo. 
+- *ADR:* ownership di chi propone la decisione, con review tecnica. 
+- **Javadoc:** ownership di chi modifica API pubbliche e servizi applicativi. 
+
+Principio: ogni documento deve avere un proprietario esplicito, non “di nessuno”.  
+
+**Errori frequenti in fase di consegna:** 
+- README con quickstart non riproducibile (comandi mancanti o versioni assenti). 
+- Design doc descrittivo ma senza alternative e trade-off. 
+- ADR che registra solo la decisione finale senza contesto. 
+- Javadoc che copia l’implementazione invece di esplicitare il contratto. 
+- Documenti aggiornati in momenti diversi: codice e testo divergono.  
+
+> [!info] Riepilogo:
+> - La documentazione essenziale riduce attrito operativo: aiuta onboarding, manutenzione e passaggi di consegne. 
+> - README, design document, decision log e Javadoc rispondono a bisogni diversi e complementari di comunicazione tecnica. 
+> - Il valore della documentazione dipende dalla sua utilità pratica e dall’allineamento con il codice, non dalla quantità di pagine. 
+> - README e quickstart supportano l’uso del progetto; design document e decision log spiegano perché il sistema è fatto così. 
+> - La Javadoc è più utile quando chiarisce contratto e comportamento osservabile delle API, non i dettagli interni. 
+> - Tenere la documentazione aggiornata è parte del lavoro di sviluppo e prepara meglio testing, CI e manutenzione.
+
