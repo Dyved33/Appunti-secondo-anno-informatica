@@ -1800,3 +1800,251 @@ Le risorse allocate per un thread joinable sono rilasciate solo se un altro thre
 > 	return; 
 > }
 > ```
+
+###### Race condition
+Riguarda il problema della concorrenza. 
+
+> [!quote] Dalle slide del Prof. Carpi:  
+> "Si verifica quando più processi o threads leggono e scrivono dati in modo che il risultato finale dipende dall’ordine di esecuzione delle istruzioni dei processi"> 
+
+**Sezione critica:** porzione di codice eseguita da più threads/processi per la quale il risultato delle esecuzioni concorrenti dipende dalla sequenza con cui i threads/processi accedono a questa sezione di codice (e il risultato può non essere quello desiderato...). In questo caso si dice che la sezione critica contiene una race condition 
+
+```C
+// Esempio tratto dall’IA: 
+#include <stdio.h> 
+#include <pthread.h>
+int counter = 0; // variabile condivisa 
+
+void *worker(void *arg) { 
+	for (int i = 0; i < 100000; i++) { 
+		counter++; // <-- NON atomico 
+	} return NULL; 
+} 
+
+int main(void) { 
+	pthread_t t 1, t 2; 
+	pthread_create(&t 1, NULL, worker, NULL); 
+	pthread_create(&t 2, NULL, worker, NULL); 
+	
+	pthread_join(t 1, NULL); 
+	pthread_join(t 2, NULL); 
+	
+	printf("counter = %d\n", counter); 
+	return 0; 
+} 
+```
+
+Ci aspetteremmo che counter assumesse a fine esecuzione il valore 200.000: può non essere così. `++` NON è un’operazione atomica: `counter++` è una sezione critica. Dobbiamo quindi garantire che i thread abbiano accesso mutuamente esclusivo alle sezioni critiche. Si hanno più soluzioni, tra cui: 
+- *pthread_mutex:* parte della libreria pthreads 
+- supporto per le operazioni atomiche in C: Atomic operations library, a partire da C11
+- *semafori*
+
+**Pthreads: Mutex:** 
+
+> [!quote] Da `man pthread_mutex_init(3)*`: 
+"A mutex is a MUTual EXclusion device, and is useful for protecting shared data structures from concurrent modifications, and implementing critical sections and monitors " 
+
+In pthreads abbiamo a disposizione un "MUTual EXclusion device", le variabili mutex. Una mutex può avere due possibili stati: locked ("owned" da un thread) e unlocked (nessun thread è "owner"). Solo un thread alla volta può essere " owner ". Se un altro thread tenta di acquisire ownership su una mutex già owned da altro thread si blocca finché il thread attualmente owner non la rilascia 
+
+**Fasi per una mutex:**
+1. si definisce una variabile `pthread_mutex_t mutex` per la singola sezione critica e la si inizializza (con pthread_mutex_init(3), PTHREAD_MUTEX_INITIALIZER, etc. Vedi man pthread_mutex_init(3)) 
+2. si acquisisce l'accesso esclusivo alla sezione critica con `pthread_mutex_lock(&mutex)` 
+3. si elabora la sezione critica 
+4. si rilascia l'accesso esclusivo con `pthread_mutex_unlock(&mutex)` 
+5. alla fine, quando la variabile mutex non serve più si può chiamare `pthread_mutex_destroy` che libera le risorse allocate per la mutex (deve essere unlocked) 
+
+```C
+#include <stdio.h>
+#include <pthread.h>
+
+pthread_mutex_t my_mutex = PTHREAD_MUTEX_INITIALIZER; // my_mutex per proteggere l'accesso a counter
+int counter = 0; // variabile condivisa
+  
+void *worker(void *arg)
+{
+	for (int i = 0; i < 100000; i++) {
+		pthread_mutex_lock(&my_mutex); // blocca il my_mutex prima di accedere a counter
+		counter++; // <-- NON atomico
+		pthread_mutex_unlock(&my_mutex); // sblocca il my_mutex dopo aver modificato counter
+	}
+	return NULL;
+}
+  
+int main(void)
+{
+	pthread_t t1, t2;
+	  
+	pthread_create(&t1, NULL, worker, NULL);
+	pthread_create(&t2, NULL, worker, NULL);
+	  
+	pthread_join(t1, NULL);
+	pthread_join(t2, NULL);
+	  
+	printf("counter = %d\n", counter);
+	pthread:pthread_mutex_destroy(&my_mutex); // distrugge il my_mutex
+	
+	return 0;
+}
+```
+ 
+**C11 Atomic support:** un'alternativa in certi casi per gestire la concorrenza è stata introdotta in C 11. 
+- Si tratta di uno standard del passato per il linguaggio C 
+- Tra le altre cose introduce il supporto per il *multithreading* (da non confondere con le funzioni di libreria pthreads) 
+
+Introduce anche il supporto per variabili ed operazioni atomiche: `stdatomic.h`, qualificatore `_Atomic` e varie primitive per le operazioni. Il qualificatore `_Atomic` permette di dichiarare variabili alle quali è garantito un accesso atomico. Per esempio, un'operazione di incremento, come `a++`, che implica un accesso alla variabile (lettura del valore) ed un incremento, è garantita essere atomica (occorre includere `stdatomic.h`). In `stdatomic.h` sono definite delle typedef che creano "nuovi" tipi di dato analoghe alle seguenti: 
+
+| Typedef name      | Full type name         |
+| ----------------- | ---------------------- |
+| atomic_char       | _Atomic char           |
+| atomic_schar      | _Atomic signed char    |
+| atomic_uchar      | _Atomic unsigned har   |
+| atomic_short      | _Atomic short          |
+| atomic_ushort     | _Atomic unsigned short |
+| atomic_int_Atomic | _Atomic int            |
+> [!info]
+>  C11 introduce anche varie funzioni per compiere più operazioni su variabili in maniera atomica. Ad esempio C11 introduce funzioni analoghe a: `atomic_fetch_add( volatile A* obj, M arg )` che atomicamente aggiunge arg al valore di obj
+
+```C
+#include <stdio.h>
+#include <pthread.h>
+#include <stdatomic.h>
+
+_Atomic int counter = 0; // variabile condivisa
+
+void *worker(void *arg)
+{
+	for (int i = 0; i < 100000; i++) {
+		counter++; // <-- NON atomico
+	}
+	return NULL;
+}
+  
+int main(void)
+{
+	pthread_t t1, t2;
+	  
+	pthread_create(&t1, NULL, worker, NULL);
+	pthread_create(&t2, NULL, worker, NULL);
+	  
+	pthread_join(t1, NULL);
+	pthread_join(t2, NULL);
+	  
+	printf("counter = %d\n", counter);
+	return 0;
+}
+```
+
+**Semafori (Posix):**
+Servono per la sincronizzazione dei processi o dei threads per seguire MANCA
+
+Storicamente ci sono 2 possibili implementazioni: POSIX o SYSTEM V. POSIX è più semplice ma meno diffusa (soprattutto tra sistemi più vecchi). SYSTEM V MANCA
+
+I semafori (in POSIX, `man manca`) sono rappresentabili come variabili intere, ma mai minori di 0. Ci sono 2 operazioni possibili:
+1. Manca
+2. Manca
+
+Non potendo essere negativi se una WAIT trova la variabile uguale a 0 si blocca fin quando il valore non diviene positivo. Solo allora il decremento può essere effettuato e la WAIT ritorna. 
+
+I semafori POSIX possono essere:
+- *Named:* sono identificati da un nome nella forma "/somename". `sem_open(3)` apre o crea (se non esiste) un semaforo *named*. Due processi/thread possono operare sullo stesso semaforo passando lo stesso nome a `sem_open(3)`. MANCA. Quando un semaforo non serve più il processo può chiudere il suo accesso con `sem_close(3)`. Quando tutti i processi hanno terminato di usarlo, il semaforo può essere rimosso con `sem_unlink(????)` MANCA. In linux sono "visibili" ed accessibili da filesystem, generalmente in `/dev/shm`, hanno nomi nella forma *sem.somename* e possiamo assegnare permessi (come ogni altro oggetto nel filesystem). 
+
+	FUNZIONAMENTO DI SEM_OPEN
+	- Apre un semaforo *named* (o lo crea se si specifica il flag `O_CREAT`)
+	- Gli `oflag` sono analoghi a `open(2)`
+	- `mode` specifica i permessi come in `open(2)`
+	- `value` è il valore iniziale per il semaforo
+	- Se `O_CREAT` MANCA
+	- MANCA 
+
+	CODICE
+
+- Unnamed: non hanno nome e sono allocati in un'area di memoria condivisa tra i processi/thread che li usano:
+	- *Thread-shared:* l'area di memoria può essere una variabile globale del processo (ovviamente per thread di uno stesso processo)
+	- *Process-shared:* allocati un una shred memory "mappata" MANCA
+
+	Vengono inizializzati con `sem_init(3)`. Dopo l'inizializzazione si può operare con `sem_post(3), sem_wait(3)/sem_timedwait(3)` MANCA. 
+
+Esempio con semaforo named:
+```C
+#include <stdio.h>
+#include <pthread.h>
+#include <semaphore.h>
+
+int counter = 0; // variabile condivisa
+sem_t sem; // semaforo «unnamed»
+
+void *worker(void *arg)
+{
+	for (int i = 0; i < 100000; i++) {
+		sem_wait(&sem);
+		counter++; // <-- NON atomico
+		sem_post(&sem);
+	}
+	return NULL;
+}
+
+int main(void)
+{
+	pthread_t t1, t2;
+	sem_init(&sem, 0, 1);
+	
+	pthread_create(&t1, NULL, worker, NULL);
+	pthread_create(&t2, NULL, worker, NULL);
+	  
+	pthread_join(t1, NULL);
+	pthread_join(t2, NULL);
+	  
+	printf("counter = %d\n", counter);	
+	sem_destroy(&sem);
+	
+	return 0;
+}
+```
+
+Esempio con semaforo unnamed:
+```C
+#include <stdio.h>
+#include <pthread.h>
+#include <semaphore.h>
+
+#define MAX 1000
+
+sem_t sem; 
+
+void *pari(void *arg)
+{
+	for (int i = 0; i < 100000; i++) {
+		sem_wait(&sem);
+		counter++; // <-- NON atomico
+		sem_post(&sem);
+	}
+	return NULL;
+}
+
+void *dispari(void *arg)
+{
+	for (int i = 0; i < 100000; i++) {
+		sem_wait(&sem);
+		counter++; // <-- NON atomico
+		sem_post(&sem);
+	}
+	return NULL;
+}
+
+int main(void)
+{
+	pthread_t t1, t2;
+	sem_init(&sem, 0, 1);
+	
+	pthread_create(&t1, NULL, worker, NULL);
+	pthread_create(&t2, NULL, worker, NULL);
+	  
+	pthread_join(t1, NULL);
+	pthread_join(t2, NULL);
+	  
+	printf("counter = %d\n", counter);	
+	sem_destroy(&sem);
+	
+	return 0;
+}
+```

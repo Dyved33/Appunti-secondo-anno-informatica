@@ -436,9 +436,11 @@ Dato un grafo $G = (V,E)$, in pseudocodice si rappresenta il set di vertici con 
 - $G$ può essere orientato o non orientato
 - Due modi comuni per rappresentare i grafi per gli algoritmi sono: 
  1. *Liste di adiacenza*: array *Adj* di $|V|$ liste, una per vertice. La lista del vertice *u* ha tutti i vertici *v* in modo da avere che $(u,v) \in E$ (vale sia per grafi orientati che non orientati). In pseudocodice si denota tale array come un attributo (G.*Adj*)
+
  <div style="display: flex; justify-content: center;">
    <img src="Screenshot From 2026-03-11 14-55-01.png" width="300">
  </div>
+   
    - Spazio: $\Theta(V+E)$
    - Tempo: per listare tutti i vertici adiacenti a *u*: $\Theta(\deg(u))$
    - Tempo: per determinare se $(u,v) \in E$: $O(\deg(u))$
@@ -446,6 +448,7 @@ Dato un grafo $G = (V,E)$, in pseudocodice si rappresenta il set di vertici con 
    - Spazio: $\Theta(V^2)$
    - Tempo: per listare tutti i vertici adiacenti a *u*: $\Theta(V)$
    - Tempo: per determinare se $(u,v) \in E : \Theta(1)$
+
 Per quanto riguarda l'espressione del tempo di esecuzione di un algoritmo, è spesso in termini sia di $|V|$ sia di $|E|$ (cardinalità).
 
 **Breadth-first search:**
@@ -492,12 +495,11 @@ BFS(G,s)
   <div style="flex: 1.5;">
   <li> gli archi più spessi sono nel sotto-grafo predecessore
   <li> le linee tratteggiate vanno ai vertici appena spcoperti
-  <li> i vertici cerchiati 2 volte sono stati scoperti e sono in $Q$ in attesa di essere visitati
+  <li> i vertici cerchiati 2 volte sono stati scoperti e sono in Q in attesa di essere visitati
   <li> i vertici cerchiati con una linea più spessa sono stati scoperti, tolti dalla coda e visitati
-  <li> BFS potrebbe non raggiungere tutti i vertici e richiede in tempo $O(V+E)$
-  <li> Tempo = $O(V+E)$
-  <li> $O (V)$ perché ogni vertice è messo in coda al massimo una volta
-  <li> $O(E)$ perché ogni vertice è estratto dalla coda al massimo una volta e l'arco $(u,v)$ è esaminato solo quando $u$ è estratto dalla coda. In questo modo ogni arco viene esaminato al massimo 1 volta se orientato, al massimo 2 volte se non orientato
+  <li> BFS potrebbe non raggiungere tutti i vertici e richiede in tempo O(V+E)
+  <li> O(V) perché ogni vertice è messo in coda al massimo una volta
+  <li> O(E) perché ogni vertice è estratto dalla coda al massimo una volta e l'arco (u,v) è esaminato solo quando u è estratto dalla coda. In questo modo ogni arco viene esaminato al massimo 1 volta se orientato, al massimo 2 volte se non orientato
   </div>
 </div>
 
@@ -587,7 +589,7 @@ Si può sempre ottenere un ordine totale da un ordine parziale (o $a>b$ o $b>a$ 
 **Dag:** è un grafo orientato e aciclico. Un grafo $G$ è aciclico $\iff$ un DFS di $G$ non produce un arco nero (prova alla slide 21)
 
 **Topological sort di un dag:** ordina linearmente i vertici così che se $(u,v) \in E$ allora $u$ appare da qualche parte prima di $v$:
-1. Chiama DFS (G) per valutare i tempi di fine $v.f$ per ogni vertice $v$
+1. Chiama DFS(G) per valutare i tempi di fine $v.f$ per ogni vertice $v$
 2. Quando ogni vertice è finito, lo inserisce all’inizio della linked list
 3. Ritorna la linked list dei vertici
 
@@ -605,14 +607,16 @@ Non necessita di ordinare in funzione dei tempi di fine:
 - $v$ è nero? In tal caso $v$ sarebbe già finito. Siccome sto esplorando $(u,v)$. $u$ non è ancora finito, quindi $v.f<u.f$
 
 **Componenti fortemente connesse:** dato un grafo ordinato $G=(V,E)$, una componente fortemente connessa (*SCC*) di $G$ è il set massimale di vertici $C \subseteq V$ così che per ogni $u, v \in C$, $u \rightsquigarrow v$ e $v \rightsquigarrow u$ 
+
 > [!example] ![[Screenshot From 2026-03-17 23-27-30.png|200]]
 
 *Nell’esempio:* L’algoritmo usa $G^T$=trasposta di $G$:
 - $G^T = (V,E^T), E^T = \{(u,v) : (v,u) \in E\}$
 - $G^T$ è $G$ con tutti gli archi invertiti
+
 > [!info] posso creare $G^T$ in $\Theta(V+E)$ di tempo se uso le liste di adiacenza
 
-**Osservazione:** $G$ e $G^T$ hanno gli stessi SCC ($U$ e $v$ sono raggiungibili l’uno dall’altro in $G$ se e solo so sono raggiungibili l’uno dall’altro in $G^T$)
+**Osservazione:** $G$ e $G^T$ hanno gli stessi SCC ($u$ e $v$ sono raggiungibili l’uno dall’altro in $G$ se e solo sono raggiungibili l’uno dall’altro in $G^T$)
 - $G^{SCC} = (V^{SCC},E^{SCC})$ 
 - $V^{SCC}$ ha un vertice per ogni SCC in $G$
 - $E^{SCC}$ ha un arco se c’è un arco tra  i corrispondenti SCC in $G$
@@ -642,10 +646,17 @@ SCC(G)
 </div>
 
 > [!example] 
-> Eseguo DFS: ![[Pasted image 20260318233449.png|200]]
-> Prendo $G^T$: ![[Screenshot From 2026-03-18 23-35-19.png|200]]
+> Eseguo DFS: 
 > 
-> DFS in $G^T$: ![[Screenshot From 2026-03-18 23-36-09.png|200]]
+> ![[Pasted image 20260318233449.png|200]]
+> 
+> Prendo $G^T$:
+> 
+>  ![[Screenshot From 2026-03-18 23-35-19.png|200]]
+> 
+> DFS in $G^T$: 
+> 
+> ![[Screenshot From 2026-03-18 23-36-09.png|200]]
 > 
 > Tempo: $\Theta(V+E)$, ogni top level della DFS-Visit scoprirà il suo componente
 
