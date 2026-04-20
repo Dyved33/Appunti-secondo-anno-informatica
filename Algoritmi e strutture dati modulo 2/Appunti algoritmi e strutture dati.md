@@ -1064,3 +1064,61 @@ Analisi: ho $|V|$ operazioni Insert e Extract-Min e $\leq |E|$ operazioni Decrea
 	- Ogni Extract-Min richiede $O(1)$ di tempo ammortizzato
 	- Ci sono $\Theta(V)$ operazioni Insert e Extract-Min, che richiedono $O(\lg(V))$ di tempo ammortizzato
 	- Perciò il tempo è $O(V \lg(V+E))$ 
+
+###### All-Pairs shortest path
+Dato un grafo ordinato $G = (V,E)$ e una funzione peso $w: E → \mathbb{R}, |V| = n$. Si assume che i vertici siano numerati $1,2,…,n$. Il mio obiettivo è di creare una matrice $n \times n$ $D = (d_{ij})$ di shortest-paths distances, in questo modo $d_{ij} = \delta(i,j)$ per ogni vertice $i$ e $j$. Si potrebbe eseguire l'algoritmo di Bellman-Ford per ogni vertice e avrebbe costo $O(V^2 E)$, che è $O(V^4)$ se il grafo è **denso** ($E = \Theta(V^2)$). Se non ci sono archi a peso negativo, si potrebbe eseguire l'algoritmo di Dijkstra una volta per ogni vertice. In tal caso avrei:
+- $O(VE \lg(V))$ con una binary heap, $O(V^3 \lg(v))$ se è denso
+- $O(V^2 \lg(V) + VE)$ con una Fibonacci heap, $O(V^3)$ se è denso
+
+Si assuma che il grafo $G$ sia dato come matrice di adiacenza di pesi: $W = (w_{ij})$ con i vertici numerati da 1 a $n$ => $w_{ij} = \begin{cases} 0 & \text{se } i = j \\ \text{peso dell'arco} (i,j) & \text{se } i \neq j, (i,j) \in E \\ \infty & \text{se } i \neq j, (i,j) \notin E \end{cases}$ 
+
+**Soluzione ricorsiva:** sia $l^{(r)}_{ij} =$ peso del cammino minimo $i \rightsquigarrow j$ che contiene $\leq r$ archi.
+- $r = 0$: c'è un cammino minimo $i \rightsquigarrow j$ con $\leq r$ archi se e solo se $i = j$. Pertanto $l^{(0)}_{ij} = \begin{cases} 0 & \text{se } i = j \\ \infty & \text{se } i \neq j \end{cases}$ 
+- $r \geq 1$: quindi $l^{(r)}_{ij} = \min \{l^{(r-1)}_{ij}, \min \{l^{(r-1)}_{ik} + w_{kj}: 1 \leq k \leq n\}\} = \min \{l^{(r-1)}_{ik} + w_{kj}: 1 \leq k \leq n\}$ con $k$ i range con ogni possibile predecessore di $j$ e sapendo che $w_{jj} = 0 \ \forall \ j$ 
+- Si osserva che quando $r = 1$ si ha che $l^{(1)}_{ij} = w_{ij}$ 
+
+Concettualmente quando il cammino è ristretto ad un solo arco, il peso del cammino minimo $i \rightsquigarrow j$ deve essere $w_{ij}$ 
+
+**Calcolo di una soluzione bottom-up:** si calcolano $L^{(1)},L^{(2)},…,L^{(n)}$. Si inizia da $L^{(1)} = W$ siccome $l^{(1)}_{ij} = w_{ij}$, andando da $L^{(r-1)}$ a $L^{(r)}$ 
+
+```Pseudocode
+Extend-Shortest-Paths(L^(r-1),W,L^(r),n)
+	//si assume che gli elementi di L^(r) sono inizializzati a infinito
+	for i = 1 to n
+		for j = 1 to n
+			for k = 1 to n
+				l^(r)_ij = min{l^(r)_ij, l^(r-1)_ik + w_kj}
+```
+
+Il tempo di questo algoritmo è $\Theta(n^3)$. 
+
+Valutando ogni $L^{(r)}$:
+```Pseudocode
+Slow-APSP(W,L^(0),n)
+	let L = (l_ij) and M = (m_ij) be new n x n matrices
+	L = L^(0)
+	for r = 1 to n-1
+		M = infinity //initilize M
+		// Compute the matrix product M = LW
+		Extend-Shortest-Paths(L,W,M,n)
+		L = M
+	return L
+```
+
+Il tempo di questo algoritmo è $\Theta(n^4)$. 
+
+**Osservazione:** Extend-Shortest-Paths è simile ad una moltiplicazione matriciale. Facendo, infatti, le seguenti sostituzioni nell'equazione $l^{(r)}_{ij} = \min\{l^{(r-1)}_{ik} + w_{kj}: 1 \leq k \leq n\}$:
+- $l^{(r-1)} → a$ 
+- $w → b$ 
+- $l^{(r)} → c$
+- $\min → +$
+- $+ → \cdot$     
+
+Si ottiene $c_{ij} = \sum\limits^n_{k = 1} a_{ik} \cdot b_{kj}$, che è proprio  l'equazione per calcolare $c_{ij}$ in una moltiplicazione matriciale. Se inoltre rimpiazzo $\infty$ (identità per min) con 0 (identità per +), si ottiene la procedura per la moltiplicazione matriciale:
+
+```Pseudocode
+for i = 1 to n
+		for j = 1 to n
+			for k = 1 to n
+				c_ij = c_ij + (a_ik)(b_kj)
+```
