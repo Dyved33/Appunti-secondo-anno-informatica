@@ -3419,3 +3419,260 @@ Principio: ogni documento deve avere un proprietario esplicito, non “di nessun
 > - La Javadoc è più utile quando chiarisce contratto e comportamento osservabile delle API, non i dettagli interni. 
 > - Tenere la documentazione aggiornata è parte del lavoro di sviluppo e prepara meglio testing, CI e manutenzione.
 
+###### Testing: principi e piramide del testing
+Una convinzione molto diffusa nello sviluppo software è: "Prima scrivo il codice e alla fine faccio un test per controllare se funziona". In un progetto reale questo approccio tende a produrre effetti sistematici: 
+- il feedback arriva tardi, quando il codice è già cambiato più volte e il contesto iniziale si è perso; 
+- gli errori diventano più difficili da isolare, perché entrano in gioco più componenti e più ipotesi non esplicitate; 
+- la correzione richiede più tempo, perché si deve ricostruire a posteriori cosa ci si aspettava davvero. 
+
+ Il risultato più dannoso spesso non è il bug in sé, ma la conseguenza organizzativa: 
+ - ogni modifica viene percepita come rischiosa, 
+ - il refactoring viene rimandato, 
+ - si sviluppa una reale paura di cambiare il codice.  
+ 
+Nel contesto dello sviluppo moderno, il testing non può più essere considerato un semplice “controllo qualità finale” eseguito a valle dell’implementazione. Il testing diventa invece una pratica continua, integrata nel processo di sviluppo, che accompagna le scelte progettuali e contribuisce a orientarle nel tempo. Un insieme ben costruito di test automatici svolge il ruolo di rete di sicurezza: 
+- riduce il rischio associato alle modifiche e agli interventi correttivi; 
+- rende praticabili refactoring frequenti e una progressiva pulizia del design; 
+- facilita il lavoro collaborativo, perché rende esplicito il comportamento atteso del sistema. 
+
+In assenza di test automatici, il software tende progressivamente a irrigidirsi: ogni cambiamento diventa una scommessa e l’evoluzione del sistema rallenta.  
+
+**Due obiettivi del testing:** I test possono essere letti attraverso due obiettivi principali, entrambi necessari: 
+- *Dimostrare che il sistema soddisfa i requisiti (validazione):* verificare che i comportamenti richiesti siano presenti e coerenti con quanto promesso. 
+- *Scoprire difetti e comportamenti indesiderati (defect testing):* far emergere errori, incoerenze e casi non gestiti prima che arrivino in produzione. 
+
+Non sono due mondi separati: molto spesso un test nato per validare un requisito finisce per rivelare un difetto nascosto, oppure un caso ambiguo nella specifica. Cambia però lo “spirito” con cui si scelgono i casi di test: 
+- test con input realistici e attesi, che rappresentano l’uso normale del sistema; 
+- test con input anomali o ai limiti, che esplorano condizioni rare, errori e vincoli. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260420095903.png" width="200">
+</div>
+
+**Perché oggi le regressioni sono inevitabili?** Un sistema software reale non è statico: cambia continuamente nel tempo, per motivi diversi: 
+- nuove funzionalità e miglioramenti richiesti dagli utenti, 
+- correzioni di bug e interventi di manutenzione, 
+- refactoring per mantenere il design leggibile e sostenibile, 
+- aggiornamenti di librerie, framework e dipendenze esterne. 
+
+Ogni cambiamento, anche piccolo, può rompere un comportamento che prima era corretto: questa situazione prende il nome di regressione. Il punto centrale non è chiedersi “se succederà”, ma accettare che “prima o poi succederà”, perché la complessità cresce e le interazioni tra componenti non sono sempre prevedibili. La difesa più efficace è una suite di test automatica: 
+- ripetibile, 
+- eseguita spesso, 
+- capace di segnalare rapidamente quando un comportamento atteso non è più garantito.  
+
+**Manuale vs automatico:** Il testing manuale rimane necessario in alcune situazioni: 
+- valutazione dell’esperienza d’uso e dell’interfaccia grafica, 
+- flussi complessi che coinvolgono più passaggi e decisioni, 
+- verifiche che richiedono giudizio umano o interpretazione contestuale. 
+
+Tuttavia, il testing manuale non scala bene: richiede tempo, è costoso da ripetere e tende a essere applicato solo a una parte dei casi possibili. 
+
+Il testing automatico costituisce la base della verifica delle regressioni: 
+- è ripetibile in modo affidabile, 
+- è veloce da eseguire, 
+- può essere lanciato ad ogni modifica del codice senza costi aggiuntivi significativi. 
+
+L’obiettivo pratico non è scegliere uno solo dei due approcci, ma automatizzare tutto ciò che è stabile e verificabile, lasciando al testing manuale gli aspetti che richiedono valutazioni qualitative.  
+
+**La piramide del testing:** La piramide del testing è un modello semplice per distribuire bene i test: 
+- molti test piccoli e veloci alla base, 
+- alcuni test di collaborazione a metà, 
+- pochi test end-to-end in cima. 
+
+L’idea non è “fare tanti test a caso”, ma ottenere: 
+- feedback veloce, 
+- diagnosi semplice, 
+- fiducia sul comportamento complessivo. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260420101003.png" width="200">
+</div>
+
+**Unit test:** Gli unit test verificano una singola unità di comportamento del sistema, considerata in modo isolato rispetto al resto dell’applicazione. Tipicamente si concentrano su: 
+- un metodo specifico, 
+- una classe con una responsabilità ben definita, 
+- una singola regola di business o di validazione. 
+
+Per essere davvero efficaci, gli unit test condividono alcune caratteristiche fondamentali: 
+- sono **rapidi**, perché si eseguono in pochi millisecondi e possono essere lanciati molto spesso; 
+- sono *isolati*, cioè non dipendono da database, rete, filesystem o tempo reale; 
+- sono **deterministici**, nel senso che a parità di input producono sempre lo stesso risultato. 
+
+Queste proprietà rendono gli unit test la base della piramide del testing, perché permettono un feedback continuo e affidabile durante lo sviluppo quotidiano.  
+
+I candidati migliori per gli unit test sono le regole di business, perché rappresentano il cuore logico del sistema e concentrano molte decisioni importanti. In particolare, vale la pena testare con attenzione: 
+- validazioni di input e di stato, 
+- vincoli che devono essere sempre rispettati, 
+- calcoli e trasformazioni dei dati, 
+- transizioni di stato tra fasi diverse del ciclo di vita di un oggetto. 
+
+Questi test sono in genere facili da scrivere e offrono un grande valore, perché intercettano regressioni “costose”, che altrimenti emergerebbero solo molto più avanti. Un buon unit test è anche leggibile: 
+- descrive chiaramente cosa deve succedere in una certa situazione, 
+- evita di raccontare come il codice realizza internamente quel comportamento.  
+
+**Integration test:** Gli integration test verificano la collaborazione tra più componenti del sistema, osservando come parti diverse funzionano insieme in uno scenario realistico. Tipicamente riguardano situazioni come: 
+- servizi applicativi che interagiscono con repository o componenti di persistenza; 
+- flussi che attraversano più layer dell’architettura (ad esempio dominio, applicazione, infrastruttura); 
+- integrazioni con risorse reali o semi-reali, come database, file system o servizi esterni. 
+
+Rispetto agli unit test, questi test sono più costosi da gestire perché richiedono: 
+- un setup più articolato dell’ambiente di esecuzione, 
+- la presenza di dipendenze esterne correttamente configurate, 
+- dati coerenti e consistenti tra i diversi componenti coinvolti. 
+
+Per questo motivo gli integration test non dovrebbero essere numerosi, ma selezionati con attenzione e mantenuti pochi e mirati sui punti di collaborazione più critici.  
+
+Gli integration test risultano particolarmente utili in quei punti del sistema in cui il comportamento corretto dipende dall’interazione tra più componenti. In pratica, i casi più critici sono spesso legati a: 
+- il mapping tra oggetti del dominio e il livello di persistenza; 
+- la serializzazione e il parsing dei dati, insieme alla gestione dei formati; 
+- le transazioni e la garanzia di consistenza dei dati tra operazioni successive; 
+- le configurazioni dell’applicazione e il corretto wiring delle dipendenze. 
+
+In questi punti gli unit test non sono sufficienti, perché l’errore non nasce da una singola unità, ma dal modo in cui più parti del sistema collaborano. Un integration test ben scelto e mirato su uno di questi punti critici vale spesso più di molti test generici che coprono solo casi superficiali.  
+
+**Acceptance test:** Gli acceptance test verificano il comportamento del sistema dal punto di vista di chi lo utilizza, senza entrare nei dettagli interni dell’implementazione. Si basano su descrizioni ad alto livello, come: 
+- scenari completi di utilizzo, 
+- user stories rappresentative, 
+- criteri di accettazione che definiscono quando una funzionalità può dirsi soddisfacente. 
+
+Il loro valore principale è la validazione funzionale: permettono di verificare che il sistema, nel suo insieme, faccia davvero ciò che serve rispetto alle esigenze espresse. Allo stesso tempo presentano alcune limitazioni strutturali: 
+- sono più lenti da eseguire rispetto agli altri tipi di test, 
+- risultano più fragili, perché sensibili a cambiamenti anche minimi, 
+- rendono più complessa l’analisi delle cause quando qualcosa va storto. 
+
+Per questi motivi gli acceptance test sono collocati in cima alla piramide: sono pochi, selezionati con cura e rappresentano solo i flussi principali e più significativi del sistema.  
+
+**Un anti-pattern, la piramide rovesciata:** Errore comune: basarsi quasi solo su test end-to-end. Effetti tipici: 
+- suite lenta, 
+- fallimenti difficili da interpretare, 
+- test che si rompono per cambiamenti minimi, 
+- persone che smettono di eseguire i test. 
+
+Questa forma viene spesso chiamata “ice-cream cone”.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260420102054.png" width="200">
+</div>
+
+**Criteri pratici per una suite sana:** Una suite di test “sana” tende a mostrare alcune proprietà ricorrenti: 
+- è abbastanza veloce da poter essere eseguita spesso, idealmente durante lo sviluppo quotidiano; 
+- quando fallisce, produce errori comprensibili e facili da collegare alla causa; 
+- fallisce in modo deterministico, cioè non “a caso” e non dipendendo dall’ambiente; 
+- copre soprattutto le regole di business e i flussi principali, cioè ciò che dà valore al sistema. 
+
+Non esiste una percentuale magica o una ricetta universale: l’obiettivo pratico è ottenere feedback continuo e mantenere alta la fiducia mentre il software evolve. Se la suite diventa lenta, la conseguenza è quasi sempre la stessa: viene eseguita sempre meno, fino a essere ignorata nei momenti in cui servirebbe di più.  
+
+**Testability:** Non tutto il codice è ugualmente facile da testare: alcune scelte progettuali rendono la verifica semplice, altre la complicano inutilmente. Dire che un codice è “testabile” significa, in pratica, che è possibile: 
+- verificare il comportamento di una parte del sistema senza dover costruire o avviare mezzo sistema intorno; 
+- controllare l’ambiente del test, incluse dipendenze esterne, dati di input e fattori come il tempo; 
+- ottenere test piccoli, veloci da eseguire e stabili nel tempo. 
+
+La testabilità è quindi un indicatore importante della qualità del design: spesso coincide con alta coesione, basso accoppiamento e con una struttura che favorisce l’evoluzione del software. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260420103011.png" width="200">
+</div>
+
+**Segnali di bassa testability:** Alcune caratteristiche del codice rendono la scrittura dei test più difficile del necessario e sono spesso segnali di problemi di design. Tra i segnali più comuni rientrano: 
+- dipendenze nascoste, come la creazione interna di client per database, servizi HTTP o altre risorse esterne; 
+- side effect diffusi, ad esempio scritture su file o rete mescolate direttamente alla logica di business; 
+- classi troppo grandi, che accumulano responsabilità diverse e diventano difficili da comprendere e isolare. 
+
+Un’altra fonte frequente di problemi è l’uso diretto di elementi globali o non controllabili: 
+- tempo di sistema, 
+- generatori di numeri casuali, 
+- singleton o stati globali condivisi. 
+
+Un sintomo pratico molto chiaro è questo: per testare anche una singola regola di business diventa necessario costruire un setup enorme e complesso.  
+
+**SRP:** Il principio di **Single Responsibility** (SRP) afferma che una classe dovrebbe avere una sola responsabilità, cioè un solo motivo valido per cambiare. Quando questo principio è rispettato, anche i test diventano più naturali e diretti: 
+- ogni test verifica un comportamento preciso e ben delimitato; 
+- il setup necessario è minimo, perché ci sono poche dipendenze coinvolte; 
+- in caso di errore, la causa è più facile da individuare e isolare. 
+
+Al contrario, classi “tuttofare”, che mescolano logica diversa, costringono a scrivere test grandi, complessi e fragili, difficili da capire e costosi da mantenere. Una regola empirica utile per riconoscere il problema è la seguente: se un singolo test deve controllare troppe cose insieme, molto probabilmente la classe sotto test fa troppe cose.  
+
+**DIP:** Il **Dependency Inversion Principle (DIP)** afferma che il codice dovrebbe dipendere da astrazioni e non da dettagli concreti di implementazione. Questo principio ha un impatto diretto sulla testabilità, perché rende possibile sostituire facilmente le dipendenze esterne durante i test. In pratica, nei test diventa naturale usare alternative controllabili: 
+- un repository in memoria al posto di un database reale, 
+- un clock controllabile invece del tempo di sistema, 
+- un gateway finto o simulato invece di una comunicazione di rete. 
+
+Quando le dipendenze sono progettate per essere sostituibili, i test tornano ad essere rapidi, deterministici e focalizzati sul comportamento, senza effetti collaterali indesiderati.  
+
+> [!info] UniManager: due casi ideali da testare:
+> All’interno di UniManager sono presenti alcune regole di business particolarmente chiare e ben delimitate, che si prestano molto bene alla scrittura di unit test. Due esempi rappresentativi sono: 
+> - la logica di iscrizione a un appello d’esame, 
+> - la validazione di un voto inserito dal docente.
+> 
+> Questi casi sono buoni esempi dal punto di vista didattico perché: 
+> - presentano input e output ben definiti, facilmente verificabili; 
+> - includono diversi casi limite e condizioni di errore interessanti; 
+> - non dovrebbero dipendere direttamente dall’interfaccia utente o dal database per essere validate correttamente.
+> 
+**Iscrizione a un appello:** Scenario di riferimento: un utente con ruolo di studente tenta di iscriversi a un appello d’esame disponibile nel sistema. Questo scenario è governato da alcune regole di business tipiche, realistiche e facilmente comprensibili anche a fini didattici: 
+> - lo studente deve risultare regolarmente iscritto al corso associato all’appello; 
+> - non è consentita una doppia iscrizione allo stesso appello; 
+> - l’iscrizione non è possibile oltre una certa data di scadenza; 
+> - l’appello può prevedere un numero massimo di posti disponibili. 
+> 
+In un contesto del genere, gli unit test risultano particolarmente efficaci perché permettono di verificare in modo diretto: 
+> - i casi validi, in cui l’iscrizione deve andare a buon fine; 
+> - i casi invalidi, in cui il sistema deve impedire l’operazione; 
+> - la coerenza dei messaggi di errore o delle eccezioni prodotte.  
+> 
+**Validazione del voto:** Scenario di riferimento: un utente con ruolo di docente registra il voto di uno studente al termine di un appello d’esame. Anche in questo caso il comportamento del sistema è regolato da un insieme di regole di business ben definite: 
+> - il voto deve rientrare nell’intervallo previsto dal regolamento (ad esempio 18–30), con l’eventuale gestione della lode; 
+> - il voto può essere registrato solo per studenti effettivamente iscritti all’appello; 
+> - non è consentito registrare o modificare un voto se il verbale dell’appello risulta chiuso; 
+> - il processo può prevedere stati distinti, come “inserito”, “pubblicato” e “verbalizzato”. 
+> 
+Anche in questo scenario il nucleo logico è facilmente testabile senza coinvolgere infrastrutture esterne: la validazione del voto dovrebbe risiedere in un punto chiaro e ben isolato del dominio, rendendo possibile la verifica tramite unit test semplici e mirati.  
+
+**Come scegliere casi di test:** La scelta dei casi di test non è casuale, ma segue un ragionamento preciso. Un approccio semplice ed efficace consiste nel considerare: 
+- un caso “tipico”, che rappresenta l’uso normale e che deve funzionare senza problemi; 
+- casi ai limiti, come inizio e fine di un intervallo, scadenze temporali, valori massimi e minimi ammessi; 
+- casi di errore, legati a input non validi, stati non consentiti o tentativi di operazioni duplicate. 
+
+L’obiettivo non è testare ogni possibile combinazione, ma concentrare gli sforzi su ciò che statisticamente tende a rompersi: 
+- i confini delle regole, 
+- le condizioni eccezionali, 
+- le combinazioni meno ovvie ma più rischiose.  
+
+**Test-first:** L’approccio test-first non va inteso come l’adozione rigida di un rituale formale o di una metodologia prescrittiva. In pratica, significa usare i test come strumento per chiarire il comportamento atteso prima di scrivere l’implementazione: 
+- cosa deve succedere in condizioni corrette; 
+- cosa non deve succedere mai; 
+- quali situazioni di errore devono essere intercettate e gestite. 
+
+L’effetto pratico di questo modo di lavorare è spesso immediato: 
+- interfacce e API più pulite e coerenti; 
+- meno ambiguità nelle responsabilità del codice; 
+- implementazioni più semplici, perché guidate dal comportamento atteso.  
+
+Un modo pragmatico e leggero di applicare il test-first può essere visto come un micro-processo iterativo: 
+1. si sceglie una regola di business piccola e ben delimitata; 
+2. si scrive un test che ne descrive il comportamento atteso; 
+3. si esegue il test e si osserva il fallimento, che è il risultato previsto (Red); 
+4. si implementa il minimo indispensabile per far passare il test (Green); 
+5. si refactorizza il codice mantenendo i test sempre verdi (Refactor). 
+
+Il valore principale non è semplicemente “scrivere il test prima del codice”, ma il fatto che questo approccio costringe a ragionare sull’uso, sul comportamento e sui confini della regola prima di concentrarsi sull’implementazione.  
+
+**Takeaway, come leggere la piramide:** La piramide non è una moda: è un modo pratico per bilanciare costo e feedback. Salendo nella piramide, in generale: 
+- il **costo** aumenta (setup, dipendenze, manutenzione), 
+- la **velocità** diminuisce (da millisecondi a secondi/minuti), 
+- l’**isolamento** diminuisce (da unità isolate a flussi end-to-end). 
+
+Obiettivo operativo: tanti unit test per feedback veloce, integration test mirati sui punti critici, pochi acceptance sui flussi principali. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260420104926.png" width="200">
+</div>
+
+> [!info] Riepilogo:
+> - Il testing è parte del processo di progettazione: rende esplicito il comportamento atteso e riduce il rischio delle modifiche. 
+> - La piramide del testing aiuta a bilanciare velocità di feedback, costo e granularità dei controlli automatici. 
+> - Unit, integration e acceptance test rispondono a domande diverse e vanno combinati, non sostituiti l’uno con l’altro. 
+> - La testabilità dipende fortemente dal design: buon isolamento e dipendenze sane rendono i test più semplici e utili. 
+> - La rete di test automatici è ciò che rende più praticabili refactoring ed evoluzione continua del sistema. 
+> - Il test-first è utile soprattutto perché costringe a chiarire comportamento e confini prima dell’implementazione.
+
