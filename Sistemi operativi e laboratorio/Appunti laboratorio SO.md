@@ -1934,35 +1934,133 @@ int main(void)
 }
 ```
 
-**Semafori (Posix):**
-Servono per la sincronizzazione dei processi o dei threads per seguire MANCA
+###### Semafori (Posix):
+Servono per la sincronizzazione dei processi o dei threads per eseguire coerentemente una serie di azioni, per esempio per accedere ordinatamente a sezioni critiche di un programma o a risorse condivise. Si usano anche per la sincronizzazione dell’accesso ai dati per garantirne integrità e coerenza
 
-Storicamente ci sono 2 possibili implementazioni: POSIX o SYSTEM V. POSIX è più semplice ma meno diffusa (soprattutto tra sistemi più vecchi). SYSTEM V MANCA
+Storicamente ci sono 2 possibili implementazioni: POSIX o SYSTEM V. POSIX è più semplice ma meno diffusa (soprattutto tra sistemi più vecchi). SYSTEM V è una API più tradizionale
 
-I semafori (in POSIX, `man manca`) sono rappresentabili come variabili intere, ma mai minori di 0. Ci sono 2 operazioni possibili:
-1. Manca
-2. Manca
+I semafori (in POSIX, `man 7 sem_overview`) sono rappresentabili come variabili intere, ma mai minori di 0. Ci sono 2 operazioni possibili:
+1. `POST`: incrementa di 1
+2. `WAIT`: decrementa di 1
 
-Non potendo essere negativi se una WAIT trova la variabile uguale a 0 si blocca fin quando il valore non diviene positivo. Solo allora il decremento può essere effettuato e la WAIT ritorna. 
+Non potendo essere negativi se una `WAIT` trova la variabile uguale a 0 si blocca fin quando il valore non diviene positivo. Solo allora il decremento può essere effettuato e la WAIT ritorna. 
 
 I semafori POSIX possono essere:
-- *Named:* sono identificati da un nome nella forma "/somename". `sem_open(3)` apre o crea (se non esiste) un semaforo *named*. Due processi/thread possono operare sullo stesso semaforo passando lo stesso nome a `sem_open(3)`. MANCA. Quando un semaforo non serve più il processo può chiudere il suo accesso con `sem_close(3)`. Quando tutti i processi hanno terminato di usarlo, il semaforo può essere rimosso con `sem_unlink(????)` MANCA. In linux sono "visibili" ed accessibili da filesystem, generalmente in `/dev/shm`, hanno nomi nella forma *sem.somename* e possiamo assegnare permessi (come ogni altro oggetto nel filesystem). 
+- *Named:* 
+	- sono identificati da un nome nella forma "/somename". 
+	- `sem_open(3)` apre o crea (se non esiste) un semaforo *named*. 
+	- Due processi/thread possono operare sullo stesso semaforo passando lo stesso nome a `sem_open(3)`.
+	- sue processi/thread possono operare sullo stesso semaforo passando lo stesso nome a `sem_open(3)`
+	- Dopo averlo aperto i processi possono operare con `sem_post(3)` e `sem_wait(3)`
+	- Quando un semaforo non serve più il processo può chiudere il suo accesso con `sem_close(3)`.
+	- Quando tutti i processi hanno terminato di usarlo, il semaforo può essere rimosso con `sem_unlink(3)` 
 
-	FUNZIONAMENTO DI SEM_OPEN
-	- Apre un semaforo *named* (o lo crea se si specifica il flag `O_CREAT`)
-	- Gli `oflag` sono analoghi a `open(2)`
-	- `mode` specifica i permessi come in `open(2)`
-	- `value` è il valore iniziale per il semaforo
-	- Se `O_CREAT` MANCA
-	- MANCA 
+> [!info] Ricorda:
+> Sono persistenti nel kernel, cioè se non rimossi permangono fino al riavvio della macchina
 
-	CODICE
+**FUNZIONAMENTO DI SEM_OPEN:**
+```C
+#include <fcntl.h> /* For O_* constants */ 
+#include <sys/stat.h> /* For mode constants */ 
+#include <semaphore.h>
 
-- Unnamed: non hanno nome e sono allocati in un'area di memoria condivisa tra i processi/thread che li usano:
+sem_t *sem_open(const char *name, int oflag); 
+sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value);
+```
+
+- Apre un semaforo *named* (o lo crea se si specifica il flag `O_CREAT`)
+- Gli `oflag` sono analoghi a `open(2)`
+- `mode` specifica i permessi come in `open(2)`
+- `value` è il valore iniziale per il semaforo
+- Se `O_CREAT` viene specificato allora `mode` e `value` devono essere forniti (ma se il semaforo già esiste sono ignorati)
+- L'utente proprietario del semaforo eventualmente creato è lo stesso utente proprietario del processo chiamante 
+
+Ritorna l’indirizzo del semaforo. In caso di errore torna `SEM_FAILED` e setta `errno`
+
+**Sequenza di utilizzo:**
+```C
+#include <fcntl.h> /* For O_* constants */ 
+#include <sys/stat.h> /* For mode constants */ 
+#include <semaphore.h>
+
+sem_t *sem; 
+... 
+sem = sem_open("/mysem", O_CREAT, S_IRWXU, 0); 
+... 
+sem_post(sem); o sem_wait(sem); (o sem_timedwait()) 
+... 
+sem_close(sem); 
+... 
+sem_unlink("/mysem");
+```
+
+In linux sono "visibili" ed accessibili da filesystem, generalmente in `/dev/shm`. Hanno nomi nella forma *sem.somename* e possiamo assegnare permessi (come ogni altro oggetto nel filesystem). 
+
+- Unnamed: 
+	- non hanno nome e sono allocati in un'area di memoria condivisa tra i processi/thread che li usano:
 	- *Thread-shared:* l'area di memoria può essere una variabile globale del processo (ovviamente per thread di uno stesso processo)
-	- *Process-shared:* allocati un una shred memory "mappata" MANCA
+	- *Process-shared:* allocati un una shred memory "mappata" nello spazio di indirizzamento dei processi/threads (con un puntatore) 
+		- SYSTEM V: creata con shmget(2) 
+		- POSIX: creata con shm_open(3)
+	- Vengono inizializzati con `sem_init(3)`. 
+	- Dopo l'inizializzazione si può operare con `sem_post(3), sem_wait(3)/sem_timedwait(3)` 
+	- Quando non più necessari, prima di deallocare un'eventuale area di memoria allocata per essi, dovrebbero essere distrutti con sem_destroy(3), altrimenti in certe implementazioni certe risorse potrebbero rimanere occupate (leak)
 
-	Vengono inizializzati con `sem_init(3)`. Dopo l'inizializzazione si può operare con `sem_post(3), sem_wait(3)/sem_timedwait(3)` MANCA. 
+**Semafori POSIX Unnamed:** `#include int sem_init(sem_t *sem, int pshared, unsigned int value);` Inizializza un semaforo unnamed all'indirizzo specificato da `sem`. `pshared` può essere uguale a: 
+- 0: semaforo condiviso tra threads di uno stesso processo (può essere allocato in una variabile globale) 
+- non 0: semaforo condiviso tra processi. Allocato in una shared memory (vedi `shm_open(3), mmap(2), and shmget(2)`). No variabile globale tra processi discendenti (fork()) 
+
+`value` è il valore iniziale per il semaforo. Avremo un comportamento "indefinito" se inizializziamo un semaforo già inizializzato. Ritorna: 0 per successo. -1 per errore (errno settata) 
+
+**Sequenza di utilizzo:** 
+```C
+... 
+#include <semaphore.h>
+... 
+sem_t sem;
+... 
+sem_init(&sem, 0, 0); 
+... 
+sem_post(&sem); o sem_wait(&sem); (o sem_timedwait()) 
+... 
+sem_destroy(&sem);
+```
+
+ **Semafori POSIX, decremento (operazione di wait):** `#include <semaphore.h> int sem_wait(sem_t *sem);`
+ - decrementa il valore di un semaforo (sia esso unnamed o named) 
+ - se il semaforo ha il valore zero si blocca in attesa che il valore diventi positivo. Altrimenti decrementa e ritorna 
+ - la funzione torna anche se, pur essendo il semaforo a 0, un signal handler la interrompe (cioè il processo riceve un signal gestito). In questo caso torna -1 ed `errno` è settata a `EINTR`
+
+`int sem_timedwait(sem_t *sem, const struct timespec *abs_timeout);`
+- come `sem_wait()` ma, nel caso il semaforo sia a 0 e la funzione si blocchi, l'attesa non si protrae oltre il tempo specificato da `abs_timeout` 
+- se `sem_timedwait()` torna perché il timeout è spirato prima che il semaforo diventasse positivo allora ritorna -1 ed `errno` viene settata a `ETIMEDOUT` 
+- `abs_timeout` punta ad una struttura che specifica il numero di secondi dal 01/01/1970 trascorsi i quali il timeout spira e la chiamata comunque ritorna (vedi slide successiva) 
+
+Ritorna: 0 per successo. -1 per errore, errno settata 
+
+**Utilizzo di sem_timedwait(3):** `#include <semaphore.h> int sem_timedwait(sem_t *sem, const struct timespec *abs_timeout);`
+- `struct timespec` è definita come segue (`man 3 timespec`): 
+
+```
+struct timespec { 
+	time_t tv_sec; /* Seconds */ 
+	long tv_nsec; /* Nanoseconds [0 .. 999999999]*/ 
+};
+```
+ 
+> [!example] Esempio di utilizzo di `set_timedwait(3)` con `clock_gettime(2)`, in cui è specificato il numero di secondi dal 01/01/1970 trascorsi i quali la chiamata deve comunque ritornare. : 
+> ```C
+> struct timespec ts; sem_t sem; 
+> ......... 
+> clock_gettime(CLOCK_REALTIME, &ts); /* imposta in ts il numero di secondi trascorsi dal 1-1-70 al momento della chiamata */ 
+> ts.tv_sec += 8; // imposta un timeout di 8 secondi sem_timedwait(&sem, &ts); /* decrementa il semaforo ma non attende più di 8 secondi */ 
+> ```
+
+**Incremento (operazione di post):** `#include <semaphore.h> int sem_post(sem_t *sem);` •
+- incrementa il valore di un semaforo (sia esso unnamed o named) 
+- di conseguenza il valore del semaforo diventa positivo ed un eventuale processo in attesa su sem_wait() viene «risvegliato» 
+
+Ritorna: 0 per successo, -1 per errore (errno viene settata ed il valore del semaforo rimane invariato)
 
 Esempio con semaforo named:
 ```C
