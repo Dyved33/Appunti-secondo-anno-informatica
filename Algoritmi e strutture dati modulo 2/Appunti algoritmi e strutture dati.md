@@ -1122,3 +1122,97 @@ for i = 1 to n
 			for k = 1 to n
 				c_ij = c_ij + (a_ik)(b_kj)
 ```
+
+Siccome il nostro obiettivo è quello di valutare il più velocemente possibile $L^{(r-1)}$, non mi è necessario calcolare tutti gli $L^{(1)},L^{(2)},…,L^{(n-2)}$ intermedi. Si supponga di avere una matrice $A$ e vogliamo calcolare $A^{(n-1)}$ (come chiamare Extend-Shortest-Paths n-1 volte). Si calcolano $A,A^2,A^4.A^8,…$, se sapessimo che $A^e = A^{(n-1)} \ \forall \ r \geq n-1$ si potrebbe finire con $A^r$, dove $r$ è la più piccola potenza di 2 che è $\geq n-1$ ($r = 2^{\lceil{\lg(n-1)}\rceil})$ 
+
+```Pseudocode
+Faste-APSP(W,n)
+	let L and M be new n x n matrices
+	L = W
+	r = 1
+	while r < n-1
+		M = infinity //initialize M
+		Extend-Shortest-Paths(L,L,M,n) //compute M = L^2
+		r = 2r
+		L = M //ready for the next iteration
+	return L
+```
+
+Il tempo di questo algoritmo è $\Theta(n^3 \lg(n))$. 
+
+**Algoritmo di Floyd-Warshall:** si tratta di un approccio di programmazione diverso. Per il cammino $p = \langle v_1,v_2,…,v_l \rangle$ un vertice intermedio è un qualsiasi vertice di $p$ diverso da $v_1$ o $v_l$. Sia $d^{(k)}_{ij} =$ il peso del cammino minimo di ogni cammino $i \rightsquigarrow j$ con tutti i vertici intermedi in $\{1,2,…,k\}$:
+- Se $k$ non è un vertice intermedio, allora tutti i vertici intermedi di $p$ sono in $\{1,2,…,k-1\}$
+- Se $k$ è un vertice intermedio:
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260421094244.png" width="200">
+</div>
+
+$d^{(k)}_{ij} = \begin{cases} 0w_{ij} & \text{se } k = 0 \\ \min\{d^{(k-1)}_{ij},d^{(k-1)}_{ik} + d^{(k-1)}_{kj}\} & \text{se } k \geq 1 \end{cases}$. Si ha $d^{(0)}_{ij} = w_{ij}$ perché non si possono avere vertici intermedi => $\leq 1$ archi. Si vogliono $D^{(N)} = (d^{(n)}_{ij})$ siccome tutti i vertici numerati sono $\leq n$ 
+
+```Pseudocode
+Floyd-Warshall(W,n)
+	D^(0) = W
+	for j = 1 to n
+		let D^(k) = (d^(k)_ij) be a new n x n matrix
+		for i = 1 to n
+			for j= 1 to n
+				d^(k)_ij = min{d^(k-1)_ij, d^(k-1)_ik + d^(k-1)_kj}
+	return D^(n)
+```
+
+Il tempo di questo algoritmo è $\Theta(n^3)$. 
+
+**Algoritmo di Johnson:** se il grafo è scarno, questo paga per eseguire l'algoritmo di Dijkstra  una volta per ogni vertice. Se usiamo la Fibonacci heap per la coda di priorità, il tempo di esecuzione sarebbe $O(V^2 \lg(V) + VE)$ che è meglio del $O(V^3)$ del Floyd-Warshall (se $E = o(V^2)$). Ma l'algoritmo di Dijkstra richiede che tutti i vertici abbiano peso non negativo. Con l'algoritmo di Johnson si può costruire un grafo equivalente che non abbia archi di peso negativo. Per fare ciò ho bisogno di una funzione peso $\hat{w}$ tale che:
+1. Per ogni $u,v \in V, p$ è il cammino minimo $u \rightsquigarrow v$ usando $w$ se e solo se $p$ è il cammino minimo $u \rightsquigarrow v$ usando $\hat{w}$ 
+2. Per ogni $(u,v) \in E, \hat{w}(u,v) \geq 0$ 
+
+La prima proprietà afferma che è sufficiente trovare il cammino minimo con $\hat{w}$. La seconda proprietà afferma che possiamo così eseguire l'algoritmo di Dijkstra da ogni vertice
+
+**Lemma (il reweighting non cambia il cammino minimo):** dato un grafo diretto e pesato $G = (V,E), w: E → \mathbb{R}$. Sia $h$ una qualsiasi funzione tale che $h: V → \mathbb{R}$. Per ogni $(u,v) \in E$ si definisce $\hat{w}(u,v) = w(u,v) + h(u) - h(v)$. Sia $p = \langle v_1,v_2,…,v_l \rangle$ un qualsiasi cammino $v_0 \rightsquigarrow v_k$, allora $p$ è un cammino minimo $v_0 \rightsquigarrow v_k$ con $w$ se e solo se $G$ non ha cicli a peso negativo con $\hat{w}$. 
+
+**Dimostrazione:** per prima cosa si dimostra che $\hat{w}(p) = w(p) + h(v_0) - h(v_k)$: 
+$\hat{w}(p) = \sum\limits^k_{i=1} \hat{w}(v_{i-1},v_i) = \sum\limits^k_{i=1} (w(v_{i-1},v_i) + h(v_{i-1}) - h(v_i)) = \sum\limits^k_{i=1} (w(v_{i-1},v_i) + h(v_0) - h(v_k)) = w(p) + h(v_0) - h(v_k)$. Così ogni cammino $v_0 \xrightarrow{p} v_k$ ha $\hat{w}(p) = w(p) + h(v_0) - h(v_k)$ e $h(v_k)$ non dipende dal cammino a partire da $v_0$ fino a $v_k$. Se un cammino $v_0 \rightsquigarrow v_k$ è più breve di un altro con $w$, è anche più corto con $\hat{w}$.
+
+Ora è necessario ottenere una funzione $h: V → \mathbb{R}$ così che quando valutiamo $\hat{w}(u,v) = w(u,v) + h(u) - h(v)$ è $\geq 0$. Si fa la stessa cosa per vincoli diversi:
+- $G' = (V',E')$
+	- $V' = V \cup \{s\}$ dove $s$ è un nuovo vertice
+	- $E' = E \cup \{(s,v): v \in V\}$
+	- $w(s,v) = 0 \ \forall \ v \in V$ 
+
+Si definisce $h(v) = \delta(s,v) \ \forall \ v \in V$ 
+
+**Claim:** $\hat{w}(u,v) = w(u,v) + h(u) - h(v) \geq 0$ 
+
+**Dimostrazione:** dalla disuguaglianza triangolare, $\delta(s,v) \leq \delta(s,u) + w(u,v)$, $h(v) \leq h(u) + w(u,v)$. Perciò $w(u,v) + h(u) - h(v) \geq 0$ 
+
+```Pseudocode
+Johnson(G,w)
+	compute G', where G'.V = G.V U {s}, G'.E = G.E U {(s,v): v in G.V}, and w(s,v) = 0 for all v in G.V
+	if Bellman-Ford(G',w,s) == FALSE
+		print "the input graph contains a negative-weight cycle"
+	else 
+		for each vertex v in G'.V
+			set h(v) to the value of delta(s,v) computed by the Bellman-Ford algorithm
+		
+		for each edge (u,v) in G'.E
+			hat{w}(u,v) = w (u,v) + h(u) - h(v)
+			
+		let D = (d_uv) be a new n x n matrix
+		
+		for each vertex u in G.V
+			run Dijkstra(G,hat{w},u) to compute hat{delta}(u,v) for all v in G.V
+			for each vertex v in G.V
+				d_uv = hat{delta}(u,v) + h(v) - h(u)
+			
+		return D		
+```
+
+Tempo di questo algoritmo:
+- $\Theta(V+E)$ per calcolare $G'$
+- $O(VE)$ per eseguire Bellman-Ford
+- $\Theta(E)$ per calcolare $\hat{w}$ 
+- $O(V^2 \lg(V) + VE)$ per eseguire l'algoritmo di Dijkstra $|V|$ volte (usando una Fibonacci heap)
+- $\Theta(V^2)$ per valutare la matrice $D$
+
+In totale il tempo speso per questo algoritmo è: $O(V^2 \lg(V) + VE)$ 
