@@ -1067,43 +1067,29 @@ Analisi: ho $|V|$ operazioni Insert e Extract-Min e $\leq |E|$ operazioni Decrea
 
 ###### All-Pairs shortest path
 Dato un grafo ordinato $G = (V,E)$ e una funzione peso $w: E → \mathbb{R}, |V| = n$. Si assume che i vertici siano numerati $1,2,…,n$. Il mio obiettivo è di creare una matrice $n \times n$ $D = (d_{ij})$ di shortest-paths distances, in questo modo $d_{ij} = \delta(i,j)$ per ogni vertice $i$ e $j$. Si potrebbe eseguire l'algoritmo di Bellman-Ford per ogni vertice e avrebbe costo $O(V^2 E)$, che è $O(V^4)$ se il grafo è **denso** ($E = \Theta(V^2)$). Se non ci sono archi a peso negativo, si potrebbe eseguire l'algoritmo di Dijkstra una volta per ogni vertice. In tal caso avrei:
-- $O(VE \lg(V))$ con una binary heap, $O(V^3 \lg(v))$ se è denso
+- $O(VE \lg(V))$ con una binary heap, $O(V^3 \lg(V))$ se è denso
 - $O(V^2 \lg(V) + VE)$ con una Fibonacci heap, $O(V^3)$ se è denso
 
-Si assuma che il grafo $G$ sia dato come matrice di adiacenza di pesi: $W = (w_{ij})$ con i vertici numerati da 1 a $n$ => $w_{ij} = \begin{cases} 0 & \text{se } i = j \\ \text{peso dell'arco} (i,j) & \text{se } i \neq j, (i,j) \in E \\ \infty & \text{se } i \neq j, (i,j) \notin E \end{cases}$ 
+Si assuma che il grafo $G$ sia dato come matrice di adiacenza di pesi: $W = (w_{ij})$ con i vertici numerati da 1 a $n$ => $w_{ij} = \begin{cases} 0 & \text{se } i = j \\ \text{peso dell'arco } (i,j) & \text{se } i \neq j, (i,j) \in E \\ \infty & \text{se } i \neq j, (i,j) \notin E \end{cases}$ 
 
 **Soluzione ricorsiva:** sia $l^{(r)}_{ij} =$ peso del cammino minimo $i \rightsquigarrow j$ che contiene $\leq r$ archi.
 - $r = 0$: c'è un cammino minimo $i \rightsquigarrow j$ con $\leq r$ archi se e solo se $i = j$. Pertanto $l^{(0)}_{ij} = \begin{cases} 0 & \text{se } i = j \\ \infty & \text{se } i \neq j \end{cases}$ 
 - $r \geq 1$: quindi $l^{(r)}_{ij} = \min \{l^{(r-1)}_{ij}, \min \{l^{(r-1)}_{ik} + w_{kj}: 1 \leq k \leq n\}\} = \min \{l^{(r-1)}_{ik} + w_{kj}: 1 \leq k \leq n\}$ con $k$ i range con ogni possibile predecessore di $j$ e sapendo che $w_{jj} = 0 \ \forall \ j$ 
-- Si osserva che quando $r = 1$ si ha che $l^{(1)}_{ij} = w_{ij}$ 
-
-Concettualmente quando il cammino è ristretto ad un solo arco, il peso del cammino minimo $i \rightsquigarrow j$ deve essere $w_{ij}$ 
+- Si osserva che quando $r = 1$ si ha che $l^{(1)}_{ij} = w_{ij}$. Concettualmente quando il cammino è ristretto ad un solo arco, il peso del cammino minimo $i \rightsquigarrow j$ deve essere $w_{ij}$ 
 
 **Calcolo di una soluzione bottom-up:** si calcolano $L^{(1)},L^{(2)},…,L^{(n)}$. Si inizia da $L^{(1)} = W$ siccome $l^{(1)}_{ij} = w_{ij}$, andando da $L^{(r-1)}$ a $L^{(r)}$ 
 
-```Pseudocode
-Extend-Shortest-Paths(L^(r-1),W,L^(r),n)
-	//si assume che gli elementi di L^(r) sono inizializzati a infinito
-	for i = 1 to n
-		for j = 1 to n
-			for k = 1 to n
-				l^(r)_ij = min{l^(r)_ij, l^(r-1)_ik + w_kj}
-```
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260421215145.png" width="200">
+</div>
 
 Il tempo di questo algoritmo è $\Theta(n^3)$. 
 
 Valutando ogni $L^{(r)}$:
-```Pseudocode
-Slow-APSP(W,L^(0),n)
-	let L = (l_ij) and M = (m_ij) be new n x n matrices
-	L = L^(0)
-	for r = 1 to n-1
-		M = infinity //initilize M
-		// Compute the matrix product M = LW
-		Extend-Shortest-Paths(L,W,M,n)
-		L = M
-	return L
-```
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260421215427.png" width="200">
+</div>
 
 Il tempo di questo algoritmo è $\Theta(n^4)$. 
 
@@ -1125,18 +1111,9 @@ for i = 1 to n
 
 Siccome il nostro obiettivo è quello di valutare il più velocemente possibile $L^{(r-1)}$, non mi è necessario calcolare tutti gli $L^{(1)},L^{(2)},…,L^{(n-2)}$ intermedi. Si supponga di avere una matrice $A$ e vogliamo calcolare $A^{(n-1)}$ (come chiamare Extend-Shortest-Paths n-1 volte). Si calcolano $A,A^2,A^4.A^8,…$, se sapessimo che $A^e = A^{(n-1)} \ \forall \ r \geq n-1$ si potrebbe finire con $A^r$, dove $r$ è la più piccola potenza di 2 che è $\geq n-1$ ($r = 2^{\lceil{\lg(n-1)}\rceil})$ 
 
-```Pseudocode
-Faste-APSP(W,n)
-	let L and M be new n x n matrices
-	L = W
-	r = 1
-	while r < n-1
-		M = infinity //initialize M
-		Extend-Shortest-Paths(L,L,M,n) //compute M = L^2
-		r = 2r
-		L = M //ready for the next iteration
-	return L
-```
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260421220831.png" width="200">
+</div>
 
 Il tempo di questo algoritmo è $\Theta(n^3 \lg(n))$. 
 
@@ -1148,22 +1125,15 @@ Il tempo di questo algoritmo è $\Theta(n^3 \lg(n))$.
   <img src="Pasted image 20260421094244.png" width="200">
 </div>
 
-$d^{(k)}_{ij} = \begin{cases} 0w_{ij} & \text{se } k = 0 \\ \min\{d^{(k-1)}_{ij},d^{(k-1)}_{ik} + d^{(k-1)}_{kj}\} & \text{se } k \geq 1 \end{cases}$. Si ha $d^{(0)}_{ij} = w_{ij}$ perché non si possono avere vertici intermedi => $\leq 1$ archi. Si vogliono $D^{(N)} = (d^{(n)}_{ij})$ siccome tutti i vertici numerati sono $\leq n$ 
+$d^{(k)}_{ij} = \begin{cases} w_{ij} & \text{se } k = 0 \\ \min\{d^{(k-1)}_{ij},d^{(k-1)}_{ik} + d^{(k-1)}_{kj}\} & \text{se } k \geq 1 \end{cases}$. Si ha $d^{(0)}_{ij} = w_{ij}$ perché non si possono avere vertici intermedi => $\leq 1$ archi. Si vogliono $D^{(N)} = (d^{(n)}_{ij})$ siccome tutti i vertici numerati sono $\leq n$ 
 
-```Pseudocode
-Floyd-Warshall(W,n)
-	D^(0) = W
-	for j = 1 to n
-		let D^(k) = (d^(k)_ij) be a new n x n matrix
-		for i = 1 to n
-			for j= 1 to n
-				d^(k)_ij = min{d^(k-1)_ij, d^(k-1)_ik + d^(k-1)_kj}
-	return D^(n)
-```
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260421221121.png" width="200">
+</div>
 
 Il tempo di questo algoritmo è $\Theta(n^3)$. 
 
-**Algoritmo di Johnson:** se il grafo è scarno, questo paga per eseguire l'algoritmo di Dijkstra  una volta per ogni vertice. Se usiamo la Fibonacci heap per la coda di priorità, il tempo di esecuzione sarebbe $O(V^2 \lg(V) + VE)$ che è meglio del $O(V^3)$ del Floyd-Warshall (se $E = o(V^2)$). Ma l'algoritmo di Dijkstra richiede che tutti i vertici abbiano peso non negativo. Con l'algoritmo di Johnson si può costruire un grafo equivalente che non abbia archi di peso negativo. Per fare ciò ho bisogno di una funzione peso $\hat{w}$ tale che:
+**Algoritmo di Johnson:** se il grafo è sparso, questo paga per eseguire l'algoritmo di Dijkstra  una volta per ogni vertice. Se usiamo la Fibonacci heap per la coda di priorità, il tempo di esecuzione sarebbe $O(V^2 \lg(V) + VE)$ che è meglio del $O(V^3)$ del Floyd-Warshall (se $E = o(V^2)$). Ma l'algoritmo di Dijkstra richiede che tutti i vertici abbiano peso non negativo. Con l'algoritmo di Johnson si può costruire un grafo equivalente che non abbia archi di peso negativo. Per fare ciò ho bisogno di una funzione peso $\hat{w}$ tale che:
 1. Per ogni $u,v \in V, p$ è il cammino minimo $u \rightsquigarrow v$ usando $w$ se e solo se $p$ è il cammino minimo $u \rightsquigarrow v$ usando $\hat{w}$ 
 2. Per ogni $(u,v) \in E, \hat{w}(u,v) \geq 0$ 
 
@@ -1186,27 +1156,9 @@ Si definisce $h(v) = \delta(s,v) \ \forall \ v \in V$
 
 **Dimostrazione:** dalla disuguaglianza triangolare, $\delta(s,v) \leq \delta(s,u) + w(u,v)$, $h(v) \leq h(u) + w(u,v)$. Perciò $w(u,v) + h(u) - h(v) \geq 0$ 
 
-```Pseudocode
-Johnson(G,w)
-	compute G', where G'.V = G.V U {s}, G'.E = G.E U {(s,v): v in G.V}, and w(s,v) = 0 for all v in G.V
-	if Bellman-Ford(G',w,s) == FALSE
-		print "the input graph contains a negative-weight cycle"
-	else 
-		for each vertex v in G'.V
-			set h(v) to the value of delta(s,v) computed by the Bellman-Ford algorithm
-		
-		for each edge (u,v) in G'.E
-			hat{w}(u,v) = w (u,v) + h(u) - h(v)
-			
-		let D = (d_uv) be a new n x n matrix
-		
-		for each vertex u in G.V
-			run Dijkstra(G,hat{w},u) to compute hat{delta}(u,v) for all v in G.V
-			for each vertex v in G.V
-				d_uv = hat{delta}(u,v) + h(v) - h(u)
-			
-		return D		
-```
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260421221523.png" width="200">
+</div>
 
 Tempo di questo algoritmo:
 - $\Theta(V+E)$ per calcolare $G'$
