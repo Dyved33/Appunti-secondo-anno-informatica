@@ -1547,57 +1547,58 @@ Le 3 pagine sono lunghe ciascuna 1024 byte, l’ultima pagina ha uno spazio “s
   <img src="Pasted image 20260422121518.png" width="200">
 </div>
 
-**Segmentazione:** un programma può essere diviso in segmenti:
-- Lunghezza differente
-- La lunghezza massima è limitata
-
-L'indirizzo logico è diviso in due parti:
-- Indice di segmento
-- Offset
-
-Caricamento come nella partizione dinamica e riduce la frammentazione esterna
-
-Visibile al programmatore: strumento per strutturare programma e dati: segmenti di codice e segmenti dati, un per modulo, stack
-
-Il programmatore deve tenere conto della massima lunghezza dei segmenti
+**Segmentazione:** Il caricamento dei programmi segmentati avviene tramite segmentazione dinamica. A ogni processo servono tante partizioni, una per ogni segmento, quindi a ogni processo assegneremo tanti partizioni quanti sono i segmenti possibili. Così facendo i segmenti sono più piccoli del programma intero, quindi tutti i fenomeni problematici che si avevano quando si aveva bisogno di una partizione molto grande non vi sono più (i segmenti sono piccoli, ce ne sono quindi tanti e la lunghezza massima è limitata). Il caricamento avviene come nella partizione dinamica e riduce la frammentazione esterna. Ciò che è visibile al programmatore è uno strumento per strutturare programma e dati: segmenti codice e segmenti dati, uno per modulo, stack. Il problema scaturisce dal fatto che, perché tutto funzioni, i segmenti non possono essere troppo grandi. La dimensione dei segmenti dipende dal programmatore che deve tenere conto della massima lunghezza dei segmenti (non succede dunque che a frame più piccoli o più grandi deve variare la grandezza del programma). Quindi gli indirizzi (logici) sono fatti dalla coppia: 
+- indirizzo di segmento
+- offset.
 
 **Traduzione degli indirizzi:**
-1. gli n bits più a sinistra danno l’indice di segmento 
-2. usare l’indice di segmento per trovare l’indirizzo fisico in cui inizia il segmento (indirizzo base) 
+1. Vi è un indirizzo logico che è fatto da n bit, che è l’indirizzo di segmento, e un’altra parte che è l’offset.
+2. Dopodiché nel nostro sistema si ha una tabella dei segmenti (non più delle pagine) per cui ogni processo deve usare l’indice di segmento per trovare l’indirizzo fisico in cui comincia il segmento che mi interessa (indirizzo base) 
 3. comparare l’offset nei rimanenti m bits con la lunghezza del segmento (indirizzo limite). Se è più grande allora non è valido (eccezione di indirizzo) 
-4. l’indirizzo fisico è dato dalla somma dell’indirizzo base e dell’offset
+4. l’indirizzo fisico a cui accedere è dato dalla somma dell’indirizzo base e dell’offset
+
+> [!info] Nota bene:
+> Non posso ancora accedere all'indirizzo perché vi potrebbe essere un’eccezione di indirizzo. Si applica dunque la protezione di memoria, ovvero confronto il risultato della mia operazione con l’indirizzo limite, se è più grande il sistema operativo segnala un’eccezione. Nella paginazione non c’è questo problema, poiché la dimensione è fissa, il massimo valore che può assumere è la dimensione del frame.
+> Sommo l’offset con l’indirizzo base, il risultato è l’indirizzo fisico. L’accesso alla tabella dei segmenti non è frequente perché tipicamente un programma rimane nel segmento per tempi molto lunghi.
+> L’aggiornamento di questi registri (base e limite) avviene di fatto una volta ogni tanto, non a ogni istruzione. Il discorso è diverso nel caso della paginazione, lì la divisione è puramente casuale.
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260422122518.png" width="200">
 </div>
 
 ###### Memoria virtuale
-Le caratteristiche fondamentali per la gestione dinamica della memoria:
-- Rilocazione dinamica run-time
-- Possibilità di spezzare il processo in parti che non necessitano di essere caricati in spazi contigui della memoria durante l'esecuzione
+Il programma per essere eseguito deve stare in memoria, che però è limitata. Per questo i sistemi moderni sfruttano il modello della memoria virtuale. Questo è caratterizzato da:
+- Rilocazione, ovvero la traduzione degli indirizzi, che normalmente avviene a tempo di esecuzione (run-time). 
+- Il processo, inoltre, non ha necessariamente un modello continuo ma può essere paginato oppure segmentato, quindi in realtà il programma è diviso in pezzi. Il processo può avanzare anche solo se in memoria vi sono i pezzi che mi servono (cioè i processi) e non il programma intero (non serve il programma sia caricato in pezzi contigui di memoria). 
 
-> [!info] 
-> Non è necessario che tutte le pagine, o segmenti, siano in memoria principale durante l'esecuzione
+Dunque il punto chiave è che non è necessario che l’intero programma sia in memoria per poter eseguire il processo. Quindi di volta in volta verrà caricata in memoria solo la parte di processo che ci serve in tale momento.
 
-Esecuzione:
-- Il SO carica in memoria solo poche pagine (o segmenti) del programma (*Resident set)
+> [!info] Il principio di località:
+> Per tempi d’esecuzione relativamente brevi le istruzioni e i dati necessari sono tutti concentrati in una piccola parte di programma. Osservando il programma per un piccolo periodo, ci si accorge che le istruzioni e i dati sono concentrati in una piccola parte. Effettivamente per periodi relativamente lunghi (si parla di frazioni di secondo) il processo utilizza in realtà aree di programma molto piccole.
+
+*Esecuzione:*
+- Il SO carica in memoria (disco rigido) solo poche pagine (o segmenti) del programma con i dati (*Resident set)
 - Quando è richiesto un indirizzo non presente in memoria principale si genera un'interruzione
-- Il SO sospende il processo e il processore è assegnato ea un altro processo la pagina ( o segmento) contenente l'indirizzo logico richiesto è caricato in memoria (*DMA*)
-- Al termine del caricamento, è generata un'interruzione in seguito alla quale il SO riattiva il processo
+- Il SO sospende il processo e il processore è assegnato ad un altro processo e la pagina (o segmento) contenente l'indirizzo logico richiesto è caricato in memoria. Il trasferimento da disco a memoria principale avviene senza spessa di CPU.
+- Al termine del caricamento, è generata un'interruzione (dal controllore = *DMA*) in seguito alla quale il SO riattiva il processo
 
 *Vantaggi:*
-- Incremento della multiprogrammazione: poiché solo parte dei processi è caricata in memoria, c'è spazio per più processi. Inoltre efficientemente del processore (aumentano i processi pronti)
-- Un processo può esse più lungo dell'intera memoria principale: non è più necessario l'overlay, il SO carica solo le parti di programma necessarie d volta involta e il programmatore non deve conoscere la quantità di memoria disponibile
+- Incremento della multiprogrammazione: poiché solo parte dei processi è caricata in memoria, c'è spazio per più processi. Ciò garantisce l’efficientamento della gestione del processore, perché aumentano i processi pronti.
+- Un processo può esse più lungo dell'intera memoria principale: non è più necessario l'overlay, il SO carica solo le parti di programma necessarie d volta involta e il programmatore non deve conoscere la quantità di memoria disponibile (si può avere in linea di principio un programma che richiede uno spazio molto maggiore di quello disponibile in sistema perché tanto non deve essere caricato interamente in memoria)
 
 | Memoria reale                 | Memoria virtuale                                                                                       |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------ |
 | Memoria principale (i.e. RAM) | Memoria percepita dal programmatore e dall'utente, realizzadta dal So mediante il caricamente dinamico |
 IMMAGINE TABELLA
 
-**Principio di località:** il trashing è lo stato in cui li sistema spende la maggior parte del suo tempo ne caricamento e scaricamento dalla memoria, anziché nell'esecuzione dei processi:
+> [!info] Ricorda:
+> Vi sono due modelli di memoria: paginazione e segmentazione. 
+> - Possibilità di caricamento semplice, ovvero segmentazione semplice e possibilità con memoria virtuale: Nella paginazione la memoria viene divisa in frames, nella segmentazione la memoria non è partizionata inizialmente, quindi avviene un partizionamento dinamico al caricamento. Il programma è tagliato in pagine nel caso di paginazione (tutte della stessa dimensione) e ciò è svolto dal sistema operativo, nel caso della segmentazione il programma è diviso in segmenti scelti dal programmatore. 
+> - Spreco di memoria: con la segmentazione c’è frammentazione interna, l’ultima pagina è minore. Con la paginazione c’è frammentazione esterna, certe pagine sono troppo piccole per caricarvi processi. La frammentazione interna rispetto al caricamento in partizioni fisse prevede partizioni fisse, al massimo si possono sprecare un frame -1 byte nella nostra memoria, mentre con la segmentazione avendo segmenti che sono più piccoli di un programma con modello continuo, frammenti piccoli si riescono a utilizzare. Per la paginazione vi è la tabella delle pagine in cui l’informazione principale è il frame occupato da ogni pagina, mentre nella segmentazione si ha una tabella dei segmenti per ciascun processo che mostra l’indirizzo di caricamento e la lunghezza di ciascun segmento. L’indirizzo fisico nel caso della paginazione si ottiene sostituendo il numero di pagine con l’indice di frame, nel caso della segmentazione bisogna calcolare l’indirizzo fisico tramite il numero di segmento e l’offset.
+
+**Principio di località:** i riferimenti a dati e codice di un processo si concentrano in zone ben precise del programma, quindi si concentrano in poche pagine e in pochi segmenti. Il principio di località assicura che di solito il trashing non avviene. Il trashing è lo stato in cui li sistema spende la maggior parte del suo tempo ne caricamento e scaricamento dalla memoria, anziché nell'esecuzione dei processi:
 - I riferimenti a dati e codice in un processo, per brevi periodi di tempo, tendono a raggrupparsi in poche pagine (o segmenti)
 - Solo una piccola parte del processo è necessaria per brevi periodi di tempo
-- È possibile fare ipotesi intelligenti si quali parti saranno necessarie in futuro
-- Questo evita thrashing
+- È possibile fare ipotesi intelligenti si quali parti saranno necessarie in futuro (questo evita thrashing)
 
 L'hardware deve supportare la paginazione e la segmentazione. Il SO deve includere il software per gestire il movimento delle pagine o dei segmenti fra memoria secondaria e memoria principale
