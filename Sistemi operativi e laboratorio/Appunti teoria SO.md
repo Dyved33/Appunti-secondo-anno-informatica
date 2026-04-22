@@ -1516,7 +1516,7 @@ Il best-fit può sembrare il metodo migliore però con esso si creano un sacco d
 
 Gli indirizzi all’interno del nostro programma possono essere logici, ossia riferimenti a una locazione di memoria indipendente dall’assegnazione della memoria principale al processo, quindi il vero indirizzo del dato non è conosciuto al programmatore. L’indirizzo fisico, invece, è l’effettiva posizione del dato nella memoria principale e l’indirizzo relativo è l’indirizzo logico espresso come posizione relativa a un altro indirizzo noto. 
 
-*Rilocazione:* La rilocazione può essere **statica** se a un processo sarà sempre assegnata la stessa partizione, in questo caso si può usare un caricatore (**loader**) rilocante. Al caricamento tutti i riferimenti a indirizzi relativi sono sostituiti da indirizzi assoluti, determinati dall’indirizzo base del processo caricato. La rilocazione può essere anche **dinamica** se il processo può occupare differenti partizioni nel corso della sua vita (ad esempio partizioni variabili e caricamento dinamico). Si ha  quando avviene lo swapping tra memoria principale e secondaria: 
+**Rilocazione:** La rilocazione può essere **statica** se a un processo sarà sempre assegnata la stessa partizione, in questo caso si può usare un caricatore (**loader**) rilocante. Al caricamento tutti i riferimenti a indirizzi relativi sono sostituiti da indirizzi assoluti, determinati dall’indirizzo base del processo caricato. La rilocazione può essere anche **dinamica** se il processo può occupare differenti partizioni nel corso della sua vita (ad esempio partizioni variabili e caricamento dinamico). Si ha  quando avviene lo swapping tra memoria principale e secondaria: 
 - Quando l’immagine del processo è creata, viene caricata in una partizione; 
 - Quando è trasferita in memoria secondaria e poi ricaricata in memoria, occuperà un’altra partizione; 
 - In caso di compattamento della memoria, la partizione sarà ancora modificata. 
@@ -1541,4 +1541,63 @@ Per ogni processo viene creata una tabella che contiene la posizione del frame p
   <img src="Screenshot From 2026-04-09 13-17-49.png" style="max-width: 60%; height: auto;">
 </div>
 
-Le 3 pagine sono lunghe ciascuna 1024 byte, l’ultima pagina ha uno spazio “sprecato” dovuto al fatto che il programma occupa 2700 byte, quindi all’ultima pagina se ne allocano 652 e il resto non servirà. L’indirizzo relativo 1502 rappresenta la casella indicata dalla freccia, l’indirizzo logico corrispondente è che, la casella appartiene alla pagina di numero 1, con offset = 478, ossia salterà i primi 1024 byte che appartengono alla prima pagina (la pagina 0) e partirà dal 1024-esimo byte applicandogli l’offset di 478 che ci permette di arrivare all’indirizzo 1502, 
+Le 3 pagine sono lunghe ciascuna 1024 byte, l’ultima pagina ha uno spazio “sprecato” dovuto al fatto che il programma occupa 2700 byte, quindi all’ultima pagina se ne allocano 652 e il resto non servirà. L’indirizzo relativo 1502 rappresenta la casella indicata dalla freccia, l’indirizzo logico corrispondente è che, la casella appartiene alla pagina di numero 1, con offset = 478, ossia salterà i primi 1024 byte che appartengono alla prima pagina (la pagina 0) e partirà dal 1024-esimo byte applicandogli l’offset di 478 che ci permette di arrivare all’indirizzo 1502
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260422121518.png" width="200">
+</div>
+
+**Segmentazione:** un programma può essere diviso in segmenti:
+- Lunghezza differente
+- La lunghezza massima è limitata
+
+L'indirizzo logico è diviso in due parti:
+- Indice di segmento
+- Offset
+
+Caricamento come nella partizione dinamica e riduce la frammentazione esterna
+
+Visibile al programmatore: strumento per strutturare programma e dati: segmenti di codice e segmenti dati, un per modulo, stack
+
+Il programmatore deve tenere conto della massima lunghezza dei segmenti
+
+**Traduzione degli indirizzi:**
+1. gli n bits più a sinistra danno l’indice di segmento 
+2. usare l’indice di segmento per trovare l’indirizzo fisico in cui inizia il segmento (indirizzo base) 
+3. comparare l’offset nei rimanenti m bits con la lunghezza del segmento (indirizzo limite). Se è più grande allora non è valido (eccezione di indirizzo) 
+4. l’indirizzo fisico è dato dalla somma dell’indirizzo base e dell’offset
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260422122518.png" width="200">
+</div>
+
+###### Memoria virtuale
+Le caratteristiche fondamentali per la gestione dinamica della memoria:
+- Rilocazione dinamica run-time
+- Possibilità di spezzare il processo in parti che non necessitano di essere caricati in spazi contigui della memoria durante l'esecuzione
+
+> [!info] 
+> Non è necessario che tutte le pagine, o segmenti, siano in memoria principale durante l'esecuzione
+
+Esecuzione:
+- Il SO carica in memoria solo poche pagine (o segmenti) del programma (*Resident set)
+- Quando è richiesto un indirizzo non presente in memoria principale si genera un'interruzione
+- Il SO sospende il processo e il processore è assegnato ea un altro processo la pagina ( o segmento) contenente l'indirizzo logico richiesto è caricato in memoria (*DMA*)
+- Al termine del caricamento, è generata un'interruzione in seguito alla quale il SO riattiva il processo
+
+*Vantaggi:*
+- Incremento della multiprogrammazione: poiché solo parte dei processi è caricata in memoria, c'è spazio per più processi. Inoltre efficientemente del processore (aumentano i processi pronti)
+- Un processo può esse più lungo dell'intera memoria principale: non è più necessario l'overlay, il SO carica solo le parti di programma necessarie d volta involta e il programmatore non deve conoscere la quantità di memoria disponibile
+
+| Memoria reale                 | Memoria virtuale                                                                                       |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Memoria principale (i.e. RAM) | Memoria percepita dal programmatore e dall'utente, realizzadta dal So mediante il caricamente dinamico |
+IMMAGINE TABELLA
+
+**Principio di località:** il trashing è lo stato in cui li sistema spende la maggior parte del suo tempo ne caricamento e scaricamento dalla memoria, anziché nell'esecuzione dei processi:
+- I riferimenti a dati e codice in un processo, per brevi periodi di tempo, tendono a raggrupparsi in poche pagine (o segmenti)
+- Solo una piccola parte del processo è necessaria per brevi periodi di tempo
+- È possibile fare ipotesi intelligenti si quali parti saranno necessarie in futuro
+- Questo evita thrashing
+
+L'hardware deve supportare la paginazione e la segmentazione. Il SO deve includere il software per gestire il movimento delle pagine o dei segmenti fra memoria secondaria e memoria principale
