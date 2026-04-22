@@ -22,7 +22,7 @@ struct Node *newNode(int key)
 struct Node *insert(struct Node *parent, int key)
 {
     if (parent == NULL)
-        return newNode(key); /* se non c'è un nodo padre ne creo uno nuovo */
+        return newNode(key); /* se non c'è un nodo ne creo uno nuovo */
     if (key < parent->data)
     {
         parent->left = insert(parent->left, key); /* se la chiave è minore del nodo padre, inserisco a sinistra */
@@ -34,31 +34,24 @@ struct Node *insert(struct Node *parent, int key)
     return parent; /* ritorno il nodo padre */
 }
 
-struct Node *delete(struct Node *root, int key)
-{
-    if (root == NULL)
-        return root;
-    if (key < root->data)
-        root->left = delete(root->left, key);
-    else if (key > root->data)
-        root->right = delete(root->right, key);
-    else
-    {
-        if (root->left == NULL)
-        {
-            struct Node *temp = root->right;
-            free(root);
-            return temp;
-        }
-        else if (root->right == NULL)
-        {
-            struct Node *temp = root->left;
-            free(root);
-            return temp;
-        }
-        struct Node *temp = minimum(root->right);
-        root->data = temp->data;
-        root->right = delete(root->right, temp->data);
-    }
-    return root;
-}
+/* RB_insert (T, z)
+x = T.root
+y = T.NIL
+while x != T.NIL
+	  y = x
+	  if z.key < x.key
+		   x = x.left
+	  else
+		   x = x.right 
+ z.p = y
+ 
+ if y == T.NIL
+	  T.root = z
+ elseif z.key < y.key
+	  y.left = z
+ else 
+	  y.right = z
+ z.left = T.NIL
+ z.right = T.NIL
+ z.color = RED
+ RB_insert_fixup */

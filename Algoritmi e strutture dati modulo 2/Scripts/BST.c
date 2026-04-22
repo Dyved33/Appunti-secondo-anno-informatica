@@ -17,10 +17,11 @@ struct Node *newNode(int key)
     return node;
 }
 
+// mi sposto nell'albero a destra o a sinistra del nodo che sto leggendo (in base alle proprietà degli alberi binari) finché non arrivo in fondo all'albero e lì inserisco il nodo
 struct Node *insert(struct Node *parent, int key)
 {
     if (parent == NULL)
-        return newNode(key); /* se non c'è un nodo padre ne creo uno nuovo */
+        return newNode(key); // se non c'è un nodo padre ne creo uno nuovo (mi serve anche per inserire il nuovo nodo in fondo all'albero)
     if (key < parent->data)
     {
         parent->left = insert(parent->left, key); /* se la chiave è minore del nodo padre, inserisco a sinistra */
@@ -32,15 +33,18 @@ struct Node *insert(struct Node *parent, int key)
     return parent; /* ritorno il nodo padre */
 }
 
+// per condurre la ricerca mi bastano le proprietà dell'albero
 struct Node *search(struct Node *root, int key)
 {
     if (root == NULL || root->data == key)
         return root;
     if (key < root->data)
         return search(root->left, key);
-    return search(root->right, key);
+    else if (key > root->data)
+        return search(root->right, key);
 }
 
+// per trovare il minimo nell'albero vado tutto a sinistra
 struct Node *minimum(struct Node *root)
 {
     while (root->left != NULL)
@@ -48,6 +52,7 @@ struct Node *minimum(struct Node *root)
     return root;
 }
 
+// per trovare il massimo nell'albero vado tutto a destra
 struct Node *maximum(struct Node *root)
 {
     while (root->right != NULL)
@@ -55,67 +60,156 @@ struct Node *maximum(struct Node *root)
     return root;
 }
 
+// cerco il maggiore dei nodi più piccoli del corrente
 struct Node *Predecessor(struct Node *root, struct Node *curr)
 {
+    if (root == NULL || curr == NULL)
+        return NULL;
+
+    // Caso 1: c'è sottoalbero sinistro -> massimo del sottoalbero sinistro
     if (curr->left != NULL)
         return maximum(curr->left);
-    struct Node *predecessor = NULL;
-    while (root != NULL)
+
+    // Caso 2: nessun sottoalbero sinistro -> risalgo dagli antenati
+    struct Node *parent = root;
+    while (parent != curr)
     {
-        if (curr->data > root->data)
+        if (curr->data > parent->data)
         {
-            predecessor = root;
-            root = root->right;
+            parent = parent->right;
         }
-        else
-            root = root->left;
+        else if (curr->data < parent->data)
+        {
+            parent = parent->left;
+        }
     }
-    return predecessor;        
+    return parent;
 }
 
+// cerco il minore dei nodi più grandi del corrente
 struct Node *Successor(struct Node *root, struct Node *curr)
 {
-    if (curr->right != NULL)
+    if (root == NULL || curr == NULL)
+        return NULL;
+
+    // Caso 1: c'è sottoalbero destro -> minimo del sottoalbero destro
+    if (curr->left != NULL)
         return minimum(curr->right);
-    struct Node *successor = NULL;
-    while (root != NULL)
+
+    // Caso 2: nessun sottoalbero destro -> risalgo dagli antenati
+    struct Node *parent = root;
+    while (parent != curr)
     {
-        if (curr->data < root->data)
+        if (curr->data > parent->data)
         {
-            successor = root;
-            root = root->left;
+            parent = parent->right;
         }
-        else
-            root = root->right;
+        else if (curr->data < parent->data)
+        {
+            parent = parent->left;
+        }
     }
-    return successor;        
+    return parent;
 }
 
-struct Node *delete(struct Node *root, int key)
+struct Node *delete(struct Node *root, struct Node *curr)
 {
-    if (root == NULL)
-        return root;
-    if (key < root->data)
-        root->left = delete(root->left, key);
-    else if (key > root->data)
-        root->right = delete(root->right, key);
-    else
+    struct Node *tmp = NULL;
+    struct Node *parent = root;
+    struct Node *succ = NULL;
+
+    tmp = search(root, curr);
+
+    while (parent != curr)
     {
-        if (root->left == NULL)
+        if (curr->data > parent->data)
         {
-            struct Node *temp = root->right;
-            free(root);
-            return temp;
+            parent = parent->right;
         }
-        else if (root->right == NULL)
+        else if (curr->data < parent->data)
         {
-            struct Node *temp = root->left;
-            free(root);
-            return temp;
+            parent = parent->left;
         }
-        struct Node *temp = minimum(root->right);
-        root->data = temp->data;
-        root->right = delete(root->right, temp->data);
     }
-    return root;
+
+    if (tmp == NULL)
+        return NULL;
+
+    if (tmp->left == NULL && tmp->right == NULL)
+        free(tmp);
+    else if (tmp->left == NULL)
+    {
+        if (parent->data > tmp->data)
+        {
+            parent->left = tmp->right;
+            free(tmp);
+        }
+        else
+        {
+            parent->right = tmp->right;
+            free(tmp);
+        }
+    }
+    else if (tmp->right == NULL)
+    {
+        if (parent->data > tmp->data)
+        {
+            parent->left = tmp->left;
+            free(tmp);
+        }
+        else
+        {
+            parent->right = tmp->left;
+            free(tmp);
+        }
+    }
+    else if (tmp->left != NULL && tmp->right != NULL)
+    {
+        succ = Successor(root, curr);
+
+        if (parent->data > succ->data)
+        {
+            parent->left = succ;
+            succ->left = tmp->left;
+            succ->right = tmp->right;
+            free(tmp);
+        }
+        else if (parent->data < succ->data)
+        {
+            parent->right = succ;
+            succ->left = tmp->left;
+            succ->right = tmp->right;
+            free(tmp);
+        }
+    }
 }
+
+/* treeDelete(T,z)
+ if z.left == NIL
+  transplant(T,z,z.right)
+ elseif z.right == NIL
+  transplant(T,z,z.left)
+ else
+  y = treeMinimum(z.right)
+
+  if y != z.right
+   transplant(T,y,y.right)
+   y.right = z.right
+   y.right = y
+
+  transplant(T,z,y)
+  y.left = z.left
+  y.left.p = y */
+
+  
+  /* transplant(T,u,v)
+ if u.p == NIL
+  T.root = v
+ elseif u == u.p.left
+  u.p.left = v
+ else 
+  u.p.right = v
+
+ if v != NIL
+  v.p = u.p
+ */
