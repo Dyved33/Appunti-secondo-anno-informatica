@@ -545,17 +545,7 @@ la ricerca globale fa partire una ricerca locale su ogni vertice per esplorare t
 ```
 
 ```Pseudocode
-DFS-Visit
-	time = time +1
-	u.d = time
-	u.color = GRAY
-	for each vertex v in G.Adj[u]
-		if v.color == WHITE
-			v.parent = u
-			DFS-Visit(G,v)
-	time = time +1
-	u.f = time
-	u.color = BLACK
+<
 ```
 
 > [!example] ![[Screenshot From 2026-03-16 19-15-31.png|200]]

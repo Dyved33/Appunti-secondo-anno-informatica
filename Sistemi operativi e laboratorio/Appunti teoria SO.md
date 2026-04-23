@@ -1589,7 +1589,9 @@ Dunque il punto chiave è che non è necessario che l’intero programma sia in 
 | Memoria reale                 | Memoria virtuale                                                                                       |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------ |
 | Memoria principale (i.e. RAM) | Memoria percepita dal programmatore e dall'utente, realizzadta dal So mediante il caricamente dinamico |
-IMMAGINE TABELLA
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423220054.png" width="200">
+</div>
 
 > [!info] Ricorda:
 > Vi sono due modelli di memoria: paginazione e segmentazione. 
@@ -1605,7 +1607,21 @@ L'hardware deve supportare la paginazione e la segmentazione. Il SO deve include
 
 **Paginazione:** nel linguaggio comune, il termine memoria virtuale si riferisce alla paginazione dinamica. Ogni processa ba un a tabella delle pagine:
 
-IMMAGINI
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423220143.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423220222.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423220242.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423220257.png" width="200">
+</div>
 
 **Tabella delle pagine invertite:** il numero di pagina è mappato in una tavella hash- il valore di hash punta alla tabella delle pagine invertita, contenente solo le pagine caricate in memoria principale. 
 
@@ -1617,7 +1633,9 @@ Campi della PTE:
 - Bit di controllo
 - Puntatore alla entry successiva (per la hash)
 
-IMMAGINE 
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423220420.png" width="200">
+</div>
 
 **Translation lookaside buffer:** evita un doppio accesso in memoria a ogni riferimento:
 - Per la table entry
@@ -1625,11 +1643,27 @@ IMMAGINE
 
 In questa memoria veloce (cache) ci sono le PTE usate di recente. Inoltre c'è una mappa associativa che permette la ricerca simultanea del campo indice di pagina in tutti i PTE
 
-IMMAGINI
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423220500.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423220523.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423220541.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423220556.png" width="200">
+</div>
 
 **Dimensioni delle pagine:** pagine piccole riducono la frammentazione interna, ma aumentano la dimensione della tabella delle pagine: gestione dinamica delle tabella delle pagine. Le caratteristiche fisiche della memoria secondaria influiscono sulla scelta (trasferimento a blocchi). La dimensione della pagine influisce sulla frequenza degli errori di pagina
 
-IMMAGINE
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423220704.png" width="200">
+</div>
 
 La scelta della dimensione è basata su:
 - Dimensione della memoria principale e dei programmi. 
@@ -1651,13 +1685,21 @@ La scelta della dimensione è basata su:
 - Flag 'caricato'
 - Flag 'modificato'
 
-IMMAGINE
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423220754.png" width="200">
+</div>
 
 **Segmentazione paginata:** nella segmentazione paginata:
 - Lo spazio logico è diviso in segmenti
 - Ogni segmento è diviso in pagine di dimensione fissa, uguale alla lunghezza dei frame della memoria principale
 
-IMMAGINI
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423220836.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423220859.png" width="200">
+</div>
 
 **Protezione e condivisione:** la segmentazione facilita l'implementazione della protezione e della condivisione:
 - Ogni record della tabella dei sementi contiene l'indirizzo base e lunghezza , per controllare accessi erronei
