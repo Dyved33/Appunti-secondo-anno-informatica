@@ -3676,3 +3676,209 @@ Obiettivo operativo: tanti unit test per feedback veloce, integration test mirat
 > - La rete di test automatici è ciò che rende più praticabili refactoring ed evoluzione continua del sistema. 
 > - Il test-first è utile soprattutto perché costringe a chiarire comportamento e confini prima dell’implementazione.
 
+###### JUnit 5: test
+Nel ciclo di sviluppo moderno, implementazione e verifica non sono fasi separate, ma attività che procedono in modo intrecciato. Il codice viene scritto insieme ai test che ne descrivono il comportamento atteso, rendendo esplicite ipotesi e decisioni che altrimenti rimarrebbero implicite. L’esecuzione frequente dei test fornisce un feedback immediato sugli effetti delle modifiche introdotte. Questo feedback consente di individuare rapidamente errori e regressioni, prima che il contesto diventi troppo complesso o difficile da ricostruire. Nel tempo, la presenza dei test influenza il design del sistema, favorendo soluzioni più semplici, modulari e facilmente evolvibili.  
+
+**JUnit 5:** è il framework di riferimento per la scrittura ed esecuzione di test automatici in Java, progettato per supportare in modo esplicito il testing di unità. Fornisce un insieme di annotazioni, asserzioni e meccanismi di esecuzione che permettono di descrivere in modo preciso il comportamento atteso del codice. L’obiettivo principale non è “verificare che il codice funzioni” in senso generico, ma rendere eseguibili e verificabili le regole e le ipotesi su cui il sistema è costruito. L’integrazione nativa con gli ambienti di sviluppo consente l’esecuzione frequente dei test come parte naturale del lavoro quotidiano. In questo senso, JUnit 5 rappresenta lo strumento operativo che rende praticabili i principi di testing discussi finora.  
+
+L’obiettivo non è esplorare tutte le funzionalità del framework, ma mostrare come tradurre in pratica i concetti visti nelle lezioni precedenti. L’attenzione sarà quindi concentrata su un sottoinsieme essenziale: 
+- struttura di una classe di test, 
+- gestione delle fixture, 
+- uso consapevole degli assert, 
+- leggibilità e naming dei test. 
+
+Questo è sufficiente per scrivere test di unità chiari, efficaci e coerenti con gli obiettivi del corso.  
+
+**Struttura di base di un test JUnit:** Un test JUnit è organizzato in una **classe di test**, separata dal codice di produzione. Ogni **metodo di test** rappresenta un singolo caso o una singola regola da verificare. Le annotazioni definiscono ruolo e momento di esecuzione dei metodi (*@Test, @BeforeEach, @AfterEach*). La struttura favorisce test piccoli, leggibili e indipendenti, con risultati facilmente interpretabili. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423145146.png" width="200">
+</div>
+
+**La classe di test:** Una classe di test è una normale classe Java, collocata nel codice di test e dedicata esclusivamente alla verifica del comportamento. Per convenzione, il nome della classe di test riflette quello della classe sotto test, rendendo immediato il collegamento tra codice di produzione e verifica: 
+- *StudentServiceTest* 
+- *ExamServiceTest* 
+
+Ogni classe di test si concentra su una singola classe reale del sistema, evitando di mescolare responsabilità e comportamenti non correlati. Questa corrispondenza uno-a-uno favorisce la leggibilità, semplifica la navigazione del progetto e rende più chiaro cosa viene verificato e dove.  
+
+**Il metodo di test:** Un metodo di test è un normale metodo Java, annotato con @Test, che descrive un singolo comportamento atteso. Ogni metodo dovrebbe concentrarsi su una sola regola o condizione, evitando di mescolare più verifiche non correlate. Un buon metodo di test è tipicamente: 
+- piccolo, perché verifica un solo aspetto; 
+- focalizzato, perché ha uno scopo chiaro; 
+- indipendente, perché non dipende da altri test. 
+
+fail: test rosso → correggere il codice 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423145408.png" width="200">
+</div>
+
+**Fixture:** Una fixture rappresenta lo stato iniziale in cui un test viene eseguito, costruito in modo controllato e intenzionale. Il suo scopo principale è garantire che ogni test parta da condizioni note e ben definite. L’uso di fixture permette di ottenere test che risultano: 
+- puliti, perché non dipendono da esecuzioni precedenti; 
+- ripetibili, perché producono sempre lo stesso risultato a parità di condizioni; 
+- prevedibili, perché falliscono solo quando il comportamento è realmente errato. 
+
+In assenza di una fixture esplicita, i test tendono a dipendere implicitamente dallo stato lasciato da altri test, diventando fragili e difficili da interpretare.  
+
+**@BeforeEach:** @BeforeEach identifica un metodo eseguito automaticamente prima di ogni metodo di test. Il suo ruolo è costruire la fixture, inizializzando lo stato necessario all’esecuzione dei test. In questo modo ogni test parte da condizioni identiche, senza dipendere dall’ordine di esecuzione o da altri test. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423145555.png" width="200">
+</div>
+
+**@AfterEach:** @AfterEach identifica un metodo eseguito automaticamente dopo ogni metodo di test. Serve soprattutto a ripristinare lo stato esterno modificato dal test, quando questo è necessario. Esempi tipici sono: 
+- cancellare file temporanei creati dal test; 
+- ripulire directory di lavoro; 
+- riportare il database di test a uno stato noto. 
+
+Nei test di unità semplici, il suo utilizzo è spesso limitato, perché la fixture viene ricostruita da zero per ogni test.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423145707.png" width="200">
+</div>
+
+**Perché i test devono essere indipendenti?** L’ordine di esecuzione dei test non è garantito e non deve influenzarne il risultato. Ogni test dovrebbe costruire e usare il proprio stato, senza dipendere da effetti prodotti da altri test. Un test ben progettato fallisce solo quando il comportamento che verifica è effettivamente errato. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423145803.png" width="200">
+</div>
+
+**Assert:** Un **assert** esprime in forma eseguibile una proprietà che deve risultare vera al termine dell’azione verificata dal test. La sua funzione non è “controllare un valore a caso”, ma rendere esplicito il comportamento atteso del sistema in una certa condizione. Un test è quindi, in larga parte, una sequenza di scelte che portano a un punto in cui l’assert stabilisce cosa costituisce correttezza e cosa costituisce errore. Quando un test fallisce, la qualità dell’assert determina la qualità del feedback: un buon assert rende il fallimento comprensibile e direttamente collegabile alla causa.  
+
+JUnit mette a disposizione diverse famiglie di assert, ciascuna pensata per esprimere un tipo specifico di proprietà. La scelta dell’assert corretto contribuisce in modo diretto alla leggibilità del test e alla chiarezza del fallimento. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423145934.png" width="200">
+</div> 
+
+**assertEquals:** assertEquals verifica che il valore prodotto dal sistema coincida con il valore atteso in una determinata condizione. Un assert di questo tipo va letto come una frase dichiarativa: “dato questo scenario, il risultato deve essere questo”. Quando è ben scelto, assertEquals rende il test immediatamente comprensibile e facilita l’interpretazione dei fallimenti. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423150051.png" width="200">
+</div>
+
+**assertTrue:** assertTrue verifica che una condizione booleana sia vera. È utile quando si vuole controllare un vincolo espresso naturalmente come predicato (*isOpen(), isValid(), contains(...)*). 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423150204.png" width="200">
+</div>
+
+**assertFalse:** assertFalse verifica che una condizione booleana sia falsa. È il complemento naturale di assertTrue per esprimere in modo esplicito ciò che il sistema non deve permettere. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423150254.png" width="200">
+</div>
+
+**assertNotNull:** assertNotNull verifica che un oggetto sia stato creato o restituito correttamente. È utile per controllare precondizioni minime prima di assert più specifici. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423150341.png" width="200">
+</div>
+
+**assertThrows:** Le eccezioni non rappresentano solo errori tecnici, ma spesso esprimono regole di business violate. Testare che un’eccezione venga sollevata significa verificare che il sistema impedisca comportamenti non consentiti. In questo senso, un test può specificare in modo esplicito anche ciò che il sistema non deve permettere. Nella chiamata a assertThrows, () -> ... è una **funzione lambda**: rappresenta il blocco di codice che ci aspettiamo lanci l’eccezione (una funzione anonima senza argomenti).
+
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-04-23 15-04-47.png" width="200">
+</div>
+
+**Framework di testing in altri linguaggi:** JUnit 5 è il riferimento in Java, ma il concetto è trasversale: quasi ogni linguaggio ha framework analoghi per unit test, fixture e assert. Esempi comuni sono: 
+- Python: pytest, unittest; 
+- C++: GoogleTest, Catch 2; 
+- JavaScript/TypeScript: Jest, Vitest. 
+
+Cambia la sintassi, ma resta uguale l’obiettivo: verificare in modo automatico il comportamento atteso.  
+
+> [!example] Python: esempio con pytest:
+> ![[Pasted image 20260423150746.png|200]]
+
+> [!example] C++: esempio con GoogleTest:
+> ![[Pasted image 20260423150849.png|200]]
+
+**I test sono documentazione:** I test automatici vengono spesso letti più frequentemente del codice di produzione, soprattutto quando si deve capire come il sistema dovrebbe comportarsi. Un buon test non si limita a verificare un risultato, ma racconta una storia: descrive uno scenario, un’azione e un comportamento atteso. In questo contesto, il nome del test diventa parte integrante della documentazione del sistema, perché fornisce una descrizione sintetica e verificabile del comportamento.  
+
+**Naming sbagliato:** Alcuni nomi di test sono formalmente corretti, ma non comunicano quale comportamento venga verificato. Il risultato è che, quando un test fallisce, diventa necessario aprire e leggere il codice per capirne il senso. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423150953.png" width="200">
+</div>
+
+**Naming corretto:** Un buon nome di test descrive in modo sintetico lo scenario e il comportamento atteso. Questo rende la suite più leggibile e riduce la necessità di aprire il codice per capire cosa viene verificato. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423151046.png" width="200">
+</div>
+
+**Naming e responsabilità:** Ogni test dovrebbe essere responsabile della verifica di un singolo comportamento ben definito. Un nome vago è spesso il sintomo di un test che verifica troppe cose insieme o non ha uno scopo chiaro. Al contrario, un nome esplicito e anche relativamente lungo indica che il comportamento sotto test è stato chiarito prima ancora di guardare l’implementazione.  
+
+**Struttura del progetto:** Nei progetti Java moderni, il codice di produzione e il codice di test sono mantenuti separati in modo esplicito. Questa separazione riflette una distinzione concettuale: 
+- il codice in src/main/java definisce cosa fa il sistema; 
+- il codice in src/test/java definisce come quel comportamento viene verificato. 
+
+I test non sono codice “di supporto” o temporaneo, ma una parte strutturale del progetto, con pari dignità rispetto al codice di produzione. Mantenere questa distinzione rende più chiaro cosa appartiene al dominio del sistema e cosa appartiene alla sua specifica verificabile.  
+
+**Eseguire i test dall’IDE:** Gli ambienti di sviluppo moderni, come IntelliJ IDEA, integrano l’esecuzione dei test direttamente nel flusso di lavoro quotidiano. I test possono essere eseguiti a diversi livelli di granularità, a seconda del tipo di feedback che si vuole ottenere:
+- un singolo metodo di test, per verificare rapidamente una regola specifica; 
+- un’intera classe di test, per controllare un componente nel suo insieme; 
+- l’intera suite, per avere fiducia globale prima di un cambiamento più ampio. 
+
+Questa integrazione rende naturale l’uso frequente dei test, riducendo l’attrito tra scrittura del codice e verifica del comportamento.  
+
+**Interpretare i risultati:** L’esito di un test fornisce un feedback immediato sul rispetto o meno del comportamento specificato. Un fallimento indica una violazione della specifica, non un errore generico del programma. Lo stack trace è uno strumento per risalire al punto in cui il comportamento atteso non è stato rispettato.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423151344.png" width="200">
+</div>
+
+**Debug guidato dai test:** Quando un test fallisce, il debug non parte “a caso”: parte da una specifica violata. Flusso pratico consigliato: 
+1. leggere nome del test e messaggio di fallimento; 
+2. individuare il punto utile nello stack trace; 
+3. riprodurre il caso in debug con breakpoint mirato; 
+4. osservare stato e variabili nel punto della violazione; 
+5. correggere, rilanciare il test, poi la suite. 
+
+Obiettivo: correggere la causa del fallimento, non solo il sintomo.  
+
+> [!example] Test rosso -> debug -> fix 
+> ![[Pasted image 20260423151542.png|200]]
+> 
+> - Il test attende 2 iscritti, ma il servizio ne restituisce 1. 
+> - Si imposta un breakpoint nel metodo enroll(...) e si verifica: 
+> 	- se il secondo inserimento viene davvero eseguito; 
+> 	- se una condizione blocca in anticipo il flusso; 
+> 	- se la collection usata per tracciare gli iscritti viene aggiornata. 
+> - Correzione tipica: correzione della condizione o dell’aggiornamento stato. 
+> - Verifica finale: test rosso diventa verde, poi riesecuzione della suite.  
+
+**UniManager:** I test vengono scritti su classi reali del sistema, non su esempi artificiali o semplificati. In particolare, vengono testati servizi applicativi come: 
+- StudentService, per la gestione degli studenti; 
+- ExamService, per la gestione di appelli, iscrizioni e voti. 
+
+Ogni classe di test verifica regole di business precise, come vincoli di iscrizione o condizioni di validità dei dati. Questo consente di osservare come JUnit venga usato su codice che potrebbe realmente evolvere nel tempo.  
+
+> [!example] Test completo:
+> ![[Pasted image 20260423151753.png|200]]
+
+**Come rendiamo i test semplici:** Per mantenere i test di unità rapidi e focalizzati, le dipendenze infrastrutturali vengono eliminate o sostituite. In particolare: 
+- i repository sono implementati in memoria; 
+- non viene utilizzato alcun database reale; 
+- non vengono coinvolti framework o componenti esterni. 
+
+Questo permette di concentrarsi esclusivamente sulla logica di dominio e sui comportamenti da verificare. Il risultato è una suite di test eseguibile rapidamente, adatta al feedback continuo durante lo sviluppo.  
+
+**Cosa stiamo davvero testando:** I test non verificano come il codice è scritto, ma cosa il sistema deve fare in determinate condizioni. In pratica, vengono testate: 
+- regole di dominio (vincoli, validazioni, divieti); 
+- comportamenti attesi in scenari leciti e non leciti; 
+- reazioni del sistema a stati non validi. 
+
+I dettagli implementativi possono cambiare nel tempo senza invalidare i test, se il comportamento rimane corretto. Questo rende i test uno strumento di protezione durante refactoring ed evoluzione del codice.  
+
+**Verso il mocking:** Finora i test hanno riguardato classi con dipendenze semplici e facilmente controllabili. Nei sistemi reali, però, le classi collaborano con componenti esterni come repository, servizi o gateway. Queste dipendenze rendono i test più complessi, se non vengono gestite in modo esplicito.  
+
+**Messaggio finale:** Scrivere test significa rendere esplicite le regole e le aspettative sul comportamento del sistema. Test ben strutturati migliorano il design, perché rendono evidenti responsabilità e dipendenze. Una buona suite di test riduce il rischio del cambiamento e rende il codice più facile da mantenere ed evolvere.
+
+> [!info] Riepilogo: 
+> - JUnit 5 fornisce il supporto pratico per trasformare principi di unit testing in test automatici eseguibili con continuità. 
+> - Struttura dei test, annotazioni e fixture servono soprattutto a ottenere test indipendenti, ripetibili e leggibili. 
+> - Assert mirati e naming esplicito migliorano la qualità del feedback e rendono i test più utili anche come documentazione eseguibile. 
+> - I test dovrebbero descrivere il comportamento atteso del sistema, non i dettagli accidentali dell’implementazione. 
+> - Suite rapide e isolate aumentano la frequenza di esecuzione e rendono il testing parte naturale del workflow quotidiano. 
+> - La base costruita qui prepara il passaggio al mocking per gestire collaboratori esterni e dipendenze più complesse.

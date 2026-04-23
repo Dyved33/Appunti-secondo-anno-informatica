@@ -1,36 +1,58 @@
-//implementation of bfs e dfs and topological sort
+// implementation of bfs e dfs and topological sort
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Graph
+struct Node
 {
-    int V;
-    int **adjMatrix;
-} graph;
+    int d; // minimo numero di archi dalla sorgente al nodo
+    int p;
+    struct Node *next;
+    char color;
+} Node;
 
-struct *bfs(struct Graph *graph, int start)
+//suppongo di avere una linked list di nodi e la relativa lunghezza (len). suppongo inoltre che src sia il primo nodo
+int *bfs(struct Node *src, struct Node *curr, int len)
 {
-    int *visited = (int *)malloc(graph->V * sizeof(int));
-    for (int i = 0; i < graph->V; i++)
-        visited[i] = 0;
-    int *queue = (int *)malloc(graph->V * sizeof(int));
-    int front = 0, rear = 0;
-    queue[rear++] = start;
-    visited[start] = 1;
-    while (front < rear)
+    int queue[len];
+
+    while (src->next != NULL)
     {
-        int curr = queue[front++];
-        printf("%d ", curr);
-        for (int i = 0; i < graph->V; i++)
-        {
-            if (graph->adjMatrix[curr][i] == 1 && !visited[i])
-            {
-                queue[rear++] = i;
-                visited[i] = 1;
-            }
-        }
+        src->color = 'W';
+        src->d = __UINT8_MAX__;
+        src->p = NULL;
     }
+
+    src->color = 'G';
+    src->d = 0;
+    src->p = NULL;
+
+    
 }
+
+//bianco = non visitato
+//grigio = iniziato ma non finito
+//nero = visitato
+
+/* BFS(G,s)
+ for each vertex u ∈ G.V − {s}
+	  u.color = WHITE
+	  u.d = ∞
+	  u.π = NIL
+ s.color = GRAY
+ s.d = 0
+ s.π = NIL
+ Q = ∅
+ ENQUEUE(Q,s)
+ while Q ≠ ∅
+	  u = DEQUEUE(Q)
+	  for each vertex v ∈ G.Adj[u] // cerca i vicini di u
+		   if v.color == WHITE // v è stato scoperto?
+			    v.color = GRAY
+			    v.d = u.d + 1
+			    v.π = u
+			    ENQUEUE(Q,v) // v è sulla frontiera ora
+  u.color = BLACK // u è dietro la frontiera ora */
+
 
 struct *dfs(struct Graph *graph, int start)
 {

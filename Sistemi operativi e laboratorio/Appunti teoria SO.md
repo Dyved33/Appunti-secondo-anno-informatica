@@ -1602,3 +1602,63 @@ IMMAGINE TABELLA
 - È possibile fare ipotesi intelligenti si quali parti saranno necessarie in futuro (questo evita thrashing)
 
 L'hardware deve supportare la paginazione e la segmentazione. Il SO deve includere il software per gestire il movimento delle pagine o dei segmenti fra memoria secondaria e memoria principale
+
+**Paginazione:** nel linguaggio comune, il termine memoria virtuale si riferisce alla paginazione dinamica. Ogni processa ba un a tabella delle pagine:
+
+IMMAGINI
+
+**Tabella delle pagine invertite:** il numero di pagina è mappato in una tavella hash- il valore di hash punta alla tabella delle pagine invertita, contenente solo le pagine caricate in memoria principale. 
+
+Invertita: le entries sono in ordine di frame anziché di pagina
+
+Campi della PTE:
+- Numero di pagina
+- Identificatore del processo
+- Bit di controllo
+- Puntatore alla entry successiva (per la hash)
+
+IMMAGINE 
+
+**Translation lookaside buffer:** evita un doppio accesso in memoria a ogni riferimento:
+- Per la table entry
+- Per il dato
+
+In questa memoria veloce (cache) ci sono le PTE usate di recente. Inoltre c'è una mappa associativa che permette la ricerca simultanea del campo indice di pagina in tutti i PTE
+
+IMMAGINI
+
+**Dimensioni delle pagine:** pagine piccole riducono la frammentazione interna, ma aumentano la dimensione della tabella delle pagine: gestione dinamica delle tabella delle pagine. Le caratteristiche fisiche della memoria secondaria influiscono sulla scelta (trasferimento a blocchi). La dimensione della pagine influisce sulla frequenza degli errori di pagina
+
+IMMAGINE
+
+La scelta della dimensione è basata su:
+- Dimensione della memoria principale e dei programmi. 
+- Tecniche di programmazione moderne riducono la località
+- Il TLB è meno efficiente (specie se di piccola dimensione)
+- Pagine di dimensione variabile
+
+**Segmentazione:** con la segmentazione il programmatore vede la memoria composta da multipli spazi di indirizzamento (segmenti)
+
+*Vantaggi:* 
+- Semplifica la gestione di strutture dati di dimensione variabile
+- Permette la modifica e ricompilazione di segmenti di programma, senza modificare il resto
+- Facilita la condivisione di dati fra processi
+- Facilita la protezione 
+
+*Tabella dei segmenti:* ogni record della tabella dei segmenti contiene:
+- L'indirizzo iniziale del corrispondente segmento di memoria
+- La lunghezza del segmento
+- Flag 'caricato'
+- Flag 'modificato'
+
+IMMAGINE
+
+**Segmentazione paginata:** nella segmentazione paginata:
+- Lo spazio logico è diviso in segmenti
+- Ogni segmento è diviso in pagine di dimensione fissa, uguale alla lunghezza dei frame della memoria principale
+
+IMMAGINI
+
+**Protezione e condivisione:** la segmentazione facilita l'implementazione della protezione e della condivisione:
+- Ogni record della tabella dei sementi contiene l'indirizzo base e lunghezza , per controllare accessi erronei
+- La condivisone è implementata inserendo un riferimento allo stesso segmento nella tabella dei segmenti di più processi 

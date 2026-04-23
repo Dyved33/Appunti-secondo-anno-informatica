@@ -1192,7 +1192,9 @@ Sono in generale molto complessi, ma si semplificano se si evitano:
 
 L’ideale sarebbe avere a sinistra sempre una variabile, e a destra avere o un terminale, o una sequenza di almeno due lettere variabile-terminale.
 
-> [!example] Sia $G$ la grammatica con N = MANCA
+> [!example] Sia $G$ la grammatica con $N = \{S,O,P,E\}, \Sigma = \{a,b,x\}$ e con le produzioni: $S → aOb, O → P |aOb| OO, P → x | E, E → \epsilon$
+> - $E → \epsilon$ è una $\epsilon-$ produzione 
+> - $O → P$ e $P → E$ sono produzioni unarie
 
 *Osservazione:* in assenza di $\epsilon-$produzioni e produzioni unarie, se $\alpha \implies \beta$, allora 
 - $|\beta| > |\alpha|$
@@ -1208,23 +1210,197 @@ Pertanto, una parola di lunghezza n può essere generata in $2n − 1$ passi al 
 	1. Aggiungiamo tutte le produzioni ottenute cancellando dei lati destri delle produzioni di $G$ una o più occorrenze di variabili annullabili
 	2. Cancelliamo le $\epsilon-$produzioni
 
-In questo modo la grammatica $G'$ è equivalente a $G$
+*Asserto:* La grammatica $G'$ è equivalente a $G$. 
+
+*Dimostrazione:* 
+- Per tutte le nuove produzioni $A → \gamma$ si ha $A \implies *\gamma$ in $G$. Quindi $L(G') \subseteq L(G)$ 
+- Per l’inclusione inversa, faremo vedere che per ogni albero di derivazione di $G$ c’è un albero di derivazione di $G'$ associato alla stessa parola. 
+
+Procediamo per induzione sul numero dei nodi dell’albero.
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423100401.png" width="200">
+</div>
 
 2. *$S$ è annullabile:* a partire da $G$ costruiamo una nuova grammatica $G'$ nel modo seguente:
 	1. Procedendo come nel caso precedente si ottiene una grammatica che genera le stesse parole di $G$ eccetto $\epsilon$
 	2. Se $S$ non compare nei lati destri, basta aggiungere la produzione $S → \epsilon$
 	3. Se $S$ compare nei lati destri si aggiungono una nuova variabile $S'$, che sarà il nuovo simbolo iniziale e le produzioni $S' → \epsilon$ e $S' → S$. In questo modo ho fatto scomparire il simbolo iniziale dei lati destri delle produzioni e posso aggiungere $\epsilon$
 
-**Ricerca delle variabili annullabili:** costruiamo gli insiemi di variabili $W_n$ come segue: $W_1 = \{X \in N |$ c'è una produzione $X → \epsilon \ in \ P\}$, $W_n = \{X \in N |$ c'è una produzione $X → \gamma \ in \ P \ con \ \gamma \in W^*_{n-1}\}$, $n \geq 2$ 
+*Asserto:* La grammatica $G'$ è equivalente a $G$
 
-*Osservazione:* MANCA
+**Ricerca delle variabili annullabili:** costruiamo gli insiemi di variabili $W_n$ come segue: 
+- $W_1 = \{X \in N |$ c'è una produzione $X → \epsilon \ in \ P\}$,
+- $W_n = \{X \in N |$ c'è una produzione $X → \gamma \ \text{in P con} \ \gamma \in W^*_{n-1}\}$, $n \geq 2$ 
 
-**Algoritmo:** inizialmente ho in input una grammatica non contestuale $G = \langle V, \Sigma, S, P \rangle$ MANCA
+*Osservazione:* 
+- $W_n$ contiene solo variabili annullabili; 
+- $W_n$ contiene tutte le variabili che si annullano in $n$ passi; 
+- $W_1 \subseteq W_2 \subseteq ... \subseteq W_n \subseteq ... \subseteq N$; 
+- Pertanto, per qualche $n$, $W_n = W_{n-1} = W$ . $W$ è l’insieme delle variabili annullabili.
+
+**Algoritmo:** inizialmente ho in input una grammatica non contestuale $G = \langle V, \Sigma, S, P \rangle$. In output ho l'insieme $W$ delle variabili annullabili;
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423100813.png" width="200">
+</div>
 
 > [!example] 
 > Sia $G$ la grammatica con $N = \{S,O,P,E\}$, $\Sigma = \{a,b,x\}$ e con le produzioni: $S → aOb, O → P | aOb | OO, P → x | E, E → \epsilon$
 > 
-> IMMAGINE
+> ![[Pasted image 20260423095536.png|200]]
 > 
 > Le variabili annullabili sono: $E,P,O$. Quindi $G$ è equivalente alla grammatica con le produzioni: $S → aOb | ab, O → P | aOb | OO | ab | O, P → x | E$
 
+*Proposizione:* Ogni linguaggio non contestuale è effettivamente generato da una grammatica non contestuale priva di produzioni primarie e di $\epsilon -$produzioni, eccettuata, eventualmente, la produzione $S → \epsilon$ , ove $S$ è il simbolo iniziale. Inoltre, si può assumere che il simbolo iniziale non compaia nei lati destri delle produzioni.
+
+**Costruzione della grammatica:** A partire da $G$ costruiamo una nuova grammatica $G'$ nel modo seguente: 
+1. si eliminano le $\epsilon$-produzioni con la costruzione precedente, 
+2. per ogni coppia di variabili $A, B$ tali che $A \implies *B$, si aggiungono i lati destri delle produzioni di $B$ a quelli delle produzioni di $A$, 
+3. si cancellano le produzioni unarie
+
+*Asserto:* La grammatica $G'$ è equivalente a $G$. 
+
+*Dimostrazione:* 
+- Per tutte le nuove produzioni $A → \gamma$ si ha $A \implies *\gamma$ in $G$. Quindi $L(G') \subseteq L(G)$. 
+- Per l’inclusione inversa, faremo vedere che a ogni albero di derivazione di $G$ c’è un albero di derivazione di $G'$ associato alla stessa parola. Procediamo per induzione sul numero dei nodi dell’albero.
+
+1. $S$ ha più di un figlio: 
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423101234.png" width="200">
+</div>
+2. $S$ ha solo un figlio: 
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-04-23 10-13-12.png" width="200">
+</div>
+
+**Ricerca delle derivazioni unarie:** Costruiamo gli insiemi di coppie di variabili $T_n$ come segue: 
+- $T_1 = \{(X,Y) \in N \times N | \ \text{c’è la produzione} \ X → Y \ \text{in P}$
+- $T_n = T_{n-1} \cup \{(X,Y \in N \times N | \ \text{esiste} \ Z \in N, (X,Z), (Z,Y) \in T_{n-1} \}, n \geq 2$ 
+
+*Osservazioni:* 
+- $T_n$ contiene le coppie di variabili $(X,Y)$ tali che $X \implies *Y$ in al più $2^{n-1}$ passi; 
+- $T_1 \subseteq T_2 \subseteq ... \subseteq T_n \subseteq ... \subseteq N \times N$  
+- Pertanto, per qualche $n, T_n = T_{n-1} = T$. $T = \{(X,Y) \in N \ times N | X \implies *T\}$ 
+- si ha $A \implies *B$ se e solo se c’è un cammino da $A$ a $B$ nel grafo $(N, E)$ con insieme di archi $E = (X,Y) \in N \times N | X → Y \ \text{in P} \}$ 
+
+> [!example] 
+> Sia $G$ la grammatica con $N = \{S,O,P,E\}$, $\Sigma = \{a,b,x\}$ e con le produzioni: $S → aOb, O → P | aOb | OO | ab | O, P → x | E$. Il grafo delle produzioni unarie è:
+> 
+> ![[Pasted image 20260423102435.png|200]]
+> 
+> Quindi $G$ equivalente alla grammatica con produzioni: $S → aOb | ab, O → aOb | OO | ab | x, P → x$
+
+**Variabili improduttive e variabili inaccessibili:** 
+
+*Definizione:* Sia $G = \langle V, \Sigma, P, S \rangle$  una grammatica non contestuale. Una variabile X si dice **produttiva** se esiste $w \in \Sigma^*$ tale che $X \implies *w$, **improduttiva** altrimenti. Una variabile $X$ si dice **accessibile** se compare in qualche forma sentenziale, **inaccessibile** altrimenti.
+
+> [!example ]
+> Sia $G$ la grammatica con $N = \{N, X, Y, Z\}$, $\Sigma = \{a,b\}$ e con le produzioni: $S → aXa |aa, X → bSb | Y , Z → a$.
+> - Le variabili $S$ e $X$ sono produttive e accessibili, invero, $S \implies *aa, X \implies *baab, S \implies *S, S \implies *aXa$
+> - $Y$ è accessibile ma improduttiva, 
+> - $Z$ è produttiva ma inaccessibile.
+
+*Osservazione:* Data una grammatica non contestuale $G$, la grammatica ottenuta cancellando le variabili improduttive o inaccessibili e le produzioni che le contengono è equivalente a $G$
+
+> [!example] 
+> La grammatica con le produzioni: $S → aXa | aa, X → bSb | Y, Z → a$ è equivalente a quella con le sole produzioni $S → aXa | aa, X → bSb$
+
+**Ricerca delle variabili produttive:** Costruiamo gli insiemi di variabili $W_n$ come segue: 
+- $W_1 = \{X \in N | \ \text{c'è una produzione} \ X → w \ \text{in P con} \ w \in \Sigma^*\}$
+- $W_n = \{X \in N | \ \text{c'è una produzione} \ X → \gamma \ \text{in P con} \ \gamma \in (W_{n-1} \cup \Sigma)^*\}, n \geq 2$
+
+*Osservazione:*
+- $W_n$ contiene solo variabili annullabili; 
+- $W_n$ contiene tutte le variabili che si annullano in $n$ passi; 
+- $W_1 \subseteq W_2 \subseteq ... \subseteq W_n \subseteq ... \subseteq N$; 
+- Pertanto, per qualche $n$, $W_n = W_{n-1} = W$. $W$ è l’insieme delle variabili annullabili.
+
+L'algoritmo per le variabili produttive prende in input una grammatica non contestuale $G = \langle V, \Sigma, P, S \rangle$ e restituisce in output l’insieme $W$ delle variabili produttive e l’insieme $N$ delle variabili improduttive;
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423103009.png" width="200">
+</div>
+
+**Ricerca delle variabili accessibili:** costruiamo gli insiemi di variabili $K_n$ come segue:
+- $K_0 = \{S\}$
+- $K_n = K_{n-1} \cup \{$variabili che compaiono nei lati destri delle produzioni delle $X \in K_{n-1} \}, n \geq 1$
+
+*Osservazioni:*
+- $K_n$ contiene le variabili che compaiono nelle forme sentenziali derivabili in $n$ passi dal simbolo iniziale
+- $K_1 \subseteq K_2 \subseteq ... \subseteq K_n \subseteq ... \subseteq N$
+- Pertanto, per qualche $n$, $K_n = K_{n-1} = K$. $W$ è l’insieme delle variabili produttive.
+- Si ha $A \in K$ se e solo se c’è un cammino da $S$ a $A$ nel grafo $(N,E)$ con insieme di archi $E = \{(X,Y) \in N \times N | X → \alpha Y \beta$ in P $\}$ 
+
+L'algoritmo per le variabili accessibili prende in input una grammatica non contestuale $G = \langle V, \Sigma, P, S \rangle$ e restituisce in output l’insieme $K$ delle variabili produttive e l’insieme $N$ delle variabili improduttive;
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260423110309.png" width="200">
+</div>
+
+**Procedura di riduzione:** 
+1. determinare le variabili produttive, 
+2. eliminare le variabili improduttive e le produzioni che contengono tali variabili, 
+3. determinare le variabili accessibili della grammatica ottenuta, 
+4. eliminare le variabili inaccessibili e le produzioni che contengono tali variabili.
+
+*Osservazione:* Non è possibile eseguire prima i passi 3–4 e poi i passi 1–2: l’eliminazione di variabili improduttive può creare nuove variabili inaccessibili.
+
+> [!example] 
+> Sia $G$ la grammatica $N = \{E,F,T,R\}, \Sigma = \{+,*,-,(,)\}$, simbolo iniziale $E$ e produzioni: $E → E+E|T|F, F → E*E|(T)|a, T → E-T, R → E-F$
+> 
+> ![[Pasted image 20260423110536.png|200]]
+
+###### Forma normale di Chomsky
+*Definizione:* una grammatica non contestuale si dice in forma normale di Chomsky se ha solo produzioni dei tipi
+- $X → YZ con X,Y,Z \in N$
+- $X → a$ con $X \in N, a \in \Sigma$
+- $S → \epsilon$ ma solo a condizione che $S$ non compaia nei lati destri delle produzioni
+
+> [!example]
+> La grammatica con le produzioni S → AB| \epsilon, A → AA|a, B → BB|b MANCA
+
+*Osservazione:* negli alberi di derivazione di una grammatica in forma normale di Chomsky
+- Le foglie dono figli unici
+- I nodi interni costituiscono un albero binario completo
+
+> [!example] 
+> $S → AB|\epsilon, A → AA|a, B → BB|b$. Un albero di derivazione di $aaabb$ è 
+> 
+> IMMAGINE
+
+*Teorema:* ogni linguaggio non contestuale è effettivamente generato da una grammatica non contestuale in forma normale di Chomsky
+
+*Procedura:* 
+1. Eliminare le $\epsilon$-produzioni e produzioni unarie; restano solo produzioni $X → a$ con $X \in N$ e $a \in \Sigma$ e produzioni $X → \gamma$ con $|\gamma| \geq 2$
+2. Ridursi al caso $\gamma \in N^*$: per ogni terminale $a$ che comprare, non da solo, in qualche lato destro
+	- Introduco una nuova variabile $A$ e una nuova produzione $A → a$
+	- Sostituisco tutte le occorrenze di $a$ nei lati destri delle produzioni con $A$ (salvo che a non sia l'intero lato destro)
+
+> [!example] 
+> Sia $G$ la grammatica con produzioni $S → aOb|ab, O → aOb|OO|ab|x$. Con la procedura indicata, otteniamo: $S → AOB|AB, O → AOB|OO|AB|x, A → a, B → b$ 
+
+Restano solo produzioni $X → a$ con $X \in N$ e $a \in \Sigma$ e produzioni $X → X_1 →…→ X_k$ con $X,X_1,…,X_k \in N, k \geq 2$
+3. Ridursi al caso $k = 2$: per ogni produzione $X → X_1 →…→ X_k$ con $k \geq 3$
+	- Introduco una nuova variabile $Z$ e sostituisco la produzione$ X → X_1 →…→ X_k$ con la coppia di produzioni $X → X_1 →…→ X_{k-2}Z$, $Z → X_{k-1}X_K$
+	- Ripeto il passo MANCA
+
+> [!example]
+> Sia $G$ la grammatica con produzioni $S → AOB|AB, O → AOB|OO|AB|x, A → a, B → b$. Con la procedura indicata, otteniamo: $A → AZ|AB, O → AZ|OO||AB|x, Z → OB, A → a, B → b$. La grammatica ottenuta, equivalentemente a $G$, è in forma normale di Chomsky
+
+FORSE MANCA QUALCOSA
+
+**Forma normale di Greibach:**
+
+*Definizione:* una grammatica non contestuale $G$ si dice in forma normale di Greibach se ha solo produzioni dei tipi:
+- $X → a\gamma$, con $a \in \Sigma$ e $\gamma \in N^*$
+- $S → \epsilon$, ma solo a condizione che $A$ non compaia nei lati destri delle produzioni
+
+> [!example]
+> La grammatikca con le produzioni S → aS MANCA
+
+*Osservazione:* in una grammatica in forma normale di Greibach, ogni derivazione di una parola $w \in L(G)$ di lunghezza n richiede esattamente $n$ passi
+
+> [!example]
+> $S → aSB|aB, B → b$. Una derivazione di $a^3 b^3$: $S \implies aSB \implies aaSBB \implies aaaBBB \implies$ MANCA
+
+*Teorema:* ogni linguaggio non contestuale è effettivamente generato da una grammatica non contestuale in forma normale di Greibach
