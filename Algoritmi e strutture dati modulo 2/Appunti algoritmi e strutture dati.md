@@ -8,7 +8,7 @@ Le linked lists vanno bene per rappresentare delle relazioni lineari (non tutte 
  - Le foglie dell'albero hanno i puntatori $left$ e $right$ inizializzati a $NIL$
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-02-24 11-19-46.png" width="190">
+  <img src="Screenshot From 2026-02-24 11-19-46.png" width="200">
 </div>
 
 È possibile estendere lo schema visto nell'albero binario a tutte le classi di alberi dove il numero di figlie di ogni nodo è al massimo un valore costante k. Per fare ciò è sufficiente sostituire i puntatori $left$ e $right$ con altri attributi come $child_1$, $child_2$, $...$ , $child_k$.
@@ -32,7 +32,7 @@ Si tratta di un albero binario nel quale le chiavi (cioè le informazioni conten
 - se il nodo $y$  si trova nella parte destra del sotto-albero di $x$, allora $y.key \geq x.key$
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-02-24 11-25-52.png" width="190">
+  <img src="Screenshot From 2026-02-24 11-25-52.png" width="200">
 </div>
 
 **In-order tree walk:** Data la proprietà degli alberi binari di ricerca, è possibile visualizzare tutte le chiavi dell'albero in maniera ordinata grazie a un semplice algoritmo ricorsivo.
@@ -138,22 +138,20 @@ La procedura inizia alla radice dell'albero e il puntatore x traccia un percorso
 
 **Eliminazione:** Esistono 3 possibili strategie per eliminare un nodo da un albero di ricerca binaria:
 1. *z* non ha "figli" (al massimo ne ha uno destro), quindi quando lo rimuovo modifico il "genitore" di *z* sostituendo quest'ultimo con $NIL$
-<div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-02-25 11-55-49.png" width="190">
-</div>
 2. *z* ha un "figlio" (in tal caso l'unico "figlio" è sinistro), quindi pongo il "figlio" di *z* al posto di questo e modifico conseguentemente il "genitore" di *z* 
 <div style="display: flex; justify-content: center;">
-   <img src="Screenshot From 2026-02-25 11-56-25.png" width="190">
+   <img src="Screenshot From 2026-02-25 11-56-25.png" width="200">
+   <img src="Screenshot From 2026-02-25 11-55-49.png" width="200">
  </div>
 3. *z* ha due "figli", quindi viene trovato il suo successore *y* (nel sotto-albero destro di *z*) e si sposta *y* affinché prenda il posto di *z*. Il resto del restante sotto-albero destro di *z* diventa il nuovo sotto-albero destro di *y* e il sotto-albero sinistro di *z* diventa il sotto-albero sinistro di *y*. *Y*, essendo il successore di *z*, non può avere un "figlio" sinistro e il "figlio" destro di *y* prende la posizione originaria di quest'ultimo (il resto del sotto-albero lo segue automaticamente). Di questo caso ci sono due possibili varianti:
     - *y* è il "figlio" destro di *z* 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-02-25 12-00-33.png" width="190">
+  <img src="Screenshot From 2026-02-25 12-00-33.png" width="200">
  </div>
 	 - *y* si trova nel sotto-albero destro di *z*, ma non è il "figlio" destro
     
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-02-25 12-02-18.png" width="190">
+  <img src="Screenshot From 2026-02-25 12-02-18.png" width="200">
 </div>
 La procedura di eliminazione di un nodo richiede come argomenti i puntatori a *T* e a *z*.
 
@@ -215,7 +213,7 @@ Il set di operazioni viste nella scorsa lezione sono veloci se l'altezza dell'al
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
   <div style="flex: 1;">
-    <img src="Screenshot From 2026-03-02 18-40-20.png" style="width: 190%; border-radius: 8px;">
+    <img src="Screenshot From 2026-03-02 18-40-20.png" style="width: 200%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
   Nel primo dei due alberi i numeri accanto ai nodi stanno ad indicare quanti nodi neri ci sono da quel nodo fino alle foglie (per rispettare la proprietà 5)
@@ -232,7 +230,7 @@ Il numero di nodi neri in ogni cammino semplice discendente a partire (senza inc
 Esistono due tipi di rotazione: destra e sinistra. Entrambe richiedono $O(1)$ in tempo. Una rotazione sinistra di un nodo *x*, per esempio, richiede che il figlio destro del nodo (*y*) NON deve essere $T.NIL$. La rotazione cambia il sotto-albero originariamente con radice in *X* scambiando il collegamento tra *x* e *y* (come nell'immagine seguente).
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-03 09-50-21.png" width="190">
+  <img src="Screenshot From 2026-03-03 09-50-21.png" width="200">
 </div>
 
 **Inserimento:**
@@ -271,13 +269,13 @@ while x != T.NIL
 > [!info] Ci riferiamo allo zio come il nodo che è il figlio (di qualsiasi colore) di un nodo padre (nero)
 
 1. *y*, lo zio di *z*, è rosso: quando sia *z.p* sia *y* sono rossi. Poiché *z.p.p* è nero, questa proprietà può essere trasferita di un livello in basso sia a *z.p* sia a *y* così da sistemare il problema di avere sia *z* che *z.p* rossi
-> [!example] ![[Screenshot From 2026-03-03 10-47-51.png|190]]
+> [!example] ![[Screenshot From 2026-03-03 10-47-51.png|200]]
 2. *y*, lo zio di *z*, è nero: 
    - *y* è nero e *z* è un figlio destro -> una rotazione sinistra su *z* trasforma la situazione nel prossimo caso
-> [!example] ![[Screenshot From 2026-03-03 10-48-53 1.png|190]]
+> [!example] ![[Screenshot From 2026-03-03 10-48-53 1.png|200]]
 
    - *y* è nero e *z* è un figlio sinistro -> cambia alcuni colori e applica una rotazione destra su *z.p.p*, il quale preserva la proprietà di non avere figli rossi (essendo un nodo rosso)
-> [!example] ![[Screenshot From 2026-03-03 10-50-24.png|190]]
+> [!example] ![[Screenshot From 2026-03-03 10-50-24.png|200]]
 ###### Hash table
 Una hash table è una generalizzazione di un array. In un array gli elementi vengono immagazzinati con una chiave k alla posizione k. Data la chiave k, per trovare l'elemento la cui chiave è k, mi basta guardare alla k-esima posizione dell'array (*direct addressing*). Quando non voglio allocare un array con una posizione per ogni possibile chiave uso una hash table. Uso questa struttura anche nel caso in cui il numero di chiavi immagazzinate è più piccolo del numero delle possibili chiavi. Quando si parla di hash table ci si riferisce ad un array che tipicamente usa una dimensione proporzionale al numero di chiavi che vanno immagazzinate. Per questo motivo se ho la chiave k non uso questo valore come indice nell'array, invece definisco una *hash function* (funzione di k) e usiamo il suo valore per indicizzare l'array.
 
@@ -490,7 +488,7 @@ BFS(G,s)
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
   <div style="flex: 1;">
-    <img src="Screenshot From 2026-03-11 15-53-03.png" style="width: 190%; border-radius: 8px;">
+    <img src="Screenshot From 2026-03-11 15-53-03.png" style="width: 200%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
   <li> gli archi più spessi sono nel sotto-grafo predecessore
@@ -613,7 +611,7 @@ Non necessita di ordinare in funzione dei tempi di fine:
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
   <div style="flex: 1;">
-    <img src="Screenshot From 2026-03-17 23-35-16.png" style="width: 190%; border-radius: 8px;">
+    <img src="Screenshot From 2026-03-17 23-35-16.png" style="width: 200%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
 Nel nostro esempio
