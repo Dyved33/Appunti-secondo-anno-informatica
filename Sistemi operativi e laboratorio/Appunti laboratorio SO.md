@@ -2146,3 +2146,197 @@ int main(void)
 	return 0;
 }
 ```
+
+###### Signal
+Possono essere considerati come IPC (inteprocess communication) alcuni strumenti per la comunicazione tra processi: 
+- signals 
+- socket 
+- pipe 
+- shared memory 
+- memory-mapped file 
+- etc. 
+
+Tipi di signal:
+- POSIX Reliable Signals (nel seguito Standard Signals) 
+- Linux supporta anche i POSIX Real-Time Signals 
+- definiti negli standard POSIX.1-1990 e POSIX.1- 2001 
+
+I signal sono una forma di IPC limitata, nel senso per esempio che non contengono ulteriore informazione (il dato scambiato è il signal stesso), Real-Time a parte. Sono simili ad "interrupt software" o a notifiche asincrone, che vengono inviati ad un processo (od a un thread) al verificarsi di un evento. Gli standard hanno un significato intrinseco e, diciamo così, "tradizionale"
+
+> [!quote]
+> «un meccanismo asincrono di notifica di eventi tra kernel e processi, che induce una variazione di flusso o di flusso di controllo nel processo destinatario» 
+
+**Cosa accade:** il flusso di esecuzione del processo viene interrotto dal sistema operativo per eseguire la gestione del signal: 
+- gestione definita dal processo (se lo ha fatto) 
+- gestione di default (altrimenti) 
+
+La gestione può essere varia: il processo termina, viene sospeso, viene eseguita una funzione registrata dal processo all'uopo, il signal viene ignorato, etc. 
+
+> [!info]
+> Signals: gestioni di default (da man 7 signal) 
+
+**Signal dispositions:** In ogni processo ogni signal ha una **disposition** corrente che determina come il processo stesso si comporta se il signal viene ricevuto. Se non diversamente specificato, tale disposition è quella di default ed è una delle seguenti: 
+- `Term:` Default action is to terminate the process. 
+- `Ign`: Default action is to ignore the signal. 
+- `Core:` Default action is to terminate the process and dump core (see core(5)). 
+- `Stop`: Default action is to stop the process. 
+- `Cont`: Default action is to continue the process if it is currently stopped. 
+
+La disposition è quindi un attributo per-process ed è condiviso da tutti i suoi threads.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260424145500.png" width="200">
+  <img src="Pasted image 20260424145515.png" width="200">
+</div>
+
+**Cambiare la gestione (disposition) corrente:** si fa con `sigaction(2)` o `signal(2)` (vedi oltre per il dettaglio di `sigaction(2)`). La seconda è meno portabile, meglio usare l'altra. Ho tre opzioni: 
+- ignorare il signal 
+- lasciare/ripristinare la gestione di default del kernel 
+- specificare una funzione handler che gestisca il segnale
+
+> [!info]
+> `SIGKILL` e `SIGSTOP` non possono essere gestiti, ignorati o bloccati
+
+Un handler è una funzione definita dal programmatore che il sistema invoca in maniera asincrona (*callback*) alla ricezione del signal (il processo/programmatore non sa se e quando sarà invocata). Le disposition sono duplicate da `fork(2)` nel child. Dopo `execve(2)` le disposition che prevedono un handler sono resettate al default, quelle che prevedono di ignorare rimangono inalterate
+
+**Chi li invia:** I signal possono essere inviati da:
+- dal sistema operativo, per comunicare al processo/thread che si è verificato un certo evento (es.: SIGPIPE, cfr la lezione sulle PIPE) 
+- dall'utente da terminale premendo certi tasti: 
+	- Ctrl+C: `SIGINT` 
+	- Ctrl+Z: `SIGTSTP` 
+	- Ctrl+\: `SIGQUIT` 
+
+```bash
+fabio@fabiopc :~$ stty -a 
+speed 38400 baud; rows 46; columns 173; line = 0; intr = ^C; quit = ^\; erase = ^?; kill = ^U; eof = ^D; eol = <undef>; eol2 = <undef>; swtch = <undef>; start = ^Q; stop = ^S; susp = ^Z; rprnt = ^R; werase = ^W; lnext = ^V; ……… 
+```
+
+- con il comando kill dalla shell 
+- da un processo/thread all'altro con apposite funzioni
+- I signals inviati dall'utente dalla tastiera del terminale (Ctrl+C, Ctrl+\, etc.) sono ricevuti da tutti i processi facenti parte del *process group*
+
+> [!info] Ricorda:
+> Un process group:
+> - Raggruppa una collezione di processi 
+> - tra le altre cose usato per controllare la distribuzione di un signal; quando è diretto al process group viene ricevuto da tutti i processi nel gruppo 
+> - di default dopo `fork(2)` il child appartiene allo stesso process group del parent 
+> - dopo il richiamo di una delle funzioni exec la nuova immagine del processo appartiene allo stesso process group del chiamante 
+> - di default tutti i processi di una singola pipeline appartengono allo stesso process group. Ciò per gestire l’invio di segnali da tastiera, per gestire la sospensione (`SIGTSTP` con Ctrl+Z) e la gestione del background/foreground (comandi interni di Bash bg e fg), etc.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260424150410.png" width="200">
+</div>
+
+**Chi li riceve:** *process-directed* o *thread-directed* 
+- process-directed: 
+	- inviati all'intero processo 
+	- per esempio generati dal kernel per motivi diversi da un'eccezione HW; o perché inviato con kill() o sigqueue() 
+	- ricevuti da uno dei thread che non li bloccano. Se più di uno è il kernel che sceglie a quale thread destinarli 
+- thread-directed: 
+	- inviati al thread 
+	- per esempio perché generati da una specifica istruzione del linguaggio macchina che ha provocato un'eccezione HW (per es.: segmentation fault, etc.); o inviati con pthread_kill(), tgkill()
+
+**Cambiare la disposition: `sigaction(2)`:** `#include <signal.h> int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact);` Usata per variare la gestione di un signal da parte di un processo 
+- *signum:* specifica il signal di cui variare la gestione 
+- *act:* struct che definisce la nuova gestione 
+- *oldact:* struct che riceve le informazioni relative alla gestione precedente 
+
+Ritorna 0 (successo) o -1 (errore; errno settata) 
+
+```C
+struct sigaction { 
+	void (*sa_handler)(int); 
+	void (*sa_sigaction)(int, siginfo_t *, void *); 
+	sigset_t sa_mask; 
+	int sa_flags; 
+	void (*sa_restorer)(void); 
+}; 
+```
+
+**`sa_handler`:** indica la nuova gestione 
+- `SIG_IGN`: ignorato 
+- `SIG_DFL`: funzione di default 
+- puntatore a funzione dell'handler. Tale funzione riceve come unico argomento il numero del signal ricevuto 
+
+`SIGKILL` e `SIGSTOP` non possono essere gestiti, ignorati o bloccati 
+
+> [!info] 
+> N.B.: non assegnare contemporaneamente sa_handler e sa_sigaction (in certe architetture la struct è oggetto di union). In questa sede non parliamo di sa_sigaction. Per maggiori informazioni vedere `man sigaction(2)` 
+
+**Registrare Signal Handlers: `sigaction()`:** 
+
+```C
+struct sigaction { 
+	void (*sa_handler)(int); 
+	void (*sa_sigaction)(int, siginfo_t *, void *); 
+	sigset_t sa_mask; 
+	int sa_flags; 
+	void (*sa_restorer)(void); 
+};
+``` 
+
+**`sa_mask`:** segnali da mascherare durante l'esecuzione dell'handler (in aggiunta a quello che ne ha provocato la chiamata che viene automaticamente bloccato) 
+
+**Quando è eseguito un handler:** da `man 7 signal`: "Whenever there is a transition from kernel-mode to user-mode execution (e.g., on return from a system call or scheduling of a thread onto the CPU), the kernel checks whether there is a pending 1 unblocked 2 signal for which the process has established a signal handler. If there is such a pending signal, the following steps occur:"
+
+**Passi per l'esecuzione dell'handler:** Steps:
+- il kernel esegue operazioni preparatorie per l'esecuzione dell'handler: 
+	- rimuove il signal dalla lista dei pendenti 
+	- salva lo stato del processo/thread da interrompere (i registri, etc.) 
+- l'handler viene eseguito in user-mode 
+- quando l'handler ritorna lo stato del processo/thread viene ripristinato 
+- il processo/thread che ha ricevuto il signal continua la sua esecuzione 
+
+> [!info] Nota: 
+> Dal punto di vista del kernel non c'è differenza tra eseguire l'handler o il codice del processo/threads. Il kernel non tiene traccia del fatto che il codice oggetto di esecuzione sia o meno in un handler, e le informazioni sullo stato del processo sono salvate nei registri e nello stack dello «user-space» (non nelle aree di memoria del kernel). Per maggiori dettagli vedi `man 7 signal` alla sezione "Execution of signal handlers "
+
+> [!example] 
+> ![[Screenshot From 2026-04-24 15-18-56.png|200]]
+> 
+> ![[Pasted image 20260424160112.png|200]]
+> 
+> nell'esempio 2 sopra descritto la open(2) si interrompe e torna -1 (errno viene settata a EINTR)
+
+**Interruzione di SC bloccate:** se un signal handler è invocato mentre una SC è bloccata in determinate operazioni allora può verificarsi: 
+- la funzione è automaticamente riavviata 
+- la funzione fallisce e torna `EINTR` 
+
+Ciò dipende da: 
+- se in fase di creazione dell'handler (sigaction) era stato o meno specificato il flag `SA_RESTART` 
+- l'interfaccia oggetto della chiamata
+
+Tale comportamento può variare tra sistemi Unix diversi. Alcuni dettagli per Linux: esempi di SC che se bloccate vengono restartate se `SA_RESTART` è attivo: 
+- `read(2), write(2), ioctl(2)`, etc. su "slow devices", cioè devices in cui una chiamata I/O può bloccarsi indefinitamente, come pipe, terminale, socket 
+- `open(2)`, per esempio su una FIFO 
+- `wait(2)`, `waitpid(2)` 
+- `sem_wait(3)`, `sem_timedwait(3)` 
+
+Considerazioni per gli handlers:
+- se più segnali sono pendenti l'ordine in cui sono inviati non è specificato 
+- gli standard signal non si accumulano. Se più istanze dello stesso segnale arrivano mentre esso è bloccato solo un'istanza verrà inviata 
+- durante l'esecuzione dell'handler possono arrivare altri segnali. Questo può generare inconsistenze
+- come visto prima, quando (e se) l'handler ritorna il programma riprende da dove aveva lasciato
+
+Siamo sicuri che tutto sia consistente?
+- l'handler dovrebbe essere breve e fare il meno possibile 
+- non tutte le funzioni di libreria possono essere chiamate nell'handler senza che possa accadere qualcosa di imprevisto 
+- POSIX.1 definisce un elenco di funzioni che DEBBONO essere async-signal-safe (vedi `man 7 signal-safety`), cioè che possono essere invocate «safely» in un handler 
+- i.e: `printf()` (chiamata nell'esempio di prima) non è in elenco. Non c'è garanzia che non si verifichino comportamenti non previsti
+
+**Signal mask:** 
+- un signal può essere bloccato, cioè non sarà ricevuto fino a che non verrà sbloccato 
+- la signal mask definisce quali signal sono bloccati e quali no 
+- una signal mask per ogni thread (per-thread) 
+- `SIGKILL` e `SIGSTOP` non possono essere gestiti, ignorati o bloccati 
+- ereditata dai child dopo `fork(2)`; preservata dopo `execve(2)`
+
+**Segnali pendenti:** 
+- nel tempo tra la generazione e l'invio al processo il signal è detto pendente 
+- può essere pendente perché bloccato 
+- un thread può ottenere la lista dei segnali pendenti con `sigpending()` 
+- la lista dei segnali pendenti è resettata (vuota) dopo `fork(2)` ed è preservata dopo `execve(2)`
+
+**Funzioni per bloccare signals:** 
+- `sigprocmask()`: per processi single-threaded 
+- `pthread_sigmask()`: per processi multithreaded
+

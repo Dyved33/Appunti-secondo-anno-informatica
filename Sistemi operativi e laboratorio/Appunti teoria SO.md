@@ -1607,19 +1607,10 @@ L'hardware deve supportare la paginazione e la segmentazione. Il SO deve include
 
 **Paginazione:** nel linguaggio comune, il termine memoria virtuale si riferisce alla paginazione dinamica. Ogni processa ba un a tabella delle pagine:
 
-<div style="display: flex; justify-content: center;">
+<div style="display: grid; grid-template-columns: 1fr; gap: 10px; justify-items: center;">
   <img src="Pasted image 20260423220143.png" width="200">
-</div>
-
-<div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260423220222.png" width="200">
-</div>
-
-<div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260423220242.png" width="200">
-</div>
-
-<div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260423220257.png" width="200">
 </div>
 
@@ -1643,19 +1634,10 @@ Campi della PTE:
 
 In questa memoria veloce (cache) ci sono le PTE usate di recente. Inoltre c'è una mappa associativa che permette la ricerca simultanea del campo indice di pagina in tutti i PTE
 
-<div style="display: flex; justify-content: center;">
+<div style="display: grid; grid-template-columns: 1fr; gap: 10px; justify-items: center;">
   <img src="Pasted image 20260423220500.png" width="200">
-</div>
-
-<div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260423220523.png" width="200">
-</div>
-
-<div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260423220541.png" width="200">
-</div>
-
-<div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260423220556.png" width="200">
 </div>
 
@@ -1693,11 +1675,8 @@ La scelta della dimensione è basata su:
 - Lo spazio logico è diviso in segmenti
 - Ogni segmento è diviso in pagine di dimensione fissa, uguale alla lunghezza dei frame della memoria principale
 
-<div style="display: flex; justify-content: center;">
+<div style="display: grid; grid-template-columns: 1fr; gap: 10px; justify-items: center;">
   <img src="Pasted image 20260423220836.png" width="200">
-</div>
-
-<div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260423220859.png" width="200">
 </div>
 

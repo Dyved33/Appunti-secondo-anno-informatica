@@ -1404,3 +1404,50 @@ FORSE MANCA QUALCOSA
 > $S → aSB|aB, B → b$. Una derivazione di $a^3 b^3$: $S \implies aSB \implies aaSBB \implies aaaBBB \implies$ MANCA
 
 *Teorema:* ogni linguaggio non contestuale è effettivamente generato da una grammatica non contestuale in forma normale di Greibach
+
+###### Algoritmo di Cocke-Kasami-Younger
+*Problema di ricognizione:* ho in input una grammatica $G = \langle V, \Sigma, P ,S \rangle$ e una parola $w \in \Sigma^*$. In output ho 'SI' se $w \in L(G)$, 'NO' altrimenti
+
+*Problema di parsing:* ho in input una grammatica $G = \langle V, \Sigma, P ,S \rangle$ e una parola $w \in L(G)$. In output ho una derivazione $S \implies \alpha_1 \implies \alpha_2 \implies … \implies \alpha_n \implies w$ di $w$ in $G$ (o equivalentemente un albero di derivazione)
+
+**Algoritmo CYK:** una soluzione moderatamente efficiente al problema di ricognizione per i linguaggi non contestuali e, con opportune modifiche, al problema di parsing:
+- Ideale per le grammatiche in forma normale di Chomsky
+- Ma ogni grammatica non contestuale si può ridurre in tale forma
+
+L'idea di tale algoritmo è:
+- Siano $G$ una grammatica in forma normale di Chomsky e w una parola
+- Scriviamo $w$ come stringa di lettere $w = a_1a_2…a_n$
+- Cerchiamo di calcolare, per $0 \leq i < j \leq n$, tutte le variabili da cui si può derivare il fattore $a_{i+1}a_{i+2}…a_j$
+- MANCA
+
+Dobbiamo calcolare gli insiemi $N_{ij} = \{X \in N | X \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_j\}, 0 \leq i < j \leq n$. 
+- Per $j = i+1, N_{ij} = \{X \in N | X \overset{*}{\Rightarrow} a_j\} = \{X \in N | X →a_j$ in $P \}$ 
+- Per $j \geq i + 2$, si ha $X \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_j$ se e solo se $X → YZ, Y \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_h, Z \overset{*}{\Rightarrow} a_{h+1}a_{h+2}…a_j$, per opportuni $Y,Z \in N$ e $i<h<j$. Otteniamo così $N_{ij} = \bigcup\limits^{j-1}_{h = i+1} \{X \in N | \exists Y \in N_{ih}, Z \in N_{hj}, X → YZ$ in $P\}$ 
+
+Per ogni coppia di variabili $Y,Z$, poniamo $Y \circ Z = \{X \in N | X → YZ$ in $P\}$ e, più in generale, per ogni coppia di insiemi di variabili $H,K \subseteq N$, $H \circ K = \bigcup\limits_{\substack{Y \in H \\ Z \in K}} Y \circ Z$. Allora la nostra formula ricorsiva diventa: $N_{ij} = \bigcup\limits^{j-1}_{h = i+1} N_{ih} \circ N_{hj}$. Anzi se conveniamo che $N_{ij} = \emptyset$ per $0 \leq j \leq i \leq n, N_{ij} = \bigcup\limits_{MANCA} N_{ih} \circ N_{hj}$
+
+> [!example] 
+> IMMAGINE
+
+**Algoritmo CYK (on-line):** prende in input una grammatica in f.n. di Chomsky e una parola $w = a_1a_2…a_n$. In output da la matrice di ricognizione $N_{ij}$ associata a $w$. Ritorna 'TRUE' se $w \in L(G)$, 'FALSE' altrimenti
+
+IMMAGINE
+
+Analisi:
+- Calcolare $N_{ih} \circ N_{hj}$ ha costo 1
+- L'istruzione 4 ha costo $j-i-1 \leq n$ e viene eseguita $1+2+…+ (n-1) = n(n-1)/2$ volte
+- Il costo totale è quindi $O(n^3)$
+
+**Parsing:** sia $0 \leq i < j \leq n$ e $X \in N_{i,j}$
+- Posso determinare un indice $h$ e variabili $Y \in N_{i,h}$ , $Z \in N_{h,j}$ tali che $X → YZ$ è una produzione di $G$
+- Quindi una derivazione di $a_{i+1}a_{i+2}…a_j$ da $X$ si ottiene concatenando
+	- $X \implies YZ$
+	- Una derivazione di $a_{i+1}a_{i+2}…a_h$ da $Y$
+	- Una derivazione di $a_{h+1}a_{h+2}…a_j$ da $Z$
+
+IMMAGINE
+
+**Caso generale:** se $G$ non è in forma normale di Chomsky
+1. Si mette $G$ in forma normale di Chomsky con l'algoritmo standard
+2. Si esegue il parsing nella nuova grammatica con l'algoritmo CYK
+3. Riesaminando al contrario il passo 2, si risale al parsing nella grammatica originale
