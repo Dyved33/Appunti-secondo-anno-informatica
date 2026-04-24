@@ -17,7 +17,7 @@ Le linked lists vanno bene per rappresentare delle relazioni lineari (non tutte 
 - In caso di variabile $k$ non limitata superiormente.
 - Se $k$ è limitato da una costante molto grande ma la maggior parte dei nodi ha un numero basso di figli (spreco di memoria per i puntatori inutilizzati).
 
-**Rappresentazione *Left-child*,*right-sibling:** Serve a generalizzare il concetto di albero, rappresenta un albero con un numero arbitrario di figli: 
+**Rappresentazione *Left-child,right-sibling:** Serve a generalizzare il concetto di albero, rappresenta un albero con un numero arbitrario di figli: 
 - Ha la caratteristica si usare solo $O(n)$ spazio per ogni albero di $n$ nodi 
 - Ogni nodo è definito con un puntatore $p$ al padre.
 - Invece di avere un puntatore per ogni figlio, ogni nodo ha solo due puntatori
@@ -35,7 +35,7 @@ Si tratta di un albero binario nel quale le chiavi (cioè le informazioni conten
   <img src="Screenshot From 2026-02-24 11-25-52.png" width="190">
 </div>
 
-**In-order tree walk:** Data la 'proprietà degli alberi binari di ricerca, è possibile visualizzare tutte le chiavi dell'albero in maniera ordinata grazie a un semplice algoritmo ricorsivo.
+**In-order tree walk:** Data la proprietà degli alberi binari di ricerca, è possibile visualizzare tutte le chiavi dell'albero in maniera ordinata grazie a un semplice algoritmo ricorsivo.
 
 ~~~ 
 inorderTreeWalk(x)
@@ -47,9 +47,9 @@ inorderTreeWalk(x)
 
 L'algoritmo è così chiamato perché prima stampa tutti gli elementi di un sotto-albero partendo dalla sinistra della radice e concludendo alla sua destra.
 
-**Pre-order tree walk:** Stampa la radice prima dei valori di ciascun sotto-albero
+**Pre-order tree walk:** Stampa la chiave prima dei valori di ciascun sotto-albero
 
-**Post-order tree walk:** Stampa la radice dopo i valori di ciascun sotto-albero
+**Post-order tree walk:** Stampa la chiave dopo i valori di ciascun sotto-albero
 
 > [!info] Richiede $\Theta(n)$ in tempo per passare un albero binario di ricerca con n nodi. Dopo la chiamata iniziale la procedura chiama se stessa ricorsivamente 2 volte per ogni nodo nell'albero (una per ogni figlio)
 
@@ -191,7 +191,7 @@ transplant(T,u,v)
   v.p = u.p
 ~~~
 
-> [!info] N.B. Sia l'algoritmo di inserimento che quello di eliminazione richiedono tempo $O(h)$ per alberi di altezza hpiòà98
+> [!info] N.B. Sia l'algoritmo di inserimento che quello di eliminazione richiedono tempo $O(h)$ per alberi di altezza h
 ###### Red-black trees
 Il set di operazioni viste nella scorsa lezione sono veloci se l'altezza dell'albero di ricerca è piccola. Viceversa se l'altezza fosse un valore più grande le stesse operazioni sarebbero veloci tanto quanto una linked list. In questo contesto vengono introdotti gli alberi di ricerca bilanciati (**red-black trees**) che garantiscono delle operazioni che impiegano $O(log(n))$ di tempo nel caso peggiore.
 
