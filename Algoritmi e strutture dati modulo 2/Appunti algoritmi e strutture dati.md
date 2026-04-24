@@ -167,11 +167,12 @@ treeDelete(T,z)
   if y != z.right
    transplant(T,y,y.right)
    y.right = z.right
-   y.right = y
+   y.right.p = y
 
-  transplant(T,z,y)
-  y.left = z.left
-  y.left.p = y
+  else
+   transplant(T,z,y)
+   y.left = z.left
+   y.left.p = y
 ~~~
 
 Come parte del processo di eliminazione di un nodo, ho la necessità di spostare interi sotto-alberi dell'albero binario di ricerca. Posso fare ciò con la subroutine *trasnsplant*, la quale rimpiazza un sotto-albero "figlio" del proprio "genitore" con un altro sotto-albero. Nell'algoritmo quando rimpiazzo il sotto-albero con radice nel nodo *u* con il sotto-albero con radice nel nodo *v*, il "genitore" del nodo *u* diventa il genitore del nodo *v*.
