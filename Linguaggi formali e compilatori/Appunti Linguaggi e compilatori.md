@@ -200,11 +200,13 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
 
 **Linguaggi di tipo 0:** 
 *Definizione:* le grammatiche a struttura di frase (in base alle loro regolo possono scrivere intere frasi e non solo singoli caratteri) si dicono anche *grammatiche di tipo 0*. I linguaggi generati da grammatiche di tipo 0 si dicono *linguaggi di tipo 0* oppure *linguaggi ricorsivamente numerabili*. Fanno parte di questo livello le grammatiche a struttura di frase. Queste grammatiche hanno la massima espressività possibile: <u>se io ho una procedura effettiva infinita che mi genera una lista di parole, quella lista di parole è un linguaggio di tipo 0.</u>
+
 > [!example] 
 > ![[Screenshot From 2026-03-05 10-15-42.png|200]]
 
 **Linguaggi di tipo 1 (grammatiche sensibili al contesto / contestuali):**
 *Definizione:* una grammatica a struttura di frase si dice sensibile al contesto se le produzioni hanno la forma: $\alpha_1X\alpha_2 \to \alpha_1\beta\alpha_2$, con $X \in N$, $\alpha_1, \alpha_2, \beta \in V^*$ , $\beta \neq \epsilon$.  Ciò significa che le produzioni di queste grammatiche hanno il lato sx che contiene una variabile, mentre il lato dx si ottiene sostituendo quella variabile con una parola qualsiasi purché non vuota. Quindi mentre prima potevamo sostituire una parola con una parola, qui possiamo sostituire solo una lettera all'interno di una parola con una parola, che per di più non deve essere vuota (posso sostituire una variabile solo se è contenuta in un  contesto). I linguaggi generati da grammatiche di tipo *q* si dicono *linguaggi di tipo 1*  o anche *sensibili al contesto*.  A differenza dei linguaggi di tipo 0, per questo tipo di linguaggi esistono algoritmi che risolvono i problemi di parsing e ricognizione, ma sono molto costosi.
+
 <div style="display: flex; align-items: flex-start; gap: 20px;">
   <div style="flex: 1;">
     <img src="Screenshot From 2026-03-05 10-22-40.png" style="width: 100%; border-radius: 8px;">
@@ -213,6 +215,7 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
   VN / VU è possibile se e solo so V è seguita da N / U (per questo dipende da contesto)
   </div>
 </div>
+
 > [!example]
 > ![[Screenshot From 2026-03-05 10-22-40.png|200]]
 
@@ -221,6 +224,7 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
 - Le grammatiche sensibili al contesto sono monotone, perché in esse si sostituisce (all'interno del contesto) una variabile con qualcosa che non è vuoto, quindi quello che otterremo sarà qualcosa di più lungo o al massimo della stessa lunghezza di quello che già abbiamo.
 - Non tutte le grammatiche monotone sono sensibili al contesto
 - Ogni grammatica monotona è equivalente a una grammatica sensibile al contesto (che genera lo stesso linguaggio)
+
 > [!example] ![[Screenshot From 2026-03-05 10-26-52.png|200]]
 
 **Sintesi:**
@@ -229,6 +233,7 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
 3. Esistono linguaggi di tipo 0 per cui un tale algoritmo non esiste
 
 **Linguaggi di tipo 2 (Grammatiche non contestuali):** Una grammatica a struttura di frase si dice *non contestuale* o di *tipo 2* se le produzioni hanno la forma: $X \to \beta$, con $X \in N$, $\beta \in V^*$. Dunque una grammatica a struttura di frase si dice non contestuale se le produzioni hanno a sx una singola variabile. I linguaggi generati da grammatiche di tipo 2 si dicono *linguaggi di tipo 2* o anche *non contestuali*. Sono non contestuali perché la variabile può essere sostituita indipendentemente dal contesto in cui appare.
+
 > [!example]
 > ![[Screenshot From 2026-03-05 10-33-04.png|200]]
 
@@ -1023,7 +1028,7 @@ Troviamo il più lungo prefisso $u$ di $w$ accettato da $A_D$ e il più piccolo 
   <img src="Pasted image 20260409155211.png" width="200">
 </div>
 ###### Grammatiche regolari
-*Definizione:* una grammatica a struttura di frase $G = \langle V,\Sigma,P,S \rangle$ è di tipo 3 se tutte le produzioni hanno le forme: $X \rightarrow aY, X \rightarrow a, X,Y \in N, a \in \Sigma$. Nel caso in cui $S$ non compaia nei lati destri delle produzioni è ammessa anche la produzione $S \rightarrow \epsilon$ 
+*Definizione:* una grammatica a struttura di frase $G = \langle V,\Sigma,P,S \rangle$ è di tipo 3 se tutte le produzioni hanno le forme: $X \rightarrow aY, X \rightarrow a$, con $X,Y \in N, a \in \Sigma$ (cioè una variabile mi può produrre o simbolo terminale oppure un simbolo terminale con un'altra variabile). Nel caso in cui $S$ non compaia nei lati destri delle produzioni è ammessa anche la produzione $S \rightarrow \epsilon$ 
 
 *Osservazione:* la produzione $S \rightarrow \epsilon$ serve esclusivamente per generare la parola vuota
 
@@ -1086,7 +1091,7 @@ Le grammatiche di tipo 3 considerate finora sono evidentemente lineari destre. V
 ###### Linguaggi non contestuali
 Sono linguaggi di tipo 2, e lo strumento necessario che ci permette di eseguire l’analisi sintattica.
 
-> [!example] sia $P$ il linguaggio delle palindrome sull'alfabeto $\Sigma = \{a,b\}$
+> [!example] Sia $P$ il linguaggio delle palindrome sull'alfabeto $\Sigma = \{a,b\}$
 > 1. $\epsilon, a, b$ sono palindrome
 > 2. Per ogni palindroma $w$, le parole $awa$ e $bwb$ sono palindrome
 > 3. Ogni palindroma si ottiene su $\Sigma$ si ottiene applicando un numero finito di volte le regole 1 e 2:$P = \epsilon+a+b+aPa+bPb$
@@ -1161,10 +1166,11 @@ La parola che si ottiene leggendo, nell'ordine, le etichette delle foglie è la 
 > Dal punto di vista 'semantico' il primo corrisponde alla 'computazione' di $1+(1*0)$ e il secondo alla 'computazione' di $(1+1)*0$
 
 **Grammatiche ambigue:** 
+
 *Definizione:* una grammatica si dice NON ambigua se a ogni parola del linguaggio generato corrisponde un'unico albero di derivazione. Al contrario, le grammatiche ambigue sono quelle grammatiche dove ad ogni parola del linguaggio generato corrispondono più alberi di derivazione.
 
 > [!example] 
-> Si $G'$ la grammatica con $\Sigma = \{0,1,*,+\}, N = \{S,P,X\}$ e produzioni $S → P+S|P, P → X*P|X, X → 0|1$. È equivalente a quella dell'esempio precedente ma non ambigua
+> Sia $G'$ la grammatica con $\Sigma = \{0,1,*,+\}, N = \{S,P,X\}$ e produzioni $S → P+S|P, P → X*P|X, X → 0|1$. È equivalente a quella dell'esempio precedente ma non ambigua
 > 
 > ![[Pasted image 20260411094747.png|200]] 
 
@@ -1178,8 +1184,8 @@ La parola che si ottiene leggendo, nell'ordine, le etichette delle foglie è la 
 > $L$ è inerentemente ambiguo
 ###### Semplificazioni nelle grammatiche non contestuali
 Ho due problemi: 
-- di ricognizione: stabilire se una parola fa parte del linguaggio generato
-- di parsing: data una parola che è nel linguaggio, trovare una derivazione
+- di **ricognizione**: stabilire se una parola fa parte del linguaggio generato
+- di **parsing**: data una parola che è nel linguaggio, trovare una derivazione
 
 Sono in generale molto complessi, ma si semplificano se si evitano:
 1. $X → \epsilon$ ($\epsilon$-produzioni)
@@ -1188,26 +1194,28 @@ Sono in generale molto complessi, ma si semplificano se si evitano:
 4. Le variabili da cui non si derivano parole prive di variabili (improduttive)
 
 **$\epsilon-$produzioni e produzioni unarie:** 
+
 *Definizione:* sia $G$ una grammatica non contestuale. Le produzioni della forma $X → \epsilon$ si dicono $\epsilon-$produzioni. Le produzioni della forma $X → Y$, con $X, Y$ variabili si dicono produzioni unarie
 
 L’ideale sarebbe avere a sinistra sempre una variabile, e a destra avere o un terminale, o una sequenza di almeno due lettere variabile-terminale.
 
 > [!example] Sia $G$ la grammatica con $N = \{S,O,P,E\}, \Sigma = \{a,b,x\}$ e con le produzioni: $S → aOb, O → P |aOb| OO, P → x | E, E → \epsilon$
-> - $E → \epsilon$ è una $\epsilon-$ produzione 
+> - $E → \epsilon$ è una $\epsilon-$produzione 
 > - $O → P$ e $P → E$ sono produzioni unarie
 
 *Osservazione:* in assenza di $\epsilon-$produzioni e produzioni unarie, se $\alpha \implies \beta$, allora 
 - $|\beta| > |\alpha|$
 - $|\beta| = |\alpha|$ ma $\beta$ contiene un terminale in più di $\alpha$ 
 
-Pertanto, una parola di lunghezza n può essere generata in $2n − 1$ passi al più (perché ad ogni passo o la mia forma sentenziale si allunga, oppure una variabile viene sostituita da un terminale).
+Pertanto, una parola di lunghezza $n$ può essere generata in $2n − 1$ passi al più (perché ad ogni passo o la mia forma sentenziale si allunga, oppure una variabile viene sostituita da un terminale).
 
-*Proposizione:* ogni linguaggio non contestuale è effettivamente generato da una grammatica non contestuale priva di $\epsilon-$produzioni, eccettuata, eventualmente, la produzione $S → \epsilon$, ove $S$ è il simbolo iniziale. Inoltre, si può assumere che il simbolo iniziale non compaia nei lati destri delle produzioni. Visto che le parole vuote ci servono nella generazione dei nostri linguaggi, dobbiamo mantenere la possibilità di effettuare una $\epsilon-$produzione. La possiamo mettere al primo passo $S → \epsilon$, e solo se S non compare nei lati destri delle produzioni. Quindi questa produzione $S → \epsilon$, c’è, ma è come se non ci fosse perché viene utilizzata solo ed unicamente per generare la parola vuota. Se non la uso al primo passo, non la posso utilizzare più.
+*Proposizione:* ogni linguaggio non contestuale è effettivamente generato da una grammatica non contestuale priva di $\epsilon-$produzioni, eccettuata, eventualmente, la produzione $S → \epsilon$, ove $S$ è il simbolo iniziale. Inoltre, si può assumere che il simbolo iniziale non compaia nei lati destri delle produzioni. Visto che le parole vuote ci servono nella generazione dei nostri linguaggi, dobbiamo mantenere la possibilità di effettuare una $\epsilon-$produzione. La possiamo mettere al primo passo $S → \epsilon$, e solo se $S$ non compare nei lati destri delle produzioni. Quindi questa produzione $S → \epsilon$, c’è, ma è come se non ci fosse perché viene utilizzata solo ed unicamente per generare la parola vuota. Se non la uso al primo passo, non la posso utilizzare più.
 
 **Costruzione della grammatica:**
-*Definizione:* una variabile $X$ di una grammatica $G$ si dice annullabile se $X \implies^* \epsilon$. Quando andiamo a costruire una grammatica possiamo avere diversi casi:
-1. *$S$ non è annullabile:* a partire da $G$ costruiamo una nuova grammatica $G'$ nel modo seguente:
-	1. Aggiungiamo tutte le produzioni ottenute cancellando dei lati destri delle produzioni di $G$ una o più occorrenze di variabili annullabili
+
+*Definizione:* una variabile $X$ di una grammatica $G$ si dice annullabile se $X \implies^* \epsilon$ (cioè se genera la parola vuota). Ciò vale non solo per le produzioni dirette come $X→\epsilon$, ma anche per le produzioni concatenate come $X → Y, Y → W, W → \epsilon$. Quando andiamo a costruire una grammatica possiamo avere diversi casi:
+1. *$S$ non è annullabile:* quindi non è possibile generare la parola vuota con il linguaggio. A partire da $G$ costruiamo una nuova grammatica $G'$ nel modo seguente:
+	1. Aggiungiamo a $G'$ tutte le produzioni ottenute cancellando dei lati destri delle produzioni di $G$ una o più occorrenze di variabili annullabili
 	2. Cancelliamo le $\epsilon-$produzioni
 
 *Asserto:* La grammatica $G'$ è equivalente a $G$. 
@@ -1217,8 +1225,13 @@ Pertanto, una parola di lunghezza n può essere generata in $2n − 1$ passi al 
 - Per l’inclusione inversa, faremo vedere che per ogni albero di derivazione di $G$ c’è un albero di derivazione di $G'$ associato alla stessa parola. 
 
 Procediamo per induzione sul numero dei nodi dell’albero.
-<div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423100401.png" width="200">
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260423100401.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  Dove X1,X2,… sono le produzioni di S, mentre w1,w2,… sono le produzioni delle produzioni di S. Guardando l'albero della vecchia grammatica G, e poi quello nuovo della grammatica G', possiamo vedere come, anche se eliminiamo le epsilon-produzioni (che nel nuovo linguaggio non servono più), posso ancora generare tutto ciò che generavo prima</div>
 </div>
 
 2. *$S$ è annullabile:* a partire da $G$ costruiamo una nuova grammatica $G'$ nel modo seguente:
@@ -1228,9 +1241,23 @@ Procediamo per induzione sul numero dei nodi dell’albero.
 
 *Asserto:* La grammatica $G'$ è equivalente a $G$
 
-**Ricerca delle variabili annullabili:** costruiamo gli insiemi di variabili $W_n$ come segue: 
-- $W_1 = \{X \in N |$ c'è una produzione $X → \epsilon \ in \ P\}$,
-- $W_n = \{X \in N |$ c'è una produzione $X → \gamma \ \text{in P con} \ \gamma \in W^*_{n-1}\}$, $n \geq 2$ 
+**Ricerca delle variabili annullabili:** costruiamo gli insiemi sempre più grandi di variabili $W_n$ come segue: 
+- $W_1 = \{X \in N |$ c'è una produzione $X → \epsilon$ in $P\}$,
+- $W_n = \{X \in N |$ c'è una produzione $X → \gamma$ in $P$ con $\gamma \in W^*_{n-1}\}, n \geq 2$ 
+
+> [!info] In altre parole:
+> 1. all’inizio prendo l’insieme di tutte le
+> variabili che producono 𝜀.
+> 2. Poi costruisco un altro insieme in cui
+> oltre a queste variabili, aggiungo tutte
+> quelle produzioni che hanno un lato dx
+> fatto interamente da variabili
+> annullabili (che conosco già grazie al
+> passo precedente).
+> 3. Ripeto il secondo passo più volte fino a
+> quando gli insiemi non cresceranno più
+> e che ci indicheranno che tutte le
+> variabili annullabili sono state trovate.
 
 *Osservazione:* 
 - $W_n$ contiene solo variabili annullabili; 
@@ -1255,7 +1282,7 @@ Procediamo per induzione sul numero dei nodi dell’albero.
 
 **Costruzione della grammatica:** A partire da $G$ costruiamo una nuova grammatica $G'$ nel modo seguente: 
 1. si eliminano le $\epsilon$-produzioni con la costruzione precedente, 
-2. per ogni coppia di variabili $A, B$ tali che $A \implies *B$, si aggiungono i lati destri delle produzioni di $B$ a quelli delle produzioni di $A$, 
+2. per ogni coppia di variabili $A, B$ tali che $A \implies *B$ ($A$ deriva $B$ in uno o più passi), si aggiungono i lati destri delle produzioni di $B$ a quelli delle produzioni di $A$ (tutte le cose che produce $B$ le aggiungo a quelle che produce $A$) 
 3. si cancellano le produzioni unarie
 
 *Asserto:* La grammatica $G'$ è equivalente a $G$. 
@@ -1265,17 +1292,33 @@ Procediamo per induzione sul numero dei nodi dell’albero.
 - Per l’inclusione inversa, faremo vedere che a ogni albero di derivazione di $G$ c’è un albero di derivazione di $G'$ associato alla stessa parola. Procediamo per induzione sul numero dei nodi dell’albero.
 
 1. $S$ ha più di un figlio: 
-<div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423101234.png" width="200">
-</div>
-2. $S$ ha solo un figlio: 
-<div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-04-23 10-13-12.png" width="200">
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260423101234.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  L'albero G' è uguale perché abbiamo tolto solo le produzioni unarie 
+  </div>
 </div>
 
-**Ricerca delle derivazioni unarie:** Costruiamo gli insiemi di coppie di variabili $T_n$ come segue: 
+2. $S$ ha solo un figlio: 
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Screenshot From 2026-04-23 10-13-12.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  Abbiamo tolto tutte le produzioni unarie S → Y1, S → Y2, S → Y3 e abbiamo aggiunto tutto a dx di S. Quindi ora S le deriva direttamente
+  </div>
+</div>
+
+**Ricerca delle derivazioni unarie:** Costruiamo gli insiemi di coppie di variabili $T_n$ con tutte le produzioni unarie dirette. Ad ogni passo, vado ad aggiungere all’insieme, tutte le coppie $X,Y$ per cui ci sono già $X,Z$ e $Z,Y$ nell’insieme. Perché so che da $X → Z$ e da $Z → Y$, allora da $X →Y$. Procediamo così fin quando posso aggiungere coppie all’insieme, altrimenti vorrebbe dire che abbiamo trovato tutte le derivazioni unarie.
 - $T_1 = \{(X,Y) \in N \times N | \ \text{c’è la produzione} \ X → Y \ \text{in P}$
 - $T_n = T_{n-1} \cup \{(X,Y \in N \times N | \ \text{esiste} \ Z \in N, (X,Z), (Z,Y) \in T_{n-1} \}, n \geq 2$ 
+
+> [!info]
+> $T_1$ è l’insieme delle coppie $X,Y$ per cui $Y$ si deriva da $X$ in un passo, $T_2$ in al massimo due passi, $T_3$ in al massimo tre passi e $T_n$ in al massimo $2n-1$ passi. Quindi il procedimento è abbastanza veloce perché la lunghezza massima sarà il numero delle variabili.
 
 *Osservazioni:* 
 - $T_n$ contiene le coppie di variabili $(X,Y)$ tali che $X \implies *Y$ in al più $2^{n-1}$ passi; 
@@ -1292,7 +1335,7 @@ Procediamo per induzione sul numero dei nodi dell’albero.
 
 **Variabili improduttive e variabili inaccessibili:** 
 
-*Definizione:* Sia $G = \langle V, \Sigma, P, S \rangle$  una grammatica non contestuale. Una variabile X si dice **produttiva** se esiste $w \in \Sigma^*$ tale che $X \implies *w$, **improduttiva** altrimenti. Una variabile $X$ si dice **accessibile** se compare in qualche forma sentenziale, **inaccessibile** altrimenti.
+*Definizione:* Sia $G = \langle V, \Sigma, P, S \rangle$  una grammatica non contestuale. Una variabile $X$ si dice **produttiva** se esiste $w \in \Sigma^*$ tale che $X \implies *w$, **improduttiva** altrimenti. Una variabile $X$ si dice **accessibile** se compare in qualche forma sentenziale, **inaccessibile** altrimenti.
 
 > [!example ]
 > Sia $G$ la grammatica con $N = \{N, X, Y, Z\}$, $\Sigma = \{a,b\}$ e con le produzioni: $S → aXa |aa, X → bSb | Y , Z → a$.
@@ -1309,6 +1352,8 @@ Procediamo per induzione sul numero dei nodi dell’albero.
 - $W_1 = \{X \in N | \ \text{c'è una produzione} \ X → w \ \text{in P con} \ w \in \Sigma^*\}$
 - $W_n = \{X \in N | \ \text{c'è una produzione} \ X → \gamma \ \text{in P con} \ \gamma \in (W_{n-1} \cup \Sigma)^*\}, n \geq 2$
 
+In altre parole creiamo un insieme di variabili ($W_n$) e gli aggiungiamo tutte le variabili che sono direttamente produttive, cioè le variabili che producono subito tutti simboli terminali (comprese le $\epsilon-$produzioni). Dopodiché gli aggiungo tutte quelle variabili che hanno un lato dx costituito da terminali e variabili che già so essere produttive. Ripeto questo procedimento finché l’insieme non cresce più. Tutte le variabili che rimangono fuori da questo insieme sono improduttive e quindi possono essere buttate via.
+
 *Osservazione:*
 - $W_n$ contiene solo variabili annullabili; 
 - $W_n$ contiene tutte le variabili che si annullano in $n$ passi; 
@@ -1324,6 +1369,8 @@ L'algoritmo per le variabili produttive prende in input una grammatica non conte
 **Ricerca delle variabili accessibili:** costruiamo gli insiemi di variabili $K_n$ come segue:
 - $K_0 = \{S\}$
 - $K_n = K_{n-1} \cup \{$variabili che compaiono nei lati destri delle produzioni delle $X \in K_{n-1} \}, n \geq 1$
+
+In altre parole creiamo un insieme di variabili ($K_n$) e gli aggiungiamo $S$ che sappiamo essere accessibile. Poi aggiungeremo tutte le variabili che compaiono nei lati dx delle produzioni di $S$. In seguito aggiungeremo tutte le variabili che hanno nel lato sx delle variabili che sappiamo già essere  accessibili. Ripetiamo il procedimento finché l’insieme non smette di crescere.
 
 *Osservazioni:*
 - $K_n$ contiene le variabili che compaiono nelle forme sentenziali derivabili in $n$ passi dal simbolo iniziale
@@ -1352,7 +1399,7 @@ L'algoritmo per le variabili accessibili prende in input una grammatica non cont
 
 ###### Forma normale di Chomsky
 *Definizione:* una grammatica non contestuale si dice in forma normale di Chomsky se ha solo produzioni dei tipi
-- $X → YZ con X,Y,Z \in N$
+- $X → YZ$ con $X,Y,Z \in N$
 - $X → a$ con $X \in N, a \in \Sigma$
 - $S → \epsilon$ ma solo a condizione che $S$ non compaia nei lati destri delle produzioni
 
@@ -1372,7 +1419,7 @@ L'algoritmo per le variabili accessibili prende in input una grammatica non cont
 
 *Procedura:* 
 1. Eliminare le $\epsilon$-produzioni e produzioni unarie; restano solo produzioni $X → a$ con $X \in N$ e $a \in \Sigma$ e produzioni $X → \gamma$ con $|\gamma| \geq 2$
-2. Ridursi al caso $\gamma \in N^*$: per ogni terminale $a$ che comprare, non da solo, in qualche lato destro
+2. Ridursi al caso $\gamma \in N^*$ (caso in cui $\gamma$ contiene solo variabili): per ogni terminale $a$ che comprare, non da solo, in qualche lato destro
 	- Introduco una nuova variabile $A$ e una nuova produzione $A → a$
 	- Sostituisco tutte le occorrenze di $a$ nei lati destri delle produzioni con $A$ (salvo che a non sia l'intero lato destro)
 
@@ -1381,7 +1428,7 @@ L'algoritmo per le variabili accessibili prende in input una grammatica non cont
 
 Restano solo produzioni $X → a$ con $X \in N$ e $a \in \Sigma$ e produzioni $X → X_1 →…→ X_k$ con $X,X_1,…,X_k \in N, k \geq 2$
 3. Ridursi al caso $k = 2$: per ogni produzione $X → X_1 →…→ X_k$ con $k \geq 3$
-	- Introduco una nuova variabile $Z$ e sostituisco la produzione$ X → X_1 →…→ X_k$ con la coppia di produzioni $X → X_1 →…→ X_{k-2}Z$, $Z → X_{k-1}X_K$
+	- Introduco una nuova variabile $Z$ e sostituisco la produzione $X → X_1 →…→ X_k$ con la coppia di produzioni $X → X_1 →…→ X_{k-2}Z$, $Z → X_{k-1}X_K$
 	- Ripeto il passo MANCA
 
 > [!example]
@@ -1396,7 +1443,7 @@ FORSE MANCA QUALCOSA
 - $S → \epsilon$, ma solo a condizione che $A$ non compaia nei lati destri delle produzioni
 
 > [!example]
-> La grammatikca con le produzioni S → aS MANCA
+> La grammatica con le produzioni S → aS MANCA
 
 *Osservazione:* in una grammatica in forma normale di Greibach, ogni derivazione di una parola $w \in L(G)$ di lunghezza n richiede esattamente $n$ passi
 
@@ -1404,7 +1451,6 @@ FORSE MANCA QUALCOSA
 > $S → aSB|aB, B → b$. Una derivazione di $a^3 b^3$: $S \implies aSB \implies aaSBB \implies aaaBBB \implies$ MANCA
 
 *Teorema:* ogni linguaggio non contestuale è effettivamente generato da una grammatica non contestuale in forma normale di Greibach
-
 ###### Algoritmo di Cocke-Kasami-Younger
 *Problema di ricognizione:* ho in input una grammatica $G = \langle V, \Sigma, P ,S \rangle$ e una parola $w \in \Sigma^*$. In output ho 'SI' se $w \in L(G)$, 'NO' altrimenti
 

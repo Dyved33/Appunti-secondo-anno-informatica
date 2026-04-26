@@ -1698,9 +1698,9 @@ Attributi NON condivisi (per-thread):
 
 **Thread Safety:** 
 - *POSIX Safety Concepts:* definiscono se una funzione può essere chiamata in determinati contesti senza che si verifichino comportamenti indesiderati 
-- *MT-Safe (MT sta per Multi-threading) o Thread-Safe:* una funzione lo è se può essere chiamata contemporaneamente da più thread senza modificare il comportamento. MT-Safe non significa che l'esecuzione sia atomica, né che usi alcun meccanismo di sincronizzazione nell'accesso alla memoria. È possible che chiamare più funzioni MT-Safe in sequenza possa sortire effetti diversi da un'esecuzione atomica delle stesse; chiamate concorrenti da altri thread possono interferire 
+- *MT-Safe (MT sta per Multi-threading) o Thread-Safe:* una funzione lo è se può essere chiamata contemporaneamente da più thread senza modificare il comportamento. MT-Safe non significa che l'esecuzione sia atomica, né che usi alcun meccanismo di sincronizzazione nell'accesso alla memoria. È possible che chiamare più funzioni MT-Safe in sequenza possa sortire effetti diversi da un'esecuzione atomica delle stesse chiamate concorrenti da altri thread possono interferire 
 
-> [!info] vedi man 7 attributes per chiarimenti su MT-Safe
+> [!info] vedi `man 7 attributes` per chiarimenti su MT-Safe
 
 **Compilazione:** 
 - includere `pthread.h `
@@ -1714,39 +1714,43 @@ Attributi NON condivisi (per-thread):
 - un esempio d'uso in `man 3 pthread_create` 
 - `attr` punta ad una struttura di tipo `pthread_attr_t` che può essere usata per settare alcuni attributi del nuovo thread, per esempio per crearlo `detached` 
 - `attr` può essere inizializzata con `pthread_attr_init(3).`
-- Se è NULL sono usati gli attributi di default 
+- Se è `NULL` sono usati gli attributi di default 
 - `pthread_create(3)` torna 0 per successo; un codice di errore altrimenti 
 
 **Terminazione di un thread:** un thread può terminare: 
-- Se il thread chiama p`thread_exit(3)` specificando un codice d'uscita, che sarà disponibile per un altro thread del processo che abbia chiamato `pthread_join(3)` 
+- Se il thread chiama `pthread_exit(3)` specificando un codice d'uscita, che sarà disponibile per un altro thread del processo che abbia chiamato `pthread_join(3)` 
 - quando `start_routine()` (vedi `pthread_create()`) termina con return. Equivalente a chiamare `pthread_exit(3)` 
 - è cancellato con `pthread_cancel(3)` 
-- un thread chiama `exit(3)` o quello principale chiama return. L'intero processo termina (e tutti i suoi threads)! 
+- un thread chiama `exit(3)` o quello principale chiama return. L'intero processo termina (e tutti i suoi threads)
 
-`pthread_exit(void *retval);` termina il thread chiamante. Se il thread è joinable, il valore ritornato in `retval` è reso disponibile ad altro thread del processo che chiami `pthread_join(3)`. Il valore cui `retval` punta non dovrebbe essere allocato nello stack del thread chiamante, perché dopo la terminazione del thread il contenuto dello stack è "undefined"
+`pthread_exit(void *retval);` termina il thread chiamante. Se il thread è joinable, il valore ritornato in `retval` è reso disponibile ad un altro thread del processo che chiami `pthread_join(3)`. Il valore cui `retval` punta non dovrebbe essere allocato nello stack del thread chiamante, perché dopo la terminazione del thread il contenuto dello stack è "undefined"
 
 > [!example] mt 1.c 
 > ```C
-> #include #include #include 
+> #include <pthread.h>
+> #include <stdio.h>
+> #include <unistd.h>
+> 
 > int iCondivisa = 13; 
-> void thread 1(int *arg) { 
+> 
+> void thread1(int *arg) { 
 > 	int iLocale = 101; 
 > 	printf("Sono il primo thread. Argomento = %d, var. condivisa = %d, locale = %d\n", *arg, iCondivisa, iLocale); 
 > 	pthread_exit(NULL); 
 > } 
 > 
-> void thread 2(char *arg) { 
+> void thread2(char *arg) { 
 > 	int iLocale = 202; 
 > 	printf("Sono il secondo thread. Argomento = \"%s\", var. condivisa = %d, locale = %d\n", arg, iCondivisa, iLocale);
-> 	 pthread_exit(NULL); 
+> 	pthread_exit(NULL); 
 > } 
 > 
 > void main() { 
-> 	pthread_t th 1, th 2; 
-> 	int arg 1 = 1; 
-> 	char arg 2[] = "Ciao"; 
-> 	pthread_create(&th 1, NULL, (void *)thread 1, (void *)&arg 1);
-> 	pthread_create(&th 2, NULL, (void *)thread 2, (void *)arg 2);
+> 	pthread_t th1, th2; 
+> 	int arg1 = 1; 
+> 	char arg2[] = "Ciao"; 
+> 	pthread_create(&th1, NULL, (void *)thread1, (void *)&arg1);
+> 	pthread_create(&th2, NULL, (void *)thread2, (void *)arg2);
 > 	sleep(2); 
 > 	return; 
 > }
@@ -1801,6 +1805,9 @@ Le risorse allocate per un thread joinable sono rilasciate solo se un altro thre
 > }
 > ```
 
+> [!info] In sostanza:
+> - con `join` il thread chiamante attende che il thread interpellato termini così da usarne le risorse (un solo thread può fare `join` con successo). Se non faccio mai `join` accumulo zombie e ad un certo punto non posso più creare thread
+> - quando il thread termina, con `detached`, le risorse vengono liberate subito e questo sparisce immediatamente. Non posso farci il `join` ne ottenere il suo valore di ritorno ne tornare indietro
 ###### Race condition
 Riguarda il problema della concorrenza. 
 
@@ -1822,12 +1829,12 @@ void *worker(void *arg) {
 } 
 
 int main(void) { 
-	pthread_t t 1, t 2; 
-	pthread_create(&t 1, NULL, worker, NULL); 
-	pthread_create(&t 2, NULL, worker, NULL); 
+	pthread_t t1, t2; 
+	pthread_create(&t1, NULL, worker, NULL); 
+	pthread_create(&t2, NULL, worker, NULL); 
 	
-	pthread_join(t 1, NULL); 
-	pthread_join(t 2, NULL); 
+	pthread_join(t1, NULL); 
+	pthread_join(t2, NULL); 
 	
 	printf("counter = %d\n", counter); 
 	return 0; 
@@ -1837,8 +1844,13 @@ int main(void) {
 Ci aspetteremmo che counter assumesse a fine esecuzione il valore 200.000: può non essere così. `++` NON è un’operazione atomica: `counter++` è una sezione critica. Dobbiamo quindi garantire che i thread abbiano accesso mutuamente esclusivo alle sezioni critiche. Si hanno più soluzioni, tra cui: 
 - *pthread_mutex:* parte della libreria pthreads 
 - supporto per le operazioni atomiche in C: Atomic operations library, a partire da C11
-- *semafori*
+- *semafori* 
 
+> [!info] Ricorda:
+> Dire che qualcosa è atomico significa che viene eseguito senza essere interrotto in una volta sola (nessun altro thread può vedere uno stato a "metà"). Una variabile atomica è tale se letture e scritture avvengono in modo indivisibile (e due threads non possono incastrarsi mentre la modificano). Un'operazione è atomica, invece, se avviene tutta o non avviene per nulla (anche qui senza interferenze da parte di altri thread). 
+>> [!example]
+>> `x = x + 1;` anche se sembra un'unica operazione implica di leggere x, sommargli 1 e poi scrivere x. Tra questi passaggi può succedere che un altro thread intervenga
+ 
 **Pthreads: Mutex:** 
 
 > [!quote] Da `man pthread_mutex_init(3)*`: 
@@ -1881,13 +1893,13 @@ int main(void)
 	pthread_join(t2, NULL);
 	  
 	printf("counter = %d\n", counter);
-	pthread:pthread_mutex_destroy(&my_mutex); // distrugge il my_mutex
+	pthread_mutex_destroy(&my_mutex); // distrugge il my_mutex
 	
 	return 0;
 }
 ```
  
-**C11 Atomic support:** un'alternativa in certi casi per gestire la concorrenza è stata introdotta in C 11. 
+**C11 Atomic support:** un'alternativa in certi casi per gestire la concorrenza è stata introdotta in C11. 
 - Si tratta di uno standard del passato per il linguaggio C 
 - Tra le altre cose introduce il supporto per il *multithreading* (da non confondere con le funzioni di libreria pthreads) 
 
@@ -1914,7 +1926,7 @@ _Atomic int counter = 0; // variabile condivisa
 void *worker(void *arg)
 {
 	for (int i = 0; i < 100000; i++) {
-		counter++; // <-- NON atomico
+		counter++; 
 	}
 	return NULL;
 }
@@ -1939,7 +1951,12 @@ Servono per la sincronizzazione dei processi o dei threads per eseguire coerente
 
 Storicamente ci sono 2 possibili implementazioni: POSIX o SYSTEM V. POSIX è più semplice ma meno diffusa (soprattutto tra sistemi più vecchi). SYSTEM V è una API più tradizionale
 
-I semafori (in POSIX, `man 7 sem_overview`) sono rappresentabili come variabili intere, ma mai minori di 0. Ci sono 2 operazioni possibili:
+I semafori (in POSIX, `man 7 sem_overview`) sono rappresentabili come variabili intere, ma mai minori di 0.
+
+> [!warning] Attenzione!
+> Non confondere questa informazione "i semafori non possono essere mai minori di 0", con la teoria (per la quale i semafori non binari possono assumere valori negativi)
+
+Ci sono 2 operazioni possibili:
 1. `POST`: incrementa di 1
 2. `WAIT`: decrementa di 1
 
@@ -1950,7 +1967,6 @@ I semafori POSIX possono essere:
 	- sono identificati da un nome nella forma "/somename". 
 	- `sem_open(3)` apre o crea (se non esiste) un semaforo *named*. 
 	- Due processi/thread possono operare sullo stesso semaforo passando lo stesso nome a `sem_open(3)`.
-	- sue processi/thread possono operare sullo stesso semaforo passando lo stesso nome a `sem_open(3)`
 	- Dopo averlo aperto i processi possono operare con `sem_post(3)` e `sem_wait(3)`
 	- Quando un semaforo non serve più il processo può chiudere il suo accesso con `sem_close(3)`.
 	- Quando tutti i processi hanno terminato di usarlo, il semaforo può essere rimosso con `sem_unlink(3)` 
@@ -2034,7 +2050,7 @@ sem_destroy(&sem);
 `int sem_timedwait(sem_t *sem, const struct timespec *abs_timeout);`
 - come `sem_wait()` ma, nel caso il semaforo sia a 0 e la funzione si blocchi, l'attesa non si protrae oltre il tempo specificato da `abs_timeout` 
 - se `sem_timedwait()` torna perché il timeout è spirato prima che il semaforo diventasse positivo allora ritorna -1 ed `errno` viene settata a `ETIMEDOUT` 
-- `abs_timeout` punta ad una struttura che specifica il numero di secondi dal 01/01/1970 trascorsi i quali il timeout spira e la chiamata comunque ritorna (vedi slide successiva) 
+- `abs_timeout` punta ad una struttura che specifica il numero di secondi dal 01/01/1970 trascorsi i quali il timeout spira e la chiamata comunque ritorna  
 
 Ritorna: 0 per successo. -1 per errore, errno settata 
 
@@ -2067,36 +2083,62 @@ Esempio con semaforo named:
 #include <stdio.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
-int counter = 0; // variabile condivisa
-sem_t sem; // semaforo «unnamed»
+#define MAX		1000
+#define VERDE	1
+#define ROSSO	0
 
-void *worker(void *arg)
+sem_t *sem_pari, *sem_dispari;
+
+void pari(void *arg)
 {
-	for (int i = 0; i < 100000; i++) {
-		sem_wait(&sem);
-		counter++; // <-- NON atomico
-		sem_post(&sem);
-	}
-	return NULL;
+	int i;
+    for (i = 2; i <= MAX; i += 2) {
+    	sem_wait(sem_pari);
+    	printf("%d\n", i);
+    	sem_post(sem_dispari);
+    }
+    pthread_exit(NULL);
+}
+
+void dispari(void *arg)
+{
+	int i;
+    for (i = 1; i <= MAX; i += 2) {
+    	sem_wait(sem_dispari);
+    	printf("%d\n", i);
+    	sem_post(sem_pari);
+    }
+    pthread_exit(NULL);
 }
 
 int main(void)
 {
-	pthread_t t1, t2;
-	sem_init(&sem, 0, 1);
-	
-	pthread_create(&t1, NULL, worker, NULL);
-	pthread_create(&t2, NULL, worker, NULL);
-	  
-	pthread_join(t1, NULL);
-	pthread_join(t2, NULL);
-	  
-	printf("counter = %d\n", counter);	
-	sem_destroy(&sem);
-	
-	return 0;
+    pthread_t t1, t2;
+
+	/*********************************************************************/
+	// La visualizzazione deve partire da 1 e non da 2
+    sem_pari    = sem_open("/pari",    O_CREAT|O_RDWR, S_IRUSR|S_IWUSR, ROSSO);
+    sem_dispari = sem_open("/dispari", O_CREAT|O_RDWR, S_IRUSR|S_IWUSR, VERDE);
+	/*********************************************************************/
+
+    pthread_create(&t1, NULL, (void *)pari, NULL);
+    pthread_create(&t2, NULL, (void *)dispari, NULL);
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+	/*********************/
+    sem_close(sem_pari);
+    sem_close(sem_dispari);
+    sem_unlink("/pari");
+    sem_unlink("/dispari");
+	/*********************/
+
+    return 0;
 }
+
 ```
 
 Esempio con semaforo unnamed:
@@ -2104,46 +2146,57 @@ Esempio con semaforo unnamed:
 #include <stdio.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
-#define MAX 1000
+#define MAX		1000
+#define VERDE	1
+#define ROSSO	0
 
-sem_t sem; 
+sem_t sem_pari, sem_dispari;
 
-void *pari(void *arg)
+void pari(void *arg)
 {
-	for (int i = 0; i < 100000; i++) {
-		sem_wait(&sem);
-		counter++; // <-- NON atomico
-		sem_post(&sem);
-	}
-	return NULL;
+	int i;
+    for (i = 2; i <= MAX; i += 2) {
+    	sem_wait(&sem_pari);
+    	printf("%d\n", i);
+    	sem_post(&sem_dispari);
+    }
+    pthread_exit(NULL);
 }
 
-void *dispari(void *arg)
+void dispari(void *arg)
 {
-	for (int i = 0; i < 100000; i++) {
-		sem_wait(&sem);
-		counter++; // <-- NON atomico
-		sem_post(&sem);
-	}
-	return NULL;
+	int i;
+    for (i = 1; i <= MAX; i += 2) {
+    	sem_wait(&sem_dispari);
+    	printf("%d\n", i);
+    	sem_post(&sem_pari);
+    }
+    pthread_exit(NULL);
 }
 
 int main(void)
 {
-	pthread_t t1, t2;
-	sem_init(&sem, 0, 1);
-	
-	pthread_create(&t1, NULL, worker, NULL);
-	pthread_create(&t2, NULL, worker, NULL);
-	  
-	pthread_join(t1, NULL);
-	pthread_join(t2, NULL);
-	  
-	printf("counter = %d\n", counter);	
-	sem_destroy(&sem);
-	
-	return 0;
+    pthread_t t1, t2;
+
+	/*********************************************************************/
+    sem_init(&sem_pari,    0, ROSSO); // La visualizzazione deve partire
+    sem_init(&sem_dispari, 0, VERDE); // da 1 e non da 2
+	/*********************************************************************/
+
+    pthread_create(&t1, NULL, (void *)pari, NULL);
+    pthread_create(&t2, NULL, (void *)dispari, NULL);
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+	/*********************/
+    sem_destroy(&sem_pari);
+    sem_destroy(&sem_dispari);
+	/*********************/
+
+    return 0;
 }
 ```
 
@@ -2161,7 +2214,7 @@ Tipi di signal:
 - Linux supporta anche i POSIX Real-Time Signals 
 - definiti negli standard POSIX.1-1990 e POSIX.1- 2001 
 
-I signal sono una forma di IPC limitata, nel senso per esempio che non contengono ulteriore informazione (il dato scambiato è il signal stesso), Real-Time a parte. Sono simili ad "interrupt software" o a notifiche asincrone, che vengono inviati ad un processo (od a un thread) al verificarsi di un evento. Gli standard hanno un significato intrinseco e, diciamo così, "tradizionale"
+I signal sono una forma di IPC limitata, nel senso che non contengono ulteriore informazione (il dato scambiato è il signal stesso), Real-Time a parte. Sono simili ad "interrupt software" o a notifiche asincrone, che vengono inviati ad un processo (od a un thread) al verificarsi di un evento. Gli standard hanno un significato intrinseco 
 
 > [!quote]
 > «un meccanismo asincrono di notifica di eventi tra kernel e processi, che induce una variazione di flusso o di flusso di controllo nel processo destinatario» 
@@ -2173,12 +2226,12 @@ I signal sono una forma di IPC limitata, nel senso per esempio che non contengon
 La gestione può essere varia: il processo termina, viene sospeso, viene eseguita una funzione registrata dal processo all'uopo, il signal viene ignorato, etc. 
 
 > [!info]
-> Signals: gestioni di default (da man 7 signal) 
+> Signals: gestioni di default (da `man 7 signal`) 
 
 **Signal dispositions:** In ogni processo ogni signal ha una **disposition** corrente che determina come il processo stesso si comporta se il signal viene ricevuto. Se non diversamente specificato, tale disposition è quella di default ed è una delle seguenti: 
 - `Term:` Default action is to terminate the process. 
 - `Ign`: Default action is to ignore the signal. 
-- `Core:` Default action is to terminate the process and dump core (see core(5)). 
+- `Core:` Default action is to terminate the process and dump core (see `core(5)`). 
 - `Stop`: Default action is to stop the process. 
 - `Cont`: Default action is to continue the process if it is currently stopped. 
 
@@ -2339,4 +2392,3 @@ Siamo sicuri che tutto sia consistente?
 **Funzioni per bloccare signals:** 
 - `sigprocmask()`: per processi single-threaded 
 - `pthread_sigmask()`: per processi multithreaded
-

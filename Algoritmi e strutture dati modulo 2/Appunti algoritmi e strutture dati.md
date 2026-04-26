@@ -201,7 +201,7 @@ Il set di operazioni viste nella scorsa lezione sono veloci se l'altezza dell'al
 - L'altezza di un red-black tree con n chiavi è al massimo $2*log(n+1)$ che ha costo $O(log(n))$
 
 **Struttura:**
--  Ogni nodo dell'albero contiene gli attributi : colore, chiave, $left, right \ e\ p$
+-  Ogni nodo dell'albero contiene gli attributi: colore, chiave, $left, right \ e\ p$
 -  Se un figlio o un genitore di un nodo non esistono, il puntatore corrispondente (attributo del nodo) contiene il valore $NIL$ (questi valori possono essere pensati come i puntatori alle foglie)
 - Un red-black tree è un albero di ricerca binaria che soddisfa le seguenti proprietà:
    1. Ogni nodo o è nero o è rosso
