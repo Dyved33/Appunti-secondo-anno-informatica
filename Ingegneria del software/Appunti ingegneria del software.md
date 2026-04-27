@@ -3881,4 +3881,296 @@ I dettagli implementativi possono cambiare nel tempo senza invalidare i test, se
 > - Assert mirati e naming esplicito migliorano la qualità del feedback e rendono i test più utili anche come documentazione eseguibile. 
 > - I test dovrebbero descrivere il comportamento atteso del sistema, non i dettagli accidentali dell'implementazione. 
 > - Suite rapide e isolate aumentano la frequenza di esecuzione e rendono il testing parte naturale del workflow quotidiano. 
-> - La base costruita qui prepara il passaggio al mocking per gestire collaboratori esterni e dipendenze più complesse.
+> - La base costruita qui prepara il passaggio al mocking per gestire collaboratori esterni e dipendenze più complesse
+
+###### Mocking con Mockito 
+Finora i test che abbiamo visto verificano soprattutto: 
+- input → output, 
+- regole di business in una singola classe o metodo. 
+
+Ma in un sistema reale le classi raramente sono autosufficienti: 
+- un service delega a un repository, 
+- un manager usa un gateway verso un servizio esterno, 
+- un componente notifica un altro componente. 
+
+In questi casi il comportamento corretto non è solo “calcolare bene”, ma anche parlare correttamente con i collaboratori. Consideriamo un esempio tipico: 
+- ExamService gestisce la logica di iscrizione a un appello; 
+- salva una registrazione tramite ExamRepository. 
+
+Se nel test usiamo un repository reale, spesso succede che: 
+- dobbiamo configurare un database o una persistenza, 
+- il setup diventa lungo e fragile, 
+- il test diventa più lento e meno deterministico. 
+
+La domanda corretta non è “posso farlo?”, ma “vale la pena portarsi dietro tutto questo per testare una regola di business?”. La soluzione è sostituire le dipendenze. Nel test vogliamo controllare l'ambiente, quindi: 
+- sostituiamo la dipendenza reale con un oggetto controllabile, 
+- decidiamo noi cosa restituisce e cosa registra. 
+
+Questo approccio produce tre benefici immediati: 
+- **isolamento:** testiamo davvero solo la classe sotto test; 
+- **velocità:** niente I/O, niente setup pesante; 
+- **precisione:** quando fallisce sappiamo dove guardare. 
+
+Qui entrano in gioco i sostituti di test.  
+
+**Sostituti di test:** Nei test usiamo spesso oggetti “sostituti” dei reali, ma con scopi diversi: 
+- ridurre il costo del setup (niente DB, rete, filesystem), 
+- rendere il test deterministico (stesso input ⇒ stesso risultato), 
+- isolare il comportamento della classe sotto test dai dettagli esterni. 
+
+In pratica, tre categorie ricorrono continuamente: 
+- **Stub:** restituisce valori predefiniti per far proseguire il flusso (ci interessa il risultato, non come quel valore è stato ottenuto). 
+- **Fake:** implementazione semplificata ma funzionante (es. repository in-memory al posto di un database reale). 
+- **Mock:** oggetto controllato che non solo restituisce valori, ma permette di verificare le chiamate (chi ha chiamato cosa, con quali parametri). 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260427104403.png" width="200">
+</div>
+
+**Stub: risposte predefinite:** Uno stub serve quando la classe sotto test: 
+- ha bisogno di un valore per poter proseguire l'esecuzione, 
+- ma non è importante capire come quel valore venga calcolato o prodotto. 
+
+In altre parole, lo stub viene usato per controllare lo scenario del test, fornendo risposte coerenti e prevedibili alle richieste della classe sotto test. 
+
+> [!example] Un repository che deve rispondere alla domanda “esiste già questa iscrizione?” 
+> - nel test decidiamo esplicitamente la risposta, ad esempio true oppure false,
+> - così possiamo verificare il comportamento del service nei diversi casi. 
+
+Lo stub non registra chiamate e non impone vincoli sulle interazioni: il suo unico scopo è restituire valori utili al test. In breve: lo stub è “un distributore di risposte”, semplice e mirato.  
+
+> [!example] Esempio di stub Java manuale: 
+> Una classe minimale che fornisce risposte predefinite. L'obiettivo è quello di controllare in modo esplicito lo scenario del test attraverso i valori restituiti dal collaboratore. 
+> 
+> ![[Pasted image 20260427104722.png|200]]
+
+**Fake: implementazione semplificata ma reale:** Un fake è un oggetto che funziona davvero, cioè esegue una logica coerente con quella reale, ma in una forma più leggera e più facile da controllare. A differenza di uno stub, un fake mantiene uno stato interno e può essere utilizzato per far “girare” un flusso completo. Tipici esempi industriali includono: 
+- database in memoria (basati su liste o mappe) al posto di un DB vero, 
+- file system finto usato solo all'interno dei test, 
+- servizi locali o embedded invece di chiamate di rete reali. 
+
+Il fake è utile quando vogliamo un comportamento realistico e coerente con il sistema finale, ma non vogliamo pagare il costo dell'infrastruttura reale in termini di configurazione, tempo di esecuzione e fragilità dei test.  
+
+> [!example] Esempio Java:
+> Un fake non restituisce solo valori fissi: mantiene uno stato interno e si comporta in modo realistico. Qui il repository salva davvero le iscrizioni, ma in memoria. 
+> 
+> ![[Pasted image 20260427104917.png|200]]
+
+**Mock: verificare le interazioni:** Un mock è pensato per testare comportamenti collaborativi, cioè situazioni in cui una classe non lavora da sola ma delega parte del lavoro: 
+- la classe sotto test deve chiamare un collaboratore, 
+- con certi parametri specifici, 
+- un certo numero di volte (o mai), 
+- eventualmente rispettando un certo ordine. 
+
+In questi casi l'output finale non è sempre sufficiente: anche se il metodo non restituisce nulla, vogliamo controllare che la collaborazione sia avvenuta correttamente. In breve: il mock è un “collaboratore controllato” che permette anche di osservare le interazioni tra oggetti.  
+
+> [!info] Riassunto: 
+> 
+> ![[Pasted image 20260427105253.png|200]]
+> 
+> - Stub, fake e mock sono concetti di testing, non strumenti specifici. 
+> - Nella pratica, per creare e configurare mock in Java possiamo usare una libreria di supporto: qui entra in gioco **Mockito**.  
+
+**Mockito:** Nei test collaborativi vogliamo sostituire alcuni oggetti reali con collaboratori controllabili. Mockito è una libreria Java per il testing. Mockito permette di creare questi collaboratori sotto forma di mock: 
+- possiamo configurarli come stub, quando servono risposte predefinite; 
+- possiamo usarli come mock, quando vogliamo verificare le interazioni. 
+
+Questo ci consente di testare la logica applicativa senza trascinarci dietro database, rete o infrastruttura reale. Mockito però non sostituisce il design: 
+- funziona bene solo se le dipendenze sono **sostituibili**; 
+- cioè se il codice rispetta il **Dependency Inversion Principle** (DIP). 
+
+Per usare Mockito in modo ordinato, conviene ragionare con una struttura fissa: 
+- **Given:** preparo scenario e collaboratori; 
+- **When:** eseguo l'azione da testare; 
+- **Then:** verifico risultato e/o collaborazione.  
+
+> [!example] Iscrizione a un appello:
+> Nel test vogliamo simulare uno scenario semplice: lo studente non è ancora iscritto e quindi il service può procedere. 
+> 
+> ![[Pasted image 20260427105618.png|200]]
+> 
+> Il punto chiave è separare bene i tre momenti: 
+> - prima preparo il comportamento dei collaboratori; 
+> - poi invoco solo il metodo che voglio testare; 
+> - infine controllo che il service abbia collaborato correttamente.  
+
+> [!example] Caso d'uso in UniManager: 
+> Uno studente prova a iscriversi a un appello d'esame disponibile nel sistema. ExamService applica le regole di business principali e poi delega alcune operazioni a componenti collaboratori: 
+> - controlli di pre-condizione, ad esempio la doppia iscrizione, 
+> - salvataggio della registrazione tramite ExamRepository. 
+> 
+> Il nostro obiettivo nel test è verificare il comportamento del service in isolamento: 
+> - in condizioni valide, il service deve salvare correttamente la registrazione; 
+> - in condizioni non valide, il service deve non invocare alcun salvataggio.  
+
+**Costruzione testabile: DIP in pratica:** Prima di entrare nei dettagli operativi di Mockito, è fondamentale guardare come è costruita la classe. Per poter scrivere test isolati e usare sostituti di test, la classe deve essere progettata in modo testabile: 
+- deve dipendere da un'astrazione (ExamRepository), 
+- deve ricevere la dipendenza dall'esterno (costruttore o setter), invece di crearla internamente. 
+
+Questo è un esempio di applicazione pratica del Dependency Inversion Principle (DIP). 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260427110000.png" width="200">
+</div>
+
+Schema mentale Mockito:
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260427110116.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  Nei test collaborativi, il flusso tipico segue Given / When / Then: 
+  <ol>
+  <li> <b>Given:</b> si crea il mock e si definisce lo scenario (when); </li>
+  <li> <b>When:</b> si invoca il metodo del service (azione sotto test); </li>
+  <li> <b>Then:</b> si verifica la collaborazione (verify). • Regola pratica: when prepara il comportamento atteso, verify controlla quello avvenuto.</li>
+  </ol>
+  </div>
+</div>
+
+**Come creare un mock:** A questo punto, nel test, vogliamo sostituire la dipendenza reale con un oggetto controllabile. Mockito fornisce il metodo `mock(...)` per creare un mock:
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260427110514.png" width="200">
+</div>
+
+`mock(...)` non è una parola chiave di Java, ma è un metodo statico della libreria Mockito. Tipicamente importato con `import static org.mockito.Mockito.mock;` Questo oggetto: 
+- prende il posto del collaboratore reale nel test, 
+- non ha un'implementazione reale, 
+- registra le chiamate che riceve.  
+
+**Mockito: definire comportamento (stub):** Un mock, appena creato, non fa nulla di utile: restituisce valori di default (null, false, 0). Per questo, nel test, dobbiamo dirgli come deve rispondere quando viene interrogato. Mockito usa il costrutto `when(...).thenReturn(...)`: 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260427110734.png" width="200">
+</div>
+
+Questo codice non esegue il metodo: 
+- sta programmando il comportamento del mock, 
+- dice in modo esplicito: “se viene chiamato `repo.isEnrolled(student, exam)`, allora il mock restituisce false”. 
+
+In questo modo controlliamo lo scenario del test: 
+- iscrizione inesistente ⇒ il service può procedere; 
+- se restituiamo true ⇒ il service deve bloccare l'operazione.  
+
+**Mockito: verify per controllare la collaborazione:** Dopo aver eseguito l'azione sotto test, vogliamo controllare come la classe ha collaborato con i suoi dipendenti. Mockito fornisce il metodo `verify(...)` per osservare le chiamate già avvenute:
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260427110939.png" width="200">
+</div>
+
+Questo codice non esegue il metodo: 
+- non salva nulla, 
+- non modifica lo stato del sistema. 
+
+Sta invece affermando che: 
+- durante l'esecuzione del test, 
+- il service ha invocato quel metodo su quel collaboratore, con quei parametri. 
+
+Se quella chiamata non è avvenuta, il test fallisce. Questo test non dice “il DB contiene una riga”, ma una cosa più adatta a un unit test: il service ha chiesto al repository di salvare.  
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260427111111.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  Esempio completo di un caso valido:
+  Il test verifica il comportamento di ExamService in una situazione valida di iscrizione. La struttura segue una sequenza standard: 
+  <ol>
+  <li> Preparazione dell'ambiente e dei sostituti di test (<b>Given</b>);</li> 
+  <li> Esecuzione dell'azione sotto test (<b>When</b>);</li> 
+  <li> Verifica del comportamento collaborativo (<b>Then</b>).</li>
+  </ol>
+  Flusso concreto del caso valido: 
+  <ul>
+  <li> <b>Given:</b> isEnrolled(...) restituisce false (studente non ancora iscritto); </li>
+  <li> <b>When:</b> il service esegue enroll(student, exam);</li> 
+  <li> <b>Then:</b> il repository deve ricevere saveRegistration(student, exam).</li> 
+  </ul>
+  L'obiettivo del test è verificare che: 
+  <ul>
+  <li> l'iscrizione risulti consentita, </li>
+  <li> il repository venga correttamente invocato.</li>
+  </ul>
+  </div>
+</div>
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260427111756.png" style="width: 100%; border-radius: 8px;">
+  </div> 
+  <div style="flex: 1.5;">
+  Caso non valido:
+  Il test verifica il comportamento di ExamService in una situazione NON valida di iscrizione. Scenario considerato: lo studente risulta già iscritto all'appello. L'aspettativa è duplice: 
+  <ul>
+  <li> l'operazione deve essere rifiutata, </li>
+  <li> il repository non deve essere invocato per il salvataggio. </li>
+  </ul>
+  Flusso concreto del caso non valido: •
+  <ul>
+  <li> <b>Given:</b> isEnrolled(...) restituisce true (studente già iscritto); </li>
+  <li> <b>When:</b> il service esegue enroll(student, exam)</li> 
+  <li> <b>Then:</b> viene lanciata IllegalStateException e saveRegistration(...) non deve essere chiamato. </li>
+  </ul>
+  Il test verifica quindi la segnalazione dell'errore e l'assenza di collaborazioni indesiderate.
+  </div>
+</div>
+
+**Varianti di verify: times / never:** Con `verify(...)` non si controlla solo che un metodo sia stato chiamato, ma anche quante volte è stato invocato. Mockito consente di esprimere vincoli quantitativi sulle interazioni: 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260427112138.png" width="200">
+</div>
+
+Nota didattica: 
+- `times(1)` è il comportamento di default di verify, quindi spesso è ridondante; 
+- diventa utile quando il numero di chiamate è parte esplicita del comportamento atteso; 
+- `never()` è invece utile per affermare che una collaborazione non deve avvenire.  
+
+**Mocking e buon design: DIP come prerequisito:** Il mocking funziona bene solo quando il design lo permette: 
+- dipendenze esplicite e visibili, 
+- costruttore (o setter) che riceve i collaboratori, 
+- dipendenza da interfacce e astrazioni, non da implementazioni concrete. 
+
+Se una classe crea internamente le proprie dipendenze (ad esempio usando new su un repository): 
+- la dipendenza non è sostituibile, 
+- il test deve portarsi dietro l'infrastruttura reale, 
+- il codice risulta più accoppiato e meno evolvibile. 
+
+I mock quindi non sono solo uno strumento di testing: rappresentano anche un feedback diretto sul design e sul rispetto del Dependency Inversion Principle (DIP).  
+
+**Mocking come feedback:** I test con mock possono essere letti anche come uno strumento di diagnosi del design. Se per testare una singola classe è necessario creare: 
+- molti mock, 
+- molte configurazioni when/thenReturn, 
+- numerosi verify molto dettagliati, 
+
+allora spesso il problema non è Mockito: 
+- la classe sotto test probabilmente ha troppe responsabilità (violazione di SRP); 
+- oppure dipende da dettagli concreti invece che da astrazioni (violazione di DIP); 
+- oppure espone un comportamento poco coeso e difficile da isolare. 
+
+In questi casi il test sta facendo emergere la necessità di un refactoring del design.  
+
+**Cattive pratiche:** Alcuni errori ricorrenti nell'uso dei mock includono: 
+- mockare tutto, inclusi oggetti di dominio semplici e stabili; 
+- verificare interazioni superflue (test troppo “pettegoli”); 
+- scrivere test che replicano l'implementazione interna (“prima chiama A, poi B, poi C”); 
+- abuso di verifiche troppo restrittive su interazioni secondarie. 
+
+L'effetto tipico di queste pratiche è: 
+- test fragili, che falliscono a ogni refactoring, 
+- perdita del beneficio principale dei test automatici: la possibilità di cambiare codice con fiducia.  
+
+**Regole pratiche per usare bene i mock:** Alcune regole empiriche utili per un uso corretto dei mock: 
+- mockare i collaboratori, non l'oggetto sotto test; 
+- verificare solo ciò che conta per il comportamento osservabile; 
+- preferire test che descrivono cosa deve accadere, non come accade internamente; 
+- se un test richiede troppi mock, considerare una riduzione di responsabilità o dipendenze. 
+
+L'obiettivo finale è avere test che rimangano stabili nel tempo, anche quando cambia l'implementazione, purché il comportamento esterno resti coerente.  
+
+> [!info] Riepilogo:
+> - Stub, fake e mock (sostituti di test) servono a scopi diversi e vanno scelti in base al tipo di verifica. 
+> - Mockito è utile soprattutto per test collaborativi: configurare risposte dei mock e verificare interazioni. 
+> - Il mocking funziona bene quando il design è testabile (DIP, dipendenze sostituibili). 
+> - Troppi mock o verifiche troppo dettagliate sono un segnale di design da rifattorizzare.  28 

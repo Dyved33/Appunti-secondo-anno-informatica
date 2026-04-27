@@ -2214,7 +2214,9 @@ Tipi di signal:
 - Linux supporta anche i POSIX Real-Time Signals 
 - definiti negli standard POSIX.1-1990 e POSIX.1- 2001 
 
-I signal sono una forma di IPC limitata, nel senso che non contengono ulteriore informazione (il dato scambiato è il signal stesso), Real-Time a parte. Sono simili ad "interrupt software" o a notifiche asincrone, che vengono inviati ad un processo (od a un thread) al verificarsi di un evento. Gli standard hanno un significato intrinseco 
+I signal sono una forma di IPC limitata, nel senso che non contengono ulteriore informazione (il dato scambiato è il signal stesso), Real-Time a parte. Sono simili ad "interrupt software" o a notifiche asincrone, che vengono inviati ad un processo (od a un thread) al verificarsi di un evento. Gli standard hanno un significato intrinseco. In altre parole un signal è una notifica asincrona che il sistema (o un altro processo) invia a un processo/thread per dirgli: “è successo qualcosa”.
+
+Non trasporta dati (quasi mai). È solo un **evento**.
 
 > [!quote]
 > «un meccanismo asincrono di notifica di eventi tra kernel e processi, che induce una variazione di flusso o di flusso di controllo nel processo destinatario» 
@@ -2228,14 +2230,14 @@ La gestione può essere varia: il processo termina, viene sospeso, viene eseguit
 > [!info]
 > Signals: gestioni di default (da `man 7 signal`) 
 
-**Signal dispositions:** In ogni processo ogni signal ha una **disposition** corrente che determina come il processo stesso si comporta se il signal viene ricevuto. Se non diversamente specificato, tale disposition è quella di default ed è una delle seguenti: 
+**Signal dispositions:** In ogni processo ogni signal ha una **disposition** corrente che determina come il processo stesso si comporta se il signal viene ricevuto (cioè “cosa faccio se arriva questo segnale?“). Se non diversamente specificato, tale disposition è quella di default ed è una delle seguenti: 
 - `Term:` Default action is to terminate the process. 
 - `Ign`: Default action is to ignore the signal. 
 - `Core:` Default action is to terminate the process and dump core (see `core(5)`). 
 - `Stop`: Default action is to stop the process. 
 - `Cont`: Default action is to continue the process if it is currently stopped. 
 
-La disposition è quindi un attributo per-process ed è condiviso da tutti i suoi threads.
+La disposition è quindi un attributo per-process ed è condiviso da tutti i suoi threads. È così impostato di default ma è modificabile (con `sigaction()`)
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260424145500.png" width="200">
@@ -2243,9 +2245,14 @@ La disposition è quindi un attributo per-process ed è condiviso da tutti i suo
 </div>
 
 **Cambiare la gestione (disposition) corrente:** si fa con `sigaction(2)` o `signal(2)` (vedi oltre per il dettaglio di `sigaction(2)`). La seconda è meno portabile, meglio usare l'altra. Ho tre opzioni: 
-- ignorare il signal 
-- lasciare/ripristinare la gestione di default del kernel 
-- specificare una funzione handler che gestisca il segnale
+- ignorare il signal = `SIG_IGN`
+- lasciare/ripristinare la gestione di default del kernel = `SIG_DFL` 
+- specificare una funzione handler che gestisca il segnale = `void handler(int sig) {// codice eseguito quando arriva il segnale}`
+
+Un handler è: una funzione chiamata in modo asincrono, in un momento imprevedibile:
+- può interrompere qualsiasi punto del programma
+- può creare inconsistenze
+- deve essere brevissimo
 
 > [!info]
 > `SIGKILL` e `SIGSTOP` non possono essere gestiti, ignorati o bloccati
@@ -2283,11 +2290,11 @@ speed 38400 baud; rows 46; columns 173; line = 0; intr = ^C; quit = ^\; erase = 
 **Chi li riceve:** *process-directed* o *thread-directed* 
 - process-directed: 
 	- inviati all'intero processo 
-	- per esempio generati dal kernel per motivi diversi da un'eccezione HW; o perché inviato con kill() o sigqueue() 
+	- per esempio generati dal kernel per motivi diversi da un'eccezione hardware; o perché inviato con `kill()` o `sigqueue()` 
 	- ricevuti da uno dei thread che non li bloccano. Se più di uno è il kernel che sceglie a quale thread destinarli 
 - thread-directed: 
 	- inviati al thread 
-	- per esempio perché generati da una specifica istruzione del linguaggio macchina che ha provocato un'eccezione HW (per es.: segmentation fault, etc.); o inviati con pthread_kill(), tgkill()
+	- per esempio perché generati da una specifica istruzione del linguaggio macchina che ha provocato un'eccezione hardware (per es.: segmentation fault, etc.); o inviati con `pthread_kill(), tgkill()`
 
 **Cambiare la disposition: `sigaction(2)`:** `#include <signal.h> int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact);` Usata per variare la gestione di un signal da parte di un processo 
 - *signum:* specifica il signal di cui variare la gestione 
@@ -2330,7 +2337,9 @@ struct sigaction {
 
 **`sa_mask`:** segnali da mascherare durante l'esecuzione dell'handler (in aggiunta a quello che ne ha provocato la chiamata che viene automaticamente bloccato) 
 
-**Quando è eseguito un handler:** da `man 7 signal`: "Whenever there is a transition from kernel-mode to user-mode execution (e.g., on return from a system call or scheduling of a thread onto the CPU), the kernel checks whether there is a pending 1 unblocked 2 signal for which the process has established a signal handler. If there is such a pending signal, the following steps occur:"
+**Quando è eseguito un handler:** 
+> [!quote] da `man 7 signal`: 
+> "Whenever there is a transition from kernel-mode to user-mode execution (e.g., on return from a system call or scheduling of a thread onto the CPU), the kernel checks whether there is a pending 1 unblocked 2 signal for which the process has established a signal handler. If there is such a pending signal, the following steps occur:"
 
 **Passi per l'esecuzione dell'handler:** Steps:
 - il kernel esegue operazioni preparatorie per l'esecuzione dell'handler: 
@@ -2385,10 +2394,27 @@ Siamo sicuri che tutto sia consistente?
 
 **Segnali pendenti:** 
 - nel tempo tra la generazione e l'invio al processo il signal è detto pendente 
-- può essere pendente perché bloccato 
+- può essere pendente perché bloccato (da signal mask)
 - un thread può ottenere la lista dei segnali pendenti con `sigpending()` 
 - la lista dei segnali pendenti è resettata (vuota) dopo `fork(2)` ed è preservata dopo `execve(2)`
 
 **Funzioni per bloccare signals:** 
 - `sigprocmask()`: per processi single-threaded 
 - `pthread_sigmask()`: per processi multithreaded
+
+> [!info] Ricorda:
+> - Il tuo programma sta eseguendo normalmente
+> - Arriva un evento (Ctrl+C, errore, kill, ecc.)
+> - Il kernel **interrompe temporaneamente** il tuo flusso
+> - Esegue una gestione del segnale
+> - Poi il programma **riprende da dove era**
+> 
+> È molto simile a un **interrupt**, ma a livello software. Nello specifico, quando arriva un signal: 
+> 1. Il kernel salva lo stato del processo (registri, stack)
+> 2. Decide **come gestire il segnale**
+> 3. Esegue:
+>     - handler (se definito)
+>     - oppure azione di default
+> 4. Finito l’handler → ripristina lo stato
+> 5. Il programma riprendeù
+

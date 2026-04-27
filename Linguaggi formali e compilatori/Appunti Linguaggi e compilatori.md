@@ -1466,8 +1466,8 @@ L'idea di tale algoritmo è:
 - Cerchiamo di calcolare, per $0 \leq i < j \leq n$, tutte le variabili da cui si può derivare il fattore $a_{i+1}a_{i+2}…a_j$
 - MANCA
 
-Dobbiamo calcolare gli insiemi $N_{ij} = \{X \in N | X \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_j\}, 0 \leq i < j \leq n$. 
-- Per $j = i+1, N_{ij} = \{X \in N | X \overset{*}{\Rightarrow} a_j\} = \{X \in N | X →a_j$ in $P \}$ 
+Dobbiamo calcolare gli insiemi $N_{ij} = \{X \in N | X \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_j\}, 0 \leq i < j \leq n$, cioè tutti i non terminali che possono generare il pezzo di stringa da posizione $i + 1$ a $j$. Per questo sto riempendo una tabella triangolare con sottostringhe corte nelle celle piccole e sottostringhe lunghe in quelle grandi. 
+- Per $j = i+1, N_{ij} = \{X \in N | X \overset{*}{\Rightarrow} a_j\} = \{X \in N | X →a_j$ in $P \}$. Ovvero guardo ogni lettera $a_j$ e metto dentro $N_{j-1,j}$ tutte le variabili che producono quella lettera
 - Per $j \geq i + 2$, si ha $X \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_j$ se e solo se $X → YZ, Y \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_h, Z \overset{*}{\Rightarrow} a_{h+1}a_{h+2}…a_j$, per opportuni $Y,Z \in N$ e $i<h<j$. Otteniamo così $N_{ij} = \bigcup\limits^{j-1}_{h = i+1} \{X \in N | \exists Y \in N_{ih}, Z \in N_{hj}, X → YZ$ in $P\}$ 
 
 Per ogni coppia di variabili $Y,Z$, poniamo $Y \circ Z = \{X \in N | X → YZ$ in $P\}$ e, più in generale, per ogni coppia di insiemi di variabili $H,K \subseteq N$, $H \circ K = \bigcup\limits_{\substack{Y \in H \\ Z \in K}} Y \circ Z$. Allora la nostra formula ricorsiva diventa: $N_{ij} = \bigcup\limits^{j-1}_{h = i+1} N_{ih} \circ N_{hj}$. Anzi se conveniamo che $N_{ij} = \emptyset$ per $0 \leq j \leq i \leq n, N_{ij} = \bigcup\limits_{MANCA} N_{ih} \circ N_{hj}$
