@@ -1711,82 +1711,49 @@ La progettazione del gestore della memoria dipende da tre decisioni fondamentali
 
 **Strategie di caricamento:**
 Determinano quando una pagina deve essere caricata in memoria. 
-1. Paginazione a richiesta
-	- Carica una pagina in memoria solo quando c'è un riferimento a un indirizzo della pagina
-		- Molti errori di pagina all'avvio del processo
-		- Il principio di località suggerisce che la crescere delle pagine caricate, gli errori di pagina si riducono a un livello molto basso
-2. Pre-paginazione
-	- Sono caricate altre pagine oltre a quelle che hanno determinato l'errore di pagina
-		- Sfrutta MANCA
-		- MANCA
+1. *Paginazione a richiesta:* la pagina viene caricata, quando c'è un riferimento a quella pagina ed essa non è presente in memoria. I problemi possono essere legati a molti errori di pagina all'avvio del processo (poiché nessuna pagina è presente all'inizio, errore di pagina = page fault = pagina non presente in memoria). Il principio di località suggerisce che al crescere delle pagine caricate, gli errori di pagina si riducono a un livello molto basso.
+2. *Pre-paginazione:* sono caricate altre pagine oltre a quelle che hanno determinato l'errore di pagina. Sfrutta le caratteristiche dei dispositivi di memoria secondaria, ad esempio le pagine memorizzate in aree contigue di memoria secondaria sono caricate più velocemente in serie piuttosto che una alla volta. Tuttavia possono essere caricate pagine non riferite.
 
-A richiesta: la scelta più naturale, la pagina viene caricata, quando c'è un riferimento a quella pagina ed essa non è presente in memoria, i problemi possono essere molti errori di pagina all'avvio del processo (poiché nessuna pagina è presente all'inizio, errore di pagina = page fault = pagina non presente in memoria), il principio di località suggerisce che al crescere delle pagine caricate, gli errori di pagina si riducono a un livello molto basso. Pre-paginazione: Sono caricate altre pagine oltre a quelle che hanno determinato l'errore di pagina, sfrutta le caratteristiche dei dispositivi di memoria secondaria, ad esempio le pagine memorizzate in aree contigue di memoria secondaria sono caricate più velocemente in serie piuttosto che una alla volta, ma possono essere caricate pagine non riferite.
-
-**Strategie di posizionamento:** Determina in quale parte della memoria principale la pagine o il segmento deve essere caricato. È importante solo per la segmentazione non paginata, può usare i criteri First fit, best fit e next fit. Il posizionamento influisce sulle prestazioni anche con la paginazione nei sistemi distribuiti e i sistemi distribuiti NUMA.
+**Strategie di posizionamento:** Determina in quale parte della memoria principale la pagine o il segmento deve essere caricato. È importante solo per la segmentazione non paginata, può usare i criteri *first fit, best fit e next fit*. Il posizionamento influisce sulle prestazioni anche con la paginazione nei sistemi distribuiti e i sistemi distribuiti NUMA.
 
 **Strategie di sostituzione:** seleziona la pagina in memoria principale da sostituire quando è necessario caricare una nuova pagina
 - L'obiettivo è selezionare la pagina che più difficilmente sarà riferita nel futuro prossimo
-- Più complessa è la politica di sostituzione, maggiore l'overhead (SW e HW
-- ..) per implementarla
+- Più complessa è la politica di sostituzione, maggiore l'overhead (SW e HW) per implementarla
 
-Quando un frame è locked (bloccato) la pagina caricata in quel frame non può essere caricata
-Il kernel del SO e le sue strutture di controllo principali sono caricate in frame bloccati 
-Buffer I/O  e aree critiche per operazioni (?) real-time possono essere caricate in frame bloccati (temporaneamente)
-Il blocco si ottiene associando un 'lock bit' a ogni frame (nella tabella dei frame o nella tabella delle pagine)
+Selezionano la pagina in memoria principale da sostituire quando è necessario caricare una nuova pagina, l'obiettivo ovviamente è quello di selezionare la pagina che più difficilmente sarà riferita nel futuro prossimo. Bisogna però stare attenti poiché più complessa è la politica di sostituzione, maggiore è l'overhead per implementarla. In alternativa si usano algoritmi non troppo complessi, ma che comunque danno un buon risultato. Ci sono però dei frame che non possono essere sostituiti anche se inutilizzati, sono i frame **bloccati (locked)**:
+- La pagina caricata in quel frame non può essere sostituita
+- Il kernel del SO e le sue strutture di controllo principali sono caricate in frame bloccati 
+- Buffer I/O  e aree critiche per operazioni (?) real-time possono essere caricate in frame bloccati (temporaneamente)
+- Il blocco si ottiene associando un 'lock bit' a ogni frame (nella tabella dei frame o nella tabella delle pagine)
 
-Selezionano la pagina in memoria principale da sostituire quando è necessario caricare una nuova pagina, l'obiettivo ovviamente è quello di selezionare la pagina che più difficilmente sarà riferita nel futuro prossimo, bisogna però stare attenti poiché più complessa è la politica di sostituzione, maggiore è l'overhead per implementarla. In alternativa si usano algoritmi non troppo complessi, ma che comunque danno un buon risultato. Ci sono però dei frame che non possono essere sostituiti anche se inutilizzati, sono i frame bloccati (locked), la pagina in quei frame non può essere sostituita, in frame bloccati sono caricati ad esempio il kernel del SO e le sue strutture di controllo principali, oppure Buffer I/O e aree critiche per interazioni real-time, il blocco si ottiene anche associando un ‘lock bit' a ogni frame. 
+**Last recently used (LRU):** L'algoritmo ottimo di sostituzione sarebbe quello che sostituisce la pagina che, in futuro, sarà riferita per ultima. Ciò però è ovviamente irrealizzabile, ma può funzionare da benchmark, quindi come confronto di prestazioni. **LRU (Least Recently Used)** è un algoritmo che seleziona la pagina che da più tempo non è riferita, in quanto è ragionevole pensare che questa pagina anche in futuro non sarà riferita (principio di località). Il problema sta nel fatto che è difficile da implementare, dovrei marcare ogni pagina col tempo di ultimo riferimento oppure organizzare le pagine in una coda FIFO, ordinate quindi dalla più giovane alla più vecchia. Questo comporta un grande overhead. 
 
-**Last recently used (LRU):** sostituisce la pagina che non è stata riferita per il tempo massimo. Per il principio di località è quella con meno probabilità di essere riferita nel prossimo futuro. È difficile da implementare:
-- Marcare ogni pagina col tempo dell'ultimo riferimento, oppure 
-- Organizzare le pagine in una coda FIFO, riportando in coda le pagine riferite
-
-C'è grande overhead
-
-L'algoritmo ottimo di sostituzione sarebbe quello che sostituisce la pagina che, in futuro, sarà riferita per ultima, ciò però è ovviamente irrealizzabile, ma che può funzionare da benchmark, quindi come confronto di prestazioni. LRU (Least Recently Used) è uno degli algoritmi, seleziona la pagina che da più tempo non è riferita, è ragionevole pensare che questa pagina anche in futuro non sarà riferita, il problema è che è difficile da implementare, dovrei marcare ogni pagina col tempo di ultimo riferimento oppure organizzare le pagine in una coda FIFO, ordinate quindi dalla più giovane alla più vecchia. Questo comporta un grande overhead. 
-
-**First-in-first-out (FIFO):** le pagine sono organizzate in un buffer circolare (coda FIFO) e sono rimosse in ordine di caricamento. È facile da implementare e sostituisce la pagina che è stata più tempo in memoria. ((((Non funziona bene perché ci sono pagine caricate che rimangono in memoria tanto tempo ed utilizza ?????))))
-
-Un'alternativa è la politica FIFO, le pagine vengono organizzate in un buffer circolare e vengono rimosse in ordine di caricamento, si sostituisce quindi la pagina che è stata più tempo in memoria, facile da implementare, ma il difetto sta nel fatto che ci sono parti di codice eseguite in continuazione, quindi prima o poi potrei sostituire parti di codice che si sono in memoria da molto tempo, ma vengono usate spesso. 
+**First-in-first-out (FIFO):** Un'alternativa è la politica FIFO. Le pagine vengono organizzate in un buffer circolare e vengono rimosse in ordine di caricamento, si sostituisce quindi la pagina che è stata più tempo in memoria. Questo algoritmo è facile da implementare, ma il difetto sta nel fatto che ci sono parti di codice eseguite in continuazione, quindi prima o poi potrei sostituire parti di codice che sono in memoria da molto tempo, ma vengono usate spesso. 
 
 **Strategia dell'orologio:** associa una flag a ogni frame (bit di utilizzo). Questo viene settato a 1 quando la pagina è carica e ogni colta che la pagina è riferita. L'algoritmo di sostituzione scandisce circolarmente i frame
 - Se il bit di utilizzo è 1, viene settato a 0
 - Se il bit è 0, il frame vine selezionato per lo scaricamento
 
-Una strategia più complessa distingue tra frame modificati e non modificati
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260429164237.png" width="200">
+</div>
 
-Uno dei metodi più efficienti è la strategia dell'orologio, abbiamo un flag associato a ogni frame (bit di utilizzo), settato a 1 quando la pagina è caricata o ogni volta che la pagina è riferita. L'algoritmo scandisce circolarmente i frame: - Se il bit di utilizzo è 1, viene settato a 0; - Se il bit è 0, il frame viene selezionato per la sostituzione. Quindi il puntatore gira, dà tempo ai frame di essere utilizzati girando tutti i frame. Una strategia più complessa distingue tra frame modificati e non modificati. 
-
-IMMAGINE
 <div style="display: flex; align-items: flex-start; gap: 20px;">
   <div style="flex: 1;">
-    <img src=".png" style="width: 100%; border-radius: 8px;">
-  </div>
-  <div style="flex: 1.5;">
-  In questa foto dunque si vede un confronto tra i diversi algoritmi visti finora, nell’algoritmo ottimo (OPT) dovremmo andare a leggere nel futuro quale delle pagine 2,3,1 non verrà più utilizzata o comunque verrà utilizzata più in là delle altre, 1 non sarà più usata dunque sarà la pag.1 ad essere scaricata per prima. Nell’algoritmo LRU (Least recently used) guardo quella usata meno recentemente, in questo caso la pagina 3. Nel FIFO tolgo la prima pagina caricata (quella che vi è da più tempo).
+    <img src="Pasted image 20260429164435.png" style="width: 100%; border-radius: 8px;">
+  </div>  
+  <div style="flex: 1.5;"> 
+  In questa foto dunque si vede un confronto tra i diversi algoritmi visti finora. Nell'algoritmo ottimo (OPT) dovremmo andare a leggere nel futuro quale delle pagine 2,3,1 non verrà più utilizzata o comunque verrà utilizzata più tardi delle altre: 1 non sarà più usata dunque sarà la pag.1 ad essere scaricata per prima. Nell'algoritmo LRU guardo quella usata meno recentemente: in questo caso la pagina 3. Nel FIFO tolgo la prima pagina caricata (quella che vi è da più tempo).
   </div>
 </div>
 
-> [!example]
-> IMMAGINE
+**Buffer per pagine:** Migliora la gestione della memoria virtuale (migliora le prestazioni della paginazione e permette l'uso di politiche di sostituzione più semplici). L’idea è quella di utilizzare il buffer per pagine, per cui le pagine scaricate vengono inserite in due liste: pagine libere e pagine modificate. Le pagine libere possono essere immediatamente sovrascritte. Mentre queste pagine sono dentro le liste, di fatto sono ancora presenti dentro al sistema, per cui se arriva una richiesta le pagine possono essere recuperate rapidamente senza accedere al disco, migliorando le prestazioni. Questo meccanismo è utile perché evita di ricaricare pagine che erano state appena rimosse, riducendo così il numero di page-fault e di operazioni di I/O costose. Le pagine modificate sono salvate a gruppi.
 
-**Buffer per pagine:** migliora le prestazionidella paginazione e permette l'uso di politiche di sostituzione più semplici. Le pagine svaricate sono inserite in 2 liste:
-- MANCA
-- MANCA
+**Resident set:** Il SO decide quante pagine di ogni processo tenere in memoria principale. Sarebbe utile infatti decidere a priori per ogni processo quante pagine tenere in memoria, ciò è il resident set. Come selezioniamo la dimensione del resident set? Avere tanti frame significa avere meno errori di pagina. Se però vogliamo tanti processi (avendo una RAM limitata), allora tanti frame potrebbero non decrementare gli errori di pagina. Ci sono due possibilità: 
+- *Allocazione fissa:* per cui il processo ha un numero fisso di frame in cui essere eseguito, e a ogni errore di pagina si scarica una pagina del processo che lo ha determinato; 
+- *Allocazione variabile:* per cui il numero dei frame allocati a un processo può variare nel tempo. Quando il sistema si accorge che un processo fa tanti errori di pagina, decide di aumentargli il resident set. Se invece non fa errori di pagina, riduce il resident set per dar spazio agli altri processi.
 
-MANCA
-
-Migliora la gestione della memoria virtuale, l’idea è quella di utilizzare il buffer per pagine, per cui le pagine scaricate vengono inserite in due liste, pagine libere e pagine modificate. Le pagine libere possono essere immediatamente sovrascritte. Mentre queste pagine sono dentro le liste, di fatto sono ancora presenti dentro al sistema, per cui se arriva una richiesta le pagine possono essere recuperate rapidamente senza accedere al disco, migliorando le prestazioni. Questo meccanismo è utile perché evita di ricaricare pagine che erano state appena rimosse, riducendo così il numero di page-fault e di operazioni di I/O costose. Le pagine modificate sono salvate a gruppi.
-
-**Resident set:** il SO decide quante pagine di ogni processo tenere in memori aprincipale:
-Meno frame sono allocati 
-
-1 qMANCA TUTTO 
-
-Il SO decide quante pagine di ogni processo tenere in memoria principale. Sarebbe utile infatti decidere a priori per ogni processo quante pagine tenere in memoria, ciò è il resident set. Come selezioniamo la dimensione del resident set? Avere tanti frame significa avere meno errori di pagina, però se vogliamo tanti processi chiaramente la RAM è limitata, per cui tanti frame potrebbero non decrementare gli errori di pagina. Ci sono due possibilità: - Allocazione fissa, per cui il processo ha un numero fisso di frame in cui essere eseguito, e a ogni errore di pagina si scarica una pagina del processo che lo ha determinato; - Allocazione variabile, per cui il numero dei frame allocati a un processo può variare nel tempo. Quando il sistema si accorge che un processo fa tanti errori di pagina, decide di aumentargli il resident set. Se invece non fa errori di pagina, riduce il resident set per dar spazio agli altri processi.
-
-**Ambito della strategia di sostituzione:**
-- Ambito locale:
-- Ambito globale:
-- Allocazione fissa, ambito locale:
-
-Si hanno varie possibilità di scelta per determinare come modificare il resident set. Una prima opzione è la sostituzione in ambito locale, in cui ogni processo sceglie la pagina da sostituire esclusivamente tra le proprie pagine residenti. In questo modo, solo il processo che ha causato l'errore di pagina viene sospeso, e si ha un rallentamento localizzato al singolo processo coinvolto. In alternativa, con la sostituzione in ambito globale si considerano tutte le pagine non bloccate presenti nella memoria principale, indipendentemente dal processo a cui appartengono. In questo caso, il sistema ha maggiore libertà nella scelta delle pagine da sostituire, ma il rischio è che processi non direttamente coinvolti vengano penalizzati. A fronte di ciò, se il numero di processi attivi è limitato, si riduce anche la competizione per la memoria, migliorando l’efficienza complessiva del sistema. 
+**Ambito della strategia di sostituzione:** Si hanno varie possibilità di scelta per determinare come modificare il resident set:
+1. *Sostituzione in ambito locale:* ogni processo sceglie la pagina da sostituire esclusivamente tra le proprie pagine residenti. In questo modo, solo il processo che ha causato l'errore di pagina viene sospeso, e si ha un rallentamento localizzato al singolo processo coinvolto. 
+2. *Sostituzione in ambito globale:* si considerano tutte le pagine non bloccate presenti nella memoria principale, indipendentemente dal processo a cui appartengono. In questo caso, il sistema ha maggiore libertà nella scelta delle pagine da sostituire, ma il rischio è che processi non direttamente coinvolti vengano penalizzati. A fronte di ciò, se il numero di processi attivi è limitato, si riduce anche la competizione per la memoria, migliorando l’efficienza complessiva del sistema. 
+3. MANCA

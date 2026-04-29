@@ -1,25 +1,48 @@
 ###### Concetti preliminari
-**Norme giuridiche:** Le norme giuridiche sono regole di condotta obbligatorie imposte dallo Stato per disciplinare la convivenza sociale, la cui inosservanza comporta una sanzione. Nel caso in cui due leggi si sovrappongano si controlla l'autorità di ciascuna:
- - *Abrogazione = se due leggi di eguale autorità sono in conflitto, la più recente abroga la precedente (se le due sono incompatibili)
- - *Subordinazione* = se due leggi di autorità diversa sono in conflitto, la più autorevole viene applicata al posto della meno autorevole se le due sono incompatibili
+L'**Ordinamento Giuridico** è definito come un sistema intrinsecamente flessibile, capace di adattarsi, ma vincolato al rispetto assoluto della Costituzione. 
+La **Norma Giuridica**, è una regola di condotta obbligatoria imposte dallo stato per la convivenza sociale (***inosservanza comporta a sanzione***), esse deve possedere il requisito della costituzionalità (deve "stare sotto" la Costituzione). Il contenuto della norma si identifica con il precetto legale stesso.
 
-Nell'ordinamento italiano le norme scritte sono di diritto positivo (positum = posto)
+> [!INFO] Principio di Abrogazione
+> Nel caso in cui due leggi si sovrappongano si controlla l'autorità di ciascuna:
+> - *Abrogazione* = se due leggi di eguale autorità sono in conflitto, la più recente abroga la precedente (se le due sono incompatibili)
+> - _Subordinazione_ = se due leggi di autorità diversa sono in conflitto, la più autorevole viene applicata al posto della meno autorevole se le due sono incompatibili
 
-**Parlamento e promulgazione leggi:** L'autorità italiana nell'ambito della promulgazione delle leggi è il Parlamento (potere conferito dalla costituzione). Per approvare una legge, entrambe le camere (Camera dei Deputati e Senato) devono approvarla. Se non la approvano entrambe per 2 volte si va al referendum (confermativo). Viceversa, se la legge viene approvata, questa viene mandata al Presidente della repubblica, che è garante della costituzione e ha la possibilità di (diritto di voto contro le leggi ritenute anticostituzionali) rimandare alle camere una legge ritenuta non conforme alle norme presenti nella costituzione. Se le camere rimandano al Presidente della Repubblica la stessa legge senza modifiche, questo è costretto a promulgarla (firmarla). Esistono altri 2 tipi di referendum che ai quali il popolo può essere chiamato a votare:
- - In caso di un cambio della costituzione
- - Per abrogare una legge in vigore (per fare ciò è necessario seguire un iter che include raggiungere un certo numero di persone che firmino per l'abrogazione)
+Nell'ordinamento italiano le norme scritte sono di diritto positivo (positum = posto), cioè poste da un'autorità sovrana in un preciso contesto storico e geografico. Si distingue dal diritto naturale perché è creato dagli esseri umani e reso obbligatorio attraverso sanzioni formali.
 
-**Costituzione:** La costituzione ha l'autorità massima fra tutte le fonti della legge. Prima della costituzione c'era lo Statuto Albertino. Questo era più flessibile perché poteva essere modificato (si potevano promulgare leggi ordinarie che sovrastano la legge precedente)
+**Parlamento e promulgazione leggi:** L'autorità nell'ambito della **promulgazione** **delle leggi** è il ***Parlamento*** (potere conferito dalla *Costituzione*). Per **approvare** una legge, **entrambe** le camere devono approvarla .
+Se questo **non avviene per 2 volte** si va al **referendum** (*confermativo*). Viceversa, se la legge viene approvata, questa viene mandata al **Presidente della repubblica** che ha la possibilità di (diritto di voto contro le leggi ritenute anticostituzionali) rimandare alle camere una legge ritenuta non conforme alle norme presenti nella costituzione. Se le camere rimandano al Presidente della Repubblica la stessa legge senza modifiche, questo è costretto a promulgarla (firmarla). 
+Esistono altri 2 tipi di referendum che ai quali il popolo può essere chiamato a votare:
+- In caso di un **cambio** della **costituzione**
+- Per **abrogare** una **legge** in vigore (per fare ciò è necessario seguire un iter che include raggiungere un certo numero di persone che firmino per l'abrogazione)
 
-**Decreti legge e decreti legislativi:** Parificato alle leggi esistono due fonti utilizzate dal governo: decreti legge e decreti legislativi. Il decreto legislativo ha la stessa forza della legge e rimane finché non viene cambiato (promulgato o abrogato). Il decreto legge, invece, viene adottato in caso di emergenza. In questo caso il Parlamento da la possibilità al governo per un certo periodo di tempo di emanare delle leggi provvisorie. Raggiunto il limite di tempo il Parlamento deve decidere se promulgare o abrogare la legge in questione (altrimenti la stessa decade). Questo tipo di norme sono immediatamente efficaci. 
+**La Costituzione:** La Costituzione rappresenta il vertice e la **fonte suprema** dell'ordinamento *italiano*. Una sua caratteristica fondamentale è la **rigidità**, che la distingue dalle costituzioni flessibili.
 
-**Regolamenti:** Sono norme attuative, dettano disposizioni dettagliate di applicazioni di legge (dettagli riguardo le sanzioni o i metodi di verifica per capire se è avvenuto l'illecito). Vengono applicati dal presidente della repubblica o dal presidente del consiglio dei ministri.
+> [!INFO] Costituzione Rigida vs Flessibile
+> A differenza dello Statuto Albertino, che era flessibile (modificabile con legge ordinaria), la Costituzione italiana è rigida e non può essere modificata da leggi ordinarie.
 
-**Leggi regionali:** In alcuni ambiti valgono delle leggi limitate ad una singola regione (lr) che però non possono contravvenire alle leggi dello Stato e alle direttive dell'UE.
+Esiste un meccanismo di **Controllo di Costituzionalità** per garantire che ogni legge rispetti la Carta fondamentale.
 
-**UE:** L'Italia è stato membro dell'unione europea e ciò permette il libero circolo delle merci e delle persone. Con il trattato di Mastricht vengono approvati due trattati che prevedono la protezione di ambiti collaterali al mercato (diritti di viaggio, validità di titoli,...)  
+> [!INFO] Il Garante
+> Il Presidente della Repubblica agisce come garante della Costituzione.
 
-**Carta di Nizza:** Regolamenti e direttive che sanciscono norme efficaci per tutti i cittadini e gli stati dell'UE. Quando entra in vigore un regolamento esso diventa valido per tutti i paesi (pubblicato nella gazzetta dell'UE, tradotta in ogni lingua). La direttiva europea vincola gli stati a modificare il loro regolamento interno per soddisfare gli obiettivi delineati nella direttiva. Le norme interne possono essere diverse di paese in paese anche se la direttiva è la stessa
+Per modificare la Costituzione è necessario un procedimento specifico di **Revisione Costituzionale**, che richiede un "Aggravamento Costituzionale" secondo quanto previsto dall'art. 138 Cost.
+
+**Ordinamento e Leggi Nazionali:** Il **Parlamento** è l'organo costituzionale centrale deputato alla **produzione legislativa**. Oltre alla legge ordinaria, esistono gli **Atti aventi forza di legge**, equiparati alla legge ma emanati dal Governo:
+* **Decreto Legislativo (d.lgs):** Atto adottato dal Governo sulla base di una "Legge Delega" fornita preventivamente dal Parlamento, che definisce principi e criteri direttivi.
+* **Decreto Legge (d.l):** Atto straordinario di necessità e urgenza adottato dal Governo (immediatamente efficaci). A meno che di promulgazioni deve essere convertito in legge dal Parlamento (entro 60 giorni) per non perdere efficacia sin dall'inizio (*ex tunc*) (decade)
+
+Abbiamo successivamente **i regolamenti**, norme attuative che dettano disposizioni dettagliate di **applicazioni di legge** (vengono dal presidente della repubblica o dal Primo ministro).
+A livello *locale*, le Regioni emanano le **Leggi Regionali (L.R.)**, che costituiscono norme di rango primario limitatamente alla competenza territoriale e materiale.
+
+**Unione Europea:** L'Italia aderisce formalmente all'Unione Europea tramite i trattati (Mastricht, TUE e TFUE). Ciò permetto il libero circolo delle merci e delle persone, nello specifico con quello di Mastricht viene prevista la protezione di ambiti collaterali al mercato ( diritto di viaggio, validità di titolo, ecc...) 
+Invece con la **Carta di Nizza**, definiamo i regolamenti e direttive che sanciscono norme efficaci per tutti i cittadini e gli stati dell'UE.  
+In questo modo le fonti del diritto dell'Unione si distinguono principalmente in:
+* **Regolamento UE:** È un atto di portata generale, obbligatorio in tutti i suoi elementi e **direttamente applicabile** in ciascuno degli Stati membri. Non necessita di alcun atto di recezione interna per essere efficace.
+* **Direttiva UE:** Non è direttamente applicabile (salvo eccezioni per le *self-executing*). Essa vincola lo Stato membro al raggiungimento di un risultato (obiettivi e temi), lasciando agli organi nazionali la competenza in merito alla forma e ai mezzi. Richiede quindi norme interne di recepimento entro un termine stabilito.
+
+> [!INFO] Validità Linguistica
+> Ogni traduzione degli atti pubblicata nella Gazzetta Ufficiale dell'Unione Europea, nelle 27 lingue degli Stati membri, ha piena validità legale.
+
 ###### Codice civile
 Il codice civile è un regio decreto perché deriva da quello precedente e ha la stessa forza normativa di un decreto e non perde di efficacia nel tempo se viene modificato. È diviso in 6 libri.
 
