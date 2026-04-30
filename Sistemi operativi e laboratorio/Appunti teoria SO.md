@@ -1747,7 +1747,7 @@ Selezionano la pagina in memoria principale da sostituire quando è necessario c
   </div>
 </div>
 
-**Buffer per pagine:** Migliora la gestione della memoria virtuale (migliora le prestazioni della paginazione e permette l'uso di politiche di sostituzione più semplici). L’idea è quella di utilizzare il buffer per pagine, per cui le pagine scaricate vengono inserite in due liste: pagine libere e pagine modificate. Le pagine libere possono essere immediatamente sovrascritte. Mentre queste pagine sono dentro le liste, di fatto sono ancora presenti dentro al sistema, per cui se arriva una richiesta le pagine possono essere recuperate rapidamente senza accedere al disco, migliorando le prestazioni. Questo meccanismo è utile perché evita di ricaricare pagine che erano state appena rimosse, riducendo così il numero di page-fault e di operazioni di I/O costose. Le pagine modificate sono salvate a gruppi.
+**Buffer per pagine:** Migliora la gestione della memoria virtuale (migliora le prestazioni della paginazione e permette l'uso di politiche di sostituzione più semplici). L'idea è quella di utilizzare il buffer per pagine, per cui le pagine scaricate vengono inserite in due liste: pagine libere e pagine modificate. Le pagine libere possono essere immediatamente sovrascritte. Mentre queste pagine sono dentro le liste, di fatto sono ancora presenti dentro al sistema, per cui se arriva una richiesta le pagine possono essere recuperate rapidamente senza accedere al disco, migliorando le prestazioni. Questo meccanismo è utile perché evita di ricaricare pagine che erano state appena rimosse, riducendo così il numero di page-fault e di operazioni di I/O costose. Le pagine modificate sono salvate a gruppi.
 
 **Resident set:** Il SO decide quante pagine di ogni processo tenere in memoria principale. Sarebbe utile infatti decidere a priori per ogni processo quante pagine tenere in memoria, ciò è il resident set. Come selezioniamo la dimensione del resident set? Avere tanti frame significa avere meno errori di pagina. Se però vogliamo tanti processi (avendo una RAM limitata), allora tanti frame potrebbero non decrementare gli errori di pagina. Ci sono due possibilità: 
 - *Allocazione fissa:* per cui il processo ha un numero fisso di frame in cui essere eseguito, e a ogni errore di pagina si scarica una pagina del processo che lo ha determinato; 
@@ -1755,5 +1755,65 @@ Selezionano la pagina in memoria principale da sostituire quando è necessario c
 
 **Ambito della strategia di sostituzione:** Si hanno varie possibilità di scelta per determinare come modificare il resident set:
 1. *Sostituzione in ambito locale:* ogni processo sceglie la pagina da sostituire esclusivamente tra le proprie pagine residenti. In questo modo, solo il processo che ha causato l'errore di pagina viene sospeso, e si ha un rallentamento localizzato al singolo processo coinvolto. 
-2. *Sostituzione in ambito globale:* si considerano tutte le pagine non bloccate presenti nella memoria principale, indipendentemente dal processo a cui appartengono. In questo caso, il sistema ha maggiore libertà nella scelta delle pagine da sostituire, ma il rischio è che processi non direttamente coinvolti vengano penalizzati. A fronte di ciò, se il numero di processi attivi è limitato, si riduce anche la competizione per la memoria, migliorando l’efficienza complessiva del sistema. 
+2. *Sostituzione in ambito globale:* si considerano tutte le pagine non bloccate presenti nella memoria principale, indipendentemente dal processo a cui appartengono. In questo caso, il sistema ha maggiore libertà nella scelta delle pagine da sostituire, ma il rischio è che processi non direttamente coinvolti vengano penalizzati. A fronte di ciò, se il numero di processi attivi è limitato, si riduce anche la competizione per la memoria, migliorando l'efficienza complessiva del sistema. 
 3. MANCA
+
+MANCA TUTTA LA PARTE FINO ALLA FINE DEL PDF SULLA MEMORIA VIRTUALE
+
+###### Scheduling
+Immagine
+
+Lo scopo è do assegnare al processor i processi da eseguire in modo da realizzare gli obiettivi del sistema:
+- Tempo di risposta
+- Throughput
+- Efficienza del processore
+
+IMMAGINI
+
+**Schedulatore a lungo termine:** determina quali programmi sono ammessi nel sistema per l'esecuzione e controlla il grado di multiprogrammazione:
+- Più processi creati = più piccole frazioni del tempo di esecuzione assegnate ai processi
+- Per fornire servii soddisfacenti all 0 insieme corrente di processi, è opportuno limitarne il numero
+
+Per creare un processo della coda dei nuovi job, lo schedulatore deve decidere:
+- Quando il SO può accettare uno o più nuovi processi
+- Quali job trasformare in processi
+	- First come, first served
+	- Priorità
+	- Tempo di esecuzione atteso 
+	- Requisiti I/O
+
+**Schedulatore a medio termine:** MANCA
+
+**Dispatcher:** esegue la schedulazione a breve termine ed è eseguito con grande frequenza. Decide quale tra i porcessi pronti deve essere eseguito e viene attivato da:
+- Interruzione di clock
+- Interruzioni I/O
+- Chiamate di sistema 
+- Segnali (e.g.semafori)
+
+**Criteri per lo scheduling a breve termine:** 
+
+*Obiettivo:* allocare la CPU in modo da ottimizzare alcuni aspetti del comportamento del sistema
+
+Ci sono dei criteri per fare ciò:
+1. *Criteri orientati all'utente:* relativi alla percezione del comportamento del sistema da parte degli utenti (o dei processi):
+	- E.g.tempo di risposta nei sistemi interattivi
+	- Importante in tutti i sistemi
+2. *Criteri MANCA:* MANCA
+3. *Criteri relativi alle prestazioni:* sono quantitativi e facili da misurare (e.g.tempo di risposta)
+4. *Criteri non relativi alle prestazioni:* MANCA
+
+**Criteri orientati all'utente e relativi alle prestazioni:** 
+- *Tempo di risposta:* Per un processo interattivo, questo è il tempo che trascorre dall'invio di una richiesta fino a quando la risposta non comincia ad essere ricevuta. Spesso un processo può cominciare a produrre qualche output per l'utente. mentre continua l'esecuzione. Perciò, dal punto di vista dell'utente, questa è una misura migliore del tempo di turnaround. La disciplina di scheduling dovrebbe tentare di raggiungere bassi tempi di risposta e di massimizzare il numero di utenti interattivi che hanno un tempo di risposta accettabile. 
+- *Tempo di turnaround:* È l'intervallo di tempo tra l'invio di un processo e il suo completamento. Comprende il tempo di esecuzione e il tempo speso in attesa delle risorse, compreso il processore. Questa è una misura appropriata per i job batch. 
+- *Scadenze:* Quando si può specificare il termine di completamento di un processo, la disciplina di scheduling può subordinare altri obiettivi oltre a quello di massimizzare la percentuale di scadenze raggiunta.
+
+Altri criteri orientati all'utente non relativo alle prestazioni è la *prevedibilità*. Un dato job può essere eseguito nello stesso tempo e allo stesso costo, indipendentemente dal carico del sistema. Un’ampia variazione nel tempo di risposta o nel tempo di turnaround è fastidiosa per l’utente: potrebbe segnalare un‘ampia oscillazione nel carico di lavoro del sistema oppure la necessità di adattare il sistema per evitare l’instabilità 
+
+**Criteri orientati al sistema e relativi alle prestazioni:**
+- *Throughput:* La strategia di scheduling dovrebbe tentare di massimizzare il numero di processi completati per unità di tempo. Così si misura la quantità di lavoro eseguito. che dipende chiaramente dalla lunghezza media di un processo, ma che è anche influenzata dalla strategia di scheduling che può avere effetti sull'utilizzazione. 
+- *Utilizzazione del processore:* Questa è la percentuale del tempo in cui il processore è occupato. Per un sistema costoso e condiviso, questo è un criterio significativo, mentre in sistemi a singolo utente e in alcuni altri sistemi, come i sistemi a tempo reale, questo criterio è meno importante.
+- *Fairness:* In assenza di indicazioni da parte dell’utente, oppure del sistema, i processi devono essere trattati allo stesso modo, e nessun processo deve subire starvation. 
+- *Priorità:* Quando si assegna una priorità ai processi, la strategia di scheduling deve favorire i processi a più alta priorità. 
+- *Bilanciamento delle risorse:* La strategia di scheduling deve tenere impegnate le risorse del sistema, favorendo i processi che sotto utilizzano le risorse più impegnate. Questo criterio coinvolge anche lo scheduling a medio e lungo temine. 
+
+IMMAGINE

@@ -4174,3 +4174,441 @@ L'obiettivo finale è avere test che rimangano stabili nel tempo, anche quando c
 > - Mockito è utile soprattutto per test collaborativi: configurare risposte dei mock e verificare interazioni. 
 > - Il mocking funziona bene quando il design è testabile (DIP, dipendenze sostituibili). 
 > - Troppi mock o verifiche troppo dettagliate sono un segnale di design da rifattorizzare.  28 
+
+###### Git: controllo di versione
+Senza un sistema di controllo di versione, la gestione delle modifiche tende a degenerare in: 
+- copie multiple dello stesso progetto (progetto_finale_v 3_definitivo 2.zip), 
+- file sovrascritti e versioni perse, 
+- difficoltà a ricostruire uno stato funzionante dopo un errore. 
+
+In questo scenario, due domande diventano rapidamente costose (tempo, stress, rischio): 
+- Chi ha cambiato cosa? 
+- Quando e perché è stato cambiato? 
+
+Git introduce una risposta strutturata: 
+- ogni modifica significativa viene registrata come commit, 
+- la storia risulta tracciabile, consultabile e verificabile.  
+
+Git è un sistema di controllo di versione distribuito: 
+- ogni copia locale del repository contiene l’intera storia del progetto, 
+- il lavoro quotidiano non dipende dalla disponibilità continua di un server centrale. 
+
+Il concetto fondamentale è il commit: ogni commit rappresenta una fotografia coerente e consistente dello stato del progetto in un dato momento. 
+
+> [!info] Contesto storico e nome: 
+> - Git è stato creato da Linus Torvalds nel 2005; 
+> - il nome è stato usato in modo ironico; compare anche il backronym "Global Information Tracker". 
+
+Il valore pratico di questo modello è operativo: 
+- è possibile sperimentare in modo controllato, 
+- correggere errori senza perdere informazioni, 
+- recuperare stati precedenti grazie alla storia registrata.  
+**Git non è GitHub:** 
+- Git: 
+	- strumento locale di controllo di versione, 
+	- responsabile della gestione della storia del progetto, 
+	- supporta operazioni come commit, merge e recupero degli errori. 
+- GitHub (così come GitLab, Bitbucket,…): 
+	- servizio di hosting per repository remoti, 
+	- consente la condivisione del codice tra più sviluppatori, 
+	- aggiunge funzionalità di collaborazione e automazione sopra Git.  
+
+**Setup minimo: init, clone, status:** L’inizializzazione di un progetto Git può avvenire in due modi principali: 
+- creare un nuovo repository all’interno di una cartella esistente tramite git init, 
+- ottenere una copia locale di un repository già esistente tramite git clone. 
+
+In entrambi i casi, è fondamentale verificare lo stato del repository: 
+- il comando git status fornisce una fotografia immediata della situazione corrente del progetto, 
+- permette di capire quali file sono modificati, quali sono già tracciati e quali no. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430145853.png" width="200">
+</div>
+
+**Lettura rapida di git status:** Il comando git status fornisce una sintesi immediata dello stato corrente del repository. In particolare, indica: 
+- il branch attualmente attivo (tipicamente main), 
+- i file che risultano modificati ma non ancora selezionati, 
+- i file che si trovano in staging e sono pronti per il commit. 
+
+Dal punto di vista operativo, git status è il comando di riferimento: 
+- chiarisce sempre “a che punto si è”, 
+- riduce il rischio di operazioni non intenzionali. 
+
+Regola pratica: in caso di dubbio sullo stato del progetto, eseguire git status prima di qualsiasi altra operazione. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430150139.png" width="200">
+</div>
+
+**Scegliere cosa entra nel commit:** Git non include automaticamente tutte le modifiche in un commit: la selezione è un’operazione esplicita e controllata. Il comando git add sposta una modifica dall’area di lavoro alla staging area. Questo passaggio permette di: 
+- rendere esplicito cosa si intende salvare nella storia, 
+- costruire commit coerenti anche in presenza di più modifiche, 
+- evitare l’inclusione involontaria di file o cambiamenti non rilevanti. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430150248.png" width="200">
+</div>
+
+**Diff:** Prima di creare un commit è importante comprendere quali modifiche verranno effettivamente salvate. Git mette a disposizione due comandi distinti per questo scopo: 
+1. `git diff`: mostra le differenze presenti nel working tree ma non ancora aggiunte alla staging area; 
+2. `git diff --staged` (o --cached): mostra invece le modifiche già selezionate e pronte per il commit. 
+
+Questa distinzione consente di: 
+- verificare che ogni commit contenga solo ciò che è intenzionale, 
+- individuare rapidamente modifiche accidentali o incomplete, 
+- mantenere una storia del progetto più chiara e leggibile. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430150554.png" width="200">
+</div>
+
+Regola operativa: prima di eseguire git commit, controllare sempre l’output di almeno uno dei due comandi.  
+
+**Commit:** Un commit rappresenta una fotografia coerente dello stato del progetto in un preciso momento. Ogni commit include metadati essenziali: 
+- l’autore della modifica, 
+- il timestamp, 
+- un messaggio descrittivo. 
+
+Il messaggio di commit non è un dettaglio formale: 
+- costituisce una forma di documentazione tecnica, 
+- serve a spiegare cosa è cambiato e, soprattutto, perché. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430150743.png" width="200">
+</div>
+
+**Messaggi di commit:** I messaggi di commit svolgono un ruolo centrale nella comprensione e nella manutenzione della storia del progetto. 
+- Un buon messaggio di commit: 
+	- descrive chiaramente cosa è stato modificato, 
+	- esplicita, quando rilevante, perché la modifica è stata introdotta, 
+	- rimane sintetico, ma sufficientemente informativo. 
+- Al contrario, messaggi poco informativi: 
+	- non aggiungono contesto tecnico, 
+	- non aiutano a ricostruire le motivazioni delle scelte, 
+	- rendono la storia del progetto difficile da leggere nel tempo. 
+	
+> [!example]	Esempi tipici di messaggi da evitare: 
+> - "fix" 
+> - "changes" 
+> - "final version" 
+> 
+> ![[Pasted image 20260430151049.png|200]]
+
+**Log:** Il comando `git log` consente di esplorare la storia delle modifiche registrate nel repository. In particolare, è utile per: 
+- comprendere l’evoluzione del codice nel tempo, 
+- individuare il commit che ha introdotto un errore o una regressione, 
+- ricostruire le motivazioni tecniche dietro determinate scelte progettuali. 
+
+Per una visualizzazione più compatta e leggibile, Git mette a disposizione alcune opzioni di formattazione: 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430151152.png" width="200">
+</div>
+
+Questa vista aiuta a cogliere rapidamente: 
+- la sequenza dei commit, 
+- la presenza di rami e merge, 
+- lo stato dei puntatori principali (branch e tag).  
+
+**Granularità:** La dimensione di un commit influenza direttamente leggibilità, manutenzione e capacità di recupero nel tempo. 
+- Commit piccoli (coerenti e focalizzati): 
+	- risultano più semplici da comprendere e discutere, 
+	- possono essere annullati con minore impatto (revert più mirato), 
+	- producono una storia del progetto più chiara e navigabile. 
+- Commit molto grandi (eterogenei): 
+	- nascondono cambiamenti non intenzionali o non correlati, 
+	- aumentano la probabilità di conflitti durante l’integrazione, 
+	- rendono più difficile isolare la causa di un problema e tornare indietro. 
+	
+Regola operativa: un commit dovrebbe rappresentare una singola idea o modifica logica.  
+
+**.gitignore:** In un progetto Git non tutti i file presenti nella cartella di lavoro devono essere tracciati e salvati nella storia. In particolare, è buona pratica escludere: 
+- file temporanei o generati automaticamente (ad esempio tmp, log), 
+- output del processo di build (come target/ o build/), 
+- file specifici dell’ambiente di sviluppo (configurazioni di IDE come `.idea/, *.iml`). 
+
+Il file .gitignore permette di dichiarare in modo esplicito quali file o directory Git deve ignorare: 
+- tali elementi restano locali, 
+- non vengono inclusi nei commit, 
+- non “inquinano” la storia del progetto. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430152135.png" width="200">
+</div>
+
+**Branch:** Un branch rappresenta una linea alternativa della storia, che nasce da un commit esistente. `main` è la linea principale, ma da un punto preciso la storia può biforcarsi. È sufficiente sapere che: 
+- le linee di sviluppo nascono da un commit comune, 
+- quando si ricongiungono è necessaria un’operazione di merge. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430152312.png" width="200">
+</div>
+
+**Locale vs remoto:** In un contesto di sviluppo, è comune distinguere tra: 
+- *repository locale:* copia presente sul computer, usata per lavorare e creare commit; 
+- *repository remoto:* copia condivisa, usata come punto di riferimento per il team (ad esempio su GitHub). 
+
+Il lavoro quotidiano avviene principalmente in locale, mentre la condivisione avviene tramite lo scambio di commit. In questo modello: 
+- `git push` pubblica i commit locali sul remoto, 
+- `git pull` scarica e integra i commit presenti sul remoto. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430152459.png" width="200">
+</div>
+
+**Remote:** In un repository Git, il remoto principale è convenzionalmente chiamato `origin`. Il remoto rappresenta il punto di sincronizzazione tra il lavoro locale e la copia condivisa del progetto. Alcuni comandi di base permettono di gestire questa relazione: 
+- `git remote -v`: consente di visualizzare i remoti configurati e i relativi URL; 
+- `git push`: invia i commit locali al repository remoto, rendendoli disponibili agli altri; 
+- `git pull`: recupera i commit dal remoto e li integra nel repository locale. 
+
+ L’uso consapevole di questi comandi è essenziale per mantenere allineate le diverse copie del progetto.
+ 
+  <div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430152639.png" width="200">
+</div>
+  
+**Push:** Il comando `git push` serve a inviare i commit locali al repository remoto. Con il push, le modifiche: 
+- smettono di essere solo locali, 
+- diventano visibili e accessibili agli altri membri del progetto. 
+
+Un modello mentale utile distingue chiaramente due momenti: 
+- `commit`: la storia viene salvata localmente, 
+- `push`: la storia viene resa pubblica. 
+
+Buona pratica operativa: 
+- eseguire push frequenti, 
+- ma solo su commit coerenti, compilabili e significativi. 
+
+  <div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430152854.png" width="200">
+</div>
+
+**Pull:** Il comando `git pull` serve a recuperare i commit presenti sul remoto e ad aggiornarne la copia locale. In pratica, il pull combina due operazioni: 
+- scarica i nuovi commit dal repository remoto, 
+- integra tali commit nella storia locale. 
+
+Possono emergere problemi quando: 
+- nel frattempo altri hanno modificato gli stessi file o le stesse righe, 
+- la storia locale e quella remota devono essere integrate tramite merge. 
+
+Regola operativa: 
+- prima di iniziare a lavorare su un progetto condiviso: eseguire `git pull`, 
+- prima di pubblicare nuove modifiche: eseguire `git pull` per ridurre conflitti e sorprese. 
+
+  <div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430153033.png" width="200">
+</div>
+
+**Merge:** Un merge è l’operazione che consente di integrare due linee di sviluppo in una storia comune. Il merge si verifica tipicamente quando: 
+- il repository locale viene aggiornato con commit remoti, 
+- più sviluppatori hanno lavorato in parallelo. 
+
+Se le modifiche non si sovrappongono, Git integra automaticamente. In caso contrario, è richiesto un intervento esplicito: si genera un conflitto di merge. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-04-30 15-32-17.png" width="200">
+</div>
+
+**Conflitti:** Un conflitto indica semplicemente che Git non è in grado di decidere automaticamente quale versione di una modifica mantenere. La presenza di un conflitto: 
+- non segnala un errore concettuale, 
+- non è “colpa” di qualcuno, 
+- è una conseguenza normale del lavoro in parallelo sullo stesso codice. 
+
+La gestione corretta di un conflitto segue alcuni passi chiave: 
+1. comprendere l’obiettivo delle due modifiche in conflitto; 
+2. scegliere la versione corretta o combinarle in modo coerente; 
+3. ricompilare il progetto ed eseguire i test per verificare il risultato. 
+
+L’obiettivo non è evitare ogni conflitto, ma saperli risolvere in modo consapevole e controllato.  
+
+**Come appare un conflitto:** Quando Git non riesce a risolvere automaticamente un merge, inserisce dei marcatori di conflitto direttamente nel file coinvolto. Questi marcatori delimitano le due versioni concorrenti della modifica: 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430153455.png" width="200">
+</div>
+
+La risoluzione del conflitto richiede un intervento manuale: 
+- analizzare le due versioni e comprenderne l’intento, 
+- rimuovere i marcatori (`<<<, ===, >>>`), 
+- lasciare nel file una sola versione coerente del codice. 
+
+Una volta risolto il conflitto: 
+- il file va aggiunto nuovamente allo staging con git add , 
+- il merge si conclude con un git commit dedicato.  
+
+> [!example] 
+> - Contesto: due sviluppatori lavorano sullo stesso file, uno ha già fatto push sul remoto, l’altro prova a fare push con una storia non aggiornata. 
+> - Tentativo di push: 
+> 
+> ![[Pasted image 20260430153712.png|200]]
+> 
+> - Soluzione: aggiornare e integrare le modifiche remote 
+> 
+> ![[Pasted image 20260430153736.png|200]]
+> 
+> - Idea chiave: il push fallisce perché la storia remota è più avanti, il pull integra le modifiche (merge), poi il push può andare a buon fine.  
+
+**Undo:** Git consente di recuperare situazioni non desiderate in modo controllato, senza interventi improvvisati. Il comando corretto dipende da dove si trovano le modifiche. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430153844.png" width="200">
+</div>
+
+La distinzione tra “privato” e “pubblico” è determinante: alcuni comandi riscrivono la storia, altri la compensano.  
+
+**Ripristinare file non committati:** Quando sono presenti modifiche nel working tree che non devono essere mantenute, è possibile tornare allo stato dell’ultimo commit. In questo caso, il comando `git restore` ripristina il contenuto del file come registrato nella storia: 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430154012.png" width="200">
+</div>
+
+È anche possibile intervenire sullo staging: 
+- se un file è stato aggiunto per errore con git add, 
+- lo si può rimuovere dallo staging senza perdere le modifiche locali. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430154051.png" width="200">
+</div>
+
+In entrambi i casi, il ripristino agisce solo sullo stato locale e non modifica la storia dei commit.  
+
+**Modificare l’ultimo commit locale:** Un caso frequente durante lo sviluppo locale è: 
+- un file dimenticato nel commit precedente, 
+- un messaggio di commit impreciso o errato. 
+
+Altro caso tipico: aver committato per errore un file molto grande (ad esempio 1 GB) che non doveva entrare nella storia. L’opzione `--amend` consente di modificare l’ultimo commit, aggiornandone il contenuto e/o il messaggio. Questa operazione riscrive la storia e deve essere usata solo su commit che non sono ancora stati pubblicati. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430154227.png" width="200">
+</div>
+
+Regola operativa: 
+- usare `--amend` solo su commit locali, 
+- evitare sempre `--amend` su commit già pushati.  
+
+`Reset:` Il comando `git reset` sposta il puntatore della storia locale ad un commit precedente. È uno strumento potente ma delicato: 
+- utile per correggere errori in locale, 
+- potenzialmente pericoloso se applicato a commit già pubblici. 
+
+Il comportamento di `git reset` dipende dall’opzione utilizzata: 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430154427.png" width="200">
+</div>
+
+Regola operativa fondamentale: 
+- usare `git reset` solo su commit non pushati, 
+- evitare `--hard` se non si è certi di voler perdere il lavoro locale.  
+
+> [!example] git reset --soft: fondere commit 
+> - Situazione: 
+> 	- C1: struttura progetto 
+> 	- C2: aggiungo funzione 
+> 	- C3: fix piccolo bug 
+> - Problema: C2 e C3 dovevano essere un unico commit. 
+> - Soluzione: 
+> 
+> ![[Pasted image 20260430154722.png|200]]
+> 
+> - Effetto: 
+> 	- torno a C1 
+> 	- modifiche di C2 e C3 nello staging 
+> 	- creo un nuovo commit unico  
+
+> [!example] git reset --mixed: riorganizzare commit 
+> - Situazione: 
+> 	- C1: base 
+> 	- C2: modifica A + modifica B (troppo insieme) 
+> - Problema: voglio separare A e B in due commit distinti. 
+> - Soluzione:
+> 
+> ![[Pasted image 20260430154945.png|200]]
+> 
+> - Effetto: 
+> 	- modifiche restano nei file 
+> 	- staging vuoto → scelgo io cosa includere 
+
+> [!example] git reset --hard: tornare indietro e scartare tutto 
+> - Situazione:
+> 	- ho creato un commit locale sbagliato 
+> 	- voglio eliminarlo insieme alle sue modifiche 
+> - Obiettivo: tornare allo stato del commit precedente. 
+> - Soluzione:
+> 
+> ![[Pasted image 20260430155058.png]]
+> 
+> - Effetto: 
+> 	- l’ultimo commit locale viene eliminato dalla storia 
+> 	- staging e working tree tornano allo stato del commit precedente 
+> 	- eventuali modifiche locali non salvate vengono perse  
+
+**Revert:** Quando un commit è già stato condiviso con altri, la strategia più sicura per annullarne gli effetti è `git revert`. Il comando `git revert`: 
+- crea un nuovo commit che annulla logicamente le modifiche introdotte da un commit precedente, 
+- preserva la storia esistente senza eliminarla o riscriverla. 
+
+Questo approccio è particolarmente adatto a repository condivisi, perché mantiene una cronologia completa e tracciabile.
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430155210.png" width="200">
+</div>
+
+Messaggio operativo da ricordare: 
+- reset riscrive la storia, 
+- revert la compensa in modo sicuro.  
+
+**Pubblico vs privato.** Prima di utilizzare comandi potenzialmente invasivi, è fondamentale chiarire il contesto in cui si sta operando. Due domande guida aiutano a scegliere l’azione corretta: 
+- il commit è già stato pubblicato su un repository remoto? 
+- altri sviluppatori potrebbero basarsi su quel commit? 
+
+In termini generali, vale la seguente distinzione: 
+- in locale è possibile adottare strategie più aggressive (ad esempio `reset`, `--amend`); 
+- su repository condivisi è preferibile usare operazioni conservative che preservano la storia (ad esempio revert). 
+  
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430155355.png" width="200">
+</div>
+
+**Tag:** I tag permettono di associare un nome stabile a un commit specifico della storia. Sono tipicamente usati per identificare: 
+- versioni rilasciate (v 1.0, v 1.1), 
+- snapshot significativi del progetto, 
+- punti di riferimento per build, deploy o documentazione. 
+- indica esattamente quel commit e nient’altro. 
+
+I tag non vengono pushati automaticamente: 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430155458.png" width="200">
+</div>
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260430155531.png" width="200">
+</div>
+
+**Errori comuni (e come evitarli):** 
+- Aggiungere tutto indiscriminatamente al commit (git add .) senza verificare cosa viene incluso. 
+- Usare messaggi di commit vaghi o generici: "fix" non fornisce alcuna informazione utile (nemmeno a distanza di poche settimane). 
+- Creare commit senza aver controllato le differenze con git diff o git diff `--staged`. 
+- Aggiornarsi raramente dal remoto, accumulando conflitti che emergono solo all’ultimo momento. 
+- Utilizzare comandi potenzialmente distruttivi senza aver chiarito se il lavoro è già pubblico o condiviso. 
+- Dimenticare che il file .gitignore va condiviso: 
+	- funziona localmente, ma 
+	- per avere effetto su tutto il team deve essere committato.  
+	
+**Un flusso minimo e sano:** 
+1. git status (verifica dello stato del repository) 
+2. sviluppo di una modifica piccola e circoscritta 
+3. git diff (analisi delle modifiche introdotte) 
+4. git add (selezione esplicita dei contenuti del commit) 
+5. git commit -m "..." (una singola modifica logica) 
+6. git pull (sincronizzazione con il remoto, se presente) 
+7. git push (pubblicazione dei commit) 
+
+Questo flusso non è pensato per essere sofisticato, ma per essere robusto, ripetibile e facilmente verificabile. L’adozione sistematica di questa sequenza riduce conflitti, errori evitabili e interventi correttivi non pianificati.  
+
+> [!info] Riepilogo:
+> - Git è utile soprattutto perché rende tracciabili le modifiche e riduce il caos della collaborazione sul codice. 
+> - Il modello working tree / staging area / repository è la chiave per capire cosa sta succedendo prima di usare i comandi. 
+> - Un flusso quotidiano semplice e ripetibile (status, diff, add, commit, pull, push) previene molti errori evitabili. 
+> - Merge e conflitti fanno parte del lavoro normale: gestirli presto e spesso è meglio che rimandarli. 
+> - Le operazioni di undo richiedono attenzione al contesto (locale vs condiviso), non solo memoria dei comandi. 
+> - Buone pratiche di commit e versionamento migliorano review, tracciabilità e manutenzione del progetto.   

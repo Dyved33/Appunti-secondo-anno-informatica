@@ -1497,3 +1497,95 @@ IMMAGINE
 1. Si mette $G$ in forma normale di Chomsky con l'algoritmo standard
 2. Si esegue il parsing nella nuova grammatica con l'algoritmo CYK
 3. Riesaminando al contrario il passo 2, si risale al parsing nella grammatica originale
+
+###### Lemma di iterazione per i linguaggi non contestuali
+Sia $L$ un linguaggio regolare. Esiste un intero $n$ tale che ogni parola $w \in L$ di lunghezza $|w| \geq n$ si può fattorizzare $w = xyz$ con $y \neq \epsilon$ e  $xy^nz \in L$ per ogni $n \geq 0$
+
+> [!example] 
+> $L = \{a^mb^m | m > 0\}$ non è regolare. Invero, se $xyz \in L$ con $y \neq \epsilon$, allora $xyyz \notin L$. Però per $x = y= z = \epsilon, un = a ^m, v = b^m$, si ha $a^mb^m = xuyvz, xu^nyv^nz 0 a^{mn}b^{mn} \in L$. Si possono iterare due blocchi parallelamente
+
+Sia $L$ un linguaggio non contestuale. Esiste un intero $n$ tale che ogni parola $w \in L$ di lunghezza $|w| \geq n$ si può fattorizzare $w = xuyvz$ con $uv \neq \epsilon$ e $xu^kyv^kz \in L$ per ogni $k \geq 0$
+
+*Osservazione:* se L è un linguaggio non contestuale, in ogni parola di L abbastanza lunga si possono trovare due fattori non entrambi vuoti che possono essere iterati simultaneamente (pumped) senza uscire dal linguaggio. Pertanto, un linguaggio che non ha questa proprietà non è un linguaggio non contestuale
+
+> [!example] 
+> Mostriamo che $L = \{a^mb^mc^m | m > 0\}$ non è contestuale. 
+> - Altrimenti, per $w$ abbastanza grande si dovrebbe avere $a^mb^mc^m = xuyvz, uv \neq \epsilon, xu^kyv^kz \in L$ per ogni $k \geq 0$
+> - se $|xu| > m$, allora IMMAGINE
+> 	- su inizia con $a^mb$, come pure $xu^2yv^2z$
+> 	- MANCA
+> - MANCA
+> - se $|xu| \leq m$, allora IMMAGINE
+> 	- $u = a^i, v = c^j, con i+j > 0$ 
+> 	- allora $xu^2yv^2z = a^{m+i}b^mc^{m+j} \notin L$, ASSURDO
+
+**Idea della prova:** 
+IMMAGINE
+
+*Dimostrazione:* 
+- Sia $L = L(G)$, con $G$ priva di $\epsilon-$produzioni e produzioni unarie
+- Sia $n$ la massima lunghezza delle parole di $L$ che hanno un albero 
+- MANCA
+
+IMMAGINE
+
+###### Parsing top-down
+Il problema di parsing ha come input una grammatica $G = \langle V,\Sigma,P,S \rangle$ e una parola $w \in L(G)$ e in output una derivazione $S \implies \alpha_1 \implies \alpha_2 \implies … \alpha_n \implies w$ di$ w \in G$ (o equivalentemente un albero di derivazione)
+
+*Osservazione:* a ogni derivazione corrisponde un albero di derivazione, ma a un albero di derivazione posso corrispondere più derivazioni 
+
+> [!example]
+> MANCA
+
+*Definizione:* sia $G = \langle V,\Sigma,P,S \rangle$ una grammatica non contestuale e $\alpha,\beta \in V$. Scriveremo $\alpha \implies_L\beta$ se $\beta$ si ottiene da $\alpha$ sostituendo la variabile più a sinistra con il lato destro di una sua produzione. Una derivazione sinistra di una parola w è una sequenza $S = \alpha_0 \xrightarrow[L]{} \alpha_1 \xrightarrow[L]{} … \xrightarrow[L]{} \alpha_n = w$ 
+
+*Proposizione:* c'è una corrispondenza biunivoca tra le derivazioni sinistre di una parola w e gli alberi di derivazione associati a w
+
+*Corollario:* data una grammatica non contestuale MANCA
+
+**Endmaker:** sia $G = \langle V,\Sigma,P,S \rangle$ una grammatica non contestuale. Per motivi di efficienza, è utile modificare $G$ aggiungendo:
+- Un nuovo simbolo iniziale $S'$
+- Un nuovo terminale #
+- La produzione $S' → S$#
+
+E anziché il parsing di $w \in \Sigma^*$ fare il parsing di $w$#
+
+> [!example]
+> MANCA
+
+> [!example]
+> MANCA
+
+**Parsing predittivo:** IMMAGINE
+Procedura non deterministica:
+- Esaminiamo sempre il simbolo più a sinistra della predizione
+- Se è una variale, dobbiamo fare una predizione: va sostituito con uno dei suoi lati destri
+- Se è un terminale, deve coincidere con la prima lettera dell'input da MANCA
+
+*Osservazione:* la predizione ha una gestione LIFO
+
+**Gestione del non-deterministico:** poiché la procedura è, in generale, non deterministica, è necessario esplorare tutte le possibili computazioni. Ci sono 2 possibilità:
+1. *In ampiezza:* si esaminano parallelamente tutti i possibili sviluppi MANCA
+2. *In profondità:* MANCA
+
+**Ampiezza:** dovremo tenere traccia di:
+- Della lettera che stiamo esaminando (simbolo di *look-ahead*)
+- Delle produzioni utilizzate in ogni tentativo di parsing
+- Delle predizioni relative a ciascun tentativo
+
+> [!example]
+>  $S' → S$#,$A → a | aA, C → c | cC, S → AB | DC, B → bc | bBc, D → ab |aDb$ 
+>  
+   IMMAGINE
+
+**Recursione destra:** MANCA???
+
+> [!example]
+> $S' → S$#, $S → Sb | a$ 
+> 
+> IMMAGINE
+
+*Osservazione:* il metodo fallisce se $X \implies^* X\alpha$ per qualche $X \in N, \alpha \in V$ (*recursione destra*)
+
+*Proposizione:* ogni grammatica non contestuale è equivalente a una grammatica priva di recursione destra. Per esempio, le grammatiche in forma normale di Greibach sono prive di recursione destra
+
