@@ -363,7 +363,7 @@ Hash-insert(T,k)
 i = 0
 repeat
 	 q = h(k,i)
-	 if Y[q] == NIL
+	 if T[q] == NIL
 		  T[q] = k
 		  return q
 	 else
@@ -373,6 +373,7 @@ error "hash table overflow"
 ```
 
 **Ricerca:** Si segue la stessa sequenza di probe dell’inserimento, ma se si incontra uno slot vuoto, si conclude che l’elemento non è presente. Il vantaggio di tale opzione è che non servono puntatori (a differenza del chaining) e che lo spazio risparmiato può essere usato per aumentare la dimensione della tabella (slide 30 pdf 11 per avere più specifiche nella ricerca della chiave k).
+
 ```
 Hah-Search(T,k)
 i =0
@@ -392,7 +393,7 @@ return NIL
 Lo svantaggio di usare DELETED è che ora il tempo di ricerca non dipende più dal fattore di carico $\alpha$. Un caso speciale di open addressing, chiamato linear probing, evita di avere slot marcati con DELETED
 
 **Sequenze di Probe:** La situazione ideale è quella di *independent uniform permutation hashing*: ogni chiave può avere ognuna delle $m!$ permutazioni di $\langle 0,1,...,m-1 \rangle$. Siccome è complesso implementare una vera independent uniform permutation hashing, posso approssimarla nei modi seguenti:
-- **Double hashing:** Si usano due funzioni hash ausiliari $h_1, h_2$ e probe number i: $h(k,i)=(h_1(k)+i*h_2(k)) \ \text{mod} \ m$. Il primo probe va nello slot $h_1(k)$, successivamente i probe sono compensati dallo slot precedente da $h_2(k)$ mod $m$ $\implies$ la probe sequence dipende dalle chiavi in 2 modi. È necessario che $h_2(k)$ sia relativamente primo di *m* (nessun fattore comune a parte 1) per garantire che la probe sequence sia una permutazione di $\langle 0,1,...m-1 \rangle$. Questa soluzione riduce clustering (formazione di gruppi di elementi consecutivi nella tabella) e migliora la distribuzione.
+- **Double hashing:** Si usano due funzioni hash ausiliari $h_1, h_2$ e probe number i: $h(k,i)=(h_1(k)+i*h_2(k)) \ \text{mod} \ m$. Il primo probe va nello slot $h_1(k)$, successivamente i probe sono compensati dallo slot precedente da $h_2(k)$ mod $m$ $\implies$ la probe sequence dipende dalle chiavi in 2 modi. È necessario che $h_2(k)$ sia coprimo di *m* (nessun fattore comune a parte 1) per garantire che la probe sequence sia una permutazione di $\langle 0,1,...m-1 \rangle$. Questa soluzione riduce clustering (formazione di gruppi di elementi consecutivi nella tabella) e migliora la distribuzione.
   - Si può scegliere *m* affinché sia una potenza di 2 e $h_2$ affinché produca sempre un numero dispari
   - Si può fare in modo che *m* sia primo e avere $1 < h_2(k) < m$
 - **Linear probing:** È un caso speciale del double hashing. Data una funzione hash ausiliaria $h'$, la probe sequence inizia allo slot $h'(k)$ e continua attraverso la tabella (da slot m-1 allo slot 0). Data una chiave k e un probe number $i, (0 \leq i \leq m)$: $h(k,i) = (h'(k) + i) \ \text{mod} \ m$. Il probe iniziale determina tutta la sequenza $\implies$ ogni *m* sequenza possibile. Semplice ma soffre di **primary clustering**.
@@ -412,13 +413,13 @@ Lo svantaggio di usare DELETED è che ora il tempo di ricerca non dipende più d
 
 **Considerazioni pratiche:** Le CPU moderne influenzano il comportamento dell’hashing.
 1. Gerarchie di memoria:
- - Le cache sono piccole e veloci.
- - Organizzate in cache line (es. 64 byte contigui).
- - È più veloce riusare una cache line che accedere alla memoria principale.
- - Iterare su dati contigui è vantaggioso.
+	 - Le cache sono piccole e veloci.
+	 - Organizzate in cache line (es. 64 byte contigui).
+	 - È più veloce riusare una cache line che accedere alla memoria principale.
+	 - Iterare su dati contigui è vantaggioso.
 2. Set di istruzioni avanzati: Alcune istruzioni hardware (usate per crittografia) possono essere sfruttate per calcolare hash efficienti.
 3. Linear Probing: Nel modello RAM teorico il linear probing può performare male. In presenza di cache gerarchiche:
- - Funziona meglio perché probe consecutivi tendono a restare nella stessa cache line.
+	 - Funziona meglio perché probe consecutivi tendono a restare nella stessa cache line.
 
 > [!info] Sintesi:
 > Hashing diventa una funzione in due variabili $h(k,p)$ dove p indica il probe, ovvero il "tentativo" di inserimento nella hash table (in caso di collisione)
@@ -477,14 +478,14 @@ BFS(G,s)
  Q = ∅
  ENQUEUE(Q,s)
  while Q ≠ ∅
-	  u = DEQUEUE(Q)
-	  for each vertex v ∈ G.Adj[u] // cerca i vicini di u
-		   if v.color == WHITE // v è stato scoperto?
-			    v.color = GRAY
-			    v.d = u.d + 1
-			    v.π = u
-			    ENQUEUE(Q,v) // v è sulla frontiera ora
-  u.color = BLACK // u è dietro la frontiera ora
+	u = DEQUEUE(Q)
+	for each vertex v ∈ G.Adj[u] // cerca i vicini di u
+		if v.color == WHITE // v è stato scoperto?
+			v.color = GRAY
+			v.d = u.d + 1
+			v.π = u
+			ENQUEUE(Q,v) // v è sulla frontiera ora
+  	u.color = BLACK // u è dietro la frontiera ora
 ```
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
@@ -513,12 +514,12 @@ else PRINT-PATH(G,s,v.parent)
 ```
 
 **Depth-first search:** 
-- *Input:* un grafo $G = (V,E)$ sia ordinato che non ordinato. Non viene dato nessun vertice sorgente
+- *Input:* un grafo $G = (V,E)$ sia orientato che non orientato. Non viene dato nessun vertice sorgente
 - *Output:*
 	- 2 marcatori del tempo su ogni vertice utili per algoritmi che vedremo poi:
 		- $v.d =$ momento della scoperta del vertice 
 		- $v.f =$ tempo finale
-	- $v.\pi$ è il predecessore di $v$ nella **depth-first forest** con più di un **detpth-first tree**. Se $u = u.\pi$ allora $(u,v)$ è un ramo dell’albero
+	- $v.\pi$ è il predecessore di $v$ nella **depth-first forest** con più di un **detpth-first tree**. Se $u = v.\pi$ allora $(u,v)$ è un ramo dell’albero
 
 Questo algoritmo esplora ogni arco e inizia da vertici diversi se necessario. Appena viene scoperto un vertice inizia ad esplorare da questo (diversamente dal BFS che mette un vertice in coda così che venga esplorato successivamente). Man mano che il DFS progredisce, ogni vertice ottiene un colore:
 - Bianco = vertice ancora non scoperto
@@ -543,10 +544,6 @@ DFS(G)
 la ricerca globale fa partire una ricerca locale su ogni vertice per esplorare tutto il grafo
 ```
 
-```Pseudocode
-<
-```
-
 > [!example] ![[Screenshot From 2026-03-16 19-15-31.png|200]]
 > Tempo = $\Theta(V+E)$
 > - l’analisi è simile a quella per il BFS
@@ -561,10 +558,10 @@ Ogni depth-first tree è fatto da archi $(u, v)$ così che $u$ sia grigio e $v$ 
 
 Cioè $u.d < v.d <u.f < v.f$ non può accadere ($v$ è sia scoperto che finito dopo $u$)
 
-**Classificazione degli archi:**
-- **Tree edge:** dentro la depth-first forest, trovato esplorando $(u,v)$
-- **Back edge:** $(u,v)$ con $u$ discendente da $v$
-- **Forward edge:** $(u,v)$ con $v$ discendente da $u$, ma non è un tree edge
+**Classificazione degli archi:** posso sfruttare i tempi di inizio e di fine di ciascun nodo per classificare gli archi come:
+- **Tree edge:** dentro la depth-first forest, trovato esplorando $(u,v)$ (nodo $u$ viene scoperto per la prima volta attraverso questo arco)
+- **Back edge:** $(u,v)$ con $u$ discendente da $v$ (arco che collega un nodo con il suo antenato, quindi il tempo di fine del figlio è minore del tempo di fine dell'antenato)
+- **Forward edge:** $(u,v)$ con $v$ discendente da $u$, ma non è un tree edge (arco che collega un nodo con il suo discendente magari già esplorato)
 - **Cross edge:** ogni altro arco. Può andare in mezzo ai vertici dello stesso depth-first tree o in depth-first tree diversi
 
 In un grafo non orientato, ci possono essere delle ambiguità siccome $(u,v)$ e $(v,u)$ sono lo stesso arco. Si classifica in base al primo tipo sopra descritto corrispondente
@@ -595,7 +592,7 @@ Non necessita di ordinare in funzione dei tempi di fine:
 - $v$ è bianco? In tal caso diventa “discendente” di $u$. In base al teorema delle parentesi $u.d < v.d<v.f<u.f$
 - $v$ è nero? In tal caso $v$ sarebbe già finito. Siccome sto esplorando $(u,v)$. $u$ non è ancora finito, quindi $v.f<u.f$
 
-**Componenti fortemente connesse:** dato un grafo ordinato $G=(V,E)$, una componente fortemente connessa (*SCC*) di $G$ è il set massimale di vertici $C \subseteq V$ così che per ogni $u, v \in C$, $u \rightsquigarrow v$ e $v \rightsquigarrow u$ 
+**Componenti fortemente connesse:** dato un grafo orientato $G=(V,E)$, una componente fortemente connessa (*SCC*) di $G$ è il set massimale di vertici $C \subseteq V$ così che per ogni $u, v \in C$, $u \rightsquigarrow v$ e $v \rightsquigarrow u$ 
 
 > [!example] ![[Screenshot From 2026-03-17 23-27-30.png|200]]
 
@@ -786,7 +783,7 @@ L'obiettivo è di riparare abbastanza strade in modo da:
 1. Tutti rimangano connessi (ogni casa può essere raggiunta da ogni altra casa)
 2. Il costo di riparazione sia il minimo possibile
 
-Modelliamo un grafo non ordinato $G = (V,E)$ in cui ogni arco $(u,v) \in E$ abbia un peso $w(u,v)$. Devo trovare un $T \subseteq E$ tale che:
+Modelliamo un grafo non orientato $G = (V,E)$ in cui ogni arco $(u,v) \in E$ abbia un peso $w(u,v)$. Devo trovare un $T \subseteq E$ tale che:
 1. $T$ connetta tutti i vertici ($T$ è uno spanning tree)
 2. $w(T) = \sum\limits_{(u,v)\in T} w(u,v)$ sia minimizzato
 
@@ -845,7 +842,7 @@ Per mostrare che questo algoritmo funziona usiamo il loop invariant:
   </div>
 </div>
 
-**Algoritmo di Kruskal:** $G = (V,E)$ è un grafo connesso, non ordinato e pesato. $w: E \rightarrow \mathbb{R}$
+**Algoritmo di Kruskal:** $G = (V,E)$ è un grafo connesso, non orientato e pesato. $w: E \rightarrow \mathbb{R}$
 - Inizia con ogni vertice come componente separata e considera gli archi in ordine crescente di peso
 - Fonde ripetutamente due componenti in uno scegliendo il light edge che li connette (prende un arco $(u,v)$: se i suoi estremi sono in componenti diverse, lo aggiunge all’insieme $A$ e fa Union(u,v); altrimenti lo scarta perché creerebbe un ciclo.)
 - Usa una struttura dati basata su un insieme disgiunto  per determinare quale arco connetta i vertici in componenti diversi
@@ -925,7 +922,7 @@ Si supponga che Decrease-Key possa richiedere $O(1)$ di tempo, allora $\leq |E|$
 
 ###### Single-source shortest path
 Come trovo il cammino minimo tra 2 punti su una mappa? Ho come input:
-- Un grafo ordinato $G = (V,E)$
+- Un grafo orientato $G = (V,E)$
 - Una funzione per il peso $w: E \rightarrow \mathbb{R}$    
 
 Peso del cammino minimo da $u$ a $v$: $\delta(u,v) = \begin{cases} \min \{ w(p) : u \xrightarrow{p} v \} & \text{se esiste un cammino } u \rightarrow v \\ \infty & \text{altrimenti} \end{cases}$ 
@@ -1018,7 +1015,7 @@ Tempo: $O(V^2 + VE)$. Il primo ciclo for compie $|V| - 1$ passi sugli archi, e o
 </div>
 
 - Tempo: $\Theta(V +E)$
-- Correttezza: poiché i vertici sono elaborati in ordine topologicamente ordinato, gli archi di ogni cammino devono essere rilassati in ordine di apparizione nel cammino $\implies$ gli archi su ogni cammino minimo sono rilassati in ordine $\implies$ per la proprietà di path-relaxation, è corretto
+- Correttezza: poiché i vertici sono elaborati in ordine topologicamente orientato, gli archi di ogni cammino devono essere rilassati in ordine di apparizione nel cammino $\implies$ gli archi su ogni cammino minimo sono rilassati in ordine $\implies$ per la proprietà di path-relaxation, è corretto
 
 > [!example]
 > ![[Pasted image 20260408161201.png|200]]
@@ -1055,7 +1052,7 @@ Analisi: ho $|V|$ operazioni Insert e Extract-Min e $\leq |E|$ operazioni Decrea
 	- Perciò il tempo è $O(V \lg(V+E))$ 
 
 ###### All-Pairs shortest path
-Dato un grafo ordinato $G = (V,E)$ e una funzione peso $w: E → \mathbb{R}, |V| = n$. Si assume che i vertici siano numerati $1,2,…,n$. Il mio obiettivo è di creare una matrice $n \times n$ $D = (d_{ij})$ di shortest-paths distances, in questo modo $d_{ij} = \delta(i,j)$ per ogni vertice $i$ e $j$. Si potrebbe eseguire l'algoritmo di Bellman-Ford per ogni vertice e avrebbe costo $O(V^2 E)$, che è $O(V^4)$ se il grafo è **denso** ($E = \Theta(V^2)$). Se non ci sono archi a peso negativo, si potrebbe eseguire l'algoritmo di Dijkstra una volta per ogni vertice. In tal caso avrei:
+Dato un grafo orientato $G = (V,E)$ e una funzione peso $w: E → \mathbb{R}, |V| = n$. Si assume che i vertici siano numerati $1,2,…,n$. Il mio obiettivo è di creare una matrice $n \times n$ $D = (d_{ij})$ di shortest-paths distances, in questo modo $d_{ij} = \delta(i,j)$ per ogni vertice $i$ e $j$. Si potrebbe eseguire l'algoritmo di Bellman-Ford per ogni vertice e avrebbe costo $O(V^2 E)$, che è $O(V^4)$ se il grafo è **denso** ($E = \Theta(V^2)$). Se non ci sono archi a peso negativo, si potrebbe eseguire l'algoritmo di Dijkstra una volta per ogni vertice. In tal caso avrei:
 - $O(VE \lg(V))$ con una binary heap, $O(V^3 \lg(V))$ se è denso
 - $O(V^2 \lg(V) + VE)$ con una Fibonacci heap, $O(V^3)$ se è denso
 
