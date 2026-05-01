@@ -1698,7 +1698,6 @@ table.
 **Protezione e condivisione:** la segmentazione facilita l'implementazione della protezione e della condivisione:
 - Ogni record della tabella dei sementi contiene l'indirizzo base e lunghezza , per controllare accessi erronei
 - La condivisone è implementata inserendo un riferimento allo stesso segmento nella tabella dei segmenti di più processi 
-
 ###### Memoria virtuale: politiche di gestione
 La progettazione del gestore della memoria dipende da tre decisioni fondamentali:
 - Usare o meno tecniche di memoria virtuale
@@ -1718,21 +1717,23 @@ Determinano quando una pagina deve essere caricata in memoria.
 
 **Strategie di sostituzione:** seleziona la pagina in memoria principale da sostituire quando è necessario caricare una nuova pagina
 - L'obiettivo è selezionare la pagina che più difficilmente sarà riferita nel futuro prossimo
-- Più complessa è la politica di sostituzione, maggiore l'overhead (SW e HW) per implementarla
+- Più complessa è la politica di sostituzione, maggiore l'overhead (software e hardware) per implementarla
 
 Selezionano la pagina in memoria principale da sostituire quando è necessario caricare una nuova pagina, l'obiettivo ovviamente è quello di selezionare la pagina che più difficilmente sarà riferita nel futuro prossimo. Bisogna però stare attenti poiché più complessa è la politica di sostituzione, maggiore è l'overhead per implementarla. In alternativa si usano algoritmi non troppo complessi, ma che comunque danno un buon risultato. Ci sono però dei frame che non possono essere sostituiti anche se inutilizzati, sono i frame **bloccati (locked)**:
 - La pagina caricata in quel frame non può essere sostituita
 - Il kernel del SO e le sue strutture di controllo principali sono caricate in frame bloccati 
-- Buffer I/O  e aree critiche per operazioni (?) real-time possono essere caricate in frame bloccati (temporaneamente)
+- Buffer I/O  e aree critiche per iterazioni real-time possono essere caricate in frame bloccati (temporaneamente)
 - Il blocco si ottiene associando un 'lock bit' a ogni frame (nella tabella dei frame o nella tabella delle pagine)
 
-**Last recently used (LRU):** L'algoritmo ottimo di sostituzione sarebbe quello che sostituisce la pagina che, in futuro, sarà riferita per ultima. Ciò però è ovviamente irrealizzabile, ma può funzionare da benchmark, quindi come confronto di prestazioni. **LRU (Least Recently Used)** è un algoritmo che seleziona la pagina che da più tempo non è riferita, in quanto è ragionevole pensare che questa pagina anche in futuro non sarà riferita (principio di località). Il problema sta nel fatto che è difficile da implementare, dovrei marcare ogni pagina col tempo di ultimo riferimento oppure organizzare le pagine in una coda FIFO, ordinate quindi dalla più giovane alla più vecchia. Questo comporta un grande overhead. 
+**Last recently used (LRU):** L'algoritmo ottimo di sostituzione sarebbe quello che sostituisce la pagina che, in futuro, sarà riferita per ultima. Ciò però è ovviamente irrealizzabile, ma può funzionare da benchmark, quindi come confronto di prestazioni. **LRU (Least Recently Used)** è un algoritmo che seleziona la pagina che da più tempo non è riferita, in quanto è ragionevole pensare che questa pagina anche in futuro non sarà riferita (principio di località). Il problema sta nel fatto che è difficile da implementare: dovrei marcare ogni pagina col tempo di ultimo riferimento oppure organizzare le pagine in una coda FIFO, ordinate quindi dalla più giovane alla più vecchia. Questo comporta un grande overhead. 
 
-**First-in-first-out (FIFO):** Un'alternativa è la politica FIFO. Le pagine vengono organizzate in un buffer circolare e vengono rimosse in ordine di caricamento, si sostituisce quindi la pagina che è stata più tempo in memoria. Questo algoritmo è facile da implementare, ma il difetto sta nel fatto che ci sono parti di codice eseguite in continuazione, quindi prima o poi potrei sostituire parti di codice che sono in memoria da molto tempo, ma vengono usate spesso. 
+**First-in-first-out (FIFO):** Un'alternativa è la politica FIFO. Le pagine vengono organizzate in un buffer circolare (coda FIFO) e vengono rimosse in ordine di caricamento, si sostituisce quindi la pagina che è stata più tempo in memoria. Questo algoritmo è facile da implementare, ma il difetto sta nel fatto che ci sono parti di codice eseguite in continuazione, quindi prima o poi potrei sostituire parti di codice che sono in memoria da molto tempo, ma vengono usate spesso. 
 
 **Strategia dell'orologio:** associa una flag a ogni frame (bit di utilizzo). Questo viene settato a 1 quando la pagina è carica e ogni colta che la pagina è riferita. L'algoritmo di sostituzione scandisce circolarmente i frame
 - Se il bit di utilizzo è 1, viene settato a 0
 - Se il bit è 0, il frame vine selezionato per lo scaricamento
+
+Una strategia più complessa distingue tra frame modificati e non modificati
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260429164237.png" width="200">
@@ -1754,21 +1755,64 @@ Selezionano la pagina in memoria principale da sostituire quando è necessario c
 - *Allocazione variabile:* per cui il numero dei frame allocati a un processo può variare nel tempo. Quando il sistema si accorge che un processo fa tanti errori di pagina, decide di aumentargli il resident set. Se invece non fa errori di pagina, riduce il resident set per dar spazio agli altri processi.
 
 **Ambito della strategia di sostituzione:** Si hanno varie possibilità di scelta per determinare come modificare il resident set:
-1. *Sostituzione in ambito locale:* ogni processo sceglie la pagina da sostituire esclusivamente tra le proprie pagine residenti. In questo modo, solo il processo che ha causato l'errore di pagina viene sospeso, e si ha un rallentamento localizzato al singolo processo coinvolto. 
-2. *Sostituzione in ambito globale:* si considerano tutte le pagine non bloccate presenti nella memoria principale, indipendentemente dal processo a cui appartengono. In questo caso, il sistema ha maggiore libertà nella scelta delle pagine da sostituire, ma il rischio è che processi non direttamente coinvolti vengano penalizzati. A fronte di ciò, se il numero di processi attivi è limitato, si riduce anche la competizione per la memoria, migliorando l'efficienza complessiva del sistema. 
-3. MANCA
+1. *Sostituzione in ambito locale:* ogni processo sceglie la pagina da sostituire esclusivamente tra le proprie pagine residenti (cioè tra le pagine residenti del processo che ha determinato l'errore di pagina). In questo modo, solo il processo che ha causato l'errore di pagina viene sospeso, e si ha un rallentamento localizzato al singolo processo coinvolto. 
+2. *Sostituzione in ambito globale:* si considerano tutte le pagine non bloccate presenti nella memoria principale (entrambi attivati da un errore di pagina), indipendentemente dal processo a cui appartengono. In questo caso, il sistema ha maggiore libertà nella scelta delle pagine da sostituire, ma il rischio è che processi non direttamente coinvolti vengano penalizzati. A fronte di ciò, se il numero di processi attivi è limitato, si riduce anche la competizione per la memoria, migliorando l'efficienza complessiva del sistema. 
+==da qui==
+3. *Allocazione fissa, ambito locale:* in questo caso è necessario decidere all'inizio quanto spazio assegnare al processo. Un'allocazione troppo piccola causa un alto numero di errori di pagina, mentre un'allocazione troppo grande porta a pochi processi in memoria. Di conseguenza si ha un rallentamento dell'uso del processore
+4. *Allocazione variabile, ambito globale:* l'implementazione di questa soluzione è semplice e il SO mantiene una lista dei frame liberi. Un frame libero è aggiunto all'insieme residente, in caso di errore di pagina. In assenza di frame liberi, una pagina di un qualunque processo può essere scaricata 
+5. *Allocazione variabile, ambito locale:* quando un nuovo processo è caricato, gli vengono allocati un certo numero di frames. Quando poi c'è un errore di pagina, viene sostituita una pagina dell'insieme residente del processo che ha determinato l'errore. Periodicamente, si rivaluta lo spazio assegnato, incrementandolo o decrementandolo, per migliorare l'efficienza.  
 
-MANCA TUTTA LA PARTE FINO ALLA FINE DEL PDF SULLA MEMORIA VIRTUALE
+**Working set:** 
 
+*Definizione:* Il **working set** $W(t,\Delta)$ è l'insieme delle pagine riferite nell'intervallo di tempo virtuale $[t-\Delta,t]$. La decisione di incrementare o decrementare la dimensione dell'insieme residente si basa sulla valutazione delle future richieste dei processi attivi e richiede:
+- Criteri per la determinazione della dimensione dell'insieme residente 
+- Tempistica delle variazioni  
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260501104614.png" width="200">
+</div>
+
+Una strategia possibile è quella di controllare periodicamente il working set di ogni processo e rimuovere dall'insieme residente le pagine che non sono nel working set. Un processo può essere eseguito solo se il suo working è interamente in memoria. L'implementazione di questa soluzione è difficile. Quando c'è un errore di pagina (**Page fault frequency**):
+- Se il tempo virtuale dall'errore di pagina precedente è inferiore a una soglia $F$, si aggiunge una pagina all'insieme residente 
+- Altrimenti si scaricano tutte le pagine con il bit di utilizzo 0 e si azzera il bit di utilizzo delle rimanenti. Questa soluzione provoca cattive prestazioni nelle transizioni a nuove località  
+
+**Variable-Interval Sampled Working Set (VSWS):** Valuta il working set a intervalli di campionamento basati sul tempo virtuale. Viene diretto da tre parametri:
+- Durata minima dell'intervallo di campionamento 
+- Durata massima dell'intervallo di campionamento 
+- Numero degli errori di pagina consentiti tra gli intervalli di campionamento  
+
+**Politica di cleaning:**
+- *Cleaning su richiesta:* La pagina è salvata in memoria secondaria solo quando deve essere sostituita 
+- *Precleaning:* Permette il salvataggio di pagine a lotti  
+
+**Politica di caricamento:** Determina il numero dei processi residenti in memoria principale.
+- Grado di multiprogrammazione 
+- Pochi processi = molte occasioni con tutti i processi bloccati 
+- Troppi processi = trashing
+
+Per ridurre il grado di multiprogrammazione può essere necessario scaricare uno o più processi. Per fare ciò esistono 6 possibili politiche:
+1. processo con priorità minima 
+2. processo che provoca errori di pagina ultimo 
+3. processo attivato 
+4. processo con l'insieme residente più piccolo 
+5. processo più grande 
+6. processo col massimo tempo di esecuzione rimanente
 ###### Scheduling
-Immagine
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260501105650.png" width="200">
+</div>
 
-Lo scopo è do assegnare al processor i processi da eseguire in modo da realizzare gli obiettivi del sistema:
+Lo scopo è di assegnare al processore i processi da eseguire in modo da realizzare gli obiettivi del sistema:
 - Tempo di risposta
 - Throughput
 - Efficienza del processore
 
-IMMAGINI
+**Tipi di scheduling**
+<div style="display: grid; grid-template-columns: 1fr; gap: 10px; justify-items: center;">
+  <img src="Pasted image 20260501105757.png" width="200">
+  <img src="Pasted image 20260501105835.png" width="200">
+  <img src="Pasted image 20260501105857.png" width="200">
+</div>
 
 **Schedulatore a lungo termine:** determina quali programmi sono ammessi nel sistema per l'esecuzione e controlla il grado di multiprogrammazione:
 - Più processi creati = più piccole frazioni del tempo di esecuzione assegnate ai processi
@@ -1782,9 +1826,11 @@ Per creare un processo della coda dei nuovi job, lo schedulatore deve decidere:
 	- Tempo di esecuzione atteso 
 	- Requisiti I/O
 
-**Schedulatore a medio termine:** MANCA
+**Schedulatore a medio termine:** Parte della funzione di swapping. Le decisioni di caricamento/scaricamento sono correlate a: 
+- controllo del grado di multiprogrammazione 
+- requisiti di memoria dei processi
 
-**Dispatcher:** esegue la schedulazione a breve termine ed è eseguito con grande frequenza. Decide quale tra i porcessi pronti deve essere eseguito e viene attivato da:
+**Dispatcher:** esegue la schedulazione a breve termine ed è eseguito con grande frequenza. Decide quale tra i processi pronti deve essere eseguito e viene attivato da:
 - Interruzione di clock
 - Interruzioni I/O
 - Chiamate di sistema 
@@ -1798,22 +1844,82 @@ Ci sono dei criteri per fare ciò:
 1. *Criteri orientati all'utente:* relativi alla percezione del comportamento del sistema da parte degli utenti (o dei processi):
 	- E.g.tempo di risposta nei sistemi interattivi
 	- Importante in tutti i sistemi
-2. *Criteri MANCA:* MANCA
+2. *Criteri MANCA:* relativi all'efficienza dell'utilizzazione del processore
+	- e.g., frequenza del completamento dei processi 
+	- trascurabili nei sistemi a singolo utente
 3. *Criteri relativi alle prestazioni:* sono quantitativi e facili da misurare (e.g.tempo di risposta)
-4. *Criteri non relativi alle prestazioni:* MANCA
+4. *Criteri non relativi alle prestazioni:* sono qualitativi e difficili da misurare (e.g.predicibilità)
 
 **Criteri orientati all'utente e relativi alle prestazioni:** 
 - *Tempo di risposta:* Per un processo interattivo, questo è il tempo che trascorre dall'invio di una richiesta fino a quando la risposta non comincia ad essere ricevuta. Spesso un processo può cominciare a produrre qualche output per l'utente. mentre continua l'esecuzione. Perciò, dal punto di vista dell'utente, questa è una misura migliore del tempo di turnaround. La disciplina di scheduling dovrebbe tentare di raggiungere bassi tempi di risposta e di massimizzare il numero di utenti interattivi che hanno un tempo di risposta accettabile. 
 - *Tempo di turnaround:* È l'intervallo di tempo tra l'invio di un processo e il suo completamento. Comprende il tempo di esecuzione e il tempo speso in attesa delle risorse, compreso il processore. Questa è una misura appropriata per i job batch. 
 - *Scadenze:* Quando si può specificare il termine di completamento di un processo, la disciplina di scheduling può subordinare altri obiettivi oltre a quello di massimizzare la percentuale di scadenze raggiunta.
-
-Altri criteri orientati all'utente non relativo alle prestazioni è la *prevedibilità*. Un dato job può essere eseguito nello stesso tempo e allo stesso costo, indipendentemente dal carico del sistema. Un’ampia variazione nel tempo di risposta o nel tempo di turnaround è fastidiosa per l’utente: potrebbe segnalare un‘ampia oscillazione nel carico di lavoro del sistema oppure la necessità di adattare il sistema per evitare l’instabilità 
+- *Prevedibilità:* Un dato job può essere eseguito nello stesso tempo e allo stesso costo, indipendentemente dal carico del sistema. Un'ampia variazione nel tempo di risposta o nel tempo di turnaround è fastidiosa per l'utente: potrebbe segnalare un‘ampia oscillazione nel carico di lavoro del sistema oppure la necessità di adattare il sistema per evitare l'instabilità 
 
 **Criteri orientati al sistema e relativi alle prestazioni:**
 - *Throughput:* La strategia di scheduling dovrebbe tentare di massimizzare il numero di processi completati per unità di tempo. Così si misura la quantità di lavoro eseguito. che dipende chiaramente dalla lunghezza media di un processo, ma che è anche influenzata dalla strategia di scheduling che può avere effetti sull'utilizzazione. 
 - *Utilizzazione del processore:* Questa è la percentuale del tempo in cui il processore è occupato. Per un sistema costoso e condiviso, questo è un criterio significativo, mentre in sistemi a singolo utente e in alcuni altri sistemi, come i sistemi a tempo reale, questo criterio è meno importante.
-- *Fairness:* In assenza di indicazioni da parte dell’utente, oppure del sistema, i processi devono essere trattati allo stesso modo, e nessun processo deve subire starvation. 
+- *Fairness:* In assenza di indicazioni da parte dell'utente, oppure del sistema, i processi devono essere trattati allo stesso modo, e nessun processo deve subire starvation. 
 - *Priorità:* Quando si assegna una priorità ai processi, la strategia di scheduling deve favorire i processi a più alta priorità. 
 - *Bilanciamento delle risorse:* La strategia di scheduling deve tenere impegnate le risorse del sistema, favorendo i processi che sotto utilizzano le risorse più impegnate. Questo criterio coinvolge anche lo scheduling a medio e lungo temine. 
 
-IMMAGINE
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-05-01 11-04-38.png" width="200">
+</div>
+
+**Funzione di selezione:** Determina quale processo, tra quelli pronti, è selezionato per l'esecuzione. Può essere basata su
+- priorità, 
+- esigenza di risorse, 
+- caratteristiche di esecuzione
+
+Nel terzo caso, si tiene conto dei parametri:
+- $w$ = tempo di attesa 
+- $e$ = tempo di esecuzione 
+- $s$ = tempo stimato di esecuzione (compreso $e$)  
+
+**Modo di decisione:** Specifica il momento in cui è eseguita la decisione: 
+- *Senza prerilascio:* Il processo in esecuzione continua fino al termine o fino a un'interruzione per I/O
+- *Con prerilascio:* Il processo in esecuzione può essere interrotto dal SO e posto in stato di pronto. Il prerilascio può avvenire: 
+	- quando arriva un nuovo processo 
+	- quando un'interruzione riattiva un processo sospeso 
+	- periodicamente, in base a un clock  
+	
+**First come first served (FCFS):** si tratta della gestione più semplice (FIFO). Ogni processo pronto è inserito nella coda pronti e quando il processo in esecuzione termina o è sospeso, viene selezionato per l'esecuzione il processo che è stato più a lungo nella coda pronti. Favorisce i processi lunghi rispetto a quelli brevi e i processi processor-bound rispetto a quelli I/O-bound  
+
+**Round robin:** il prerilascio è basato su un clock (*time slicing*). Il principale aspetto progettuale è la durata del quanto di tempo. È efficiente nei sistemi time-sharing e orientati alle transazioni e favorisce i processi processor-bound rispetto a quelli I/O-bound: *VRR (virtual round robin)* 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260501113443.png" width="200">
+</div>
+
+**Shortest process next (SPN):** Seleziona il processo col minimo tempo stimato di esecuzione e senza prerilascio. Un processo breve può saltare in testa alla coda pronti. Può causare starvation per processi lunghi ed è inadatto nei sistemi time-sharing (per l'assenza di prerilascio). È difficile conoscere o stimare il tempo di esecuzione:
+- Media aritmetica della durata delle esecuzioni precedenti:$$S_{n+1} = \frac{1}{n}\sum\limits^n_{i=1} T_i = \frac{T_n + (n-1)S_{n-1}}{n}$$
+- Media esponenziale: $$S_{n+1} = \alpha\sum\limits^n_{i=1} (1 - \alpha)^{n-i}T_i + (1-\alpha)^nS_1 = \alpha T_n + (1-\alpha)S_n$$
+
+**Shortest remaining time (SRT):** si tratta di un SPN con prerilascio. Seleziona il processo col minimo tempo stimato di esecuzione e potrebbe causare starvation per processi lunghi. Migliora il tempo di turnaround rispetto a SPN, perché i job brevi hanno precedenza immediata sui job lunghi. Evita i prerilasci addizionali di Round Robin e non favorisce i lavori lunghi come FCFS. L'overhead è causato dalla stima del tempo di esecuzione  
+
+**Highest Response Ratio Next (HRRN):**
+$$R = \frac{w+s}{s}$$con $w =$tempo di attesa e $s=$tempo stimato di esecuzione. Seleziona il processo con il più alto rapporto di risposta (tempo di turnaround normalizzato). I processi in attesa incrementano il rapporto. Favorisce i processi brevi, ma evita la starvation  
+
+> [!info] Confronto: 
+> ![[Pasted image 20260501114546.png|200]]
+
+**Schedulazione fair-share:** Politiche di schedulazione basate su insiemi di processi. Ogni utilizzatore ha assegnata una 'frazione' del processore. L'obiettivo è monitorare l'uso per dare meno risorse a chi ne ha avute più della frazione spettante e più risorse a chi ne ha avute di meno. Si può assegnare una priorità determinata con: $$CPU_j(i) = \frac{CPU_j(i-1)}{2}, \ GCPU_k(i) = \frac{CPU_k(i-1)}{2}, \ P_j(i) = Base_j \ +  \frac{CPU_j(i)}{2} + \frac{GCPU_k(i)}{4 \cdot W_k}$$ove:
+- $CPU_j(i)$ = uso del processore del processo $j$ nell'intervallo $i$ 
+- $GCPU_k(i)$ = uso del processore del gruppo $k$ nell'intervallo $i$ 
+- $P_j(i)$ = priorità del processo $j$ all'inizio dell'intervallo $i$ 
+- $Base_j$ = priorità iniziale del processo $j$ 
+- $W_k$ = peso assegnato al gruppo $k(\sum_k W_k = 1)$ 
+
+**Schedulazione UNIX tradizionale:** Ottimizzato per sistemi time-sharing, ha un buon tempo di risposta per i processi interattivi, evitando starvation dei processi in background. Permette feedback multilivello con round-robin in ogni coda di priorità e prerilascio dopo 1 sec. Priorità basata su tipo di processo e storia dell'esecuzione $$CPU_j(i) = \frac{CPU_j(i-1)}{2}, \ P_j(i) = Base_j \ +  \frac{CPU_j(i)}{2} + nice_j$$ ove:
+- $CPU_j(i)$ = uso del processore del processo $j$ nell'intervallo $i$ 
+- $P_j(i)$ = priorità del processo $j$ all'inizio dell'intervallo $i$ 
+- $Base_j$ = priorità iniziale del processo $j$ 
+- $nica_j$ = fattore di aggiustamento controllabile dall'utilizzatore
+
+**Schedulazione UNIX tradizionale:** I pesi di CPU e nice sono limitati in modo da tenere separate le seguenti fasce di processi: 
+- Swapper 
+- Controllo dei dispositivi I/O a blocchi 
+- Manipolazione di file 
+- Controllo dei dispositivi I/O a caratteri 
+- Processi utente
