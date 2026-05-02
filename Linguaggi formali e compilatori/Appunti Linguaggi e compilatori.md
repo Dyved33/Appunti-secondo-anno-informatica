@@ -1472,7 +1472,7 @@ L'idea di tale algoritmo è:
 - Vado a cercare per ogni fattore della mia parola, quali sono le variabili ????????
 - Per $i = 0, j = n$, avrò le variabili da cui si può derivare $w$; quindi $w \in L(G)$ se e solo se tra esse il simbolo iniziale $S$ è una di tali variabili
 
-**Il calcolo:** Dobbiamo calcolare gli insiemi $N_{ij} = \{X \in N | X \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_j\}, 0 \leq i < j \leq n$, cioè tutti i non terminali che possono generare il pezzo di stringa da posizione $i + 1$ a $j$. Per questo sto riempendo una tabella triangolare con sottostringhe corte nelle celle piccole e sottostringhe lunghe in quelle grandi. 
+**Il calcolo:** Dobbiamo calcolare gli insiemi $N_{ij} = \{X \in N | X \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_j\}, 0 \leq i < j \leq n$, cioè tutti i non terminali che possono generare il pezzo di stringa da posizione $i + 1$ a $j$ (insieme delle variabili che mi generano il fattore $a_{i+1}a_{i+2}…a_j$). Per questo sto riempendo una tabella triangolare con sottostringhe corte nelle celle piccole e sottostringhe lunghe in quelle grandi. 
 - Per $j = i+1, N_{ij} = \{X \in N | X \overset{*}{\Rightarrow} a_j\} = \{X \in N | X →a_j$ in $P \}$. Ovvero guardo ogni lettera $a_j$ e metto dentro $N_{j-1,j}$ tutte le variabili che producono quella lettera
 - Per $j \geq i + 2$, si ha $X \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_j$ se e solo se $X → YZ, Y \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_h, Z \overset{*}{\Rightarrow} a_{h+1}a_{h+2}…a_j$, per opportuni $Y,Z \in N$ e $i<h<j$. Otteniamo così $N_{ij} = \bigcup\limits^{j-1}_{h = i+1} \{X \in N | \exists Y \in N_{ih}, Z \in N_{hj}, X → YZ$ in $P\}$ 
 
@@ -1508,12 +1508,12 @@ IMMAGINE
 Sia $L$ un linguaggio regolare. Esiste un intero $n$ tale che ogni parola $w \in L$ di lunghezza $|w| \geq n$ si può fattorizzare $w = xyz$ con $y \neq \epsilon$ e  $xy^kz \in L$ per ogni $k \geq 0$
 
 > [!example] 
-> $L = \{a^mb^m | m > 0\}$ non è regolare. Invero, se $xyz \in L$ con $y \neq \epsilon$, allora $xyyz \notin L$. Però per $x = y= z = \epsilon, un = a ^m, v = b^m$, si ha $$a^mb^m = xuyvz, xu^nyv^nz 0 a^{mn}b^{mn} \in L$$Si possono iterare due blocchi parallelamente
+> $L = \{a^mb^m | m > 0\}$ non è regolare. Questo perché $y$ corrisponderebbe ad un blocco di 'a' o ad un blocco di 'b'. Iterando quindi quante volte voglio 'a' o 'b' non saranno più della stessa lunghezza ($y$ potrerbbe essere anche a cavallo tra 'a' o 'b' e mi ritroverei fuori dal linguaggio). Se però prendessi un 'u' dentro le 'a' e una 'v' dentro le 'b' (con |a| = |b|), potreri iterarle parallelamente e non uscire dal linguaggio. Invero, se $xyz \in L$ con $y \neq \epsilon$, allora $xyyz \notin L$. Però per $x = y= z = \epsilon, un = a ^m, v = b^m$, si ha $$a^mb^m = xuyvz, xu^nyv^nz 0 a^{mn}b^{mn} \in L$$Si possono iterare due blocchi parallelamente 
 
-Sia $L$ un linguaggio non contestuale. Esiste un intero $n$ tale che ogni parola $w \in L$ di lunghezza $|w| \geq n$ si può fattorizzare $w = xuyvz$ con $uv \neq \epsilon$ e $$xu^kyv^kz \in L$$ 
+Sia $L$ un linguaggio non contestuale. Esiste un intero $n$ tale che ogni parola $w \in L$ di lunghezza $|w| \geq n$ si può fattorizzare $w = xuyvz$ con $uv \neq \epsilon$ e $$xu^kyv^kz \in L$$
 per ogni $k \geq 0$
 
-*Osservazione:* se L è un linguaggio non contestuale, in ogni parola di L abbastanza lunga si possono trovare due fattori non entrambi vuoti che possono essere iterati simultaneamente (pumped) senza uscire dal linguaggio. Pertanto, un linguaggio che non ha questa proprietà non è un linguaggio non contestuale (ma ci sono linguaggi che hanno questa proprietà e non sono linguaggi non contestuali)
+*Osservazione:* se L è un linguaggio non contestuale, in ogni parola di L abbastanza lunga si possono trovare due fattori non entrambi vuoti che possono essere iterati simultaneamente (**pumped**) senza uscire dal linguaggio. Pertanto, un linguaggio che non ha questa proprietà non è un linguaggio non contestuale (ma ci sono linguaggi che hanno questa proprietà e non sono linguaggi non contestuali)
 
 > [!example] 
 > Mostriamo che $L = \{a^mb^mc^m | m > 0\}$ non è contestuale. 
@@ -1550,25 +1550,27 @@ per ogni $k \geq 0$
   <img src="Screenshot From 2026-05-01 12-56-24.png" width="200">
 </div>
 ###### Parsing top-down
-Il problema di parsing ha come input una grammatica $G = \langle V,\Sigma,P,S \rangle$ e una parola $w \in L(G)$ e in output una derivazione $S \implies \alpha_1 \implies \alpha_2 \implies … \alpha_n \implies w$ di$ w \in G$ (o equivalentemente un albero di derivazione)
+In genere l’operazione di parsing richiede un tempo notevole $O(n^3)$ e non è accettabile nel caso dovessimo
+fare la compilazione di un programma molto complesso (perché come sappiamo, raramente un programma non presenta errori alla prima compilazione, quindi dovremmo fare più tentativi e di conseguenza effettuare la compilazione e il parsing più volte). Il problema di parsing ha come input una grammatica $G = \langle V,\Sigma,P,S \rangle$ e una parola $w \in L(G)$ e in output una derivazione $S \implies \alpha_1 \implies \alpha_2 \implies … \alpha_n \implies w$ di $w \in G$ (o equivalentemente un albero di derivazione)
 
 *Osservazione:* a ogni derivazione corrisponde un albero di derivazione, ma a un albero di derivazione posso corrispondere più derivazioni 
 
 > [!example]
 > ![[Pasted image 20260501130348.png|200]]
+> Sostituendo prima una variabile invece che un’altra, otteniamo sempre lo stesso albero di parsing. Sarebbe quindi bene mettersi d’accordo su un ordine da seguire per sostituire le variabili. Per fare ciò usiamo le derivazioni sx
 
-*Definizione:* sia $G = \langle V,\Sigma,P,S \rangle$ una grammatica non contestuale e $\alpha,\beta \in V$. Scriveremo $\alpha \implies_L\beta$ se $\beta$ si ottiene da $\alpha$ sostituendo la variabile più a sinistra con il lato destro di una sua produzione. Una derivazione sinistra di una parola w è una sequenza $S = \alpha_0 \xrightarrow[L]{} \alpha_1 \xrightarrow[L]{} … \xrightarrow[L]{} \alpha_n = w$ 
+*Definizione:* sia $G = \langle V,\Sigma,P,S \rangle$ una grammatica non contestuale e $\alpha,\beta \in V$. Scriveremo $\alpha \implies_L\beta$ se $\beta$ si ottiene da $\alpha$ sostituendo la variabile più a sinistra con il lato destro di una sua produzione. Una derivazione sinistra di una parola $w$ è una sequenza $S = \alpha_0 \xrightarrow[L]{} \alpha_1 \xrightarrow[L]{} … \xrightarrow[L]{} \alpha_n = w$ (con '=' rappresenta una conseguenza e '=>' rappresenta una derivazione)
 
-*Proposizione:* c'è una corrispondenza biunivoca tra le derivazioni sinistre di una parola $w$ e gli alberi di derivazione associati a $w$
+*Proposizione:* c'è una corrispondenza biunivoca tra le derivazioni sinistre di una parola $w$ e gli alberi di derivazione associati a $w$. Ogni albero di derivazione corrisponde ad una e una sola derivazione sinistra e viceversa. Inoltre, se ho una derivazione sinistra, per costruire l’albero in realtà mi basta ricordare le produzioni che ho utilizzato, perché la variabile che ho sostituito già la so, è quella più a sinistra.
 
-*Corollario:* data una grammatica non contestuale $G$, ogni parola di $L(G)$ si ottiene dal simbolo iniziale $S$ con una derivazione sinistra
+*Corollario:* data una grammatica non contestuale $G$, ogni parola di $L(G)$ si ottiene dal simbolo iniziale $S$ con una derivazione sinistra. Questo perché le parole si ottengono con una derivazione, alla derivazione corrisponde un albero, e all'albero corrisponde una derivazione sinistra.
 
-**Endmaker:** sia $G = \langle V,\Sigma,P,S \rangle$ una grammatica non contestuale. Per motivi di efficienza, è utile modificare $G$ aggiungendo:
+**Endmaker:** sia $G = \langle V,\Sigma,P,S \rangle$ una grammatica non contestuale. Per motivi di efficienza, è utile modificare $G$ usando un marcatore di fine parola (**endmaker**). Per fare ciò aggiungo:
 - Un nuovo simbolo iniziale $S'$
 - Un nuovo terminale #
 - La produzione $S' → S$#
 
-E anziché il parsing di $w \in \Sigma^*$ fare il parsing di $w$#
+E anziché il parsing di $w \in \Sigma^*$ farò il parsing di $w$#. Quindi il cancelletto lo genererò partendo da $S'→S$# e poi avrò $S$ da cui devo derivare $w$.
 
 > [!example]
 > ![[Pasted image 20260501130517.png|200]]
@@ -1581,19 +1583,24 @@ E anziché il parsing di $w \in \Sigma^*$ fare il parsing di $w$#
   <img src="Pasted image 20260501130606.png" width="200">
 </div>
 
-**Procedura non deterministica:**
+Abbiamo l’input che dobbiamo derivare dal simbolo iniziale, quindi passo passo esaminiamo il nostro input
+da sx verso dx e iniziamo a costruire la derivazione dall'alto in basso del nostro albero di derivazione. Ad ogni passo avremo una parte di input già analizzato (quello alla sx delle tabelline dell’esempio
+precedente), l’analisi (ciò che avevamo derivato dal nostro simbolo iniziale che faceva match con quello di sopra), a dx abbiamo l’input ancora non analizzato, e sotto quello che ci avanzava dal quale dovevamo
+derivare la parte superiore (chiamata predizione). Le regole di questo procedimento sono:
 - Esaminiamo sempre il simbolo più a sinistra della predizione
 - Se è una variale, dobbiamo fare una predizione: va sostituito con uno dei suoi lati destri
 - Se è un terminale, deve coincidere con la prima lettera dell'input da MANCA
 
+Il fallimento non significa che non possiamo fare il parsing della parola, ma solo che la predizione che abbiamo fatto è sbagliata e che quindi dobbiamo tornare indietro e farne un’altra.
+
 *Osservazione:* la predizione ha una gestione LIFO
 
 **Gestione del non-deterministico:** poiché la procedura è, in generale, non deterministica, è necessario esplorare tutte le possibili computazioni. Ci sono 2 possibilità:
-1. *In ampiezza:* si esaminano parallelamente tutti i possibili sviluppi della computazione
-2. *In profondità:* si esamina una computazione alla volta, salvo tornare indietro e provare un'altra strada in caso di fallimento (*backtracking*)
+1. *In ampiezza:* si esaminano parallelamente tutti i possibili sviluppi della computazione. Richiede molta memoria, per questo a volte è preferibile l’esplorazione in profondità.
+2. *In profondità:* si esamina una computazione alla volta, salvo tornare indietro e provare un'altra strada in caso di fallimento (**backtracking**)
 
 **Ampiezza:** dovremo tenere traccia di:
-- Della lettera che stiamo esaminando (simbolo di *look-ahead*)
+- Della lettera che stiamo esaminando (simbolo di **look-ahead**)
 - Delle produzioni utilizzate in ogni tentativo di parsing
 - Delle predizioni relative a ciascun tentativo
 
@@ -1609,7 +1616,8 @@ E anziché il parsing di $w \in \Sigma^*$ fare il parsing di $w$#
 > 
 > ![[Pasted image 20260501130947.png|200]]
 
-*Osservazione:* il metodo fallisce se $X \implies^* X\alpha$ per qualche $X \in N, \alpha \in V$ (*recursione destra*)
+*Osservazione:* il metodo fallisce se $X \implies^* X\alpha$ per qualche $X \in N, \alpha \in V$ (*recursione destra* = da una
+variabile posso derivare una forma sentenziale che comincia con la variabile stessa). Questo comporta che nella parte dx della nostra tabella non ci saranno mai solo terminali come prima lettera, e di conseguenza dovremo ripetere all'infinito gli stessi passaggi.
 
 *Proposizione:* ogni grammatica non contestuale è equivalente a una grammatica priva di recursione destra. Per esempio, le grammatiche in forma normale di Greibach sono prive di recursione destra
 

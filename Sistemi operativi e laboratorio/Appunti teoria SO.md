@@ -1704,6 +1704,14 @@ La progettazione del gestore della memoria dipende da tre decisioni fondamentali
 - Usare la paginazione o la segmentazione o la segmentazione paginata
 - Gli algoritmi utilizzati per i vari aspetti dell gestione della memoria 
 
+> [!info]
+> - Strategia di caricamento, come caricare le pagine in memoria, 
+> - Strategia di posizionamento, dove caricare le pagine in memoria, 
+> - Strategia di sostituzione, come decido quali pagine sono sostituibili in caso di memoria piena, 
+> - Gestione del resident set, può avere dimensione fissa o variabile, l'ambito di sostituzione indica dove carico le nuove pagine dopo averne sostituite alcune vecchie.
+> - Strategia di cleaning, a richiesta quando è necessario, oppure quando frame liberi sono vicini allo 0 faccio precleaning.
+> - Controllo del caricamento, screening a lungo termo che influisce sul grado di multiprogrammazione
+
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260429121125.png" width="200">
 </div>
@@ -1715,11 +1723,9 @@ Determinano quando una pagina deve essere caricata in memoria.
 
 **Strategie di posizionamento:** Determina in quale parte della memoria principale la pagine o il segmento deve essere caricato. È importante solo per la segmentazione non paginata, può usare i criteri *first fit, best fit e next fit*. Il posizionamento influisce sulle prestazioni anche con la paginazione nei sistemi distribuiti e i sistemi distribuiti NUMA.
 
-**Strategie di sostituzione:** seleziona la pagina in memoria principale da sostituire quando è necessario caricare una nuova pagina
-- L'obiettivo è selezionare la pagina che più difficilmente sarà riferita nel futuro prossimo
-- Più complessa è la politica di sostituzione, maggiore l'overhead (software e hardware) per implementarla
+**Strategie di sostituzione:** seleziona la pagina in memoria principale da sostituire quando è necessario caricare una nuova pagina. L'obiettivo è selezionare la pagina che più difficilmente sarà riferita nel futuro prossimo. Bisogna fare attenzione in quanto più complessa è la politica di sostituzione, maggiore l'overhead (software e hardware) per implementarla. In alternativa si usano algoritmi non troppo complessi, ma che comunque danno un buon risultato.
 
-Selezionano la pagina in memoria principale da sostituire quando è necessario caricare una nuova pagina, l'obiettivo ovviamente è quello di selezionare la pagina che più difficilmente sarà riferita nel futuro prossimo. Bisogna però stare attenti poiché più complessa è la politica di sostituzione, maggiore è l'overhead per implementarla. In alternativa si usano algoritmi non troppo complessi, ma che comunque danno un buon risultato. Ci sono però dei frame che non possono essere sostituiti anche se inutilizzati, sono i frame **bloccati (locked)**:
+Ci sono però dei frame che non possono essere sostituiti anche se inutilizzati, sono i frame **bloccati (locked)**:
 - La pagina caricata in quel frame non può essere sostituita
 - Il kernel del SO e le sue strutture di controllo principali sono caricate in frame bloccati 
 - Buffer I/O  e aree critiche per iterazioni real-time possono essere caricate in frame bloccati (temporaneamente)
@@ -1757,14 +1763,13 @@ Una strategia più complessa distingue tra frame modificati e non modificati
 **Ambito della strategia di sostituzione:** Si hanno varie possibilità di scelta per determinare come modificare il resident set:
 1. *Sostituzione in ambito locale:* ogni processo sceglie la pagina da sostituire esclusivamente tra le proprie pagine residenti (cioè tra le pagine residenti del processo che ha determinato l'errore di pagina). In questo modo, solo il processo che ha causato l'errore di pagina viene sospeso, e si ha un rallentamento localizzato al singolo processo coinvolto. 
 2. *Sostituzione in ambito globale:* si considerano tutte le pagine non bloccate presenti nella memoria principale (entrambi attivati da un errore di pagina), indipendentemente dal processo a cui appartengono. In questo caso, il sistema ha maggiore libertà nella scelta delle pagine da sostituire, ma il rischio è che processi non direttamente coinvolti vengano penalizzati. A fronte di ciò, se il numero di processi attivi è limitato, si riduce anche la competizione per la memoria, migliorando l'efficienza complessiva del sistema. 
-==da qui==
 3. *Allocazione fissa, ambito locale:* in questo caso è necessario decidere all'inizio quanto spazio assegnare al processo. Un'allocazione troppo piccola causa un alto numero di errori di pagina, mentre un'allocazione troppo grande porta a pochi processi in memoria. Di conseguenza si ha un rallentamento dell'uso del processore
 4. *Allocazione variabile, ambito globale:* l'implementazione di questa soluzione è semplice e il SO mantiene una lista dei frame liberi. Un frame libero è aggiunto all'insieme residente, in caso di errore di pagina. In assenza di frame liberi, una pagina di un qualunque processo può essere scaricata 
 5. *Allocazione variabile, ambito locale:* quando un nuovo processo è caricato, gli vengono allocati un certo numero di frames. Quando poi c'è un errore di pagina, viene sostituita una pagina dell'insieme residente del processo che ha determinato l'errore. Periodicamente, si rivaluta lo spazio assegnato, incrementandolo o decrementandolo, per migliorare l'efficienza.  
 
 **Working set:** 
 
-*Definizione:* Il **working set** $W(t,\Delta)$ è l'insieme delle pagine riferite nell'intervallo di tempo virtuale $[t-\Delta,t]$. La decisione di incrementare o decrementare la dimensione dell'insieme residente si basa sulla valutazione delle future richieste dei processi attivi e richiede:
+*Definizione:* Il **working set** $W(t,\Delta)$ è l'insieme delle pagine riferite nell'intervallo di tempo virtuale $[t-\Delta,t]$ (ovvero un intervallo espresso non in un tempo reale ma in numero di riferimenti a memoria). Esso rappresenta le pagine attivamente utilizzate da un processo in un determinato periodo, e serve a stimare quanta memoria è effettivamente necessaria affinché il processo possa continuare a eseguire senza incorrere frequentemente in errori di pagina. Un processo con un working set ampio dovrebbe avere un resident set ampio. Il pallino indica che il working set non si è modificato rispetto al passo precedente. Man mano che si aumenta la dimensione del delta, i casi in cui il working set non si modifica aumentano.La decisione di incrementare o decrementare la dimensione dell'insieme residente si basa sulla valutazione delle future richieste dei processi attivi e richiede:
 - Criteri per la determinazione della dimensione dell'insieme residente 
 - Tempistica delle variazioni  
 
@@ -1772,7 +1777,9 @@ Una strategia più complessa distingue tra frame modificati e non modificati
   <img src="Pasted image 20260501104614.png" width="200">
 </div>
 
-Una strategia possibile è quella di controllare periodicamente il working set di ogni processo e rimuovere dall'insieme residente le pagine che non sono nel working set. Un processo può essere eseguito solo se il suo working è interamente in memoria. L'implementazione di questa soluzione è difficile. Quando c'è un errore di pagina (**Page fault frequency**):
+Una strategia possibile è quella di controllare periodicamente il working set di ogni processo e rimuovere dall'insieme residente le pagine che non sono nel working set. Un processo può essere eseguito solo se il suo working è interamente in memoria. L'implementazione di questa soluzione è difficile. Un'alternativa è agire sulla frequenza degli errori di pagina: quando gli errori di pagina diventano troppo ravvicinati, si aggiunge una pagina all'insieme resident, altrimenti si scaricano tutte le pagine non utilizzate dall'ultimo errore di pagina, e tutte le altre diventano candidate alla prossima
+
+**Page fault frequency:** quando c’è un errore di pagina:
 - Se il tempo virtuale dall'errore di pagina precedente è inferiore a una soglia $F$, si aggiunge una pagina all'insieme residente 
 - Altrimenti si scaricano tutte le pagine con il bit di utilizzo 0 e si azzera il bit di utilizzo delle rimanenti. Questa soluzione provoca cattive prestazioni nelle transizioni a nuove località  
 
@@ -1803,9 +1810,14 @@ Per ridurre il grado di multiprogrammazione può essere necessario scaricare uno
 </div>
 
 Lo scopo è di assegnare al processore i processi da eseguire in modo da realizzare gli obiettivi del sistema:
-- Tempo di risposta
-- Throughput
-- Efficienza del processore
+- *Tempo di risposta del processore:* ci sono processi interattivi, in cui l’utente interagisce con il processo e quello che vorremmo da questi processi è una risposta immediata
+- *Throughput:* quanti lavori riusciamo a fare nel minor periodo di tempo
+- *Efficienza del processore:* si deve sempre utilizzare quanto più processore possibile
+
+> [!info] Ricorda:
+> Un processo passa attraverso nuovi stati, da processo New a processo Ready agisce la schedulazione a lungo termine, che agisce anche per i processi Ready/Suspend, poi lo scheduling a medio termine deciderà
+> quale di questi processi potrà passare in stato di Ready, quello short-term decide quale dei processi verrà messo in esecuzione. Lo scheduling a medio termine gestisce anche i processi Bloccati o
+> sospesi.
 
 **Tipi di scheduling**
 <div style="display: grid; grid-template-columns: 1fr; gap: 10px; justify-items: center;">
@@ -1820,7 +1832,7 @@ Lo scopo è di assegnare al processore i processi da eseguire in modo da realizz
 
 Per creare un processo della coda dei nuovi job, lo schedulatore deve decidere:
 - Quando il SO può accettare uno o più nuovi processi
-- Quali job trasformare in processi
+- Quali job trasformare in processi, e la scelta può adottare una politica ad esempio:
 	- First come, first served
 	- Priorità
 	- Tempo di esecuzione atteso 
@@ -1830,11 +1842,14 @@ Per creare un processo della coda dei nuovi job, lo schedulatore deve decidere:
 - controllo del grado di multiprogrammazione 
 - requisiti di memoria dei processi
 
-**Dispatcher:** esegue la schedulazione a breve termine ed è eseguito con grande frequenza. Decide quale tra i processi pronti deve essere eseguito e viene attivato da:
-- Interruzione di clock
-- Interruzioni I/O
-- Chiamate di sistema 
+**Dispatcher (schedulatore a breve termine):** esegue la schedulazione a breve termine ed è eseguito con grande frequenza. Decide quale tra i processi pronti deve essere eseguito e viene attivato da:
+- *Interruzione di clock:* il tempo assegnato a un processo è stato raggiunto e quindi il processo deve lasciare il processore per altri processi
+- *Interruzioni I/O:* il processo deve interagire con un dispositivo quindi sarà interrotto per diverso tempo
+- *Chiamate di sistema:* un processo esegue una system call, si sospende
 - Segnali (e.g.semafori)
+
+Lo scheduling a breve termine è ciò che ci interessa di più, è un po’ la chiave di volta di un sistema operativo, poiché essendo chiamata molto frequentemente deve usare algoritmi rapidi e semplici, non si possono adottare politiche molto complesse, d’altra parte però se non funziona viene
+danneggiato tutto il sistema.
 
 **Criteri per lo scheduling a breve termine:** 
 
@@ -1844,7 +1859,7 @@ Ci sono dei criteri per fare ciò:
 1. *Criteri orientati all'utente:* relativi alla percezione del comportamento del sistema da parte degli utenti (o dei processi):
 	- E.g.tempo di risposta nei sistemi interattivi
 	- Importante in tutti i sistemi
-2. *Criteri MANCA:* relativi all'efficienza dell'utilizzazione del processore
+2. *Criteri orientati al sistema:* relativi all'efficienza dell'utilizzazione del processore
 	- e.g., frequenza del completamento dei processi 
 	- trascurabili nei sistemi a singolo utente
 3. *Criteri relativi alle prestazioni:* sono quantitativi e facili da misurare (e.g.tempo di risposta)
