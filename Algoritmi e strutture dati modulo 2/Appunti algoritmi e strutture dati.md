@@ -8,7 +8,7 @@ Le linked lists vanno bene per rappresentare delle relazioni lineari (non tutte 
  - Le foglie dell'albero hanno i puntatori $left$ e $right$ inizializzati a $NIL$
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-02-24 11-19-46.png" width="200">
+  <img src="Screenshot From 2026-02-24 11-19-46.png" width="300">
 </div>
 
 È possibile estendere lo schema visto nell'albero binario a tutte le classi di alberi dove il numero di figlie di ogni nodo è al massimo un valore costante k. Per fare ciò è sufficiente sostituire i puntatori $left$ e $right$ con altri attributi come $child_1$, $child_2$, $...$ , $child_k$.
@@ -32,7 +32,7 @@ Si tratta di un albero binario nel quale le chiavi (cioè le informazioni conten
 - se il nodo $y$  si trova nella parte destra del sotto-albero di $x$, allora $y.key \geq x.key$
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-02-24 11-25-52.png" width="200">
+  <img src="Screenshot From 2026-02-24 11-25-52.png" width="300">
 </div>
 
 **In-order tree walk:** Data la proprietà degli alberi binari di ricerca, è possibile visualizzare tutte le chiavi dell'albero in maniera ordinata grazie a un semplice algoritmo ricorsivo.
@@ -140,18 +140,18 @@ La procedura inizia alla radice dell'albero e il puntatore x traccia un percorso
 1. *z* non ha "figli" (al massimo ne ha uno destro), quindi quando lo rimuovo modifico il "genitore" di *z* sostituendo quest'ultimo con $NIL$
 2. *z* ha un "figlio" (in tal caso l'unico "figlio" è sinistro), quindi pongo il "figlio" di *z* al posto di questo e modifico conseguentemente il "genitore" di *z* 
 <div style="display: flex; justify-content: center;">
-   <img src="Screenshot From 2026-02-25 11-56-25.png" width="200">
-   <img src="Screenshot From 2026-02-25 11-55-49.png" width="200">
+   <img src="Screenshot From 2026-02-25 11-56-25.png" width="300">
+   <img src="Screenshot From 2026-02-25 11-55-49.png" width="300">
  </div>
 3. *z* ha due "figli", quindi viene trovato il suo successore *y* (nel sotto-albero destro di *z*) e si sposta *y* affinché prenda il posto di *z*. Il resto del restante sotto-albero destro di *z* diventa il nuovo sotto-albero destro di *y* e il sotto-albero sinistro di *z* diventa il sotto-albero sinistro di *y*. *Y*, essendo il successore di *z*, non può avere un "figlio" sinistro e il "figlio" destro di *y* prende la posizione originaria di quest'ultimo (il resto del sotto-albero lo segue automaticamente). Di questo caso ci sono due possibili varianti:
     - *y* è il "figlio" destro di *z* 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-02-25 12-00-33.png" width="200">
+  <img src="Screenshot From 2026-02-25 12-00-33.png" width="300">
  </div>
 	 - *y* si trova nel sotto-albero destro di *z*, ma non è il "figlio" destro
     
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-02-25 12-02-18.png" width="200">
+  <img src="Screenshot From 2026-02-25 12-02-18.png" width="300">
 </div>
 La procedura di eliminazione di un nodo richiede come argomenti i puntatori a *T* e a *z*.
 
@@ -214,7 +214,7 @@ Il set di operazioni viste nella scorsa lezione sono veloci se l'altezza dell'al
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
   <div style="flex: 1;">
-    <img src="Screenshot From 2026-03-02 18-40-20.png" style="width: 200%; border-radius: 8px;">
+    <img src="Screenshot From 2026-03-02 18-40-20.png" style="width: 300%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
   Nel primo dei due alberi i numeri accanto ai nodi stanno ad indicare quanti nodi neri ci sono da quel nodo fino alle foglie (per rispettare la proprietà 5)
@@ -231,7 +231,7 @@ Il numero di nodi neri in ogni cammino semplice discendente a partire (senza inc
 Esistono due tipi di rotazione: destra e sinistra. Entrambe richiedono $O(1)$ in tempo. Una rotazione sinistra di un nodo *x*, per esempio, richiede che il figlio destro del nodo (*y*) NON deve essere $T.NIL$. La rotazione cambia il sotto-albero originariamente con radice in *X* scambiando il collegamento tra *x* e *y* (come nell'immagine seguente).
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-03 09-50-21.png" width="200">
+  <img src="Screenshot From 2026-03-03 09-50-21.png" width="300">
 </div>
 
 **Inserimento:**
@@ -270,13 +270,13 @@ while x != T.NIL
 > [!info] Ci riferiamo allo zio come il nodo che è il figlio (di qualsiasi colore) di un nodo padre (nero)
 
 1. *y*, lo zio di *z*, è rosso: quando sia *z.p* sia *y* sono rossi. Poiché *z.p.p* è nero, questa proprietà può essere trasferita di un livello in basso sia a *z.p* sia a *y* così da sistemare il problema di avere sia *z* che *z.p* rossi
-> [!example] ![[Screenshot From 2026-03-03 10-47-51.png|200]]
+> [!example] ![[Screenshot From 2026-03-03 10-47-51.png|300]]
 2. *y*, lo zio di *z*, è nero: 
    - *y* è nero e *z* è un figlio destro -> una rotazione sinistra su *z* trasforma la situazione nel prossimo caso
-> [!example] ![[Screenshot From 2026-03-03 10-48-53 1.png|200]]
+> [!example] ![[Screenshot From 2026-03-03 10-48-53 1.png|300]]
 
    - *y* è nero e *z* è un figlio sinistro -> cambia alcuni colori e applica una rotazione destra su *z.p.p*, il quale preserva la proprietà di non avere figli rossi (essendo un nodo rosso)
-> [!example] ![[Screenshot From 2026-03-03 10-50-24.png|200]]
+> [!example] ![[Screenshot From 2026-03-03 10-50-24.png|300]]
 ###### Hash table
 Una hash table è una generalizzazione di un array. In un array gli elementi vengono immagazzinati con una chiave k alla posizione k. Data la chiave k, per trovare l'elemento la cui chiave è k, mi basta guardare alla k-esima posizione dell'array (*direct addressing*). Quando non voglio allocare un array con una posizione per ogni possibile chiave uso una hash table. Uso questa struttura anche nel caso in cui il numero di chiavi immagazzinate è più piccolo del numero delle possibili chiavi. Quando si parla di hash table ci si riferisce ad un array che tipicamente usa una dimensione proporzionale al numero di chiavi che vanno immagazzinate. Per questo motivo se ho la chiave k non uso questo valore come indice nell'array, invece definisco una *hash function* (funzione di k) e usiamo il suo valore per indicizzare l'array.
 
@@ -490,7 +490,7 @@ BFS(G,s)
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
   <div style="flex: 1;">
-    <img src="Screenshot From 2026-03-11 15-53-03.png" style="width: 200%; border-radius: 8px;">
+    <img src="Screenshot From 2026-03-11 15-53-03.png" style="width: 300%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
   <li> gli archi più spessi sono nel sotto-grafo predecessore
@@ -544,7 +544,7 @@ DFS(G)
 la ricerca globale fa partire una ricerca locale su ogni vertice per esplorare tutto il grafo
 ```
 
-> [!example] ![[Screenshot From 2026-03-16 19-15-31.png|200]]
+> [!example] ![[Screenshot From 2026-03-16 19-15-31.png|300]]
 > Tempo = $\Theta(V+E)$
 > - l’analisi è simile a quella per il BFS
 > - $\Theta$ e non solo $O$ siccome è garantito che venga esaminato ogni vertice e ogni arco
@@ -584,7 +584,7 @@ Non necessita di ordinare in funzione dei tempi di fine:
 - Oppure mette i vertici all’inizio della linked list appena sono finiti. Appena finito la lista contiene i vertici ordinati con ordine topologico 
 
 **Tempo:** $\Theta(V+E)$
-> [!example] ![[Screenshot From 2026-03-17 23-15-57.png|200]]
+> [!example] ![[Screenshot From 2026-03-17 23-15-57.png|300]]
 
 **Correttezza:** è necessario mostrare che se $(u,v) \in E$ allora $v.f < u.f$. Quando l’arco $(u,v)$ è esplorato, di che colore sono $u$ e $v$?
 - $u$ è grigio
@@ -594,7 +594,7 @@ Non necessita di ordinare in funzione dei tempi di fine:
 
 **Componenti fortemente connesse:** dato un grafo orientato $G=(V,E)$, una componente fortemente connessa (*SCC*) di $G$ è il set massimale di vertici $C \subseteq V$ così che per ogni $u, v \in C$, $u \rightsquigarrow v$ e $v \rightsquigarrow u$ 
 
-> [!example] ![[Screenshot From 2026-03-17 23-27-30.png|200]]
+> [!example] ![[Screenshot From 2026-03-17 23-27-30.png|300]]
 
 *Nell’esempio:* L’algoritmo usa $G^T$=trasposta di $G$:
 - $G^T = (V,E^T), E^T = \{(u,v) : (v,u) \in E\}$
@@ -609,7 +609,7 @@ Non necessita di ordinare in funzione dei tempi di fine:
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
   <div style="flex: 1;">
-    <img src="Screenshot From 2026-03-17 23-35-16.png" style="width: 200%; border-radius: 8px;">
+    <img src="Screenshot From 2026-03-17 23-35-16.png" style="width: 300%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
 Nel nostro esempio
@@ -634,15 +634,15 @@ SCC(G)
 > [!example] 
 > Eseguo DFS: 
 > 
-> ![[Pasted image 20260318233449.png|200]]
+> ![[Pasted image 20260318233449.png|300]]
 > 
 > Prendo $G^T$:
 > 
->  ![[Screenshot From 2026-03-18 23-35-19.png|200]]
+>  ![[Screenshot From 2026-03-18 23-35-19.png|300]]
 > 
 > DFS in $G^T$: 
 > 
-> ![[Screenshot From 2026-03-18 23-36-09.png|200]]
+> ![[Screenshot From 2026-03-18 23-36-09.png|300]]
 > 
 > Tempo: $\Theta(V+E)$, ogni top level della DFS-Visit scoprirà il suo componente
 
@@ -654,7 +654,7 @@ SCC(G)
 
 **Lemma:** sia $C$ e $C'$ due SCC distinti in $G = (V,E)$. Si supponga che ci sia un arco $(u,v) \in E$ tale che $u \in C$ e $v \in C' \implies f(C) > f(C')$
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-18 23-44-41.png" width="200">
+  <img src="Screenshot From 2026-03-18 23-44-41.png" width="300">
 </div>
 Ogni radice scelta dal secondo DFS può raggiungere solo:
 - I vertici nel proprio SCC
@@ -718,7 +718,7 @@ Gli oggetti potrebbero apparire nella lista in qualsiasi ordine. Inoltre ogni og
 - Union: ci sono 2 modi per farla
 	1. Appende la lista $y$ alla fine della lista $x$ e usa il puntatore coda di $x$ per trovare la fine. Quest'operazione necessita di aggiornare il puntatore all'oggetto insieme per ogni nodo nella lista $y$. Chiaramente se appendo una lista grande su una lista piccola ci può volere molto tempo 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260402123502.png" width="200">
+  <img src="Pasted image 20260402123502.png" width="300">
 </div>
 	2. *Weighted-union heuristic:* appende sempre la lista più piccola alla lista più grande
 
@@ -746,7 +746,7 @@ Senza accorgimenti, questa struttura può degenerare in una catena lunga, quindi
 - *Path compression:* durante Find-Set, tutti i nodi visitati vengono ricollegati direttamente alla radice.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260402125937.png" width="200">
+  <img src="Pasted image 20260402125937.png" width="300">
 </div>
 
 - *Union by rank:* rende la radice dell'albero più piccolo (con meno nodi) un figlio della radice dell'albero più grande. Non utilizza la dimensione, ma il *rank* (che è un upper bound sull'altezza del nodo). Rende la radice con il grado più piccolo in un figlio della radice con un grado più grande
@@ -790,7 +790,7 @@ Modelliamo un grafo non orientato $G = (V,E)$ in cui ogni arco $(u,v) \in E$ abb
 Uno spanning tree il cui peso sia minimo (tra tutti gli spanning trees) è chiamato (minimum spanning tree) o MST
 
 > [!example] 
-> ![[Pasted image 20260401180919.png|200]]
+> ![[Pasted image 20260401180919.png|300]]
 > 
 > In questo esempio c'è più di un MST. Ad esempio se rimpiazzassi l'arco $(e,f)$ con l'arco $(c,e)$ avrei un MST diverso con lo stesso peso
 
@@ -862,7 +862,7 @@ MST-Kruskal(G,w)
 ```
 
 > [!example] Vediamo l'algoritmo di Kruskal in questo grafo: 
-> ![[Pasted image 20260401192133.png|200]]
+> ![[Pasted image 20260401192133.png|300]]
 > - archi accettati: $\{(c,f),(g,i),(e,f),(d,h),(f,h),(b,d),(d,g),(a,b)\}$
 > - archi rifiutati: $\{(c,e),(e,d),(b,c),(g,h)\}$
 
@@ -892,7 +892,7 @@ Assumendo che l'implementazione di una struttura dati a insiemi disgiunti (disjo
 Costruisce un solo albero alla volta, in questo modo $A$ è sempre un albero e inizia da una "radice" arbitraria $r$. Ad ogni passo si trova un light edge che connette $A$ ad un vertice isolato. Un arco, in questo modo, deve essere sicuro per $A$ e può essere aggiunto.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260402093655.png" width="200"> <img src="Pasted image 20260402093834.png" width="200">  
+  <img src="Pasted image 20260402093655.png" width="300"> <img src="Pasted image 20260402093834.png" width="300">  
 </div>
 
 **Come trovo un light edge?** devo usare una coda di priorità:
@@ -904,7 +904,7 @@ Costruisce un solo albero alla volta, in questo modo $A$ è sempre un albero e i
 - Una volta completato, $Q$ è vuoto e il MST è $A = \{(v,v.\pi) : v \in V - \{r\}\}$ 
 
 > [!example] Algoritmo di Prim in questo grafo:
-> ![[Pasted image 20260402095340.png|200]]
+> ![[Pasted image 20260402095340.png|300]]
 
 **Analisi:** dipende da come la coda di priorità viene implementata. Supponendo che $Q$ sia un binary heap:
 - Inizializzare $Q$ e il primo ciclo for: $O(V\ln(V))$
@@ -930,7 +930,7 @@ Peso del cammino minimo da $u$ a $v$: $\delta(u,v) = \begin{cases} \min \{ w(p) 
 Il cammino minimo da $u$ a $v$ è un qualsiasi cammino tale che $w(p) = \delta(u,v)$ 
 
 > [!example] Cammino minimo da $s$:
-> ![[Pasted image 20260408145605.png|200]]
+> ![[Pasted image 20260408145605.png|300]]
 > 
 > Questo esempio mostra che il cammino minimo potrebbe essere unico. Mostra anche che, quando si guarda il cammino minimo da un vertice a tutti gli altri, i cammini minimi sono organizzati come un albero
 
@@ -944,13 +944,13 @@ Va tutto bene finché nessun ciclo con costo negativo è raggiungibile dalla sor
 **Prova:** si usa la prova di correttezza taglia e incolla (*cut-and-paste*)
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260408150323.png" width="200">
+  <img src="Pasted image 20260408150323.png" width="300">
 </div>
 
 Si supponga che esista un cammino più breve $x \xrightarrow{p'_{xy}} y$, allora $w(p'_{xy}) < w(p_{xy})$ 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260408150612.png" width="200">
+  <img src="Pasted image 20260408150612.png" width="300">
 </div>
 
 Contraddice l'assunzione che $p$ sia il cammino minimo
@@ -972,13 +972,13 @@ Contraddice l'assunzione che $p$ sia il cammino minimo
 **Inizializzazione:** tutti gli algoritmi per i cammini minimi iniziano con:
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260408151622.png" width="200">
+  <img src="Pasted image 20260408151622.png" width="300">
 </div>
 
 **Funzione per rilassare un arco $(u,v)$:** può la stima del cammino minimo per $v$ essere migliorata andando attraverso $u$ e prendendo $(u,v)$?
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260408152001.png" width="200"><img src="Pasted image 20260408152045.png" width="200">
+  <img src="Pasted image 20260408153001.png" width="300"><img src="Pasted image 20260408152045.png" width="300">
 </div>
 
 Per ogni algoritmo per cammini minimi con una singola sorgente:
@@ -1000,25 +1000,25 @@ Gli algoritmi differiscono tra di loro nell'ordine e quante volte vengono rilass
 - Ritorna $TRUE$ se nessun ciclo di costo negativo sono raggiungibili da $s$, $FALSE$ altrimenti
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260408154712.png" width="200">
+  <img src="Pasted image 20260408154712.png" width="300">
 </div>
 
 Tempo: $O(V^2 + VE)$. Il primo ciclo for compie $|V| - 1$ passi sugli archi, e ogni passo richiede $\Theta(V + E)$ in tempo. Usiamo $O$ piuttosto che $\Theta$ perché a volte sono sufficienti $< |V| - 1$
 
 > [!example]
-> ![[Screenshot From 2026-04-08 15-50-30.png|200]]
+> ![[Screenshot From 2026-04-08 15-50-30.png|300]]
 
 **Cammino minimo da una sorgente singola in un grafo diretto e aciclico:** in un dag è garantito che non ci siano cicli a costo negativo
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260408160813.png" width="200">
+  <img src="Pasted image 20260408160813.png" width="300">
 </div>
 
 - Tempo: $\Theta(V +E)$
 - Correttezza: poiché i vertici sono elaborati in ordine topologicamente orientato, gli archi di ogni cammino devono essere rilassati in ordine di apparizione nel cammino $\implies$ gli archi su ogni cammino minimo sono rilassati in ordine $\implies$ per la proprietà di path-relaxation, è corretto
 
 > [!example]
-> ![[Pasted image 20260408161201.png|200]]
+> ![[Pasted image 20260408161201.png|300]]
 
 **Algoritmo di Dijkstra:** non ci sono archi a costo negativo ed essenzialmente è una versione pesata del breadth-first-search:
 - Al posto di una coda FIFO, usa una coda di priorità
@@ -1032,7 +1032,7 @@ Ho due set di vertici:
 - $Q =$ coda di priorità $= V - S$
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260408162152.png" width="200">
+  <img src="Pasted image 20260408162152.png" width="300">
 </div>
 
 - Sembra molto come l'algoritmo di Prim, ma calcola $v.d$ e usa i pesi del cammino minimo come chiave
@@ -1041,7 +1041,7 @@ Ho due set di vertici:
 Correttezza: l'algoritmo estrae i vertici dall'heap in base alla distanza minore dalla sorgente. Induttivamente se l'algoritmo ha trovato il cammino minimo per qualche insieme $S$, il cammino minimo per arrivare al vertice più vicino in $V-S$ può essere trovato appendendo un solo arco ad un cammino a qualche vertice di $S$ 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260409144108.png" width="200">
+  <img src="Pasted image 20260409144108.png" width="300">
 </div>
 
 Analisi: ho $|V|$ operazioni Insert e Extract-Min e $\leq |E|$ operazioni Decrease-Key. Come nell'algoritmo di Prim dipende dall'implementazione di una coda di priorità:
@@ -1066,7 +1066,7 @@ Si assuma che il grafo $G$ sia dato come matrice di adiacenza di pesi: $W = (w_{
 **Calcolo di una soluzione bottom-up:** si calcolano $L^{(1)},L^{(2)},…,L^{(n)}$. Si inizia da $L^{(1)} = W$ siccome $l^{(1)}_{ij} = w_{ij}$, andando da $L^{(r-1)}$ a $L^{(r)}$ 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260421215145.png" width="200">
+  <img src="Pasted image 20260421215145.png" width="300">
 </div>
 
 Il tempo di questo algoritmo è $\Theta(n^3)$. 
@@ -1074,7 +1074,7 @@ Il tempo di questo algoritmo è $\Theta(n^3)$.
 Valutando ogni $L^{(r)}$:
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260421215427.png" width="200">
+  <img src="Pasted image 20260421215427.png" width="300">
 </div>
 
 Il tempo di questo algoritmo è $\Theta(n^4)$. 
@@ -1098,7 +1098,7 @@ for i = 1 to n
 Siccome il nostro obiettivo è quello di valutare il più velocemente possibile $L^{(r-1)}$, non mi è necessario calcolare tutti gli $L^{(1)},L^{(2)},…,L^{(n-2)}$ intermedi. Si supponga di avere una matrice $A$ e vogliamo calcolare $A^{(n-1)}$ (come chiamare Extend-Shortest-Paths n-1 volte). Si calcolano $A,A^2,A^4.A^8,…$, se sapessimo che $A^e = A^{(n-1)} \ \forall \ r \geq n-1$ si potrebbe finire con $A^r$, dove $r$ è la più piccola potenza di 2 che è $\geq n-1$ ($r = 2^{\lceil{\lg(n-1)}\rceil})$ 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260421220831.png" width="200">
+  <img src="Pasted image 20260421220831.png" width="300">
 </div>
 
 Il tempo di questo algoritmo è $\Theta(n^3 \lg(n))$. 
@@ -1108,13 +1108,13 @@ Il tempo di questo algoritmo è $\Theta(n^3 \lg(n))$.
 - Se $k$ è un vertice intermedio:
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260421094244.png" width="200">
+  <img src="Pasted image 20260421094244.png" width="300">
 </div>
 
 $d^{(k)}_{ij} = \begin{cases} w_{ij} & \text{se } k = 0 \\ \min\{d^{(k-1)}_{ij},d^{(k-1)}_{ik} + d^{(k-1)}_{kj}\} & \text{se } k \geq 1 \end{cases}$. Si ha $d^{(0)}_{ij} = w_{ij}$ perché non si possono avere vertici intermedi => $\leq 1$ archi. Si vogliono $D^{(N)} = (d^{(n)}_{ij})$ siccome tutti i vertici numerati sono $\leq n$ 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260421221121.png" width="200">
+  <img src="Pasted image 20260421221121.png" width="300">
 </div>
 
 Il tempo di questo algoritmo è $\Theta(n^3)$. 
@@ -1143,7 +1143,7 @@ Si definisce $h(v) = \delta(s,v) \ \forall \ v \in V$
 **Dimostrazione:** dalla disuguaglianza triangolare, $\delta(s,v) \leq \delta(s,u) + w(u,v)$, $h(v) \leq h(u) + w(u,v)$. Perciò $w(u,v) + h(u) - h(v) \geq 0$ 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260421221523.png" width="200">
+  <img src="Pasted image 20260421221523.png" width="300">
 </div>
 
 Tempo di questo algoritmo:

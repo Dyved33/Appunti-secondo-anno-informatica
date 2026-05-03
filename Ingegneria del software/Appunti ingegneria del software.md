@@ -753,7 +753,7 @@ Dai requisiti e dalle user stories emergono quattro casi d'uso fondamentali:
 
 Questi casi d'uso coinvolgono i tre attori principali del sistema: Studente, Docente, Segreteria. Sono il punto di partenza per costruire il primo Use Case Diagram di UniManager.
 
-> [!tip] ![[Screenshot From 2026-03-12 15-15-14.png|200]]
+> [!tip] ![[Screenshot From 2026-03-12 15-15-14.png|300]]
 
 **Relazione *include* (obbligatorio):** <u>Include rappresenta un comportamento comune e obbligatorio tra più casi d'uso</u>. Un caso d'uso A include B se: 
 - ogni volta che si esegue A, a un certo punto è necessario eseguire B; 
@@ -766,7 +766,7 @@ A livello grafico:
 Serve quando una parte del comportamento è identica e va eseguita sempre prima o durante un caso d'uso principale.
 
 > [!example] Esempio uso include
->  ![[Screenshot From 2026-03-12 15-18-15.png|200]]
+>  ![[Screenshot From 2026-03-12 15-18-15.png|300]]
 
 **Relazione *extend* (opzionale):** <u>Extend rappresenta una variante opzionale di un caso d'uso</u>. Un caso d'uso B estende A se: 
 - A descrive il flusso “normale”; 
@@ -778,7 +778,7 @@ A livello grafico:
 - Serve quando un comportamento aggiuntivo può avvenire, ma non è obbligatorio.
 
 > [!example] Esempio uso extend
-> ![[Screenshot From 2026-03-12 15-21-24.png|200]]
+> ![[Screenshot From 2026-03-12 15-21-24.png|300]]
 
 **Generalizzazione tra attori:** È possibile organizzare gli attori in una gerarchia, serve quando più attori condividono gli stessi casi d'uso. Significato: 
 - l'attore “padre” rappresenta un ruolo più generale; 
@@ -798,11 +798,11 @@ La generalizzazione permette di evitare ripetizioni:
 
 **Note e commenti:** In UML possiamo aggiungere note/commenti per chiarire assunzioni e scelte. Le note aiutano a esplicitare dettagli utili senza appesantire i casi d'uso. Sono particolarmente utili quando una regola non è rappresentabile in modo diretto con soli attori e relazioni. Una buona pratica è quella di scrivere note brevi e mirate, collegate solo ai punti davvero ambigui.
 
-> [!example] ![[Screenshot From 2026-03-12 15-27-37.png|200]]
+> [!example] ![[Screenshot From 2026-03-12 15-27-37.png|300]]
 
 **Package e raggruppamenti:** In UML possiamo raggruppare casi d'uso in package/aree funzionali. Ciò è utile quando il diagramma cresce e vogliamo separare aree funzionali. La motivazione principale è la leggibilità: meno incroci visivi, più chiarezza su responsabilità e perimetri. I package non cambiano il comportamento dei casi d'uso: organizzano la vista del modello.
 
-> [!example] ![[Screenshot From 2026-03-12 15-27-47.png|200]]
+> [!example] ![[Screenshot From 2026-03-12 15-27-47.png|300]]
 
 **Molteplicità sulle relazioni:** In alcuni casi possiamo esplicitare la molteplicità sulle relazioni (senza esagerare per rimanere il più asciutti possibile, altrimenti si rischia solo rumore). Va usata solo quando aggiunge chiarezza al significato del modello. Nei Use Case Diagram è una notazione possibile ma non centrale (più comune nei Class Diagram). 
 
@@ -813,8 +813,8 @@ La generalizzazione permette di evitare ripetizioni:
 **Vincoli:** In UML possiamo esprimere vincoli con testo tra parentesi graffe. I vincoli servono per esplicitare regole di business non evidenti dal solo diagramma (riguardo l'implementazione). Sono utili quando una condizione è decisiva per il dominio (scadenze, prerequisiti, autorizzazioni). Un vincolo deve essere verificabile: formulazioni vaghe riducono il valore del modello.
 
 > [!example] 
-> ![[Screenshot From 2026-03-12 15-36-05.png|200]] 
-> ![[Screenshot From 2026-03-12 15-36-23.png|200]]
+> ![[Screenshot From 2026-03-12 15-36-05.png|300]] 
+> ![[Screenshot From 2026-03-12 15-36-23.png|300]]
 
 **Good practices:**
 - Usare i casi d'uso per descrivere obiettivi, non schermate o click. 
@@ -836,7 +836,7 @@ L'idea è avere un livello di dettaglio sufficiente per:
 - chiarire il comportamento atteso, 
 - preparare i diagrammi successivi (sequence, activity... ).
 
-> [!example] ![[Screenshot From 2026-03-12 15-40-44.png|200]]
+> [!example] ![[Screenshot From 2026-03-12 15-40-44.png|300]]
 
 **Da use case a domain model:** Nella lezione precedente abbiamo visto: 
 - attori esterni al sistema; 
@@ -929,7 +929,7 @@ Un concetto è un buon candidato se:
 - 1..:* almeno una
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-18 15-05-46.png" width="200">
+  <img src="Screenshot From 2026-03-18 15-05-46.png" width="300">
 </div>
 
 Nelle associazioni, spesso ci interessa la molteplicità: 
@@ -954,7 +954,7 @@ Le molteplicità non sono numerini casuali:
 > [!example] Rappresentazione concettuale del dominio di UniManager: 
 > - concetti principali, attributi essenziali, relazioni e molteplicità; 
 > - nessun dettaglio di implementazione (tipi, metodi, framework…)
-> ![[Screenshot From 2026-03-18 15-09-32.png|200]]
+> ![[Screenshot From 2026-03-18 15-09-32.png|300]]
 
 **Domain model come strumento di verifica:** Possiamo usare il Domain Model per fare domande al domain expert: 
 - «Esistono appelli senza corso?»; 
@@ -983,7 +983,7 @@ Class Diagram:
 Spesso i nomi coincidono, ma il punto di vista è diverso.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-18 15-13-44.png" width="200">
+  <img src="Screenshot From 2026-03-18 15-13-44.png" width="300">
 </div>
  
  Il class diagram ci aiuta a non fissare troppo presto una soluzione tecnica. Mantiene un livello di astrazione sufficientemente alto, ma già orientato al software. Permette di: 
@@ -1011,25 +1011,25 @@ Obiettivo: restare vicini al dominio, ma con una struttura già utile al design 
 - ~ package — visibile all'interno del package
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260318151844.png" width="200">
+  <img src="Pasted image 20260318151844.png" width="300">
 </div>
 
 **Attributo derivato:** Un attributo è derivato se può essere calcolato da altri dati. Notazione: si usa il simbolo / davanti al nome.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-18 15-19-42.png" width="200">
+  <img src="Screenshot From 2026-03-18 15-19-42.png" width="300">
 </div>
 
 **Attributo statico:** La notazione UML prevede attributi di classe (statici). Notazione: nome sottolineato.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-18 15-20-50.png" width="200">
+  <img src="Screenshot From 2026-03-18 15-20-50.png" width="300">
 </div>
 
 **Ereditarietà:** La generalizzazione si indica con una freccia a triangolo vuoto verso la superclasse. Le sottoclassi ereditano attributi e operazioni.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-18 15-22-00.png" width="200">
+  <img src="Screenshot From 2026-03-18 15-22-00.png" width="300">
 </div>
 
 **Aggregazione e composizione:** Sono due tipi particolari di associazione UML. In entrambi i casi c'è un rapporto tra un tutto e una parte. 
@@ -1041,7 +1041,7 @@ Obiettivo: restare vicini al dominio, ma con una struttura già utile al design 
 - In breve: se elimino un Corso, il Docente resta.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260318152430.png" width="200">
+  <img src="Pasted image 20260318152430.png" width="300">
 </div>
 
 *Composizione:* la parte dipende dal tutto. 
@@ -1049,7 +1049,7 @@ Obiettivo: restare vicini al dominio, ma con una struttura già utile al design 
 - In breve: se elimino un Appello, l'Iscrizione non esiste più.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-18 15-25-22.png" width="200">
+  <img src="Screenshot From 2026-03-18 15-25-22.png" width="300">
 </div>
 
 **Class diagram di *Unimanager:*** Traduzione del Domain Model in una rappresentazione orientata al software: 
@@ -1058,7 +1058,7 @@ Obiettivo: restare vicini al dominio, ma con una struttura già utile al design 
 - in questo diagramma mostriamo solo associazioni.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260318152700.png" width="200">
+  <img src="Pasted image 20260318152700.png" width="300">
 </div>
 
 **Errori tipici nel passaggio a class diagram:** Aggiungere subito: 
@@ -1105,7 +1105,7 @@ Si utilizza per chiarire come uno scenario viene eseguito nel tempo. Risponde a 
 È particolarmente utile per scenari di caso d'uso con esito positivo e varianti di errore. Non è il diagramma migliore per descrivere l'intero processo: quello è il ruolo degli Activity Diagram
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319145158.png" width="200">
+  <img src="Pasted image 20260319145158.png" width="300">
 </div>
 
 **Lettura:** La lettura corretta segue due assi: 
@@ -1119,13 +1119,13 @@ Ogni freccia rappresenta un messaggio tra lifeline e quindi un passo osservabile
 **Lifeline:** Le lifeline identificano i partecipanti coinvolti nello scenario. Qui distinguiamo attore, interfaccia e servizio: ruoli diversi, responsabilità diverse. L'obiettivo è rendere esplicito chi partecipa prima di parlare dei dettagli dei messaggi. Quando usarlo: all'inizio, per fissare i confini dello scenario. Errore tipico: introdurre partecipanti non necessari al caso in esame.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319145433.png" width="200">
+  <img src="Pasted image 20260319145433.png" width="300">
 </div>
 
 **Attivazione:** La barra di attivazione indica il periodo in cui il partecipante sta eseguendo lavoro. Nel diagramma si vede chiaramente quando *svc:AppelloService* è attivo e quando restituisce il controllo a *ui:Portale*. La freccia tratteggiata *esito(OK)* è un return message: rappresenta la risposta alla chiamata, non un messaggio asincrono. Serve a leggere meglio durata logica e nidificazione delle chiamate. Quando usarlo: quando la durata logica del lavoro è rilevante. Errore tipico: disegnare attivazioni ovunque senza valore informativo.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319145618.png" width="200">
+  <img src="Pasted image 20260319145618.png" width="300">
 </div>
 
 **Messaggio sincrono:** Il chiamante invia il messaggio e attende il completamento. Nel nostro esempio *ui:Portale* invia la richiesta a *svc:AppelloService* e resta in attesa dell'esito. Il messaggio sincrono rappresenta una dipendenza temporale immediata tra chiamata e risultato. Quando usarlo: per chiamate con dipendenza immediata dal risultato. Errore tipico: usare sync anche per notifiche/eventi che non bloccano.
@@ -1133,85 +1133,85 @@ Ogni freccia rappresenta un messaggio tra lifeline e quindi un passo osservabile
 **Messaggio asincrono:** Il chiamante invia il messaggio ma prosegue senza blocco. Nel nostro esempio *svc:AppelloService* invia una notifica a *noti:Notifier* senza attendere risposta immediata. Qui il focus è la disaccoppiata temporale tra chi invia e chi riceve. Quando usarlo: in integrazioni event-driven o code di messaggi. Errore tipico: usare async senza chiarire chi gestisce l'esito.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319145841.png" width="200">
+  <img src="Pasted image 20260319145841.png" width="300">
 </div>
 
 **Return message:** La freccia tratteggiata rappresenta il risultato della richiesta. Qui *svc:AppelloService* restituisce a *ui:Portale* l'esito della richiesta (OK/errore). Nelle slide useremo il return solo quando porta informazione utile. Quando usarlo: se il valore di ritorno guida una decisione successiva. Errore tipico: mostrare tutti i return e appesantire il diagramma.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319145618.png" width="200">
+  <img src="Pasted image 20260319145618.png" width="300">
 </div>
 
 **Create:** Mostra che un oggetto nasce durante l'interazione, non esiste dall'inizio. In UniManager, *svc:AppelloService* crea una nuova *iscr:Iscrizione* quando i vincoli sono soddisfatti. Questo chiarisce ownership e momento di istanziazione. Quando usarlo: se il momento di creazione è parte del comportamento. Errore tipico: creare oggetti tecnici ovunque invece di riusarli.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319150059.png" width="200">
+  <img src="Pasted image 20260319150059.png" width="300">
 </div>
 
 **Destroy:** Rappresenta la fine del ciclo di vita di un oggetto temporaneo. In UniManager, *svc:AppelloService* può eliminare una *bozza:Iscrizione* scaduta/non confermata. Utile per risorse effimere e cleanup esplicito. Quando usarlo: per risorse temporanee con fine vita esplicita. Errore tipico: distruggere entità che dovrebbero restare persistenti.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319150212.png" width="200">
+  <img src="Pasted image 20260319150212.png" width="300">
 </div>
 
 **Self-call:** Un partecipante può invocare una propria operazione interna. In UniManager, *svc:AppelloService* richiama internamente *validaVincoliIscrizione()* prima di proseguire. Evitiamo eccesso di self-call: solo quelle che chiariscono il comportamento. Quando usarlo: per evidenziare una sotto-fase interna significativa. Errore tipico: dettagliare micro-metodi irrilevanti per lo scenario.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319150320.png" width="200">
+  <img src="Pasted image 20260319150320.png" width="300">
 </div>
 
 **Frammento alt:** `alt` modella rami alternativi mutuamente esclusivi. Nel nostro esempio, *svc: AppelloService* sceglie il ramo in base ai prerequisiti dello studente. È la forma naturale per success/failure nello stesso scenario. Quando usarlo: per rami alternativi che non possono coesistere. Errore tipico: guardie sovrapposte o non mutuamente esclusive.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319150439.png" width="200">
+  <img src="Pasted image 20260319150439.png" width="300">
 </div>
 
 **Frammento opt:** `opt` esprime un comportamento opzionale (if senza else). Il flusso principale resta valido anche senza il blocco opzionale. Tipico per notifiche, log o passi accessori. Quando usarlo: per comportamenti accessori non sempre presenti. Errore tipico: usare opt per passi in realtà obbligatori.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319150545.png" width="200">
+  <img src="Pasted image 20260319150545.png" width="300">
 </div>
 
 **Frammento loop:** `loop` rappresenta una ripetizione controllata da condizione. Qui la stessa operazione si applica a più elementi. Il blocco rappresenta lo stesso micro-flusso ripetuto secondo un criterio esplicito. Quando usarlo: su operazioni ripetute con criterio esplicito. Errore tipico: loop senza condizione chiara o troppo generica.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319150650.png" width="200">
+  <img src="Pasted image 20260319150650.png" width="300">
 </div>
 
 **Frammento break:** `break` interrompe il normale scenario in caso eccezionale. Quando il break scatta, il resto del flusso principale non prosegue. Utile per errori critici e stop immediato dell'operazione. Quando usarlo: per uscita anticipata in condizioni eccezionali. Errore tipico: usarlo al posto di un normale ramo alt.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319150855.png" width="200">
+  <img src="Pasted image 20260319150855.png" width="300">
 </div>
 
 **Frammento par:** `par` descrive rami concorrenti eseguibili in parallelo. Nel mini-esempio salvataggio e notifica sono indipendenti. Aiuta a discutere latenza e sincronizzazione senza entrare nel codice. Quando usarlo: per attività indipendenti eseguibili in parallelo. Errore tipico: segnare par su rami che in realtà si bloccano.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319151013.png" width="200">
+  <img src="Pasted image 20260319151013.png" width="300">
 </div>
 
 **Frammento critical:** `critical` delimita una sezione che non deve essere interrotta da altre interazioni concorrenti. Serve per proteggere aggiornamenti sensibili da interferenze. Lo usiamo per mettere in evidenza vincoli di mutua esclusione. Quando usarlo: su sezioni che richiedono mutua esclusione. Errore tipico: marcare blocchi lunghi senza reale criticità.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319151148.png" width="200">
+  <img src="Pasted image 20260319151148.png" width="300">
 </div>
 
 **Frammento  ref:** `ref` rimanda a un'interazione definita altrove, in modo analogo alla chiamata di una funzione. Riduce duplicazione quando lo stesso sotto-scenario ricorre spesso. Mantiene il diagramma principale leggibile e modulare. Quando usarlo: per riuso di sotto-scenari comuni. Errore tipico: nascondere dentro ref passaggi fondamentali del caso.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319151259.png" width="200">
+  <img src="Pasted image 20260319151259.png" width="300">
 </div>
 
 **Frammento assert:** `assert` indica una traccia che deve valere obbligatoriamente. Nel diagramma usiamo un blocco etichettato assert per evidenziare il vincolo. È utile per evidenziare protocolli o vincoli forti. Se la traccia reale diverge, siamo fuori specifica. Quando usarlo: per specificare sequenze obbligatorie di protocollo. Errore tipico: usarlo senza una regola verificabile a supporto.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319151417.png" width="200">
+  <img src="Pasted image 20260319151417.png" width="300">
 </div>
 
 **Frammento neg:** `neg` rappresenta una traccia vietata. Nel diagramma usiamo un blocco etichettato neg per evidenziare il contro-esempio. Qui evidenziamo un comportamento che il sistema non deve ammettere. È didatticamente utile per discutere contro-esempi. Quando usarlo: per rendere espliciti comportamenti vietati. Errore tipico: confondere neg con un ramo alternativo valido.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319151532.png" width="200">
+  <img src="Pasted image 20260319151532.png" width="300">
 </div>
 
 **Frammenti strict vs seq:** 
@@ -1225,7 +1225,7 @@ Uso:
 Errore tipico: usare strict quando basta seq, irrigidendo il modello.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319151725.png" width="200">
+  <img src="Pasted image 20260319151725.png" width="300">
 </div>
 
 ###### Activity diagram
@@ -1253,7 +1253,7 @@ Uso l'activity diagram:
 Questa cornice minima definisce inizio e fine del processo. Anche negli esempi semplici è bene mantenerla esplicita. Quando usarlo: sempre, per delimitare chiaramente il processo. Errore tipico: final implicito che lascia il flusso ambiguo.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319152240.png" width="200">
+  <img src="Pasted image 20260319152240.png" width="300">
 </div>
 
 **Action e control flow:** Le azioni sono i passi di lavoro; gli archi definiscono l'ordine. Notazione grafica: 
@@ -1263,7 +1263,7 @@ Questa cornice minima definisce inizio e fine del processo. Anche negli esempi s
 Qui il flusso è lineare: un passo prepara il successivo. È la base su cui poi aggiungiamo decisioni e parallelismo. Quando usarlo: per modellare la sequenza operativa principale. Errore tipico: azioni troppo grandi che nascondono decisioni
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319152431.png" width="200">
+  <img src="Pasted image 20260319152431.png" width="300">
 </div>
 
 **Decision e merge:** Decision separa i rami; merge li ricompone. Notazione grafica: 
@@ -1273,7 +1273,7 @@ Qui il flusso è lineare: un passo prepara il successivo. È la base su cui poi 
 Le guardie devono essere chiare e possibilmente mutualmente esclusive. Nel diagramma si vede il classico esito positivo/negativo. Quando usarlo: quando un punto del processo biforca i casi. Errore tipico: dimenticare il merge e lasciare rami scollegati
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319152602.png" width="200">
+  <img src="Pasted image 20260319152602.png" width="300">
 </div>
 
 **Guardie:** Le guardie esplicitano la condizione logica su ogni ramo. Notazione grafica: 
@@ -1283,7 +1283,7 @@ Le guardie devono essere chiare e possibilmente mutualmente esclusive. Nel diagr
 Etichette come (posti > 0) evitano ambiguità interpretative. Sono fondamentali per verificare completezza dei casi. Quando usarlo: per esplicitare condizioni precise sui rami. Errore tipico: guardie vaghe (es. 'ok') non verificabili.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319152729.png" width="200">
+  <img src="Pasted image 20260319152729.png" width="300">
 </div>
 
 **Fork e join:** Fork apre esecuzioni concorrenti; join le sincronizza. Notazione grafica: 
@@ -1293,7 +1293,7 @@ Etichette come (posti > 0) evitano ambiguità interpretative. Sono fondamentali 
 Utile quando due attività sono indipendenti ma devono convergere. Qui salvataggio e notifica procedono in parallelo. Quando usarlo: per parallelismo reale con sincronizzazione finale. Errore tipico: fork senza join quando la convergenza è richiesta.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319152844.png" width="200">
+  <img src="Pasted image 20260319152844.png" width="300">
 </div>
 
 **Swimlane:** Le swimlane assegnano responsabilità organizzative ai passi. Notazione grafica:
@@ -1303,29 +1303,29 @@ Utile quando due attività sono indipendenti ma devono convergere. Qui salvatagg
 Si capisce subito chi fa cosa (studente vs sistema). Ottimo strumento di comunicazione con stakeholder non tecnici. Quando usarlo: per chiarire ownership tra ruoli/sistemi. Errore tipico: cambiare lane senza criterio di responsabilità.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319152956.png" width="200">
+  <img src="Pasted image 20260319152956.png" width="300">
 </div>
 
 **Send signal:** L'attività emette un segnale verso l'esterno. Notazione grafica: azione di invio evento, con flusso che prosegue senza attesa di risposta immediata. È un punto di integrazione event-driven nel processo. Qui l'evento comunica che gli esiti sono disponibili. Quando usarlo: quando il processo pubblica un evento esterno. Errore tipico: usare send signal per normali chiamate sincrone.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319153053.png" width="200">
+  <img src="Pasted image 20260319153053.png" width="300">
 </div>
 
 **Receive signal:** Il flusso resta in attesa di un segnale in ingresso. Notazione grafica: azione di ricezione evento, che abilita la prosecuzione del flusso. La prosecuzione dipende da un evento esterno. Utile per modellare processi reattivi e asincroni. Quando usarlo: per stati in attesa di input/evento esterno. Errore tipico: non specificare chi emette il segnale atteso.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319153154.png" width="200">
+  <img src="Pasted image 20260319153154.png" width="300">
 </div>
 
 **Time event:** Il processo reagisce a una scadenza temporale. Notazione grafica: azione di attesa temporale, che abilita una transizione al verificarsi della scadenza. Rende esplicite le transizioni guidate dall'orologio. Nel nostro esempio, il flusso prosegue quando viene raggiunta la scadenza delle iscrizioni. Quando usarlo: per transizioni innescate dal tempo. Errore tipico: modellare tempi con testo libero invece di eventi
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319153249.png" width="200">
+  <img src="Pasted image 20260319153249.png" width="300">
 </div>
 
 > [!example] Esempio con send, receive e time
-> ![[Pasted image 20260319153413.png|200]]
+> ![[Pasted image 20260319153413.png|300]]
 > 
 > - Lo scenario combina in un unico flusso invio evento, attesa evento e transizione temporale. 
 > - Sequenza logica: pubblicazione esiti, notifica esterna, conferma ricevuta, attesa scadenza, archiviazione finale.
@@ -1334,13 +1334,13 @@ Si capisce subito chi fa cosa (studente vs sistema). Ottimo strumento di comunic
 **Loop structure:** Un blocco viene ripetuto finché la condizione resta vera. Qui il ciclo copre tutti gli elementi da elaborare. Esplicitare il loop evita di nascondere lavoro ripetitivo. Quando usarlo: per cicli di processo su insiemi di elementi. Errore tipico: non esplicitare condizione di uscita del ciclo.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319153508.png" width="200">
+  <img src="Pasted image 20260319153508.png" width="300">
 </div>
 
 **Interruptable region:** Una regione può essere interrotta da un evento di annullamento. Il diagramma evidenzia il ramo di uscita anticipata. Fondamentale per processi lunghi con comando stop. Quando usarlo: su processi lunghi annullabili dall'utente. Errore tipico: annullamento modellato ma senza cleanup logico.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319153603.png" width="200">
+  <img src="Pasted image 20260319153603.png" width="300">
 </div>
 
 **Confronto finale:**
@@ -1370,7 +1370,7 @@ L'architettura software è il ponte tra: l'analisi (requisiti, casi d'uso, model
 - discutere le scelte progettuali usando una mappa condivisa.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260325132937.png" width="200">
+  <img src="Pasted image 20260325132937.png" width="300">
 </div>
 
 > [!info] Parliamo di architettura in questo momento del corso perché: 
@@ -1388,7 +1388,7 @@ L'architettura software è il ponte tra: l'analisi (requisiti, casi d'uso, model
 L'architettura non entra nei dettagli di ogni singolo metodo, ma definisce il contenitore in cui questi dettagli andranno a collocarsi. Una buona architettura aiuta chiunque, anche non autore del codice, a farsi un'idea del sistema “a colpo d'occhio”.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260325133013.png" width="200">
+  <img src="Pasted image 20260325133013.png" width="300">
 </div>
 
 Possiamo considerare l'architettura software a due livelli: 
@@ -1508,7 +1508,7 @@ Buona pratica operativa:
 Questi principi non sono legati a un linguaggio specifico, e valgono anche oltre l'OS, come criterio generale di organizzazione. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260325150441.png" width="200">
+  <img src="Pasted image 20260325150441.png" width="300">
 </div>
 
 **Vocabolario operativo: CLI/UI, Service, Domain, Repository:** Fissiamo i quattro concetti che useremo nel resto del corso: 
@@ -1522,7 +1522,7 @@ Regola guida:
 - CLI/UI e Repository sono livelli di interazione, non sede della logica di dominio. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260325150627.png" width="200">
+  <img src="Pasted image 20260325150627.png" width="300">
 </div>
 
 > [!example] Esempio di una decisione in UniManager 
@@ -1543,7 +1543,7 @@ Regola guida:
 - sono ragionabili e testabili quasi indipendentemente. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260325150733.png" width="200">
+  <img src="Pasted image 20260325150733.png" width="300">
 </div>
 
 **Perché la modularità è essenziale?** La modularità riduce la porzione di sistema da analizzare per prendere una decisione progettuale: 
@@ -1555,14 +1555,14 @@ Un sistema modulare:
 - facilita il riuso (un modulo può essere sfruttato in altri contesti), 
 - rende più prevedibili gli impatti di ogni modifica. 
 
-> [!example] ![[Pasted image 20260325150841.png|200]]
+> [!example] ![[Pasted image 20260325150841.png|300]]
 
 **Segnali di buona e cattiva modularità:** 
 - *Buona modularità:* nomi dei moduli intuitivi e stabili nel tempo, interfacce semplici (pochi metodi, significativi), dipendenze chiare, idealmente in una sola direzione. 
 - *Scarsa modularità:* moduli che cambiano continuamente scopo, componenti che conoscono dettagli interni l'uno dell'altro, dipendenze incrociate difficili da districare. 
 
 > [!example] 
-> ![[Pasted image 20260325151046.png|200]] 
+> ![[Pasted image 20260325151046.png|300]] 
 
 **Modularità funzionale in UniManager:** Guardando ai requisiti di UniManager, emergono in modo naturale alcune aree funzionali: 
 - gestione degli Studenti, 
@@ -1572,7 +1572,7 @@ Un sistema modulare:
 
 Possiamo quindi immaginare di avere, almeno concettualmente, un modulo per ciascuna di queste aree, che si occupa di quella parte del dominio. Questa è una prima forma di modularità, che poi andremo a raffinare con il principio della separazione delle responsabilità.
 
-> [!example] ![[Pasted image 20260325151146.png|200]]
+> [!example] ![[Pasted image 20260325151146.png|300]]
 
 **Secondo principio- separazione delle responsabilità:** La separazione delle responsabilità invita a evitare componenti che fanno “un po' di tutto”. Ogni parte del sistema dovrebbe avere una responsabilità principale ben riconoscibile: 
 - rappresentare dati del dominio, 
@@ -1582,7 +1582,7 @@ Possiamo quindi immaginare di avere, almeno concettualmente, un modulo per ciasc
 
 Quando questi ruoli si mescolano, il codice diventa più difficile da capire, da testare e da modificare. 
 
-> [!example] ![[Pasted image 20260325151234.png|200]] 
+> [!example] ![[Pasted image 20260325151234.png|300]] 
 
 **Perché separare le responsabilità:** Una separazione chiara delle responsabilità offre diversi vantaggi: 
 - rende più semplice capire “a chi compete” un certo cambiamento, 
@@ -1609,7 +1609,7 @@ In UniManager possiamo individuare almeno quattro tipi di responsabilità:
 
 Separare queste responsabilità ci aiuta a progettare componenti più puliti e facili da testare. 
 
-> [!example] ![[Pasted image 20260325151358.png|200]]
+> [!example] ![[Pasted image 20260325151358.png|300]]
 
 **Separazione in pratica- entità, servizi, repository, CLI:** Possiamo tradurre queste responsabilità in quattro famiglie di componenti: 
 - *entità del dominio* (es. Studente, Corso, Appello), che contengono dati e regole del dominio; 
@@ -1626,7 +1626,7 @@ In questo modo, ogni famiglia ha una responsabilità precisa e riconoscibile.
 
 Ogni livello offre servizi al livello superiore e sfrutta i servizi del livello inferiore, secondo regole di dipendenza ben precise. 
 
-> [!example] ![[Pasted image 20260325151530.png|200]]
+> [!example] ![[Pasted image 20260325151530.png|300]]
 
 **Perché usare i layer:** I layer servono a tenere sotto controllo le dipendenze: 
 - il codice dell'interfaccia utente non dovrebbe conoscere i dettagli del database, 
@@ -1637,7 +1637,7 @@ I benefici principali sono:
 - confini più netti per i test, 
 - facilità nel sostituire un livello (es. cambiare DB) mantenendo stabili gli altri.
 
-> [!example] ![[Pasted image 20260325151648.png|200]]
+> [!example] ![[Pasted image 20260325151648.png|300]]
  
 **Un layering semplice per UniManager:** Per UniManager possiamo immaginare quattro livelli principali:
 - *CLI/UI:* comandi testuali o schermate che l'utente utilizza; 
@@ -1648,7 +1648,7 @@ I benefici principali sono:
 Questi livelli formano una “pila” dove ciascuno ha un ruolo distinto. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260325151828.png" width="200">
+  <img src="Pasted image 20260325151828.png" width="300">
 </div>
 
 **Regole di comunicazione tra i layer:** Per mantenere l'architettura pulita, è utile stabilire alcune regole: 
@@ -1660,7 +1660,7 @@ Questi livelli formano una “pila” dove ciascuno ha un ruolo distinto.
 In questo modo, le dipendenze hanno una direzione chiara e il dominio rimane al centro dell'architettura. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260325151933.png" width="200">
+  <img src="Pasted image 20260325151933.png" width="300">
 </div>
 
 **Checklist rapida di qualità architetturale:** Domande operative da porre al modello architetturale: 
@@ -1683,7 +1683,7 @@ Questa suddivisione ha il vantaggio di:
 - dare una mappa chiara del sistema fin dai primi commit. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260325152042.png" width="200">
+  <img src="Pasted image 20260325152042.png" width="300">
 </div>
 
 > [!example]  Iscrizione a un appello attraverso i layer. Immaginiamo l'operazione “Studente si iscrive a un appello”:
@@ -1693,7 +1693,7 @@ Questa suddivisione ha il vantaggio di:
 > - il risultato torna verso la CLI, che mostra all'utente conferma o eventuali errori. 
 >
 >La responsabilità di ciascun passo è chiara e localizzata nel layer corretto. 
-> ![[Pasted image 20260325152144.png|200]]
+> ![[Pasted image 20260325152144.png|300]]
 ###### Stili architetturali
 Nella lezione precedente abbiamo visto: 
 - che cos'è l'architettura software, 
@@ -1711,7 +1711,7 @@ Oggi facciamo un passo avanti: vediamo come questi principi possono essere combi
 Non è una tecnologia o un framework, è un modello concettuale che può essere implementato in molti modi diversi. Serve per ragionare in termini di forme globali del sistema, non di singole classi. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260326150435.png" width="200">
+  <img src="Pasted image 20260326150435.png" width="300">
 </div>
 
 **Perché esistono più stili?** I sistemi software devono soddisfare esigenze molto diverse: interattività, prestazioni, scalabilità, affidabilità, integrazione con altri sistemi, ... Ogni stile è nato per rispondere meglio a alcuni di questi bisogni. Non esiste uno stile “migliore in assoluto”: ogni scelta comporta vantaggi e svantaggi, capire questi compromessi è parte del mestiere dell'ingegnere del software.  
@@ -1734,7 +1734,7 @@ Tipicamente si distinguono livelli come:
 L'idea chiave è tenere separati i diversi tipi di responsabilità e controllare le dipendenze tra le parti del sistema. In pratica, layered risponde bene alla domanda: dove deve vivere una certa logica, per evitare che UI, regole di business e persistenza si mescolino. Non impone una tecnologia specifica: è uno schema organizzativo che può essere applicato in modo simile in stack diversi. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260326150612.png" width="200">
+  <img src="Pasted image 20260326150612.png" width="300">
 </div>
 
 Ogni layer offre servizi a quello sopra e usa i servizi di quello sotto. Le dipendenze seguono una direzione prevalente: dall'alto verso il basso. 
@@ -1771,7 +1771,7 @@ Ogni layer offre servizi a quello sopra e usa i servizi di quello sotto. Le dipe
 > - Domain: entità e regole del dominio universitario. 
 > - Repository: accesso ai dati su file o database.
 > 
-> ![[Pasted image 20260326150653.png|200]]
+> ![[Pasted image 20260326150653.png|300]]
 
 > [!example] Iscrizione a un appello nei layer 
 > - Scenario «Studente si iscrive a un appello»: 
@@ -1780,7 +1780,7 @@ Ogni layer offre servizi a quello sopra e usa i servizi di quello sotto. Le dipe
 > 	3. Service chiede al Repository di aggiornare la persistenza. 
 > 	4. CLI/UI mostra il risultato (successo o errore). 
 > - Il flusso attraversa i layer in modo ordinato, con responsabilità chiare
-> ![[Pasted image 20260326150719.png|200]]
+> ![[Pasted image 20260326150719.png|300]]
 
 **Architettura client–server:** Lo stile client–server separa: 
 - il client, che richiede servizi, 
@@ -1836,7 +1836,7 @@ Al momento, UniManager è pensato come applicazione locale (es. CLI). Potremmo p
 In questo scenario, lo stile client–server diventa il modello concettuale di riferimento.  
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260326151002.png" width="200">
+  <img src="Pasted image 20260326151002.png" width="300">
 </div>
 
 **Architettura repository:** Nello stile repository, più componenti condividono un'unica base dati comune. Il repository è il “cuore” dove risiedono le informazioni condivise. Intorno ad esso ci sono componenti che: 
@@ -1849,7 +1849,7 @@ In questo scenario, lo stile client–server diventa il modello concettuale di r
 **Repository:** Nello stile repository, tutti i componenti ruotano attorno a un'unica base dati condivisa. Ogni componente legge e aggiorna il repository, ma rimane indipendente dagli altri. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260326151052.png" width="200">
+  <img src="Pasted image 20260326151052.png" width="300">
 </div>
 
 **Repository- vantaggi:** 
@@ -1879,7 +1879,7 @@ In questo scenario, lo stile client–server diventa il modello concettuale di r
 In UniManager abbiamo concettualmente una base dati universitaria: studenti, corsi, appelli, iscrizioni, voti, ... Per ora la implementiamo in modo semplice (file / strutture in memoria), ma concettualmente è un repository informativo condiviso. In una versione più evoluta: servizi diversi (es. gestione esami, reportistica, analisi statistiche) potrebbero accedere allo stesso repository.  
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260326151202.png" width="200">
+  <img src="Pasted image 20260326151202.png" width="300">
 </div>
 
 **Architettura service-based:** Nello stile service-based, il sistema è costituito da servizi: 
@@ -2098,7 +2098,7 @@ Perché questa versione viola OCP? Ogni nuovo criterio di ordinamento richiede:
 Criterio diagnostico: se una nuova variante obbliga a riaprire sempre lo stesso metodo, il design non è OCP. Il metodo cresce continuamente: code smell di variabilità concentrata. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260401163939.png" width="200">
+  <img src="Pasted image 20260401163939.png" width="300">
 </div>
 
 Separiamo il criterio di ordinamento dal servizio. OrdinatoreAppelli descrive l'operazione in astratto. Ogni criterio (per data, per corso, per iscritti, . . . ) diventa: 
@@ -2414,7 +2414,7 @@ Effetto:
 > - per corso; 
 > - per numero di iscritti. 
 > 
-> ![[Pasted image 20260413182522.png|200]]
+> ![[Pasted image 20260413182522.png|300]]
 > 
 >Problemi: ogni volta che vogliamo aggiungere un nuovo criterio dobbiamo modificare il metodo: il codice non è pensato per essere esteso facilmente. Il metodo, inoltre, cresce sempre di più ed è difficile da mantenere e testare.  
 >
@@ -2423,17 +2423,17 @@ Effetto:
 > - avere implementazioni diverse per ogni criterio; 
 > - lasciare che un ExamSessionService usi sempre una SortStrategy.
 > 
-> ![[Pasted image 20260413182647.png|200]]
+> ![[Pasted image 20260413182647.png|300]]
 > 
-> ![[Pasted image 20260413182709.png|200]]
+> ![[Pasted image 20260413182709.png|300]]
 > 
-> ![[Pasted image 20260413182751.png|200]]
+> ![[Pasted image 20260413182751.png|300]]
 > 
 > Il contesto non conosce le implementazioni concrete, usa sempre e solo l'interfaccia SortStrategy.
 > 
 > Strategie intercambiabili a runtime:
 > 
-> ![[Pasted image 20260413182906.png|200]]
+> ![[Pasted image 20260413182906.png|300]]
 > 
 > Il codice che usa ExamSessionService può: 
 > - cambiare la strategia in base a una scelta dell'utente; 
@@ -2442,14 +2442,14 @@ Effetto:
 > 
 > Secondo esempio Strategy: politiche di ammissione:
 > 
-> ![[Pasted image 20260413183043.png|200]]
+> ![[Pasted image 20260413183043.png|300]]
 > 
 > - Il contesto cambia politica senza modificare il servizio. 
 > - Nuova regola: nuova classe, non nuovo `if/else`.
 > 
 > Terzo esempio Strategy: costo spedizione (e-commerce):
 > 
-> ![[Pasted image 20260413183137.png|200]]
+> ![[Pasted image 20260413183137.png|300]]
 > 
 > - Cambia la politica di spedizione, non il CheckoutService. 
 > - Stessa struttura del pattern, dominio completamente diverso.
@@ -2517,11 +2517,11 @@ Effetto:
 > - concentriamo la creazione in un creator (o pochi creator); 
 > - il resto del sistema dipende solo da ExamSession.  
 > 
-> ![[Pasted image 20260413183852.png|200]]
+> ![[Pasted image 20260413183852.png|300]]
 > 
 > Factory Method in Java: prodotto astratto:
 > 
-> ![[Pasted image 20260413183915.png|200]]
+> ![[Pasted image 20260413183915.png|300]]
 > 
 > - ExamSession è il tipo astratto comune usato dal client. 
 > - WrittenSession/OralSession cambiano il dettaglio concreto ma rispettano lo stesso contratto. 
@@ -2529,7 +2529,7 @@ Effetto:
 > 
 > Factory Method in Java: Creator e ConcreteCreator
 > 
-> ![[Pasted image 20260413184114.png|200]]
+> ![[Pasted image 20260413184114.png|300]]
 > 
 > - ExamSessionCreator definisce il flusso comune e delega il punto variabile a createSession(). 
 > - I concrete creator (WrittenSessionCreator, OralSessionCreator) decidono quale prodotto concreto istanziare. 
@@ -2537,18 +2537,18 @@ Effetto:
 > 
 > Uso del Factory method
 > 
-> ![[Pasted image 20260413184201.png|200]]
+> ![[Pasted image 20260413184201.png|300]]
 > 
 > - Per cambiare il tipo di sessione basta fornire un ExamSessionCreator diverso. 
 > - Nessuna modifica al codice di ExamManagementService.  
 > 
 > Secondo esempio Factory Method: nuova tipologia di appello
 >  
-> ![[Pasted image 20260413184445.png|200]]  
+> ![[Pasted image 20260413184445.png|300]]  
 > 
 > Terzo esempio Factory Method: parser documenti 
 > 
-> ![[Pasted image 20260413184506.png|200]]
+> ![[Pasted image 20260413184506.png|300]]
 > 
 > - Prodotto: Documento; concreti: DocumentoCsv/DocumentoJson. 
 > - Flusso comune in parse(), varia solo la creazione del prodotto concreto. 
@@ -2650,27 +2650,27 @@ In UniManager il dominio vede sempre e solo:
 Integrazioni diverse (CSV, JSON, API) sono intercambiabili. Possiamo aggiungere nuovi formati senza toccare il dominio. Tutta la logica di mapping e parsing resta confinata negli Adapter.  
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260414094231.png" width="200">
+  <img src="Pasted image 20260414094231.png" width="300">
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260414094437.png" width="200">
+  <img src="Pasted image 20260414094437.png" width="300">
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260414094507.png" width="200">
+  <img src="Pasted image 20260414094507.png" width="300">
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260414094537.png" width="200">
+  <img src="Pasted image 20260414094537.png" width="300">
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260414094622.png" width="200">
+  <img src="Pasted image 20260414094622.png" width="300">
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260414094654.png" width="200">
+  <img src="Pasted image 20260414094654.png" width="300">
 </div>
 
 *Vantaggi:*
@@ -2725,19 +2725,19 @@ Effetto:
 > - EmailNotifier, UiRefresher, LoggingObserver sono Observer che reagiscono indipendentemente.  
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-04-14 09-53-59.png" width="200">
+  <img src="Screenshot From 2026-04-14 09-53-59.png" width="300">
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260414095536.png" width="200">
+  <img src="Pasted image 20260414095536.png" width="300">
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260414095611.png" width="200">
+  <img src="Pasted image 20260414095611.png" width="300">
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260414095640.png" width="200">
+  <img src="Pasted image 20260414095640.png" width="300">
 </div>
 
 *Vantaggi:* 
@@ -2813,7 +2813,7 @@ Effetto tipico nei progetti reali: oggi funziona → domani costa troppo cambiar
 - strumenti concettuali per riconoscerli e intervenire in anticipo.  
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260415160609.png" width="200">
+  <img src="Pasted image 20260415160609.png" width="300">
 </div>
 
 **Come leggere il design:** 
@@ -2823,7 +2823,7 @@ Effetto tipico nei progetti reali: oggi funziona → domani costa troppo cambiar
 Regola pratica: alta coesione + basso accoppiamento.  
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260415160835.png" width="200">
+  <img src="Pasted image 20260415160835.png" width="300">
 </div>
 
 **Coesione:** misura la “compattezza” delle responsabilità assegnate a un modulo o a una classe. Un modulo realmente coeso: 
@@ -2857,7 +2857,7 @@ Una regola pratica utile per diagnosticare la situazione è la seguente:
 L'obiettivo del buon design è mantenere questi due aspetti in equilibrio, così che ogni modulo possa evolvere in modo il più possibile indipendente.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260415161143.png" width="200">
+  <img src="Pasted image 20260415161143.png" width="300">
 </div>
 
 Spesso il problema non è che il codice sia “sbagliato” o non funzionante, ma che risulti scomodo da leggere, capire e modificare. Situazioni tipiche in cui emerge questa sensazione: 
@@ -2885,7 +2885,7 @@ L'idea chiave è che gli smells non dicono “cambia qui” in modo automatico, 
 - si applicano refactoring mirati, piccoli e controllati.  
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260415172553.png" width="200">
+  <img src="Pasted image 20260415172553.png" width="300">
 </div>
 
 Gli smell che vedremo sono:
@@ -2909,11 +2909,11 @@ Questo smell si accompagna spesso a:
 - una crescita “per accumulo” di metodi, senza una struttura progettuale chiara. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260415172849.png" width="200">
+  <img src="Pasted image 20260415172849.png" width="300">
 </div>
 
 > [!example]
-> ![[Pasted image 20260415173015.png|200]] 
+> ![[Pasted image 20260415173015.png|300]] 
 > 
 > - Una sola classe copre dominio, persistenza e presentazione.
 > - Ogni nuova richiesta tende a finire nello stesso punto.
@@ -2943,11 +2943,11 @@ Effetti tipici di questo smell:
 Refactoring tipico e consigliato: **Extract Method**.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260415173426.png" width="200">
+  <img src="Pasted image 20260415173426.png" width="300">
 </div>
 
 > [!example]
-> ![[Pasted image 20260415173549.png|200]]
+> ![[Pasted image 20260415173549.png|300]]
 >- Validazione, regole, persistenza, audit e output nello stesso metodo.
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
@@ -2973,11 +2973,11 @@ Sintomi comuni di questo smell:
 Refactoring tipici: **Move Method** oppure **Extract Class**. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260415174018.png" width="200">
+  <img src="Pasted image 20260415174018.png" width="300">
 </div>
 
 > [!example]
-> ![[Pasted image 20260415174120.png|200]]
+> ![[Pasted image 20260415174120.png|300]]
 > - Il metodo usa quasi solo dati interni di ExamSession, Course, Room, Teacher. 
 > - La responsabilità di formattazione è nel posto sbagliato.  
 
@@ -2999,11 +2999,11 @@ Refactoring tipici: **Move Method** oppure **Extract Class**.
 Questo smell spesso indica che nel modello manca un concetto: un'entità o, più spesso, un Value Object che rappresenti quel gruppo in modo esplicito. Il refactoring tipico è quello di introdurre un **Value Object** (es. StudentId, ExamInfo, ExamDescriptor,…). 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260415174407.png" width="200">
+  <img src="Pasted image 20260415174407.png" width="300">
 </div>
 
 > [!example]
-> ![[Pasted image 20260415174452.png|200]]
+> ![[Pasted image 20260415174452.png|300]]
 > - Lo stesso blocco di parametri si ripete in più metodi. 
 > - Manca un concetto esplicito nel modello.  
 
@@ -3032,11 +3032,11 @@ Tipicamente produce effetti molto negativi:
 È spesso la forma estrema di Large Class + responsabilità non distribuite (tutto viene “assorbito” in un punto). 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260415174855.png" width="200">
+  <img src="Pasted image 20260415174855.png" width="300">
 </div> 
 
 > [!example]
-> ![[Pasted image 20260415174953.png|200]]
+> ![[Pasted image 20260415174953.png|300]]
 > - Una sola classe concentra dominio, I/O, reportistica e presentazione. 
 > - Ogni modulo finisce per dipendere da questo punto centrale.  
 
@@ -3058,7 +3058,7 @@ Tipicamente produce effetti molto negativi:
 Indizio operativo: “copia e incolla” usato per introdurre varianti minime. Refactoring tipici: **Extract Method, Extract Class, Template Method**.  
 
 > [!example]
-> ![[Pasted image 20260415175258.png|200]]
+> ![[Pasted image 20260415175258.png|300]]
 > - Le prime tre regole sono duplicate. 
 > - La variante reale è solo l'ultima condizione.  
 
@@ -3081,7 +3081,7 @@ Indizio operativo: “copia e incolla” usato per introdurre varianti minime. R
 Refactoring tipici: **Replace Data Value with Object, Introduce Value Object**.  
 
 > [!example]
-> ![[Pasted image 20260415175614.png|200]]
+> ![[Pasted image 20260415175614.png|300]]
 > - I parametri sono primitivi, ma rappresentano concetti di dominio. 
 > - Le regole di validazione non sono incapsulate.  
 
@@ -3099,7 +3099,7 @@ Refactoring tipici: **Replace Data Value with Object, Introduce Value Object**.
 **Divergent Change:** Divergent Change si ha quando una singola classe viene modificata per motivi diversi e non correlati. Il segnale tipico è che ogni nuova richiesta (report, validazione, persistenza, UI) tocca sempre la stessa classe. L'effetto è quello di forte instabilità locale e regressioni frequenti. Il refactoring tipico: separare responsabilità per asse di cambiamento.  
 
 > [!example]
-> ![[Pasted image 20260415175911.png|200]]
+> ![[Pasted image 20260415175911.png|300]]
 > - Quattro motivi di cambiamento nella stessa classe
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
@@ -3123,7 +3123,7 @@ Refactoring tipico: accorpare comportamento correlato e chiarire i confini.
 >  - Nuova regola: “uno studente non può iscriversi a due appelli nello stesso slot orario”. 
 >  - Implementazione dispersa:
 >  
-> ![[Pasted image 20260415180214.png|200]]
+> ![[Pasted image 20260415180214.png|300]]
 > - Una sola regola di dominio impatta troppi punti diversi.
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
@@ -3153,7 +3153,7 @@ La documentazione viene talvolta trattata come attività accessoria. In realtà 
 Obiettivo pratico: meno attrito tra persone e codice ⇒ più qualità e meno errori. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260416171322.png" width="200">
+  <img src="Pasted image 20260416171322.png" width="300">
 </div>
 
 **A chi serve davvero la documentazione?** 
@@ -3201,7 +3201,7 @@ Quando il codice cambia, la documentazione “si vede” che va aggiornata (stes
 	- riduce errori dovuti a stili incoerenti o test mancanti. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260416173728.png" width="200">
+  <img src="Pasted image 20260416173728.png" width="300">
 </div>
 
 **Struttura consigliata (template mentale):** 
@@ -3244,7 +3244,7 @@ Enfasi testuale:
 Regola pratica: se una sezione è lunga più di una schermata, probabilmente va spezzata con un titolo `##.`  
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260416174312.png" width="200">
+  <img src="Pasted image 20260416174312.png" width="300">
 </div>
 
 **Regola pratica per il README:** Se una persona che entra nel progetto non riesce a: 
@@ -3276,7 +3276,7 @@ Esempi tipici di decisioni da documentare:
 - *Contesto e obiettivi:* descrivono il problema da risolvere e i risultati che il progetto intende ottenere. 
 - *Non-obiettivi:* chiariscono esplicitamente cosa il design document non intende affrontare o risolvere. 
 - *Proposta:* presenta la soluzione architetturale adottata, idealmente supportata da una singola figura riassuntiva. 
-- *Alternative considerate:* elencano le opzioni valutate e i motivi per cui non sono state scelte. •
+- *Alternative considerate:* elencano le opzioni valutate e i motivi per cui non sono state scelte. 
 - *Conseguenze:* analizzano vantaggi, svantaggi e rischi introdotti dalla soluzione proposta. 
 - *Piano di adozione:* descrive come e quando la soluzione viene introdotta, se è prevista una migrazione o un'evoluzione graduale.  
 
@@ -3295,7 +3295,7 @@ Esempi tipici di decisioni da documentare:
 >    - **Infrastructure/Interfaces:** repository concreti, CLI/UI.
 >    
 > Principio: dipendenze verso l'interno (dominio stabile).    
-> ![[Pasted image 20260416175022.png|200]]
+> ![[Pasted image 20260416175022.png|300]]
  
 **UML minimale:** Un diagramma UML inserito in un design document deve essere: 
 - minimale, con un numero limitato di elementi (circa 6–10); 
@@ -3311,7 +3311,7 @@ Non è necessario rappresentare:
 > - boundary tra Domain, Application e Interfaces/Infrastructure; 
 > - dipendenze consentite (verso l'interno). 
 > 
-> ![[Pasted image 20260416181229.png|200]]
+> ![[Pasted image 20260416181229.png|300]]
 
 **Decision log:** Il codice descrive che cosa è stato realizzato e come il sistema funziona oggi. Spesso però non esplicita perché sono state prese certe decisioni: 
 - quali alternative erano disponibili al momento della scelta? 
@@ -3333,7 +3333,7 @@ Un buon ADR dovrebbe essere:
 - semplice da **aggiornare** se la decisione evolve.  
 
 > [!example] Esempio ADR:
-> ![[Screenshot From 2026-04-16 18-15-00.png|200]]
+> ![[Screenshot From 2026-04-16 18-15-00.png|300]]
 
 **Regola pratica:** mettere l'informazione dove serve a chi la userà. Per questo è bene usare una gerarchia (dal più “vicino al codice” al più “panoramico”): 
 - **Javadoc** accanto a classi e metodi: descrive contratti e comportamento osservabile delle API. 
@@ -3365,7 +3365,7 @@ L'obiettivo pratico è quello di comprendere il comportamento dell'API senza dov
 - Javadoc eccessivamente lunga o verbosa. Se entra nei dettagli interni del codice, smette di descrivere un contratto.  
 
 > [!example] Javadoc su ExamService (mirata all'uso) 
-> ![[Pasted image 20260416182151.png|200]] 
+> ![[Pasted image 20260416182151.png|300]] 
 
 La documentazione dell'API deve rendere esplicito che il servizio: 
 - ritorna un esito (valore o risultato strutturato), 
@@ -3446,7 +3446,7 @@ Non sono due mondi separati: molto spesso un test nato per validare un requisito
 - test con input anomali o ai limiti, che esplorano condizioni rare, errori e vincoli. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260420095903.png" width="200">
+  <img src="Pasted image 20260430095903.png" width="300">
 </div>
 
 **Perché oggi le regressioni sono inevitabili?** Un sistema software reale non è statico: cambia continuamente nel tempo, per motivi diversi: 
@@ -3485,7 +3485,7 @@ L'idea non è “fare tanti test a caso”, ma ottenere:
 - fiducia sul comportamento complessivo. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260420101003.png" width="200">
+  <img src="Pasted image 20260420101003.png" width="300">
 </div>
 
 **Unit test:** Gli unit test verificano una singola unità di comportamento del sistema, considerata in modo isolato rispetto al resto dell'applicazione. Tipicamente si concentrano su: 
@@ -3551,7 +3551,7 @@ Per questi motivi gli acceptance test sono collocati in cima alla piramide: sono
 Questa forma viene spesso chiamata “ice-cream cone”.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260420102054.png" width="200">
+  <img src="Pasted image 20260420102054.png" width="300">
 </div>
 
 **Criteri pratici per una suite sana:** Una suite di test “sana” tende a mostrare alcune proprietà ricorrenti: 
@@ -3570,7 +3570,7 @@ Non esiste una percentuale magica o una ricetta universale: l'obiettivo pratico 
 La testabilità è quindi un indicatore importante della qualità del design: spesso coincide con alta coesione, basso accoppiamento e con una struttura che favorisce l'evoluzione del software. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260420103011.png" width="200">
+  <img src="Pasted image 20260420103011.png" width="300">
 </div>
 
 **Segnali di bassa testability:** Alcune caratteristiche del codice rendono la scrittura dei test più difficile del necessario e sono spesso segnali di problemi di design. Tra i segnali più comuni rientrano: 
@@ -3665,7 +3665,7 @@ Il valore principale non è semplicemente “scrivere il test prima del codice�
 Obiettivo operativo: tanti unit test per feedback veloce, integration test mirati sui punti critici, pochi acceptance sui flussi principali. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260420104926.png" width="200">
+  <img src="Pasted image 20260420104926.png" width="300">
 </div>
 
 > [!info] Riepilogo:
@@ -3692,7 +3692,7 @@ Questo è sufficiente per scrivere test di unità chiari, efficaci e coerenti co
 **Struttura di base di un test JUnit:** Un test JUnit è organizzato in una **classe di test**, separata dal codice di produzione. Ogni **metodo di test** rappresenta un singolo caso o una singola regola da verificare. Le annotazioni definiscono ruolo e momento di esecuzione dei metodi (*@Test, @BeforeEach, @AfterEach*). La struttura favorisce test piccoli, leggibili e indipendenti, con risultati facilmente interpretabili. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423145146.png" width="200">
+  <img src="Pasted image 20260423145146.png" width="300">
 </div>
 
 **La classe di test:** Una classe di test è una normale classe Java, collocata nel codice di test e dedicata esclusivamente alla verifica del comportamento. Per convenzione, il nome della classe di test riflette quello della classe sotto test, rendendo immediato il collegamento tra codice di produzione e verifica: 
@@ -3709,7 +3709,7 @@ Ogni classe di test si concentra su una singola classe reale del sistema, evitan
 fail: test rosso → correggere il codice 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423145408.png" width="200">
+  <img src="Pasted image 20260423145408.png" width="300">
 </div>
 
 **Fixture:** Una fixture rappresenta lo stato iniziale in cui un test viene eseguito, costruito in modo controllato e intenzionale. Il suo scopo principale è garantire che ogni test parta da condizioni note e ben definite. L'uso di fixture permette di ottenere test che risultano: 
@@ -3722,7 +3722,7 @@ In assenza di una fixture esplicita, i test tendono a dipendere implicitamente d
 **@BeforeEach:** @BeforeEach identifica un metodo eseguito automaticamente prima di ogni metodo di test. Il suo ruolo è costruire la fixture, inizializzando lo stato necessario all'esecuzione dei test. In questo modo ogni test parte da condizioni identiche, senza dipendere dall'ordine di esecuzione o da altri test. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423145555.png" width="200">
+  <img src="Pasted image 20260423145555.png" width="300">
 </div>
 
 **@AfterEach:** @AfterEach identifica un metodo eseguito automaticamente dopo ogni metodo di test. Serve soprattutto a ripristinare lo stato esterno modificato dal test, quando questo è necessario. Esempi tipici sono: 
@@ -3733,13 +3733,13 @@ In assenza di una fixture esplicita, i test tendono a dipendere implicitamente d
 Nei test di unità semplici, il suo utilizzo è spesso limitato, perché la fixture viene ricostruita da zero per ogni test.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423145707.png" width="200">
+  <img src="Pasted image 20260423145707.png" width="300">
 </div>
 
 **Perché i test devono essere indipendenti?** L'ordine di esecuzione dei test non è garantito e non deve influenzarne il risultato. Ogni test dovrebbe costruire e usare il proprio stato, senza dipendere da effetti prodotti da altri test. Un test ben progettato fallisce solo quando il comportamento che verifica è effettivamente errato. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423145803.png" width="200">
+  <img src="Pasted image 20260423145803.png" width="300">
 </div>
 
 **Assert:** Un **assert** esprime in forma eseguibile una proprietà che deve risultare vera al termine dell'azione verificata dal test. La sua funzione non è “controllare un valore a caso”, ma rendere esplicito il comportamento atteso del sistema in una certa condizione. Un test è quindi, in larga parte, una sequenza di scelte che portano a un punto in cui l'assert stabilisce cosa costituisce correttezza e cosa costituisce errore. Quando un test fallisce, la qualità dell'assert determina la qualità del feedback: un buon assert rende il fallimento comprensibile e direttamente collegabile alla causa.  
@@ -3747,37 +3747,37 @@ Nei test di unità semplici, il suo utilizzo è spesso limitato, perché la fixt
 JUnit mette a disposizione diverse famiglie di assert, ciascuna pensata per esprimere un tipo specifico di proprietà. La scelta dell'assert corretto contribuisce in modo diretto alla leggibilità del test e alla chiarezza del fallimento. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423145934.png" width="200">
+  <img src="Pasted image 20260423145934.png" width="300">
 </div> 
 
 **assertEquals:** assertEquals verifica che il valore prodotto dal sistema coincida con il valore atteso in una determinata condizione. Un assert di questo tipo va letto come una frase dichiarativa: “dato questo scenario, il risultato deve essere questo”. Quando è ben scelto, assertEquals rende il test immediatamente comprensibile e facilita l'interpretazione dei fallimenti. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423150051.png" width="200">
+  <img src="Pasted image 20260423150051.png" width="300">
 </div>
 
 **assertTrue:** assertTrue verifica che una condizione booleana sia vera. È utile quando si vuole controllare un vincolo espresso naturalmente come predicato (*isOpen(), isValid(), contains(...)*). 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423150204.png" width="200">
+  <img src="Pasted image 20260423150204.png" width="300">
 </div>
 
 **assertFalse:** assertFalse verifica che una condizione booleana sia falsa. È il complemento naturale di assertTrue per esprimere in modo esplicito ciò che il sistema non deve permettere. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423150254.png" width="200">
+  <img src="Pasted image 20260423150254.png" width="300">
 </div>
 
 **assertNotNull:** assertNotNull verifica che un oggetto sia stato creato o restituito correttamente. È utile per controllare precondizioni minime prima di assert più specifici. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423150341.png" width="200">
+  <img src="Pasted image 20260423150341.png" width="300">
 </div>
 
 **assertThrows:** Le eccezioni non rappresentano solo errori tecnici, ma spesso esprimono regole di business violate. Testare che un'eccezione venga sollevata significa verificare che il sistema impedisca comportamenti non consentiti. In questo senso, un test può specificare in modo esplicito anche ciò che il sistema non deve permettere. Nella chiamata a assertThrows, () -> ... è una **funzione lambda**: rappresenta il blocco di codice che ci aspettiamo lanci l'eccezione (una funzione anonima senza argomenti).
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-04-23 15-04-47.png" width="200">
+  <img src="Screenshot From 2026-04-23 15-04-47.png" width="300">
 </div>
 
 **Framework di testing in altri linguaggi:** JUnit 5 è il riferimento in Java, ma il concetto è trasversale: quasi ogni linguaggio ha framework analoghi per unit test, fixture e assert. Esempi comuni sono: 
@@ -3788,23 +3788,23 @@ JUnit mette a disposizione diverse famiglie di assert, ciascuna pensata per espr
 Cambia la sintassi, ma resta uguale l'obiettivo: verificare in modo automatico il comportamento atteso.  
 
 > [!example] Python: esempio con pytest:
-> ![[Pasted image 20260423150746.png|200]]
+> ![[Pasted image 20260423150746.png|300]]
 
 > [!example] C++: esempio con GoogleTest:
-> ![[Pasted image 20260423150849.png|200]]
+> ![[Pasted image 20260423150849.png|300]]
 
 **I test sono documentazione:** I test automatici vengono spesso letti più frequentemente del codice di produzione, soprattutto quando si deve capire come il sistema dovrebbe comportarsi. Un buon test non si limita a verificare un risultato, ma racconta una storia: descrive uno scenario, un'azione e un comportamento atteso. In questo contesto, il nome del test diventa parte integrante della documentazione del sistema, perché fornisce una descrizione sintetica e verificabile del comportamento.  
 
 **Naming sbagliato:** Alcuni nomi di test sono formalmente corretti, ma non comunicano quale comportamento venga verificato. Il risultato è che, quando un test fallisce, diventa necessario aprire e leggere il codice per capirne il senso. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423150953.png" width="200">
+  <img src="Pasted image 20260423150953.png" width="300">
 </div>
 
 **Naming corretto:** Un buon nome di test descrive in modo sintetico lo scenario e il comportamento atteso. Questo rende la suite più leggibile e riduce la necessità di aprire il codice per capire cosa viene verificato. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423151046.png" width="200">
+  <img src="Pasted image 20260423151046.png" width="300">
 </div>
 
 **Naming e responsabilità:** Ogni test dovrebbe essere responsabile della verifica di un singolo comportamento ben definito. Un nome vago è spesso il sintomo di un test che verifica troppe cose insieme o non ha uno scopo chiaro. Al contrario, un nome esplicito e anche relativamente lungo indica che il comportamento sotto test è stato chiarito prima ancora di guardare l'implementazione.  
@@ -3825,7 +3825,7 @@ Questa integrazione rende naturale l'uso frequente dei test, riducendo l'attrito
 **Interpretare i risultati:** L'esito di un test fornisce un feedback immediato sul rispetto o meno del comportamento specificato. Un fallimento indica una violazione della specifica, non un errore generico del programma. Lo stack trace è uno strumento per risalire al punto in cui il comportamento atteso non è stato rispettato.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423151344.png" width="200">
+  <img src="Pasted image 20260423151344.png" width="300">
 </div>
 
 **Debug guidato dai test:** Quando un test fallisce, il debug non parte “a caso”: parte da una specifica violata. Flusso pratico consigliato: 
@@ -3838,7 +3838,7 @@ Questa integrazione rende naturale l'uso frequente dei test, riducendo l'attrito
 Obiettivo: correggere la causa del fallimento, non solo il sintomo.  
 
 > [!example] Test rosso -> debug -> fix 
-> ![[Pasted image 20260423151542.png|200]]
+> ![[Pasted image 20260423151542.png|300]]
 > 
 > - Il test attende 2 iscritti, ma il servizio ne restituisce 1. 
 > - Si imposta un breakpoint nel metodo enroll(...) e si verifica: 
@@ -3855,7 +3855,7 @@ Obiettivo: correggere la causa del fallimento, non solo il sintomo.
 Ogni classe di test verifica regole di business precise, come vincoli di iscrizione o condizioni di validità dei dati. Questo consente di osservare come JUnit venga usato su codice che potrebbe realmente evolvere nel tempo.  
 
 > [!example] Test completo:
-> ![[Pasted image 20260423151753.png|200]]
+> ![[Pasted image 20260423151753.png|300]]
 
 **Come rendiamo i test semplici:** Per mantenere i test di unità rapidi e focalizzati, le dipendenze infrastrutturali vengono eliminate o sostituite. In particolare: 
 - i repository sono implementati in memoria; 
@@ -3924,7 +3924,7 @@ In pratica, tre categorie ricorrono continuamente:
 - **Mock:** oggetto controllato che non solo restituisce valori, ma permette di verificare le chiamate (chi ha chiamato cosa, con quali parametri). 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260427104403.png" width="200">
+  <img src="Pasted image 20260427104403.png" width="300">
 </div>
 
 **Stub: risposte predefinite:** Uno stub serve quando la classe sotto test: 
@@ -3942,7 +3942,7 @@ Lo stub non registra chiamate e non impone vincoli sulle interazioni: il suo uni
 > [!example] Esempio di stub Java manuale: 
 > Una classe minimale che fornisce risposte predefinite. L'obiettivo è quello di controllare in modo esplicito lo scenario del test attraverso i valori restituiti dal collaboratore. 
 > 
-> ![[Pasted image 20260427104722.png|200]]
+> ![[Pasted image 20260427104722.png|300]]
 
 **Fake: implementazione semplificata ma reale:** Un fake è un oggetto che funziona davvero, cioè esegue una logica coerente con quella reale, ma in una forma più leggera e più facile da controllare. A differenza di uno stub, un fake mantiene uno stato interno e può essere utilizzato per far “girare” un flusso completo. Tipici esempi industriali includono: 
 - database in memoria (basati su liste o mappe) al posto di un DB vero, 
@@ -3954,7 +3954,7 @@ Il fake è utile quando vogliamo un comportamento realistico e coerente con il s
 > [!example] Esempio Java:
 > Un fake non restituisce solo valori fissi: mantiene uno stato interno e si comporta in modo realistico. Qui il repository salva davvero le iscrizioni, ma in memoria. 
 > 
-> ![[Pasted image 20260427104917.png|200]]
+> ![[Pasted image 20260427104917.png|300]]
 
 **Mock: verificare le interazioni:** Un mock è pensato per testare comportamenti collaborativi, cioè situazioni in cui una classe non lavora da sola ma delega parte del lavoro: 
 - la classe sotto test deve chiamare un collaboratore, 
@@ -3966,7 +3966,7 @@ In questi casi l'output finale non è sempre sufficiente: anche se il metodo non
 
 > [!info] Riassunto: 
 > 
-> ![[Pasted image 20260427105253.png|200]]
+> ![[Pasted image 20260427105253.png|300]]
 > 
 > - Stub, fake e mock sono concetti di testing, non strumenti specifici. 
 > - Nella pratica, per creare e configurare mock in Java possiamo usare una libreria di supporto: qui entra in gioco **Mockito**.  
@@ -3987,7 +3987,7 @@ Per usare Mockito in modo ordinato, conviene ragionare con una struttura fissa:
 > [!example] Iscrizione a un appello:
 > Nel test vogliamo simulare uno scenario semplice: lo studente non è ancora iscritto e quindi il service può procedere. 
 > 
-> ![[Pasted image 20260427105618.png|200]]
+> ![[Pasted image 20260427105618.png|300]]
 > 
 > Il punto chiave è separare bene i tre momenti: 
 > - prima preparo il comportamento dei collaboratori; 
@@ -4010,7 +4010,7 @@ Per usare Mockito in modo ordinato, conviene ragionare con una struttura fissa:
 Questo è un esempio di applicazione pratica del Dependency Inversion Principle (DIP). 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260427110000.png" width="200">
+  <img src="Pasted image 20260427110000.png" width="300">
 </div>
 
 Schema mentale Mockito:
@@ -4023,7 +4023,7 @@ Schema mentale Mockito:
   <ol>
   <li> <b>Given:</b> si crea il mock e si definisce lo scenario (when); </li>
   <li> <b>When:</b> si invoca il metodo del service (azione sotto test); </li>
-  <li> <b>Then:</b> si verifica la collaborazione (verify). • Regola pratica: when prepara il comportamento atteso, verify controlla quello avvenuto.</li>
+  <li> <b>Then:</b> si verifica la collaborazione (verify).  Regola pratica: when prepara il comportamento atteso, verify controlla quello avvenuto.</li>
   </ol>
   </div>
 </div>
@@ -4031,7 +4031,7 @@ Schema mentale Mockito:
 **Come creare un mock:** A questo punto, nel test, vogliamo sostituire la dipendenza reale con un oggetto controllabile. Mockito fornisce il metodo `mock(...)` per creare un mock:
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260427110514.png" width="200">
+  <img src="Pasted image 20260427110514.png" width="300">
 </div>
 
 `mock(...)` non è una parola chiave di Java, ma è un metodo statico della libreria Mockito. Tipicamente importato con `import static org.mockito.Mockito.mock;` Questo oggetto: 
@@ -4042,7 +4042,7 @@ Schema mentale Mockito:
 **Mockito: definire comportamento (stub):** Un mock, appena creato, non fa nulla di utile: restituisce valori di default (null, false, 0). Per questo, nel test, dobbiamo dirgli come deve rispondere quando viene interrogato. Mockito usa il costrutto `when(...).thenReturn(...)`: 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260427110734.png" width="200">
+  <img src="Pasted image 20260427110734.png" width="300">
 </div>
 
 Questo codice non esegue il metodo: 
@@ -4056,7 +4056,7 @@ In questo modo controlliamo lo scenario del test:
 **Mockito: verify per controllare la collaborazione:** Dopo aver eseguito l'azione sotto test, vogliamo controllare come la classe ha collaborato con i suoi dipendenti. Mockito fornisce il metodo `verify(...)` per osservare le chiamate già avvenute:
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260427110939.png" width="200">
+  <img src="Pasted image 20260427110939.png" width="300">
 </div>
 
 Questo codice non esegue il metodo: 
@@ -4106,7 +4106,7 @@ Se quella chiamata non è avvenuta, il test fallisce. Questo test non dice “il
   <li> l'operazione deve essere rifiutata, </li>
   <li> il repository non deve essere invocato per il salvataggio. </li>
   </ul>
-  Flusso concreto del caso non valido: •
+  Flusso concreto del caso non valido: 
   <ul>
   <li> <b>Given:</b> isEnrolled(...) restituisce true (studente già iscritto); </li>
   <li> <b>When:</b> il service esegue enroll(student, exam)</li> 
@@ -4119,7 +4119,7 @@ Se quella chiamata non è avvenuta, il test fallisce. Questo test non dice “il
 **Varianti di verify: times / never:** Con `verify(...)` non si controlla solo che un metodo sia stato chiamato, ma anche quante volte è stato invocato. Mockito consente di esprimere vincoli quantitativi sulle interazioni: 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260427112138.png" width="200">
+  <img src="Pasted image 20260427112138.png" width="300">
 </div>
 
 Nota didattica: 
@@ -4190,19 +4190,20 @@ Git introduce una risposta strutturata:
 - la storia risulta tracciabile, consultabile e verificabile.  
 
 Git è un sistema di controllo di versione distribuito: 
-- ogni copia locale del repository contiene l’intera storia del progetto, 
+- ogni copia locale del repository contiene l'intera storia del progetto, 
 - il lavoro quotidiano non dipende dalla disponibilità continua di un server centrale. 
 
 Il concetto fondamentale è il commit: ogni commit rappresenta una fotografia coerente e consistente dello stato del progetto in un dato momento. 
 
 > [!info] Contesto storico e nome: 
-> - Git è stato creato da Linus Torvalds nel 2005; 
+> - Git è stato creato da Linus Torvalds nel 3005; 
 > - il nome è stato usato in modo ironico; compare anche il backronym "Global Information Tracker". 
 
 Il valore pratico di questo modello è operativo: 
 - è possibile sperimentare in modo controllato, 
 - correggere errori senza perdere informazioni, 
 - recuperare stati precedenti grazie alla storia registrata.  
+
 **Git non è GitHub:** 
 - Git: 
 	- strumento locale di controllo di versione, 
@@ -4213,8 +4214,8 @@ Il valore pratico di questo modello è operativo:
 	- consente la condivisione del codice tra più sviluppatori, 
 	- aggiunge funzionalità di collaborazione e automazione sopra Git.  
 
-**Setup minimo: init, clone, status:** L’inizializzazione di un progetto Git può avvenire in due modi principali: 
-- creare un nuovo repository all’interno di una cartella esistente tramite git init, 
+**Setup minimo: init, clone, status:** L'inizializzazione di un progetto Git può avvenire in due modi principali: 
+- creare un nuovo repository all'interno di una cartella esistente tramite git init, 
 - ottenere una copia locale di un repository già esistente tramite git clone. 
 
 In entrambi i casi, è fondamentale verificare lo stato del repository: 
@@ -4222,7 +4223,7 @@ In entrambi i casi, è fondamentale verificare lo stato del repository:
 - permette di capire quali file sono modificati, quali sono già tracciati e quali no. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430145853.png" width="200">
+  <img src="Pasted image 20260430145853.png" width="300">
 </div>
 
 **Lettura rapida di git status:** Il comando git status fornisce una sintesi immediata dello stato corrente del repository. In particolare, indica: 
@@ -4237,16 +4238,16 @@ Dal punto di vista operativo, git status è il comando di riferimento:
 Regola pratica: in caso di dubbio sullo stato del progetto, eseguire git status prima di qualsiasi altra operazione. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430150139.png" width="200">
+  <img src="Pasted image 20260430150139.png" width="300">
 </div>
 
-**Scegliere cosa entra nel commit:** Git non include automaticamente tutte le modifiche in un commit: la selezione è un’operazione esplicita e controllata. Il comando git add sposta una modifica dall’area di lavoro alla staging area. Questo passaggio permette di: 
+**Scegliere cosa entra nel commit:** Git non include automaticamente tutte le modifiche in un commit: la selezione è un'operazione esplicita e controllata. Il comando `git add` sposta una modifica dall'area di lavoro alla staging area. Questo passaggio permette di: 
 - rendere esplicito cosa si intende salvare nella storia, 
 - costruire commit coerenti anche in presenza di più modifiche, 
-- evitare l’inclusione involontaria di file o cambiamenti non rilevanti. 
+- evitare l'inclusione involontaria di file o cambiamenti non rilevanti. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430150248.png" width="200">
+  <img src="Pasted image 20260430150248.png" width="300">
 </div>
 
 **Diff:** Prima di creare un commit è importante comprendere quali modifiche verranno effettivamente salvate. Git mette a disposizione due comandi distinti per questo scopo: 
@@ -4259,13 +4260,13 @@ Questa distinzione consente di:
 - mantenere una storia del progetto più chiara e leggibile. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430150554.png" width="200">
+  <img src="Pasted image 20260430150554.png" width="300">
 </div>
 
-Regola operativa: prima di eseguire git commit, controllare sempre l’output di almeno uno dei due comandi.  
+Regola operativa: prima di eseguire git commit, controllare sempre l'output di almeno uno dei due comandi.  
 
 **Commit:** Un commit rappresenta una fotografia coerente dello stato del progetto in un preciso momento. Ogni commit include metadati essenziali: 
-- l’autore della modifica, 
+- l'autore della modifica, 
 - il timestamp, 
 - un messaggio descrittivo. 
 
@@ -4274,7 +4275,7 @@ Il messaggio di commit non è un dettaglio formale:
 - serve a spiegare cosa è cambiato e, soprattutto, perché. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430150743.png" width="200">
+  <img src="Pasted image 20260430150743.png" width="300">
 </div>
 
 **Messaggi di commit:** I messaggi di commit svolgono un ruolo centrale nella comprensione e nella manutenzione della storia del progetto. 
@@ -4292,17 +4293,17 @@ Il messaggio di commit non è un dettaglio formale:
 > - "changes" 
 > - "final version" 
 > 
-> ![[Pasted image 20260430151049.png|200]]
+> ![[Pasted image 20260430151049.png|300]]
 
 **Log:** Il comando `git log` consente di esplorare la storia delle modifiche registrate nel repository. In particolare, è utile per: 
-- comprendere l’evoluzione del codice nel tempo, 
+- comprendere l'evoluzione del codice nel tempo, 
 - individuare il commit che ha introdotto un errore o una regressione, 
 - ricostruire le motivazioni tecniche dietro determinate scelte progettuali. 
 
 Per una visualizzazione più compatta e leggibile, Git mette a disposizione alcune opzioni di formattazione: 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430151152.png" width="200">
+  <img src="Pasted image 20260430151152.png" width="300">
 </div>
 
 Questa vista aiuta a cogliere rapidamente: 
@@ -4317,7 +4318,7 @@ Questa vista aiuta a cogliere rapidamente:
 	- producono una storia del progetto più chiara e navigabile. 
 - Commit molto grandi (eterogenei): 
 	- nascondono cambiamenti non intenzionali o non correlati, 
-	- aumentano la probabilità di conflitti durante l’integrazione, 
+	- aumentano la probabilità di conflitti durante l'integrazione, 
 	- rendono più difficile isolare la causa di un problema e tornare indietro. 
 	
 Regola operativa: un commit dovrebbe rappresentare una singola idea o modifica logica.  
@@ -4325,7 +4326,7 @@ Regola operativa: un commit dovrebbe rappresentare una singola idea o modifica l
 **.gitignore:** In un progetto Git non tutti i file presenti nella cartella di lavoro devono essere tracciati e salvati nella storia. In particolare, è buona pratica escludere: 
 - file temporanei o generati automaticamente (ad esempio tmp, log), 
 - output del processo di build (come target/ o build/), 
-- file specifici dell’ambiente di sviluppo (configurazioni di IDE come `.idea/, *.iml`). 
+- file specifici dell'ambiente di sviluppo (configurazioni di IDE come `.idea/, *.iml`). 
 
 Il file .gitignore permette di dichiarare in modo esplicito quali file o directory Git deve ignorare: 
 - tali elementi restano locali, 
@@ -4333,15 +4334,15 @@ Il file .gitignore permette di dichiarare in modo esplicito quali file o directo
 - non “inquinano” la storia del progetto. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430152135.png" width="200">
+  <img src="Pasted image 20260430152135.png" width="300">
 </div>
 
 **Branch:** Un branch rappresenta una linea alternativa della storia, che nasce da un commit esistente. `main` è la linea principale, ma da un punto preciso la storia può biforcarsi. È sufficiente sapere che: 
 - le linee di sviluppo nascono da un commit comune, 
-- quando si ricongiungono è necessaria un’operazione di merge. 
+- quando si ricongiungono è necessaria un'operazione di merge. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430152312.png" width="200">
+  <img src="Pasted image 20260430152312.png" width="300">
 </div>
 
 **Locale vs remoto:** In un contesto di sviluppo, è comune distinguere tra: 
@@ -4353,7 +4354,7 @@ Il lavoro quotidiano avviene principalmente in locale, mentre la condivisione av
 - `git pull` scarica e integra i commit presenti sul remoto. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430152459.png" width="200">
+  <img src="Pasted image 20260430152459.png" width="300">
 </div>
 
 **Remote:** In un repository Git, il remoto principale è convenzionalmente chiamato `origin`. Il remoto rappresenta il punto di sincronizzazione tra il lavoro locale e la copia condivisa del progetto. Alcuni comandi di base permettono di gestire questa relazione: 
@@ -4361,10 +4362,10 @@ Il lavoro quotidiano avviene principalmente in locale, mentre la condivisione av
 - `git push`: invia i commit locali al repository remoto, rendendoli disponibili agli altri; 
 - `git pull`: recupera i commit dal remoto e li integra nel repository locale. 
 
- L’uso consapevole di questi comandi è essenziale per mantenere allineate le diverse copie del progetto.
+ L'uso consapevole di questi comandi è essenziale per mantenere allineate le diverse copie del progetto.
  
   <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430152639.png" width="200">
+  <img src="Pasted image 20260430152639.png" width="300">
 </div>
   
 **Push:** Il comando `git push` serve a inviare i commit locali al repository remoto. Con il push, le modifiche: 
@@ -4380,7 +4381,7 @@ Buona pratica operativa:
 - ma solo su commit coerenti, compilabili e significativi. 
 
   <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430152854.png" width="200">
+  <img src="Pasted image 20260430152854.png" width="300">
 </div>
 
 **Pull:** Il comando `git pull` serve a recuperare i commit presenti sul remoto e ad aggiornarne la copia locale. In pratica, il pull combina due operazioni: 
@@ -4396,17 +4397,17 @@ Regola operativa:
 - prima di pubblicare nuove modifiche: eseguire `git pull` per ridurre conflitti e sorprese. 
 
   <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430153033.png" width="200">
+  <img src="Pasted image 20260430153033.png" width="300">
 </div>
 
-**Merge:** Un merge è l’operazione che consente di integrare due linee di sviluppo in una storia comune. Il merge si verifica tipicamente quando: 
+**Merge:** Un merge è l'operazione che consente di integrare due linee di sviluppo in una storia comune. Il merge si verifica tipicamente quando: 
 - il repository locale viene aggiornato con commit remoti, 
 - più sviluppatori hanno lavorato in parallelo. 
 
 Se le modifiche non si sovrappongono, Git integra automaticamente. In caso contrario, è richiesto un intervento esplicito: si genera un conflitto di merge. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-04-30 15-32-17.png" width="200">
+  <img src="Screenshot From 2026-04-30 15-32-17.png" width="300">
 </div>
 
 **Conflitti:** Un conflitto indica semplicemente che Git non è in grado di decidere automaticamente quale versione di una modifica mantenere. La presenza di un conflitto: 
@@ -4415,71 +4416,71 @@ Se le modifiche non si sovrappongono, Git integra automaticamente. In caso contr
 - è una conseguenza normale del lavoro in parallelo sullo stesso codice. 
 
 La gestione corretta di un conflitto segue alcuni passi chiave: 
-1. comprendere l’obiettivo delle due modifiche in conflitto; 
+1. comprendere l'obiettivo delle due modifiche in conflitto; 
 2. scegliere la versione corretta o combinarle in modo coerente; 
 3. ricompilare il progetto ed eseguire i test per verificare il risultato. 
 
-L’obiettivo non è evitare ogni conflitto, ma saperli risolvere in modo consapevole e controllato.  
+L'obiettivo non è evitare ogni conflitto, ma saperli risolvere in modo consapevole e controllato.  
 
 **Come appare un conflitto:** Quando Git non riesce a risolvere automaticamente un merge, inserisce dei marcatori di conflitto direttamente nel file coinvolto. Questi marcatori delimitano le due versioni concorrenti della modifica: 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430153455.png" width="200">
+  <img src="Pasted image 20260430153455.png" width="300">
 </div>
 
 La risoluzione del conflitto richiede un intervento manuale: 
-- analizzare le due versioni e comprenderne l’intento, 
+- analizzare le due versioni e comprenderne l'intento, 
 - rimuovere i marcatori (`<<<, ===, >>>`), 
 - lasciare nel file una sola versione coerente del codice. 
 
 Una volta risolto il conflitto: 
-- il file va aggiunto nuovamente allo staging con git add , 
-- il merge si conclude con un git commit dedicato.  
+- il file va aggiunto nuovamente allo staging con `git add` , 
+- il merge si conclude con un `git commit` dedicato.  
 
 > [!example] 
-> - Contesto: due sviluppatori lavorano sullo stesso file, uno ha già fatto push sul remoto, l’altro prova a fare push con una storia non aggiornata. 
+> - Contesto: due sviluppatori lavorano sullo stesso file, uno ha già fatto push sul remoto, l'altro prova a fare push con una storia non aggiornata. 
 > - Tentativo di push: 
 > 
-> ![[Pasted image 20260430153712.png|200]]
+> ![[Pasted image 20260430153712.png|300]]
 > 
 > - Soluzione: aggiornare e integrare le modifiche remote 
 > 
-> ![[Pasted image 20260430153736.png|200]]
+> ![[Pasted image 20260430153736.png|300]]
 > 
 > - Idea chiave: il push fallisce perché la storia remota è più avanti, il pull integra le modifiche (merge), poi il push può andare a buon fine.  
 
 **Undo:** Git consente di recuperare situazioni non desiderate in modo controllato, senza interventi improvvisati. Il comando corretto dipende da dove si trovano le modifiche. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430153844.png" width="200">
+  <img src="Pasted image 20260430153844.png" width="300">
 </div>
 
 La distinzione tra “privato” e “pubblico” è determinante: alcuni comandi riscrivono la storia, altri la compensano.  
 
-**Ripristinare file non committati:** Quando sono presenti modifiche nel working tree che non devono essere mantenute, è possibile tornare allo stato dell’ultimo commit. In questo caso, il comando `git restore` ripristina il contenuto del file come registrato nella storia: 
+**Ripristinare file non committati:** Quando sono presenti modifiche nel working tree che non devono essere mantenute, è possibile tornare allo stato dell'ultimo commit. In questo caso, il comando `git restore` ripristina il contenuto del file come registrato nella storia: 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430154012.png" width="200">
+  <img src="Pasted image 20260430154012.png" width="300">
 </div>
 
 È anche possibile intervenire sullo staging: 
-- se un file è stato aggiunto per errore con git add, 
+- se un file è stato aggiunto per errore con `git add`, 
 - lo si può rimuovere dallo staging senza perdere le modifiche locali. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430154051.png" width="200">
+  <img src="Pasted image 20260430154051.png" width="300">
 </div>
 
 In entrambi i casi, il ripristino agisce solo sullo stato locale e non modifica la storia dei commit.  
 
-**Modificare l’ultimo commit locale:** Un caso frequente durante lo sviluppo locale è: 
+**Modificare l'ultimo commit locale:** Un caso frequente durante lo sviluppo locale è: 
 - un file dimenticato nel commit precedente, 
 - un messaggio di commit impreciso o errato. 
 
-Altro caso tipico: aver committato per errore un file molto grande (ad esempio 1 GB) che non doveva entrare nella storia. L’opzione `--amend` consente di modificare l’ultimo commit, aggiornandone il contenuto e/o il messaggio. Questa operazione riscrive la storia e deve essere usata solo su commit che non sono ancora stati pubblicati. 
+Altro caso tipico: aver committato per errore un file molto grande (ad esempio 1 GB) che non doveva entrare nella storia. L'opzione `--amend` consente di modificare l'ultimo commit, aggiornandone il contenuto e/o il messaggio. Questa operazione riscrive la storia e deve essere usata solo su commit che non sono ancora stati pubblicati. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430154227.png" width="200">
+  <img src="Pasted image 20260430154227.png" width="300">
 </div>
 
 Regola operativa: 
@@ -4490,10 +4491,10 @@ Regola operativa:
 - utile per correggere errori in locale, 
 - potenzialmente pericoloso se applicato a commit già pubblici. 
 
-Il comportamento di `git reset` dipende dall’opzione utilizzata: 
+Il comportamento di `git reset` dipende dall'opzione utilizzata: 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430154427.png" width="200">
+  <img src="Pasted image 20260430154427.png" width="300">
 </div>
 
 Regola operativa fondamentale: 
@@ -4508,7 +4509,7 @@ Regola operativa fondamentale:
 > - Problema: C2 e C3 dovevano essere un unico commit. 
 > - Soluzione: 
 > 
-> ![[Pasted image 20260430154722.png|200]]
+> ![[Pasted image 20260430154722.png|300]]
 > 
 > - Effetto: 
 > 	- torno a C1 
@@ -4522,7 +4523,7 @@ Regola operativa fondamentale:
 > - Problema: voglio separare A e B in due commit distinti. 
 > - Soluzione:
 > 
-> ![[Pasted image 20260430154945.png|200]]
+> ![[Pasted image 20260430154945.png|300]]
 > 
 > - Effetto: 
 > 	- modifiche restano nei file 
@@ -4538,7 +4539,7 @@ Regola operativa fondamentale:
 > ![[Pasted image 20260430155058.png]]
 > 
 > - Effetto: 
-> 	- l’ultimo commit locale viene eliminato dalla storia 
+> 	- l'ultimo commit locale viene eliminato dalla storia 
 > 	- staging e working tree tornano allo stato del commit precedente 
 > 	- eventuali modifiche locali non salvate vengono perse  
 
@@ -4549,14 +4550,14 @@ Regola operativa fondamentale:
 Questo approccio è particolarmente adatto a repository condivisi, perché mantiene una cronologia completa e tracciabile.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430155210.png" width="200">
+  <img src="Pasted image 20260430155210.png" width="300">
 </div>
 
 Messaggio operativo da ricordare: 
 - reset riscrive la storia, 
 - revert la compensa in modo sicuro.  
 
-**Pubblico vs privato.** Prima di utilizzare comandi potenzialmente invasivi, è fondamentale chiarire il contesto in cui si sta operando. Due domande guida aiutano a scegliere l’azione corretta: 
+**Pubblico vs privato.** Prima di utilizzare comandi potenzialmente invasivi, è fondamentale chiarire il contesto in cui si sta operando. Due domande guida aiutano a scegliere l'azione corretta: 
 - il commit è già stato pubblicato su un repository remoto? 
 - altri sviluppatori potrebbero basarsi su quel commit? 
 
@@ -4565,30 +4566,30 @@ In termini generali, vale la seguente distinzione:
 - su repository condivisi è preferibile usare operazioni conservative che preservano la storia (ad esempio revert). 
   
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430155355.png" width="200">
+  <img src="Pasted image 20260430155355.png" width="300">
 </div>
 
 **Tag:** I tag permettono di associare un nome stabile a un commit specifico della storia. Sono tipicamente usati per identificare: 
 - versioni rilasciate (v 1.0, v 1.1), 
 - snapshot significativi del progetto, 
 - punti di riferimento per build, deploy o documentazione. 
-- indica esattamente quel commit e nient’altro. 
+- indica esattamente quel commit e nient'altro. 
 
 I tag non vengono pushati automaticamente: 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430155458.png" width="200">
+  <img src="Pasted image 20260430155458.png" width="300">
 </div>
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260430155531.png" width="200">
+  <img src="Pasted image 20260430155531.png" width="300">
 </div>
 
 **Errori comuni (e come evitarli):** 
 - Aggiungere tutto indiscriminatamente al commit (git add .) senza verificare cosa viene incluso. 
 - Usare messaggi di commit vaghi o generici: "fix" non fornisce alcuna informazione utile (nemmeno a distanza di poche settimane). 
 - Creare commit senza aver controllato le differenze con git diff o git diff `--staged`. 
-- Aggiornarsi raramente dal remoto, accumulando conflitti che emergono solo all’ultimo momento. 
+- Aggiornarsi raramente dal remoto, accumulando conflitti che emergono solo all'ultimo momento. 
 - Utilizzare comandi potenzialmente distruttivi senza aver chiarito se il lavoro è già pubblico o condiviso. 
 - Dimenticare che il file .gitignore va condiviso: 
 	- funziona localmente, ma 
@@ -4603,7 +4604,7 @@ I tag non vengono pushati automaticamente:
 6. git pull (sincronizzazione con il remoto, se presente) 
 7. git push (pubblicazione dei commit) 
 
-Questo flusso non è pensato per essere sofisticato, ma per essere robusto, ripetibile e facilmente verificabile. L’adozione sistematica di questa sequenza riduce conflitti, errori evitabili e interventi correttivi non pianificati.  
+Questo flusso non è pensato per essere sofisticato, ma per essere robusto, ripetibile e facilmente verificabile. L'adozione sistematica di questa sequenza riduce conflitti, errori evitabili e interventi correttivi non pianificati.  
 
 > [!info] Riepilogo:
 > - Git è utile soprattutto perché rende tracciabili le modifiche e riduce il caos della collaborazione sul codice. 

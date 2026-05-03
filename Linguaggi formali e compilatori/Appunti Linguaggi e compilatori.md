@@ -202,7 +202,7 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
 *Definizione:* le grammatiche a struttura di frase (in base alle loro regolo possono scrivere intere frasi e non solo singoli caratteri) si dicono anche *grammatiche di tipo 0*. I linguaggi generati da grammatiche di tipo 0 si dicono *linguaggi di tipo 0* oppure *linguaggi ricorsivamente numerabili*. Fanno parte di questo livello le grammatiche a struttura di frase. Queste grammatiche hanno la massima espressività possibile: <u>se io ho una procedura effettiva infinita che mi genera una lista di parole, quella lista di parole è un linguaggio di tipo 0.</u>
 
 > [!example] 
-> ![[Screenshot From 2026-03-05 10-15-42.png|200]]
+> ![[Screenshot From 2026-03-05 10-15-42.png|300]]
 
 **Linguaggi di tipo 1 (grammatiche sensibili al contesto / contestuali):**
 *Definizione:* una grammatica a struttura di frase si dice sensibile al contesto se le produzioni hanno la forma: $\alpha_1X\alpha_2 \to \alpha_1\beta\alpha_2$, con $X \in N$, $\alpha_1, \alpha_2, \beta \in V^*$ , $\beta \neq \epsilon$.  Ciò significa che le produzioni di queste grammatiche hanno il lato sx che contiene una variabile, mentre il lato dx si ottiene sostituendo quella variabile con una parola qualsiasi purché non vuota. Quindi mentre prima potevamo sostituire una parola con una parola, qui possiamo sostituire solo una lettera all'interno di una parola con una parola, che per di più non deve essere vuota (posso sostituire una variabile solo se è contenuta in un  contesto). I linguaggi generati da grammatiche di tipo *q* si dicono *linguaggi di tipo 1*  o anche *sensibili al contesto*.  A differenza dei linguaggi di tipo 0, per questo tipo di linguaggi esistono algoritmi che risolvono i problemi di parsing e ricognizione, ma sono molto costosi.
@@ -217,7 +217,7 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
 </div>
 
 > [!example]
-> ![[Screenshot From 2026-03-05 10-22-40.png|200]]
+> ![[Screenshot From 2026-03-05 10-22-40.png|300]]
 
 **Grammatiche monotone (sempre di tipo 1):**
 *Definizione:* una grammatica si dice *monotona* se tutte le produzioni hanno la forma: $\alpha \to \beta$ con $|\alpha| \leq |\beta|$ . Cioè una grammatica in cui tutte le produzioni hanno il lato dx che ha lunghezza maggiore o uguale a quella del lato sx. Quindi non c'è più l'obbligo di sostituire singole variabili, ma c'è la sola regola che il lato dx non può essere più corto di quello sx. Inoltre: 
@@ -225,7 +225,7 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
 - Non tutte le grammatiche monotone sono sensibili al contesto
 - Ogni grammatica monotona è equivalente a una grammatica sensibile al contesto (che genera lo stesso linguaggio)
 
-> [!example] ![[Screenshot From 2026-03-05 10-26-52.png|200]]
+> [!example] ![[Screenshot From 2026-03-05 10-26-52.png|300]]
 
 **Sintesi:**
 1. I linguaggi di tipo 1 costituiscono una sottoclasse propria dei linguaggi di tipo 0
@@ -235,7 +235,7 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
 **Linguaggi di tipo 2 (Grammatiche non contestuali):** Una grammatica a struttura di frase si dice *non contestuale* o di *tipo 2* se le produzioni hanno la forma: $X \to \beta$, con $X \in N$, $\beta \in V^*$. Dunque una grammatica a struttura di frase si dice non contestuale se le produzioni hanno a sx una singola variabile. I linguaggi generati da grammatiche di tipo 2 si dicono *linguaggi di tipo 2* o anche *non contestuali*. Sono non contestuali perché la variabile può essere sostituita indipendentemente dal contesto in cui appare.
 
 > [!example]
-> ![[Screenshot From 2026-03-05 10-33-04.png|200]]
+> ![[Screenshot From 2026-03-05 10-33-04.png|300]]
 
 I linguaggi di tipo 2 costituiscono una sottoclasse propria dei linguaggi di tipo 1. Per esempio $L = \{ a^{n}b^{n}c^{n} | n > 0\}$ è un linguaggio di tipo 1 ma non è di tipo 2.
 Gli algoritmi di ricognizione e parsing per le grammatiche di tipo 2 si comportano abbastanza bene, alcuni sono moderatamente efficienti . La maggior parte dei linguaggi di programmazione sono generati da una grammatica non contestuale.
@@ -243,7 +243,7 @@ Gli algoritmi di ricognizione e parsing per le grammatiche di tipo 2 si comporta
 **Linguaggi di tipo 3 Grammatiche regolari):** 
 *Definizione:* una grammatica a struttura di frase si dice *regolare* o di *tipo 3* se le produzioni hanno la forma $X \to aY$ oppure $X \to a$, con $X,Y \in N$, $a \in \Sigma$. Dunque Le produzioni hanno una forma ancora più semplice: a sx sempre una variabile, come nelle grammatiche di tipo 2, ma a dx ho un terminale da solo o un terminale seguito da una variabile. I linguaggi generati da grammatiche di tipo 3 si dicono *linguaggi di tipo 3* o anche *regolari*. I linguaggi di tipo 3 costituiscono una sottoclasse dei linguaggi di tipo 2 perché le produzioni a sx hanno una singola variabile. Quindi un linguaggio generato da una grammatica di tipo 3, è anche un linguaggio generato da una grammatica di tipo 2. Anche in questo caso, però, ci sono linguaggi di tipo 2 che non sono linguaggi di tipo 3.
 > [!example]
-> ![[Pasted image 20260305103801.png|200]]
+> ![[Pasted image 20260305103801.png|300]]
 
 > [!info] Gli algoritmi di ricognizione per i linguaggi di tipo 3 esistono e sono estremamente efficienti, sono molto importanti per l'analisi lessicale ovvero l'analisi di token che costituiscono il nostro codice. Questo si ottiene attraverso la Teoria degli Automi a Stati Finiti.
 ###### Automi a stati finiti deterministici
@@ -260,14 +260,14 @@ Terminata la lettura del nastro, in base allo stato raggiunto (se è uno stato a
 - $\delta$: $Q \times \Sigma \to Q$ è la funzione di transizione  = legge con cui i nostri stati cambiano in base ad uno stato precedente e alla lettera scritta sul nastro
 - $q_0 \in Q$ è lo stato iniziale
 - $F \subseteq Q$ è l'insieme degli stati finiti = se al termine della computazione, il dispositivo si trova in uno stato che è compreso nell'insieme degli stati finali, la parola viene accettata
-> [!example] ![[Screenshot From 2026-03-05 21-44-54.png|200]]
+> [!example] ![[Screenshot From 2026-03-05 21-44-54.png|300]]
 
 **Funzione di transizione estesa:** La funzione $\delta$ , affinché non lavori solo con le coppie *stato-lettera* ma anche con le coppie *stato-parola*, si estende a $\hat{\delta}$: $Q \times \Sigma^* \to Q$ ponendo:
 - $\hat{\delta}(q, \epsilon) = q$, $\forall q \in Q$ 
 - $\hat{\delta}(q,va) = \delta(\hat{\delta}(q,v),a)$, $\forall q \in Q$, $v \in \Sigma^*$, $a \in \Sigma$
 
 Per ogni $q \in Q, u, v \in \Sigma^*$,  si ha $\hat{\delta}(q,uv) = \hat{\delta}(\hat{\delta}(q,u),v)$  
-> [!example] ![[Screenshot From 2026-03-05 21-47-18.png|200]]
+> [!example] ![[Screenshot From 2026-03-05 21-47-18.png|300]]
 
 **Linguaggio accettato:**
 *Definizione:* una parola $w \in \Sigma^*$ è accettata da $A$ se $\hat{\delta}(q_0, w) \in F$. L'insieme delle parole accettate da $A$ si dice linguaggio riconosciuto (o accettato) da $A$ e si denota come $L(A) = \{w \in \Sigma^* | \hat{\delta}(q_0,w) \in F\}$ 
@@ -277,16 +277,16 @@ Per ogni $q \in Q, u, v \in \Sigma^*$,  si ha $\hat{\delta}(q,uv) = \hat{\delta}
 - Le frecce sono le triple ($q, a, \delta (q, a)$) con $q \in Q , a \in \Sigma$ 
 - Lo stato iniziale è denotato da una freccia entrante
 - Gli stati finali sono identificati dal bordo doppio
-> [!example] ![[Screenshot From 2026-03-05 21-53-02.png|200]]
+> [!example] ![[Screenshot From 2026-03-05 21-53-02.png|300]]
 
 - Per ogni stato $q$ e ogni lettera $a$ c'è esattamente una freccia con etichetta $a$ che esce da $q$
 - C'è un cammino da uno stato $p$ a uno stato $q$ con etichetta $w$ $\iff$ $q = \hat{\delta}(p,w)$
 - Le parole accettate dall'automa sono esattamente le etichette dei cammini da $q_0$ a uno stato finale
-> [!example] ![[Screenshot From 2026-03-05 21-54-11.png|200]]
+> [!example] ![[Screenshot From 2026-03-05 21-54-11.png|300]]
 > 
-> - ![[Screenshot From 2026-03-06 10-06-15.png|200]]
-> - ![[Screenshot From 2026-03-06 10-06-27.png|200]]
-> - ![[Screenshot From 2026-03-06 10-06-39.png|200]]
+> - ![[Screenshot From 2026-03-06 10-06-15.png|300]]
+> - ![[Screenshot From 2026-03-06 10-06-27.png|300]]
+> - ![[Screenshot From 2026-03-06 10-06-39.png|300]]
 ###### Automi a stati finiti non deterministici
 Abbiamo detto che un automa è rappresentato da un grafo e che per ogni stato $q$ e ogni lettera $a$ esiste esattamente un arco uscente da $q$ con etichetta $a$. Le parole accettate da $A$ sono le etichette dei cammini dallo stato iniziale a uno stato finale.
 Se da questa definizione togliessi l'aspetto degli archi (cioè che da ogni vertice può uscire un solo arco) otterrei: una maggiore libertà nella progettazione ma avrei più difficoltà a verificare se una parola è accettata o meno. La soluzione a ciò è un modello non-deterministico che mi permette di fare una conversione automatica al modello deterministico.  Il modello non-deterministico:
@@ -314,14 +314,14 @@ Ci si convince facilmente a questo punto che:
 - La parola *w* è accettata $\iff$ c'è un cammino dallo stato iniziale a uno stato finale con etichetta *w*
 - Questo non esclude però che vi possano essere altri cammini con etichetta *w* che partono dallo stato iniziale e terminano in uno stato non finale
 > [!example] 
-> ![[Screenshot From 2026-03-06 11-03-22.png|200]]
-> ![[Screenshot From 2026-03-06 11-03-35.png|200]]
-  >![[Pasted image 20260306110549.png|200]]
+> ![[Screenshot From 2026-03-06 11-03-22.png|300]]
+> ![[Screenshot From 2026-03-06 11-03-35.png|300]]
+  >![[Pasted image 20260306110549.png|300]]
   > 
 > Questa computazione non è accettata perché non finisce in uno stato finale, ma questo non significa che la parola non sia accettata perché possono esserci altre computazioni (come la verde) che terminano in uno stato finale
 
 Apparentemente questo tipo di progettazione non ci da nessun vantaggio, perché le computazioni da fare diventerebbero troppe. Supponiamo infatti di avere 2 cammini possibili per ogni scelta, e dovessimo leggere una parola di lunghezza 10, questo vorrebbe dire che dovremmo fare 210 computazioni. Proviamo però a ragionare come segue: se mi trovo in q0 e il mio input è $a$, posso andare o in q0 o in q1, ecc… Se mi trovo in q1 e l'input è $b$, andrò in q2,… Quindi ad ogni passo, in base alla colonna che avevo al passo precedente, e alla lettera di input, produco una colonna nuova. Questo procedimento è praticamente uguale a quello di un automa a stati deterministico, perché in base alla configurazione del mio dispositivo e alla lettera di input, determina la configurazione successiva. In questo caso la differenza è che abbiamo delle colonnine di stati.
-> [!example] ![[Pasted image 20260306110859.png|200]]
+> [!example] ![[Pasted image 20260306110859.png|300]]
 
 **Teorema:** Sia $A$ un automa a stati finiti non deterministico, esiste effettivamente un equivalente automa a stati finiti deterministico $A'$ tale che $L (A) = L (A')$, cioè esiste l'automa deterministico e l'algoritmo per costruire questo automa a partire dall'automa non deterministico. Quindi, prima andremo a disegnare l'automa a stati non deterministico (prima immagine con più percorsi in verde e rosso), cosa che risulta molto più facile rispetto al crearne uno deterministico, e poi sapremo che esiste l'algoritmo in grado di trasformare quel grafo nel grafo di un automa a stati deterministico (seconda immagine con colonne). 
 *Dimostrazione:* Gli stati dell'automa deterministico registreranno l'insieme gli stati raggiungibili dalle computazioni dell'automa non deterministico sul medesimo input $\rightarrow$ Accetto se fra questi ce n'è uno finale
@@ -344,7 +344,7 @@ Come abbiamo accennato precedentemente, però, sarebbero presenti troppi stati d
 *Definizione:* sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ un automa a stati finiti deterministico. Uno stato $q \in Q$ si dice *accessibile* se $q = \hat{\delta}(q_0,w)$ per qualche $w \in \Sigma^*$.
 Se io elimino tutti questi stati inaccessibili e restringo la funzione di transizione (delta cappello) solo agli stati accessibili, ottengo un automa con un numero di stati più piccolo, equivalente a quello di partenza, che accetta lo stesso linguaggio di quello di partenza.
 > [!example] 
-> ![[Screenshot From 2026-03-06 11-26-56.png|200]] 
+> ![[Screenshot From 2026-03-06 11-26-56.png|300]] 
 > 
 > Nell'esempio vediamo come lo stato q1 è stato eliminato perché, iniziando da q0 (stato di partenza), non c'è nessun cammino che mi porta in q1.
 
@@ -355,14 +355,14 @@ Se io elimino tutti questi stati inaccessibili e restringo la funzione di transi
 4. Se $s$ non è nella lista degli stati allora lo aggiungo alla lista degli stati. 
 5. Se $s$ contiene uno stato finale di $A$, aggiungo $s$ alla lista degli stati finali. 
 > [!example] 
-> ![[Screenshot From 2026-03-06 11-32-20.png|200]]
-> ![[Screenshot From 2026-03-06 11-32-32.png|200]]
-> ![[Screenshot From 2026-03-06 11-33-08.png|200]]
+> ![[Screenshot From 2026-03-06 11-32-20.png|300]]
+> ![[Screenshot From 2026-03-06 11-32-32.png|300]]
+> ![[Screenshot From 2026-03-06 11-33-08.png|300]]
 > 
 > Come possiamo notare, l'automa deterministico ha più stati rispetto a quelli che avevamo trovato noi manualmente nel primo esempio abac
 
 > [!info] Caso difficile:
-> ![[Pasted image 20260308174311.png|200]]
+> ![[Pasted image 20260308174311.png|300]]
 ###### Automa a stati finiti non deterministico con epsilon-transizioni
 Un automa a stati finiti non deterministico con $\epsilon$-transizioni è una quintupla $A = \langle Q,\Sigma, \delta, q_0, F \rangle$, dove $Q,\Sigma, q_0, F$ sono come nell'automa deterministico, mentre la funzione $\delta: Q \times (\Sigma \cup \{\epsilon\}) \rightarrow \wp(Q)$ è la funzione di transizione, che ora non è definita solo sulle coppie *stato-lettera*, ma anche sulle coppie *stato-parolaVuota*, e restituisce un insieme di stati (potrebbe essere anche vuoto). Questo modello mi permette di saltare da uno stato all'altro senza leggere il nastro di input (anche per questo modello c'è un algoritmo che mi permette di passare da un automa di questo tipo ad un automa a stati finiti deterministico). Una parola $w \in \Sigma^*$ è *accettata* da $A$ se esistono $n\geq 0$, $a_1,...,a_n \in \Sigma \cup \{\epsilon\}$ e $q_1,..q_n \in Q$ tali che $w = a_1a_2...a_n$, $q_i \in \delta(q_{i-1},a_i)$, $1 \leq i \leq n$, $q_n \in F$ . In altre parole la parola è accettata dall'automa se esiste un cammino dallo stato iniziale a uno finale nel grafo con etichetta $w$, e se $w$ può essere scritta come una sequenza di lettere e parole vuote. L'insieme delle parole accettate da $A$ si dice *linguaggio accettato (o riconosciuto)* da $A$ e si denota con $L(A)$.
 
@@ -376,7 +376,7 @@ Ci si convince facilmente a questo punto che:
 - Una parola *w* può essere etichetta di molti cammini uscenti dallo stato iniziale, o anche nessuno
 - La parola *w* è accettata $\iff$ c'è un cammino dallo stato iniziale a uno stato finale con etichetta *w*
 - Questo non esclude però che vi possano essere altri cammini con etichetta *w* che partono dallo stato iniziale e terminano in uno stato non finale
-> [!example] ![[Screenshot From 2026-03-12 10-16-28.png|200]]
+> [!example] ![[Screenshot From 2026-03-12 10-16-28.png|300]]
 > Nota che tra le colonne ora appare anche $\epsilon$, cosa che prima non era contemplata
 
 **Teorema:** Sia $A$ un automa a stati finiti non deterministico con $\epsilon$-transizioni. Esiste effettivamente un automa a stati finiti deterministico $A'$ tale che $L(A) = L(A')$ (accetta lo stesso linguaggio)
@@ -390,7 +390,7 @@ Ci si convince facilmente a questo punto che:
 - Per ogni $p \in C_{\epsilon}(q)$, $\delta(p,\epsilon) \subseteq C_{\epsilon}(q)$
 
 La $\epsilon$-chiusura di un insieme di stati $S \subseteq Q$ è l'unione delle $\epsilon$ chiusure dei singoli stati di $S: C_{\epsilon}(S) = \bigcup\limits_{q \in S} C_{\epsilon}(q)$.  In altre parole la ε-chiusura di uno stato è l'insieme degli stati che da questo si possono raggiungere utilizzando solo ε- transizioni (questo insieme deve contenere lo stato stesso).
-> [!example] ![[Screenshot From 2026-03-12 10-31-58.png|200]]
+> [!example] ![[Screenshot From 2026-03-12 10-31-58.png|300]]
 > - $C_{\epsilon}(q_0)$ deve contenere $q_3$ perché con $\epsilon$-transizioni vado in $q_3$
 > - $C_{\epsilon}(\{q_0,q_1\})$ è la $\epsilon$-chiusura della coppia di stati $q_0,q_1$ che si ottiene facendo l'unione delle chiusure dei due stati
 
@@ -406,7 +406,7 @@ Prendiamo tutti gli elementi che si ottengono partendo dal primo elemento della 
 	 p <- successivo(p) // passo all'elemento successivo
 return R
 ```
-> [!example] ![[Screenshot From 2026-03-12 10-35-50.png|200]]
+> [!example] ![[Screenshot From 2026-03-12 10-35-50.png|300]]
 
 **Costruzione:** Sia $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ l'automa non deterministico con $\epsilon$-transizioni, definisco l'automa deterministico $A' = \langle Q',\Sigma, \delta', q_0, F' \rangle$ come segue:
 - L'insieme degli stati è l'insieme $Q' = \wp(Q)$ costituito dai sottoinsiemi di $Q$ (cioè uno stato di $A'$  è un insieme di stati di $A$ )
@@ -428,17 +428,17 @@ Sostanzialmente  è sempre possibile costruire un automa deterministico che acce
 - *Output*: un automa deterministico equivalente $A' = \langle Q',\Sigma, \delta', q_0, F' \rangle$
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-23 17-01-04.png" width="200">
+  <img src="Screenshot From 2026-03-23 17-01-04.png" width="300">
 </div>
 
 > [!example] 
 > - valuto le chiusure di ogni stato
-> ![[Screenshot From 2026-03-12 11-25-10.png|200]]
+> ![[Screenshot From 2026-03-12 11-25-10.png|300]]
 > - valuto la funzione $\delta$ su questo automa
-> ![[Screenshot From 2026-03-12 11-25-29.png|200]]
+> ![[Screenshot From 2026-03-12 11-25-29.png|300]]
 > 
 > Il grafo dell'esempio sarà quindi:
-> ![[Screenshot From 2026-03-12 11-29-04.png|200]]
+> ![[Screenshot From 2026-03-12 11-29-04.png|300]]
 > 
 > Ricorda: ogni valutazione va fatta ricordando che "sono contemporaneamente in ognuno di questi stati". L'algoritmo che si può sfruttare prevede di: applicare uno degli input possibili per volta, raccogliere tutti i risultati conseguenti e infine allargare con $\epsilon$
 ###### Espressioni regolari
@@ -542,7 +542,7 @@ Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
 - Le frecce del grafo di $A$ sono le frecce dei grafi di $A_1$ e $A_2$ e, inoltre, $(i,\epsilon,i_1), (i,\epsilon,i_2), (f_1,\epsilon, f), (f_2,\epsilon, f)$
 
 Allora $A$ accetta il linguaggio denotato da $(E+F)$
-> [!example] ![[Screenshot From 2026-03-13 11-13-32.png|200]]
+> [!example] ![[Screenshot From 2026-03-13 11-13-32.png|300]]
 
  <div style="display: flex; align-items: flex-start; gap: 20px;">
    <div style="flex: 1;">
@@ -562,7 +562,7 @@ Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
 
 Allora $A$ accetta il linguaggio denotato da $(EF)$
 > [!example] 
-> ![[Screenshot From 2026-03-13 11-17-52.png|200]]
+> ![[Screenshot From 2026-03-13 11-17-52.png|300]]
 
  <div style="display: flex; align-items: flex-start; gap: 20px;">
    <div style="flex: 1;">
@@ -581,7 +581,7 @@ Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
 
 Allora $A$ accetta il linguaggio denotato da $E^*$
 > [!example]
-> ![[Pasted image 20260313112221.png|200]]
+> ![[Pasted image 20260313112221.png|300]]
 
 **L'algoritmo di sintesi**
 *Proposizione:* data un'espressione regolare $G$, si può effettivamente costruire un'automa a stati finiti che riconosce il linguaggio denotato da $G$:
@@ -607,7 +607,7 @@ Per ogni $i, j, k$ con $0 \leq k < i, j \leq n$ (indici i e j compresi tra 1 e n
 
 *Osservazione:* $L(A)= \bigcup\limits_{q_j \in F} L_{1jn}$. Quindi, se riesco a trovare espressioni regolari per tutti gli $L_{ijk}$, avrò anche un'espressione regolare di $L(A)$
 
-> [!example] ![[Pasted image 20260319110515.png|200]]
+> [!example] ![[Pasted image 20260319110515.png|300]]
 > - $q_2$ stato iniziale
 > - $q_5$ stato finale
 > - quindi devo prendere tutti i cammini che partono da $q_2$, che arrivano in $q_4$ e che attraversano soltanto $q_1 \implies L(A) = L_{n-1 \ n \ n-2}$ dato dal cammino $q_2 \xrightarrow[]{b} q_1 \xrightarrow[]{c} q_5$
@@ -622,13 +622,13 @@ Il linguaggio $L_{ij0}$ è denotato dall'espressione regolare $E_{ij0}$ ottenuta
 - $\epsilon$ se non ci sono frecce da $q_i$ a $q_j$ e $i = j$
 - $\emptyset$ se non ci sono frecce da $q_i$ a $q_j$ e $i \neq j$
 
-> [!example] ![[Screenshot From 2026-03-19 11-07-41.png|200]]
+> [!example] ![[Screenshot From 2026-03-19 11-07-41.png|300]]
 > Dato che $k \leq 0$ ciò significa che i cammini devono attraversare 0 stati (cioè si tratta di frecce dirette)
 
 Supponiamo $k\geq 1$. I cammini nel grafo $A$ con origine in $q_i$, termine in $q_j$ e che attraversano esclusivamente stati di indice $\leq k$, si possono ripartire in due categorie:
 1. Cammini da $q_i$ a $q_j$ che attraversano solo stati di indice $\leq k-1$. Questi cammini per $q_k$ potrebbero non passare proprio, oppure possono passare per $q_1,q_2,...,q_{k-1}$. Per questi l'espressione regolare già l'abbiamo
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319173347.png" width="200">
+  <img src="Pasted image 20260319173347.png" width="300">
 </div>
 2. I cammini costituiti dalla concatenazioni di (cioè i cammini che passano una o più volte per $k$):
 	- Un segmento da $q_i$ a $q_k$ (segmento dallo stato iniziale fino a $q_k$)
@@ -638,7 +638,7 @@ Supponiamo $k\geq 1$. I cammini nel grafo $A$ con origine in $q_i$, termine in $
 Tutti che attraversano solo stati di indice $\leq k-1$
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319174122.png" width="200">
+  <img src="Pasted image 20260319174122.png" width="300">
 </div>
 
 **Passo induttivo:** ora dobbiamo trovare l'espressione $E_{ijk}$, cioè l'espressione per il linguaggio costituito dalle etichette di tutti i cammini delle forme precederti. Innanzitutto facciamo  l'unione dei cammini del primo punto con i cammini del secondo punto. I cammini del secondo gruppo saranno a loro volta riportati come la concatenazione del primo segmento con i segmenti intermedi (concatenazione di 0 o più coppie di un espressione utilizzando la chiusura di Kleene) e l'ultimo segmento. In sostanza le espressioni regolari $E_{ijk}$ che denotano i linguaggi $L_{ijk}$ devono soddisfare le relazioni ricorsive $E_{ijk} = E_{ijk−1} + (E_{ikk−1})(Ek k k−1)(E_{kjk−1}), \ 1 \leq k < i, j \leq n$ (la prima parte contiene tutti i cammini che NON usano $q_k$, mentre la seconda parte contiene tutti i cammini che usano $q_k$ ALMENO una volta). Un'espressione regolare di $L(A)$ è data dalla somma delle $E_{1jn}$ con $q_j$ stato finale. In questo mode è possibile calcolare tutte le espressioni regolari, compresa $E_{n-1 \ n \ n-2}$ che denota il linguaggio accettato dall'automa (esempio nelle slide 8-11)
@@ -792,7 +792,7 @@ Dimostrazione circolare per dimostrare che le 3 condizioni suddette siano equiva
 - Se ne conclude che il linguaggio accettato da $A$ è proprio $L$
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260320112259.png" width="200">
+  <img src="Pasted image 20260320112259.png" width="300">
 </div>
 
 *Proposizione:* Sia $L$ un linguaggio regolare. L'automa di Nerode di $L$ è un automa deterministico che accetta $L$ col minimo numero di stati possibile. 
@@ -850,29 +850,29 @@ L'automa minimo di $L$ si ottiene nel modo seguente:
 
 > [!example] 
 > Voglio minimizzare il seguente automa deterministico. Innanzitutto divido l'insieme degli stati in due classi: stati finali e stati non finali: $\Pi_0 =(Q \backslash F, F) = (\{q_0.q_1,q_2,q_3,q_4\},\{q_5,q_6\}$. > 
-> ![[Pasted image 20260326162039.png|200]]
+> ![[Pasted image 20260326162039.png|300]]
 > 
 > Dopodiché vado a vedere le lettere (a,b) su ogni stato, in quale classe mi riportano.
 > Lo stato $q_0$, per esempio, con la lettera "a" mi porta in $q_3$, il quale fa parte della classe 0 $\implies$ scrivo 0. Faccio la stessa cosa in ogni classe per ciascuno stato (ogni colonnina). Gli stati che hanno colonnine uguali e che si trovano nella stessa classe, devono rimanere insieme: quindi $q_0$ e $q_3$ hanno entrambi colonnina 0,0 e devono restare insieme $\implies \Pi_1 = (\{q_0,q_3\}, \{q_1,q_2\}, \{q_4\}, \{q_5,q_6\}$
 >> [!info] Anche se $q_2$ e $q_5$ hanno la stesa colonnina rimangono separati perché si trovano già in classi diverse
 > 
-> ![[Pasted image 20260326100813.png|200]]
+> ![[Pasted image 20260326100813.png|300]]
 > 
 > Ripeto lo stesso identico meccanismo di prima e mi ritrovo con 5 classi
-> ![[Pasted image 20260326100838.png|200]]
+> ![[Pasted image 20260326100838.png|300]]
 >> [!info] Quelli nella classe 3 sono gli stati finali
 > 
 > Rifaccio la tabellina con queste nuove classi e mi rendo conto che non c'è più nulla da spezzare. Il partizionamento è finito. Gli stati dell'automa saranno le classi di equivalenza con indice: 0, 1, 2, 3, 4
 > 
-> ![[Pasted image 20260326100850.png|200]]
+> ![[Pasted image 20260326100850.png|300]]
 > 
 > Il nuovo automa minimizzato è il seguente e avrà 5 stati invece dei 7 iniziali
 > 
-> ![[Pasted image 20260326100911.png|200]]
+> ![[Pasted image 20260326100911.png|300]]
 
 **Procedura di raffinamento:**
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260326102140.png" width="200">
+  <img src="Pasted image 20260326102140.png" width="300">
 </div>
 
 **Algoritmo di minimizzazione:**
@@ -880,7 +880,7 @@ L'automa minimo di $L$ si ottiene nel modo seguente:
 - *Output:* la partizione $\Pi$ relativa all'automa minimo
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260326102153.png" width="200">
+  <img src="Pasted image 20260326102153.png" width="300">
 </div>
 ###### Lemma di iterazione (proprietà dei linguaggi regolari)
 **Lemma:** sia $L$ un linguaggio regolare. Esiste un intero n tale che ogni parola $w \in L$ di lunghezza $|w| \geq n$ si può fattorizzare $w = xyz$ con $y \neq \epsilon$ e $xy^mz \in L$ per ogni $m \geq 0$. In altri termini se $L$ è un linguaggio regolare, in ogni parola di $L$ abbastanza lunga si può trovare un fattore non vuoto che può essere iterato (*pumped*) senza uscire dal linguaggio. Pertanto se un linguaggio non ha questa proprietà non può essere regolare. Ci sono, però, linguaggi che hanno questa proprietà e non sono regolari
@@ -893,14 +893,14 @@ L'automa minimo di $L$ si ottiene nel modo seguente:
 > - per $m$ abbastanza grande si dovrebbe avere  
 >     $a^m b^m = xyz, y \neq \epsilon, xy^n z \in L$ per ogni $n \geq 0$     
 > - se $|x| \geq m$ allora    
->     ![[Pasted image 20260326163412.png|200]]
+>     ![[Pasted image 20260326163412.png|300]]
 >     
 >     - si ha $y = b^k$, con $k > 0$ e $xz = a^m b^{m-k})$>         
 >     - ma allora $xy^0 z = xz \notin L$, il che è assurdo
 >         
 > - se $|z| \geq m$, si ragiona in maniera simmetrica
 > - se $|x| < m$ e $|z| < m$ allora
-> 	![[Pasted image 20260326164834.png|200]]
+> 	![[Pasted image 20260326164834.png|300]]
 > 	- si ha $y = a^hb^k$ con $h,k > 0$
 > 	- quindi $xy^2z = xa^hb^ka^hb^kz$ contiene il fattore $ba$
 > 	- ma allora $xy^2z \notin L$, il che è assurdo
@@ -915,7 +915,7 @@ L'automa minimo di $L$ si ottiene nel modo seguente:
 - Quindi, posto $x = a_1...a_i, y = a_{i+1}...a_j, z = a_{j+1}...a_k$ avremo $w = xyz, y \neq \epsilon$ e 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260326165631.png" width="200">
+  <img src="Pasted image 20260326165631.png" width="300">
 </div>
 
 - Pertanto $A$ accetta tutte le parole $xy^nz$ con $n\geq0$ 
@@ -924,7 +924,7 @@ L'automa minimo di $L$ si ottiene nel modo seguente:
 Come abbiamo visto inizialmente, l'analisi è la prima fase nella compilazione di un codice sorgente. Dobbiamo identificare gli elementi atomici che costituiscono il nostro codice e individuare a quale categoria lessicale fanno riferimento. Il programma sorgente viene dato in pasto all'Analizzatore lessicale, che restituirà un token al Parser ogni volta che questo deve procedere con la sua analisi sintattica. Contemporaneamente, all'invio del token, l'analizzatore scriverà nella tabella dei simboli gli attributi del token, che poi potranno essere recuperati dal parser.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260411093231.png" width="200">
+  <img src="Pasted image 20260411093231.png" width="300">
 </div>
 
 **Perché analisi lessicale e sintattica devono essere separate?** E' importante separare l'analisi lessicale da quella sintattica perché si ha un'enorme semplificazione nella progettazione del compilatore, una maggiore efficienza e portabilità (perché cambiando sistema, cambia la gestione dell'input) rispetto a che se fossero svolte insieme.
@@ -1003,7 +1003,7 @@ Con la costruzione dei sottoinsiemi otteniamo un'automa deterministico $A_D = \l
 - Si ha che $w$ sta nel linguaggio denotato da $E_j$ se e soltanto se $f_j \in \hat\delta(q_0,u)$
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260409154305.png" width="200">
+  <img src="Pasted image 20260409154305.png" width="300">
 </div>
 
 Troviamo il più lungo prefisso $u$ di $w$ accettato da $A_D$ e il più piccolo indice $j$ tale che $f_j \in \hat\delta(q_0,u)$. Gli stati di $A_D$ sono sottoinsiemi di $Q$ tra i quali c'è $\emptyset$ che funge da 'pozzo'. L'ultimo transito da uno stato finale prima dell'ingresso nel pozzo individua il più lungo prefisso di $w$ accettato da $A_D$
@@ -1013,7 +1013,7 @@ Troviamo il più lungo prefisso $u$ di $w$ accettato da $A_D$ e il più piccolo 
 *Output:* la massima lunghezza di un prefisso del testo accettato da $A_D$ e il token corrispondente
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260409154738.png" width="200">
+  <img src="Pasted image 20260409154738.png" width="300">
 </div>
 
 <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
@@ -1025,7 +1025,7 @@ Troviamo il più lungo prefisso $u$ di $w$ accettato da $A_D$ e il più piccolo 
 **Lex:** è un generatore di analizzatori lessicali
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260409155211.png" width="200">
+  <img src="Pasted image 20260409155211.png" width="300">
 </div>
 ###### Grammatiche regolari
 *Definizione:* una grammatica a struttura di frase $G = \langle V,\Sigma,P,S \rangle$ è di tipo 3 se tutte le produzioni hanno le forme: $X \rightarrow aY, X \rightarrow a$, con $X,Y \in N, a \in \Sigma$ (cioè una variabile mi può produrre o simbolo terminale oppure un simbolo terminale con un'altra variabile). Nel caso in cui $S$ non compaia nei lati destri delle produzioni è ammessa anche la produzione $S \rightarrow \epsilon$ 
@@ -1069,10 +1069,10 @@ Si verifica che $L(G) = L(A)$ (dimostrazione analoga alla precedente)
 > [!example] 
 > Se $G$ ha le produzioni $S → aS, S →bX, S →b, X → aX, X → bS, X → a$, allora $L(G)$ è accettata dall'automa
 > 
-> ![[Pasted image 20260409162414.png|200]]
+> ![[Pasted image 20260409162414.png|300]]
 
 > [!example]
-> ![[Pasted image 20260409162548.png|200]]
+> ![[Pasted image 20260409162548.png|300]]
 
 *Definizione:* una grammatica si dice lineare se tutte le produzioni hanno la forma $X → uYv$ o $X → u$ con $X,Y \in N$ e $u,v \in \Sigma^*$
 
@@ -1129,7 +1129,7 @@ Fra tutti i linguaggi non contestuali ce n'è uno che rappresenta l'archetipo di
 > - ogni $w \in L$ si scrive $w = au$ con $u \in L_b$ o $w = bu$ con $u \in L_a$ o $w = \epsilon$
 > - ogni $w \in L_b$ si scrive $w = ubv$ con $u,v \in L$
 > 
-> ![[Pasted image 20260411094136.png|200]]
+> ![[Pasted image 20260411094136.png|300]]
 > 
 > Quindi $L$ è generato dalla grammatica con produzioni $S → aB | bA | \epsilon, A → SaS, B → SbS$
 
@@ -1145,7 +1145,7 @@ Fra tutti i linguaggi non contestuali ce n'è uno che rappresenta l'archetipo di
 La parola che si ottiene leggendo, nell'ordine, le etichette delle foglie è la parola associata a $T$
 
 > [!example] Nell'esempio di prima: 
-> ![[Pasted image 20260411094509.png|200]]
+> ![[Pasted image 20260411094509.png|300]]
 
 *Proposizione:* siano $G$ una grammatica non contestuale e $w \in \Sigma^*$. Si ha $w \in L(G)$ se e solo se esiste un albero di derivazione di $G$ associato a $w$
 
@@ -1156,12 +1156,12 @@ La parola che si ottiene leggendo, nell'ordine, le etichette delle foglie è la 
 > 
 > Ma un solo albero:
 > 
-> ![[Pasted image 20260411094606.png|200]]
+> ![[Pasted image 20260411094606.png|300]]
 
 > [!example]
 > Sia $G$ la grammatica con $\Sigma = \{0,1,*,+\}, N = \{S\}$ e produzioni $S → S + S | S * S | 0 | 1$, allora $L(G) = (\{0,1\},\{+,*\})^*\{0,1\}$. La parola $1+1*0$ ha 2 alberi di derivazione:
 > 
-> ![[Pasted image 20260411094639.png|200]]
+> ![[Pasted image 20260411094639.png|300]]
 > 
 > Dal punto di vista 'semantico' il primo corrisponde alla 'computazione' di $1+(1*0)$ e il secondo alla 'computazione' di $(1+1)*0$
 
@@ -1172,14 +1172,14 @@ La parola che si ottiene leggendo, nell'ordine, le etichette delle foglie è la 
 > [!example] 
 > Sia $G'$ la grammatica con $\Sigma = \{0,1,*,+\}, N = \{S,P,X\}$ e produzioni $S → P+S|P, P → X*P|X, X → 0|1$. È equivalente a quella dell'esempio precedente ma non ambigua
 > 
-> ![[Pasted image 20260411094747.png|200]] 
+> ![[Pasted image 20260411094747.png|300]] 
 
 *Definizione:* un linguaggio non contestuale si dice inerentemente ambiguo se non è generato da nessuna grammatica non contestuale non ambigua
 
 > [!example] 
 > Sia $G$ la grammatica con le produzioni $S → XA | AY, X → aXb| ab, A → aA|a, Y → bYa |ba$. Si ha  $L = \{ a^mb^ma^n|m,n > 0\} \cup \{a^mb^na^n|m,n > 0\}$. $G$ è ambigua 
 > 
-> ![[Pasted image 20260411094824.png|200]]
+> ![[Pasted image 20260411094824.png|300]]
 > 
 > $L$ è inerentemente ambiguo
 ###### Semplificazioni nelle grammatiche non contestuali
@@ -1268,13 +1268,13 @@ Procediamo per induzione sul numero dei nodi dell'albero.
 **Algoritmo:** inizialmente ho in input una grammatica non contestuale $G = \langle V, \Sigma, S, P \rangle$. In output ho l'insieme $W$ delle variabili annullabili;
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423100813.png" width="200">
+  <img src="Pasted image 20260423100813.png" width="300">
 </div>
 
 > [!example] 
 > Sia $G$ la grammatica con $N = \{S,O,P,E\}$, $\Sigma = \{a,b,x\}$ e con le produzioni: $S → aOb, O → P | aOb | OO, P → x | E, E → \epsilon$
 > 
-> ![[Pasted image 20260423095536.png|200]]
+> ![[Pasted image 20260423095536.png|300]]
 > 
 > Le variabili annullabili sono: $E,P,O$. Quindi $G$ è equivalente alla grammatica con le produzioni: $S → aOb | ab, O → P | aOb | OO | ab | O, P → x | E$
 
@@ -1329,7 +1329,7 @@ Procediamo per induzione sul numero dei nodi dell'albero.
 > [!example] 
 > Sia $G$ la grammatica con $N = \{S,O,P,E\}$, $\Sigma = \{a,b,x\}$ e con le produzioni: $S → aOb, O → P | aOb | OO | ab | O, P → x | E$. Il grafo delle produzioni unarie è:
 > 
-> ![[Pasted image 20260423102435.png|200]]
+> ![[Pasted image 20260423102435.png|300]]
 > 
 > Quindi $G$ equivalente alla grammatica con produzioni: $S → aOb | ab, O → aOb | OO | ab | x, P → x$
 
@@ -1363,7 +1363,7 @@ In altre parole creiamo un insieme di variabili ($W_n$) e gli aggiungiamo tutte 
 L'algoritmo per le variabili produttive prende in input una grammatica non contestuale $G = \langle V, \Sigma, P, S \rangle$ e restituisce in output l'insieme $W$ delle variabili produttive e l'insieme $N$ delle variabili improduttive;
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423103009.png" width="200">
+  <img src="Pasted image 20260423103009.png" width="300">
 </div>
 
 **Ricerca delle variabili accessibili:** costruiamo gli insiemi di variabili $K_n$ come segue:
@@ -1381,7 +1381,7 @@ In altre parole creiamo un insieme di variabili ($K_n$) e gli aggiungiamo $S$ ch
 L'algoritmo per le variabili accessibili prende in input una grammatica non contestuale $G = \langle V, \Sigma, P, S \rangle$ e restituisce in output l'insieme $K$ delle variabili produttive e l'insieme $N$ delle variabili improduttive;
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423110309.png" width="200">
+  <img src="Pasted image 20260423110309.png" width="300">
 </div>
 
 **Procedura di riduzione:** 
@@ -1395,12 +1395,12 @@ L'algoritmo per le variabili accessibili prende in input una grammatica non cont
 > [!example] 
 > Sia $G$ la grammatica $N = \{E,F,T,R\}, \Sigma = \{+,*,-,(,)\}$, simbolo iniziale $E$ e produzioni: $E → E+E|T|F, F → E*E|(T)|a, T → E-T, R → E-F$
 > 
-> ![[Pasted image 20260423110536.png|200]]
+> ![[Pasted image 20260423110536.png|300]]
 
 > [!example]
 > Sia $G$ la grammatica con variabili $S,O,P$, terminali $a,b,x$ e produzioni $S→aOb|ab, O → aOb|OO|ab|x, P → x$. Tutte le variabili sono produttive
 > 
-> ![[Pasted image 20260501123226.png|200]]
+> ![[Pasted image 20260501123226.png|300]]
 > 
 > Si ottiene la grammatica con le produzioni $S → aOb|ab, O → aob|OO|ab|x$
 ###### Forma normale di Chomsky
@@ -1411,7 +1411,7 @@ L'algoritmo per le variabili accessibili prende in input una grammatica non cont
 - $S → \epsilon$ ma solo a condizione che $S$ non compaia nei lati destri delle produzioni
 
 > [!example]
-> La grammatica con le produzioni S → AB| \epsilon, A → AA|a, B → BB|b è la forma normale di Chomsky. Genera $L = \{\epsilon\} \cup \{a^mb^n|m,n > 0\}$
+> La grammatica con le produzioni $S → AB| \epsilon, A → AA|a, B → BB|b$ è la forma normale di Chomsky. Genera $L = \{\epsilon\} \cup \{a^mb^n|m,n > 0\}$
 
 *Osservazione:* negli alberi di derivazione di una grammatica in forma normale di Chomsky
 - Le foglie dono figli unici
@@ -1420,13 +1420,13 @@ L'algoritmo per le variabili accessibili prende in input una grammatica non cont
 > [!example] 
 > $S → AB|\epsilon, A → AA|a, B → BB|b$. Un albero di derivazione di $aaabb$ è 
 > 
-> ![[Pasted image 20260501123457.png|200]]
+> ![[Pasted image 20260501123457.png|300]]
 
 *Teorema:* ogni linguaggio non contestuale è effettivamente generato da una grammatica non contestuale in forma normale di Chomsky
 
 *Procedura:* 
 1. Eliminare le $\epsilon$-produzioni e produzioni unarie; restano solo produzioni $X → a$ con $X \in N$ e $a \in \Sigma$ e produzioni $X → \gamma$ con $|\gamma| \geq 2$
-2. Ridursi al caso $\gamma \in N^*$ (caso in cui $\gamma$ contiene solo variabili): per ogni terminale $a$ che comprare, non da solo, in qualche lato destro
+2. Ridursi al caso $\gamma \in N^*$ (caso in cui $\gamma$ contiene solo variabili): per ogni terminale $a$ che compare, non da solo, in qualche lato destro
 	- Introduco una nuova variabile $A$ e una nuova produzione $A → a$
 	- Sostituisco tutte le occorrenze di $a$ nei lati destri delle produzioni con $A$ (salvo che a non sia l'intero lato destro)
 
@@ -1436,7 +1436,7 @@ L'algoritmo per le variabili accessibili prende in input una grammatica non cont
 Restano solo produzioni $X → a$ con $X \in N$ e $a \in \Sigma$ e produzioni $X → X_1 →…→ X_k$ con $X,X_1,…,X_k \in N, k \geq 2$ (salvo l'eventuale $S → \epsilon$)
 3. Ridursi al caso $k = 2$: per ogni produzione $X → X_1 →…→ X_k$ con $k \geq 3$
 	- Introduco una nuova variabile $Z$ e sostituisco la produzione $X → X_1 →…→ X_k$ con la coppia di produzioni $X → X_1 →…→ X_{k-2}Z$, $Z → X_{k-1}X_K$
-	- Ripeto il passo MANCA
+	- Ripeto il passo precedente finché necessario
 
 > [!example]
 > Sia $G$ la grammatica con produzioni $S → AOB|AB, O → AOB|OO|AB|x, A → a, B → b$. Con la procedura indicata, otteniamo: $A → AZ|AB, O → AZ|OO||AB|x, Z → OB, A → a, B → b$. La grammatica ottenuta, equivalentemente a $G$, è in forma normale di Chomsky
@@ -1450,7 +1450,7 @@ Restano solo produzioni $X → a$ con $X \in N$ e $a \in \Sigma$ e produzioni $X
 > [!example]
 > La grammatica con le produzioni $S → aSB|aB, B → b$ è in forma normale di Greibach. Genera $L = \{a^nb^n|n>0\}$
 
-*Osservazione:* in una grammatica in forma normale di Greibach, ogni derivazione di una parola $w \in L(G)$ di lunghezza n richiede esattamente $n$ passi
+*Osservazione:* in una grammatica in forma normale di Greibach, ogni derivazione di una parola $w \in L(G)$ di lunghezza $n$ richiede esattamente $n$ passi
 
 > [!example]
 > $S → aSB|aB, B → b$. Una derivazione di $a^3 b^3$: $S \implies aSB \implies aaSBB \implies aaaBBB \implies aaabBB \implies aaabbB \implies aaabbb$
@@ -1466,24 +1466,28 @@ Restano solo produzioni $X → a$ con $X \in N$ e $a \in \Sigma$ e produzioni $X
 - Ma ogni grammatica non contestuale si può ridurre in tale forma
 
 L'idea di tale algoritmo è:
-- Siano $G$ una grammatica in forma normale di Chomsky e w una parola
+- Siano $G$ una grammatica in forma normale di Chomsky e $w$ una parola
 - Scriviamo $w$ come stringa di lettere $w = a_1a_2…a_n$
 - Cerchiamo di calcolare, per $0 \leq i < j \leq n$, tutte le variabili da cui si può derivare il fattore $a_{i+1}a_{i+2}…a_j$
-- Vado a cercare per ogni fattore della mia parola, quali sono le variabili ????????
 - Per $i = 0, j = n$, avrò le variabili da cui si può derivare $w$; quindi $w \in L(G)$ se e solo se tra esse il simbolo iniziale $S$ è una di tali variabili
 
-**Il calcolo:** Dobbiamo calcolare gli insiemi $N_{ij} = \{X \in N | X \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_j\}, 0 \leq i < j \leq n$, cioè tutti i non terminali che possono generare il pezzo di stringa da posizione $i + 1$ a $j$ (insieme delle variabili che mi generano il fattore $a_{i+1}a_{i+2}…a_j$). Per questo sto riempendo una tabella triangolare con sottostringhe corte nelle celle piccole e sottostringhe lunghe in quelle grandi. 
+**Il calcolo:** Dobbiamo calcolare gli insiemi $N_{ij} = \{X \in N | X \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_j\}, 0 \leq i < j \leq n$, cioè tutte le coppie di non terminali che possono generare il pezzo di stringa da posizione $i + 1$ a $j$ (insieme delle variabili che mi generano il fattore $a_{i+1}a_{i+2}…a_j$). Per questo sto riempendo una tabella triangolare con sottostringhe corte nelle celle piccole e sottostringhe lunghe in quelle grandi. 
 - Per $j = i+1, N_{ij} = \{X \in N | X \overset{*}{\Rightarrow} a_j\} = \{X \in N | X →a_j$ in $P \}$. Ovvero guardo ogni lettera $a_j$ e metto dentro $N_{j-1,j}$ tutte le variabili che producono quella lettera
 - Per $j \geq i + 2$, si ha $X \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_j$ se e solo se $X → YZ, Y \overset{*}{\Rightarrow} a_{i+1}a_{i+2}…a_h, Z \overset{*}{\Rightarrow} a_{h+1}a_{h+2}…a_j$, per opportuni $Y,Z \in N$ e $i<h<j$. Otteniamo così $N_{ij} = \bigcup\limits^{j-1}_{h = i+1} \{X \in N | \exists Y \in N_{ih}, Z \in N_{hj}, X → YZ$ in $P\}$ 
 
 Per ogni coppia di variabili $Y,Z$, poniamo $Y \circ Z = \{X \in N | X → YZ$ in $P\}$ e, più in generale, per ogni coppia di insiemi di variabili $H,K \subseteq N$, $H \circ K = \bigcup\limits_{\substack{Y \in H \\ Z \in K}} Y \circ Z$. Allora la nostra formula ricorsiva diventa: $N_{ij} = \bigcup\limits^{j-1}_{h = i+1} N_{ih} \circ N_{hj}$. Anzi se conveniamo che $N_{ij} = \emptyset$ per $0 \leq j \leq i \leq n, N_{ij} = \bigcup\limits_{h=0}^n N_{ih} \circ N_{hj}$
 
+> [!info] N.B.
+> L'operazione di $\circ$ indica la concatenazione e poi la sostituzione con il lato sinistro
+
 > [!example] 
-> IMMAGINE
+> ![[Pasted image 20260503174624.png|300]]
 
 **Algoritmo CYK (on-line):** prende in input una grammatica in f.n. di Chomsky e una parola $w = a_1a_2…a_n$. In output da la matrice di ricognizione $N_{ij}$ associata a $w$. Ritorna 'TRUE' se $w \in L(G)$, 'FALSE' altrimenti
 
-IMMAGINE
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260503174651.png" width="300">
+</div>
 
 Analisi:
 - Calcolare $N_{ih} \circ N_{hj}$ ha costo 1
@@ -1497,13 +1501,17 @@ Analisi:
 	- Una derivazione di $a_{i+1}a_{i+2}…a_h$ da $Y$
 	- Una derivazione di $a_{h+1}a_{h+2}…a_j$ da $Z$
 
-IMMAGINE
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260503174842.png" width="300">
+</div>
+
+> [!example]
+> ![[Pasted image 20260503174824.png|300]]
 
 **Caso generale:** se $G$ non è in forma normale di Chomsky
 1. Si mette $G$ in forma normale di Chomsky con l'algoritmo standard
 2. Si esegue il parsing nella nuova grammatica con l'algoritmo CYK
 3. Riesaminando al contrario il passo 2, si risale al parsing nella grammatica originale
-
 ###### Lemma di iterazione per i linguaggi non contestuali
 Sia $L$ un linguaggio regolare. Esiste un intero $n$ tale che ogni parola $w \in L$ di lunghezza $|w| \geq n$ si può fattorizzare $w = xyz$ con $y \neq \epsilon$ e  $xy^kz \in L$ per ogni $k \geq 0$
 
@@ -1513,7 +1521,7 @@ Sia $L$ un linguaggio regolare. Esiste un intero $n$ tale che ogni parola $w \in
 Sia $L$ un linguaggio non contestuale. Esiste un intero $n$ tale che ogni parola $w \in L$ di lunghezza $|w| \geq n$ si può fattorizzare $w = xuyvz$ con $uv \neq \epsilon$ e $$xu^kyv^kz \in L$$
 per ogni $k \geq 0$
 
-*Osservazione:* se L è un linguaggio non contestuale, in ogni parola di L abbastanza lunga si possono trovare due fattori non entrambi vuoti che possono essere iterati simultaneamente (**pumped**) senza uscire dal linguaggio. Pertanto, un linguaggio che non ha questa proprietà non è un linguaggio non contestuale (ma ci sono linguaggi che hanno questa proprietà e non sono linguaggi non contestuali)
+*Osservazione:* se $L$ è un linguaggio non contestuale, in ogni parola di $L$ abbastanza lunga si possono trovare due fattori non entrambi vuoti che possono essere iterati simultaneamente (**pumped**) senza uscire dal linguaggio. Pertanto, un linguaggio che non ha questa proprietà non è un linguaggio non contestuale (ma ci sono linguaggi che hanno questa proprietà e non sono linguaggi non contestuali)
 
 > [!example] 
 > Mostriamo che $L = \{a^mb^mc^m | m > 0\}$ non è contestuale. 
@@ -1524,17 +1532,17 @@ per ogni $k \geq 0$
 > 	- quindi $xuyvz = xu^2 yv^2 z = a^mb^mc^m$, il che è ASSURDO
 > - se $|vz|>m$, si ragiona in maniera simmetrica
 > 
-> ![[Pasted image 20260501124354.png|200]]
+> ![[Pasted image 20260501124354.png|300]]
 > 
 > - se $|xu| \leq m$ e $|vz| \leq m$, allora 
 > 	- $u = a^i, v = c^j$, con $i+j > 0$ 
 > 	- allora $xu^2yv^2z = a^{m+i}b^mc^{m+j} \notin L$, il che è ASSURDO
 > 
-> ![[Pasted image 20260501124959.png|200]]
+> ![[Pasted image 20260501124959.png|300]]
 
 **Idea della prova:** 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-05-01 12-50-37.png" width="200">
+  <img src="Screenshot From 2026-05-01 12-50-37.png" width="300">
 </div>
 
 *Dimostrazione:* 
@@ -1547,7 +1555,7 @@ per ogni $k \geq 0$
 - Quindi $xu^kyv^kz \in L$ per ogni $k \geq 0$
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-05-01 12-56-24.png" width="200">
+  <img src="Screenshot From 2026-05-01 12-56-24.png" width="300">
 </div>
 ###### Parsing top-down
 In genere l’operazione di parsing richiede un tempo notevole $O(n^3)$ e non è accettabile nel caso dovessimo
@@ -1556,7 +1564,8 @@ fare la compilazione di un programma molto complesso (perché come sappiamo, rar
 *Osservazione:* a ogni derivazione corrisponde un albero di derivazione, ma a un albero di derivazione posso corrispondere più derivazioni 
 
 > [!example]
-> ![[Pasted image 20260501130348.png|200]]
+> ![[Pasted image 20260501130348.png|300]]
+> 
 > Sostituendo prima una variabile invece che un’altra, otteniamo sempre lo stesso albero di parsing. Sarebbe quindi bene mettersi d’accordo su un ordine da seguire per sostituire le variabili. Per fare ciò usiamo le derivazioni sx
 
 *Definizione:* sia $G = \langle V,\Sigma,P,S \rangle$ una grammatica non contestuale e $\alpha,\beta \in V$. Scriveremo $\alpha \implies_L\beta$ se $\beta$ si ottiene da $\alpha$ sostituendo la variabile più a sinistra con il lato destro di una sua produzione. Una derivazione sinistra di una parola $w$ è una sequenza $S = \alpha_0 \xrightarrow[L]{} \alpha_1 \xrightarrow[L]{} … \xrightarrow[L]{} \alpha_n = w$ (con '=' rappresenta una conseguenza e '=>' rappresenta una derivazione)
@@ -1573,14 +1582,14 @@ fare la compilazione di un programma molto complesso (perché come sappiamo, rar
 E anziché il parsing di $w \in \Sigma^*$ farò il parsing di $w$#. Quindi il cancelletto lo genererò partendo da $S'→S$# e poi avrò $S$ da cui devo derivare $w$.
 
 > [!example]
-> ![[Pasted image 20260501130517.png|200]]
+> ![[Pasted image 20260501130517.png|300]]
 
 > [!example]
-> ![[Pasted image 20260501130548.png|200]]
+> ![[Pasted image 20260501130548.png|300]]
 
 **Parsing predittivo:** 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260501130606.png" width="200">
+  <img src="Pasted image 20260501130606.png" width="300">
 </div>
 
 Abbiamo l’input che dobbiamo derivare dal simbolo iniziale, quindi passo passo esaminiamo il nostro input
@@ -1589,7 +1598,7 @@ precedente), l’analisi (ciò che avevamo derivato dal nostro simbolo iniziale 
 derivare la parte superiore (chiamata predizione). Le regole di questo procedimento sono:
 - Esaminiamo sempre il simbolo più a sinistra della predizione
 - Se è una variale, dobbiamo fare una predizione: va sostituito con uno dei suoi lati destri
-- Se è un terminale, deve coincidere con la prima lettera dell'input da MANCA
+- Se è un terminale, deve coincidere con la prima lettera dell'input da analizzare (simbolo di **look-ahead**). In caso affermativo, viene spostato nel lato 'analisi'; in caso negativo, l’esecuzione fallisce.
 
 Il fallimento non significa che non possiamo fare il parsing della parola, ma solo che la predizione che abbiamo fatto è sbagliata e che quindi dobbiamo tornare indietro e farne un’altra.
 
@@ -1607,14 +1616,14 @@ Il fallimento non significa che non possiamo fare il parsing della parola, ma so
 > [!example]
 >  $S' → S$#,$A → a | aA, C → c | cC, S → AB | DC, B → bc | bBc, D → ab |aDb$ 
 >  
-   ![[Screenshot From 2026-05-01 13-08-31.png|200]] ![[Pasted image 20260501130909.png|200]]
+   ![[Screenshot From 2026-05-01 13-08-31.png|300]] ![[Pasted image 20260501130909.png|300]]
 
 **Recursione destra:** 
 
 > [!example]
 > $S' → S$#, $S → Sb | a$ 
 > 
-> ![[Pasted image 20260501130947.png|200]]
+> ![[Pasted image 20260501130947.png|300]]
 
 *Osservazione:* il metodo fallisce se $X \implies^* X\alpha$ per qualche $X \in N, \alpha \in V$ (*recursione destra* = da una
 variabile posso derivare una forma sentenziale che comincia con la variabile stessa). Questo comporta che nella parte dx della nostra tabella non ci saranno mai solo terminali come prima lettera, e di conseguenza dovremo ripetere all'infinito gli stessi passaggi.
@@ -1628,7 +1637,7 @@ variabile posso derivare una forma sentenziale che comincia con la variabile ste
 > [!example]
 > $S' → S$#, $A → a|aA, C → c|cC, S → AB|DC, B → bc | bBc, D → ab | aDb$
 > 
-> ![[Pasted image 20260501132043.png|200]]
+> ![[Pasted image 20260501132043.png|300]]
 > 
 > (fase finale)
 
@@ -1645,8 +1654,8 @@ variabile posso derivare una forma sentenziale che comincia con la variabile ste
 > [!example]
 > $S' → S$#, $A → a|aA, C → c|cC, S → AB|DC, B → bc | bBc, D → ab | aDb$
 > 
-> ![[Pasted image 20260501132153.png|200]] ![[Pasted image 20260501132208.png|200]]
+> ![[Pasted image 20260501132153.png|300]] ![[Pasted image 20260501132208.png|300]]
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260501132230.png" width="200">
+  <img src="Pasted image 20260501132230.png" width="300">
 </div>

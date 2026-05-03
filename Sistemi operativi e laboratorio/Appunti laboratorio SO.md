@@ -2214,9 +2214,7 @@ Tipi di signal:
 - Linux supporta anche i POSIX Real-Time Signals 
 - definiti negli standard POSIX.1-1990 e POSIX.1- 2001 
 
-I signal sono una forma di IPC limitata, nel senso che non contengono ulteriore informazione (il dato scambiato è il signal stesso), Real-Time a parte. Sono simili ad "interrupt software" o a notifiche asincrone, che vengono inviati ad un processo (od a un thread) al verificarsi di un evento. Gli standard hanno un significato intrinseco. In altre parole un signal è una notifica asincrona che il sistema (o un altro processo) invia a un processo/thread per dirgli: “è successo qualcosa”.
-
-Non trasporta dati (quasi mai). È solo un **evento**.
+I signal sono una forma di IPC limitata, nel senso che non contengono ulteriore informazione (il dato scambiato è il signal stesso), Real-Time a parte. Sono simili ad "interrupt software" o a notifiche asincrone, che vengono inviati ad un processo (od a un thread) al verificarsi di un evento. Gli standard hanno un significato intrinseco. In altre parole un signal è una notifica asincrona che il sistema (o un altro processo) invia a un processo/thread per dirgli: “è successo qualcosa”. Non trasporta dati (quasi mai), è solo un **evento**.
 
 > [!quote]
 > «un meccanismo asincrono di notifica di eventi tra kernel e processi, che induce una variazione di flusso o di flusso di controllo nel processo destinatario» 
@@ -2240,11 +2238,11 @@ La gestione può essere varia: il processo termina, viene sospeso, viene eseguit
 La disposition è quindi un attributo per-process ed è condiviso da tutti i suoi threads. È così impostato di default ma è modificabile (con `sigaction()`)
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260424145500.png" width="200">
-  <img src="Pasted image 20260424145515.png" width="200">
+  <img src="Pasted image 20260424145500.png" width="300">
+  <img src="Pasted image 20260424145515.png" width="300">
 </div>
 
-**Cambiare la gestione (disposition) corrente:** si fa con `sigaction(2)` o `signal(2)` (vedi oltre per il dettaglio di `sigaction(2)`). La seconda è meno portabile, meglio usare l'altra. Ho tre opzioni: 
+**Cambiare la gestione (disposition) corrente:** si fa con `sigaction(2)` o `signal(2)`. La seconda è meno portabile, meglio usare l'altra. Ho tre opzioni: 
 - ignorare il signal = `SIG_IGN`
 - lasciare/ripristinare la gestione di default del kernel = `SIG_DFL` 
 - specificare una funzione handler che gestisca il segnale = `void handler(int sig) {// codice eseguito quando arriva il segnale}`
@@ -2259,12 +2257,12 @@ Un handler è: una funzione chiamata in modo asincrono, in un momento imprevedib
 
 Un handler è una funzione definita dal programmatore che il sistema invoca in maniera asincrona (*callback*) alla ricezione del signal (il processo/programmatore non sa se e quando sarà invocata). Le disposition sono duplicate da `fork(2)` nel child. Dopo `execve(2)` le disposition che prevedono un handler sono resettate al default, quelle che prevedono di ignorare rimangono inalterate
 
-**Chi li invia:** I signal possono essere inviati da:
+**Chi li invia:** I signal possono essere inviati:
 - dal sistema operativo, per comunicare al processo/thread che si è verificato un certo evento (es.: SIGPIPE, cfr la lezione sulle PIPE) 
 - dall'utente da terminale premendo certi tasti: 
-	- Ctrl+C: `SIGINT` 
-	- Ctrl+Z: `SIGTSTP` 
-	- Ctrl+\: `SIGQUIT` 
+	- `Ctrl+C`: `SIGINT` 
+	- `Ctrl+Z`: `SIGTSTP` 
+	- `Ctrl+\`: `SIGQUIT` 
 
 ```bash
 fabio@fabiopc :~$ stty -a 
@@ -2273,7 +2271,7 @@ speed 38400 baud; rows 46; columns 173; line = 0; intr = ^C; quit = ^\; erase = 
 
 - con il comando kill dalla shell 
 - da un processo/thread all'altro con apposite funzioni
-- I signals inviati dall'utente dalla tastiera del terminale (Ctrl+C, Ctrl+\, etc.) sono ricevuti da tutti i processi facenti parte del *process group*
+- I signals inviati dall'utente dalla tastiera del terminale (`Ctrl+C`, `Ctrl+\`, etc.) sono ricevuti da tutti i processi facenti parte del *process group*
 
 > [!info] Ricorda:
 > Un process group:
@@ -2284,7 +2282,7 @@ speed 38400 baud; rows 46; columns 173; line = 0; intr = ^C; quit = ^\; erase = 
 > - di default tutti i processi di una singola pipeline appartengono allo stesso process group. Ciò per gestire l’invio di segnali da tastiera, per gestire la sospensione (`SIGTSTP` con Ctrl+Z) e la gestione del background/foreground (comandi interni di Bash bg e fg), etc.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260424150410.png" width="200">
+  <img src="Pasted image 20260424150410.png" width="300">
 </div>
 
 **Chi li riceve:** *process-directed* o *thread-directed* 
@@ -2359,7 +2357,7 @@ struct sigaction {
 > 
 > nell'esempio 2 sopra descritto la open(2) si interrompe e torna -1 (errno viene settata a EINTR)
 
-**Interruzione di SC bloccate:** se un signal handler è invocato mentre una SC è bloccata in determinate operazioni allora può verificarsi: 
+**Interruzione di SC bloccate:** se un signal handler è invocato mentre una syscall è bloccata in determinate operazioni allora può verificarsi: 
 - la funzione è automaticamente riavviata 
 - la funzione fallisce e torna `EINTR` 
 
@@ -2367,7 +2365,7 @@ Ciò dipende da:
 - se in fase di creazione dell'handler (sigaction) era stato o meno specificato il flag `SA_RESTART` 
 - l'interfaccia oggetto della chiamata
 
-Tale comportamento può variare tra sistemi Unix diversi. Alcuni dettagli per Linux: esempi di SC che se bloccate vengono restartate se `SA_RESTART` è attivo: 
+Tale comportamento può variare tra sistemi Unix diversi. Alcuni dettagli per Linux: esempi di syscall che se bloccate vengono restartate se `SA_RESTART` è attivo: 
 - `read(2), write(2), ioctl(2)`, etc. su "slow devices", cioè devices in cui una chiamata I/O può bloccarsi indefinitamente, come pipe, terminale, socket 
 - `open(2)`, per esempio su una FIFO 
 - `wait(2)`, `waitpid(2)` 
@@ -2416,5 +2414,5 @@ Siamo sicuri che tutto sia consistente?
 >     - handler (se definito)
 >     - oppure azione di default
 > 4. Finito l’handler → ripristina lo stato
-> 5. Il programma riprendeù
+> 5. Il programma riprende
 

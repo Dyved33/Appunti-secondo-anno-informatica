@@ -237,7 +237,7 @@ Inoltre sono linguaggi più efficienti di linguaggi interpretati come Python (co
 - *Svantaggi* = overhead (il kernel affida più compiti ai programmi e per questo c'è bisogno di un maggiore tempo di esecuzione)
 
 > [!example]
-> ![[Screenshot From 2026-03-05 12-31-03.png|200]]
+> ![[Screenshot From 2026-03-05 12-31-03.png|300]]
 
 Non c'è differenza dal punto di vista del sistema tra questi programmi, ma ogni volta che un programma applicativo deve accedere a un file o un dispositivo invierà una richiesta tramite messaggio che sarà svolta un un altro programma che è il gestore del dispositivo e non dal kernel, dato che questo contiene solo le funzioni fondamentali (altre funzionalità sono in moduli, ogni modulo nasconde i dettagli di implementazione agli altri moduli)
 
@@ -391,7 +391,7 @@ Associati al thread ci sono:
 Questo genera un problema: due thread che accedono agli stessi dati/stessa memoria (magari uno vuole incrementare e l'altro decrementare la stessa variabile)
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-12 19-20-44.png" width="200">
+  <img src="Screenshot From 2026-03-12 19-20-44.png" width="300">
 </div>
 
 I benefici del multithreading sono:
@@ -410,7 +410,7 @@ In un sistema a utente singolo:
 
 Gli stati del thread sono gli stessi dei processi (in esecuzione, pronto e in attesa), così come le operazioni (creazione, block/sospensione, unblock/riattivazione, terminazione).
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-12 19-24-20.png" width="200">
+  <img src="Screenshot From 2026-03-12 19-24-20.png" width="300">
 </div>
 
 **Sincronizzazione dei thread:** I thread di un processo condividono spazio di indirizzamento (porzione di memoria virtuale condivisa con gli altri thread dello stesso processo che include codice, dati e risorse) e altre risorse. Ogni modifica simultanea di un dato da parte di due thread può corrompere il dato stesso. Per questi motivi è necessario sincronizzare l'accesso dei thread alle risorse
@@ -475,9 +475,9 @@ Vengono generate le seguenti difficoltà:
 - Debugging (può comparire un errore specifico dovuto a una serie di eventi sfortunati che si verifica raramente e sarà difficile da ri-individuare)
 
 > [!info] L'uniprocessore prende il processo P1, esegue chin=getchar(), sospende l'esecuzione di P1 passando a P2, rifà getchar() e cambia chin, stampa chout, poi si ritorna al processo P1, dove chout = chin, ma chin è stato cambiato da P2, perciò verrà stampato nuovamente il secondo carattere. Se un solo processo alla volta potesse eseguire la procedura P2 va in stato di block perchè la risorsa (in questo caso la procedura) non è disponibile poiché usata da un altro processo. La computazione va avanti finché viene ripreso P1, viene conclusa la procedura e si ritorna a P2 con la risorsa ora disponibile, i due caratteri ora sono stampati in ordine. Anche nel multiprocessore ci sarebbe questo problema.
-> ![[Screenshot From 2026-03-18 19-47-13.png|200]]
-> ![[Screenshot From 2026-03-18 19-47-24.png|200]]
-> ![[Screenshot From 2026-03-18 19-48-41.png|200]] > 
+> ![[Screenshot From 2026-03-18 19-47-13.png|300]]
+> ![[Screenshot From 2026-03-18 19-47-24.png|300]]
+> ![[Screenshot From 2026-03-18 19-48-41.png|300]] > 
 
 È necessario pertanto proteggere le variabili condivise e si deve controllare il codice che accede alla variabile.
 
@@ -624,19 +624,19 @@ L'obiettivo è quello di avere un protocollo che permetta a due processi di assi
 
 1. Primo tentativo: Apparentemente questo primo approccio funziona, c'è però un problema, supponiamo che il processo 0 esegua la sua sezione critica e che poi setti turn = 1, ma poi process 0 va in attesa, magari si vuole eseguire la sezione critica solo una volta, ma così le esecuzioni dei due processi si alternano.
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-18 22-22-37.png" width="200">
+  <img src="Screenshot From 2026-03-18 22-22-37.png" width="300">
 </div>
 2. Secondo tentativo: Si usano due flag che dovrebbero segnalare che la sezione critica sta venendo eseguita da uno dei due processi, questo non funziona poiché se i due processi arrivano quasi contemporaneamente con entrambe le flag false, entrano entrambi nella sezione critica poiché pensano che essa sia libera. 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-18 23-28-57.png" width="200">
+  <img src="Screenshot From 2026-03-18 23-28-57.png" width="300">
 </div>
 3. Terzo tentativo: Scambiamo l'ordine delle operazioni di scrittura e lettura, prima occupo, poi aspetto che l'altra sia liberata, ma anche qui se i due processi partissero quasi insieme le due variabili sarebbero inizializzate entrambe a true, così entrambi i loop while sarebbero infiniti e i due processi non avanzeranno mai, è un esempio di stallo.
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-18 23-29-45.png" width="200">
+  <img src="Screenshot From 2026-03-18 23-29-45.png" width="300">
 </div>
 4. Quarto tentativo: Se un processo rileva che un altro processo ha flag true blocca se stesso, poi fa un delay che permette all'altro processo di avanzare e di entrare nella sezione critica per poi impostare flag a false. 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-03-18 23-30-23.png" width="200">
+  <img src="Screenshot From 2026-03-18 23-30-23.png" width="300">
 </div>
 
 La soluzione corretta:
@@ -747,7 +747,7 @@ void semSignalB(semaphore s) {
 ```
 
 > [!info] come funziona un semaforo
->  ![[Pasted image 20260319122744.png|200]]
+>  ![[Pasted image 20260319122744.png|300]]
 
 ```Mutua_esclusione
 /* program mutualexclusion */ 
@@ -770,7 +770,7 @@ void main() {
 
 Si usa nella programmazione parallela:
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319123611.png" width="200">
+  <img src="Pasted image 20260319123611.png" width="300">
 </div>
 
 **Implementazione:** *semWait* e *semSignal* devono essere primitive atomiche
@@ -815,7 +815,7 @@ Anche il meccanismo dei messaggi consente la sincronizzazione per realizzare la 
 
 **Formato del messaggio:** 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319132443.png" width="200">
+  <img src="Pasted image 20260319132443.png" width="300">
 </div>
 
 **Gestione delle code:** Il meccanismo più semplice è il FIFO, il primo messaggio in coda viene trasmesso, oppure si può fare una coda prioritaria per tipo di messaggio o designata dal mittente, alternativamente il destinatario potrebbe ispezionare la coda e scegliere un messaggio particolare. 
@@ -847,7 +847,7 @@ void main() {
 Bisogna quindi assicurare la mutua esclusione ed evitare che un produttore aggiunga dati a un buffer pieno e che un consumatore cerchi di estrarre dati da un buffer vuoto.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260319133107.png" width="200">
+  <img src="Pasted image 20260319133107.png" width="300">
 </div>
 
 Soluzione errata con buffer infinito:
@@ -986,7 +986,7 @@ All'interno del monitor stanno le variabili di condizione, variabili accessibili
 2. *Csignal(c):* riattiva uno dei processi in attesa sulla condizione *c*; se non ce ne sono non fa nulla
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260325123445.png" width="200">
+  <img src="Pasted image 20260325123445.png" width="300">
 </div>
 
 > [!info] Sintesi:
@@ -1202,7 +1202,7 @@ void controller () {
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
   <div style="flex: 1;">
-    <img src="Pasted image 20260326171200.png" style="width: 100%; border-radius: 8px;">
+    <img src="Pasted image 20260326171300.png" style="width: 100%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
   In questa foto invece è sempre possibile evitare la deadlock facendo in modo che il processo P prenda A e la rilasci prima di prendere B e lo stesso faccia il processo Q con la risorsa B prima di prendere la A. Per i processi concorrenti non c'è modo di prevedere chi avanzerà per primo e chi per secondo, se la deadlock succede ci si ritrova in una situazione complicata.
@@ -1216,14 +1216,14 @@ void controller () {
 > [!example] Esempio risorse riutilizzabili: 
 > Due processi competono per l'uso di un file D e un dispositivo T, P1 richiede prima D e lo blocca, P2 richiede prima T e lo blocca, poi però i processi richiedono subito rispettivamente T e D, che però ora sono bloccati dall'altro processo, perciò ora ci troviamo nella situazione di stallo descritta prima. 
 > 
-> ![[Pasted image 20260326171336.png|200]]
+> ![[Pasted image 20260326171336.png|300]]
 > 
 > Se però si invertisse l'ordine in cui sono richieste T e D in modo tale che entrambi i processi richiedono le risorse T e D nello stesso ordine, così P1 prende subito sia T che D, fa ciò che deve fare e sblocca le risorse a P2 che aveva trovato T subito occupato ed era rimasto perciò in attesa.
 
 > [!example] Esempio risorse consumabili: 
 > Due processi si scambiano messaggi:
 > 
-> ![[Pasted image 20260326171425.png|200]]
+> ![[Pasted image 20260326171425.png|300]]
 > 
 > Receive è una funzione bloccante, P1 attende che P2 mandi un messaggio,ma allo stesso tempo P2 attende che P1 mandi un messaggio, quindi attendono messaggi che non arriveranno mai poiché entrambi in attesa. 
 
@@ -1235,7 +1235,7 @@ void controller () {
 > [!example]
 >  L'esempio dell'incrocio delle auto che non sanno chi debba passare per primo può essere rappresentato così: 
 > 
-> ![[Pasted image 20260326171549.png|200]]
+> ![[Pasted image 20260326171549.png|300]]
 
 **Condizioni per lo stallo:** le condizioni necessarie sono:
 1. Mutua esclusione: le risorse possono essere assegnate a un solo processo alla volta
@@ -1281,7 +1281,7 @@ C'è bisogno quindi di un algoritmo detto **algoritmo del banchiere** che usa un
 - Una matrice allocazione, dove ciascuna riga è sempre un processo che contiene l'allocazione attuale della risorsa della colonna per il processo della riga in cui ci troviamo. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260408120624.png" width="200">
+  <img src="Pasted image 20260408120624.png" width="300">
 </div>
 
 Le 3 equazioni/disequazioni mostrano le relazioni fra questi dati definiti sopra: se io sommo le risorse attualmente usate in un processo e ci aggiungo le risorse disponibili rimaste inutilizzate ottengo $R_j$, cioè la quantità disponibile di quella risorsa, la seconda indica che chiaramente un processo non può richiedere più di quanto c'è al massimo di una risorsa, la terza indica chiaramente che in ogni momento un processo deve avere una quantità di risorse di ogni tipo minore o uguale di quella che ha dichiarato necessaria. Questi quindi sono i dati del problema, allora un possibile approccio è il seguente: inizia un nuovo processo $P_{n+1}$ solo se per ogni $j, R_j \geq C_{n+1,j} + \sum\limits^n_{i=1}C_{ij}$, cioè se ci sono risorse sufficienti per soddisfare tutti i processi. Questo però è inefficiente poiché assume che tutte le richieste di tutti i processi debbano essere soddisfatte simultaneamente. È più efficiente l'algoritmo del banchiere.
@@ -1299,7 +1299,7 @@ Le 3 equazioni/disequazioni mostrano le relazioni fra questi dati definiti sopra
 </div>
  
 > [!example] Esempio di un'allocazione rifiutata:
-> ![[Pasted image 20260412122427.png|200]]
+> ![[Pasted image 20260412122427.png|300]]
 > 
 > In questo caso ad esempio le risorse di V verrebbero allocate, 1 di $R1$ e di $R3$ a $p1$, ma così non termineremmo né il processo $p1$, né sarebbe poi possibile con le risorse disponibili rimaste terminare gli altri processi, quindi quest'allocazione viene rifiutata.  
 
@@ -1399,12 +1399,12 @@ while c'è un processoP_i non spuntato tale che Q_ij <= W_j per ogni j spunta P_
 Al termine dell'algoritmo gli eventuali processi non spuntati sono in stallo.
 
 > [!example] 
-> ![[Pasted image 20260412123253.png|200]]
+> ![[Pasted image 20260412123253.png|300]]
 > 
 > Nell'esempio prima controlliamo se ci sono alcuni processi Pi tali che Aij = 0 in tutte le colonne, in questo caso P4 ha 0 risorse allocate e quindi viene spuntato, poi vediamo che sulla riga di P3, per ogni j gli elementi Qij sono <= Wj, quindi possiamo spuntare anche P3, le cui risorse allocate vengono liberate e assegnate a W che diventa (0,0,0,1,1), poi però guardando P2 e P1 entrambi non possono essere spuntati, dunque alla fine rimangono P1 e P2 non spuntati e quindi c'è lo stallo. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260412123322.png" width="200">
+  <img src="Pasted image 20260412123322.png" width="300">
 </div>
 
 Preempts = interruzioni forzate dei processi
@@ -1451,7 +1451,7 @@ Alcune politiche seguono:
 ###### Gestione della memoria
 **Compiti della gestione della memoria:** Un programma per essere eseguito va caricato in memoria, i
 principali compiti sono:
-- *Rilocazione:* il nostro programma viene copiato nella memoria centrale, ma a priori non sappiamo in quale parte venga caricato, quindi nel nostro eseguibile, gli indirizzi in cui andare a prelevare le istruzioni e i dati non ci possono stare, saranno indirizzi simbolici (logici), una volta caricati, questi indirizzi simbolici devono essere convertiti in indirizzi fisici
+- *Rilocazione:* il nostro programma viene copiato nella memoria centrale, ma a priori non sappiamo in quale parte venga caricato. Per questo, nel nostro eseguibile, gli indirizzi in cui andare a prelevare le istruzioni e i dati non ci possono stare, saranno indirizzi simbolici (logici). Una volta caricati, questi indirizzi simbolici devono essere convertiti in indirizzi fisici
 - *Protezione:* il processo preleva l'istruzione, la esegue, scrive i risultati in memoria e passa all'istruzione successiva, quando fa queste operazioni è fondamentale che non esca dalla memoria assegnata al processo.
 - Condivisione
 - Organizzazione logica
@@ -1461,13 +1461,13 @@ principali compiti sono:
 - Specificare in che parte della memoria sarà caricato il processo
 - Richiedere che a ogni trasferimento sia caricato nella stessa posizione
 
-Il processo può essere rilocato in un'area di memoria differente. L'**entry point** è la prima istruzione del programma da cui parte, poi c'è il programma, poi c'è una parte riservata ai dati dove si salta quando nel programma ci si riferisce a quei dati. L'istruzione che fa il riferimento conterrà un indirizzo simbolico al dato richiesto. Questo è il modello più semplice di programma, dopodiché questo oggetto sarà trasferito in memoria principale, dove l'istruzione 0 corrisponderà a un certo indirizzo fisico della RAM, l'indirizzo 1 a quella successiva e così via.
+Il processo può essere rilocato in un'area di memoria differente. L'**entry point** è la prima istruzione del programma (dalla quale il programma inizia), poi c'è il programma, poi c'è una parte riservata ai dati dove si salta quando nel programma ci si riferisce a quei dati. L'istruzione che fa il riferimento conterrà un indirizzo simbolico al dato richiesto. Questo è il modello più semplice di programma, dopodiché questo oggetto sarà trasferito in memoria principale, dove l'istruzione 0 corrisponderà a un certo indirizzo fisico della RAM, l'indirizzo 1 a quella successiva e così via.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260409120551.png" width="200">
+  <img src="Pasted image 20260409120551.png" width="300">
 </div>
 
-*Protezione:* I riferimenti di cui parlavamo prima alla memoria servono per leggere e scrivere i dati, come detto non sappiamo l'effettiva locazione del programma in memoria, quindi solo quando tentiamo di accedere un indirizzo possiamo realmente vedere se quell'indirizzo fa parte del processo, quindi i meccanismi di rilocazione devono anche contenere un supporto di protezione.
+*Protezione:* I riferimenti di cui parlavamo prima alla memoria servono per leggere e scrivere i dati. Come detto non sappiamo l'effettiva locazione del programma in memoria, quindi solo quando tentiamo di accedere un indirizzo possiamo realmente vedere se quell'indirizzo fa parte del processo, quindi i meccanismi di rilocazione devono anche contenere un supporto di protezione.
 
 *Condivisione:* in alcuni sistemi è fortemente limitata, in altri è supportata. Ci sono programmi che vengono eseguiti da più processi, quindi in questo caso è utile permettere a questi processi di accedere entrambi alla stessa copia del codice. Il gestore della memoria quindi deve permettere un accesso controllato delle aree di memoria condivisa, senza compromettere la protezione. I meccanismi che supportano la rilocazione supportano anche la condivisione. 
 
@@ -1480,22 +1480,22 @@ Il gestore della memoria carica i processi nella memoria principale per essere e
 - Realizza la memoria virtuale
 - Si basa su partizionamento, segmentazione e paginazione
 
-*Partizionamento:* È un metodo perlopiù obsoleto e che non prevede memoria virtuale, usa le partizioni fisse e le partizioni variabili. Si carica il sistema operativo nella RAM e ciò che resta di RAM viene diviso in partizioni uguali, poi carico il programma che occupa 4 megabyte e si cercherà una delle partizioni con grandezza minore o uguale a quella richiesta dal programma. 
+*Partizionamento:* È un metodo perlopiù obsoleto e che non prevede memoria virtuale, usa le partizioni fisse e le partizioni variabili. Si carica il sistema operativo nella RAM e ciò che resta di RAM viene diviso in partizioni uguali, poi carico il programma e si cercherà una delle partizioni con grandezza minore o uguale a quella richiesta dal programma. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260409122327.png" width="200">
+  <img src="Pasted image 20260409122327.png" width="300">
 </div>
 
 Nell'esempio sulla prima colonna abbiamo tutte partizioni da 8 mega, quindi possiamo far partire solo programmi da 8 mega, nella seconda invece abbiamo quantità differenti. I problemi di questo metodo stanno proprio nel fatto che un programma potrebbe essere troppo lungo per entrare in una partizione e quindi si usa fer forza l'overlay. Inoltre comporta un utilizzo inefficiente della memoria principale poiché ogni programma occupa un'intera partizione e quindi si limita anche il numero di processi attivi al numero di partizioni che abbiamo. Si crea anche una **frammentazione interna**, cioè uno spreco di spazio poiché il programma può richiedere meno memoria di quella della partizione. Per allocare un processo ad una partizione o si crea una coda per ogni processo, oppure metto il processo in una singola coda che guarda tutte le partizioni. L'algoritmo di allocazione è:
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260409122716.png" width="200">
+  <img src="Pasted image 20260409122716.png" width="300">
 </div>
 
 *Segmentazione:* Un'alternativa sono le **partizioni dinamiche**, cioè le partizioni vengono create dinamicamente quando un processo è caricato in memoria. La RAM, quella che non è occupata dal sistema operativo, è un blocco unico che viene allocato man mano.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260409123538.png" width="200">
+  <img src="Pasted image 20260409123538.png" width="300">
 </div>
 
 Questo, come si vede nella foto, provoca una **frammentazione esterna** che può essere risolta però con una compattazione della RAM che viene liberata man mano che i processi finiscono. 
@@ -1508,13 +1508,13 @@ Per il metodo di allocazione si possono avere 3 politiche di scelta del blocco:
 Il best-fit può sembrare il metodo migliore però con esso si creano un sacco di partizioni molto piccole, la first-fit invece tutto sommato funziona meglio, però con questa si cerca di usare sempre la prima parte della memoria, si potrebbe creare quindi una frammentazione concentrata sulla prima parte della memoria.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260412125200.png" width="200">
+  <img src="Pasted image 20260412125300.png" width="300">
 </div>
 
-**Buddy system:** C'è però un meccanismo, il buddy system, che è un compromesso tra partizioni fisse e dinamiche e che è più facile da gestire. Si hanno blocchi di dimensione $2^K, L \leq K \leq U$, dove $2U$ è lo spazio allocabile, $2L$ è la dimensione dei blocchi allocabili. Un programma di dimensione $l$ con $2^{K-1} < l \leq 2^K$ viene allocato in un blocco libero di dimensione $2K$, se non ce ne sono, un blocco di dimensione $2^{K+1}$ è spezzato in due buddies di dimensione $2K$. Non appena due buddies sono contemporaneamente liberi sono riuniti in un unico blocco di dimensione doppia.
+**Buddy system:** È un compromesso tra partizioni fisse e dinamiche ed è più facile da gestire. Si hanno blocchi di dimensione $2^K, L \leq K \leq U$, dove $2U$ è lo spazio allocabile, $2L$ è la dimensione dei blocchi allocabili. Un programma di dimensione $l$ con $2^{K-1} < l \leq 2^K$ viene allocato in un blocco libero di dimensione $2K$, se non ce ne sono, un blocco di dimensione $2^{K+1}$ è spezzato in due buddies di dimensione $2K$. Non appena due buddies sono contemporaneamente liberi sono riuniti in un unico blocco di dimensione doppia.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260409125952.png" width="200">
+  <img src="Pasted image 20260409125952.png" width="300">
 </div>
 
 Gli indirizzi all'interno del nostro programma possono essere logici, ossia riferimenti a una locazione di memoria indipendente dall'assegnazione della memoria principale al processo, quindi il vero indirizzo del dato non è conosciuto al programmatore. L'indirizzo fisico, invece, è l'effettiva posizione del dato nella memoria principale e l'indirizzo relativo è l'indirizzo logico espresso come posizione relativa a un altro indirizzo noto. 
@@ -1522,9 +1522,13 @@ Gli indirizzi all'interno del nostro programma possono essere logici, ossia rife
 > [!info] In sostanza:
 > Il **buddy system** è un algoritmo di gestione della memoria che serve ad allocare e liberare blocchi in modo veloce, riducendo la frammentazione. L'idea base è che la memoria viene vista come un blocco di dimensione $2^k$ (es. 1024, 2048, ecc.). Quando serve memoria: 
 > - si divide il blocco in **due metà uguali**
-> - e si continua a dividere finché non ottieni una dimensione adatta (con la potenza di 2 più piccola $geq\$ della richiesta)
+> - e si continua a dividere finché non ottieni una dimensione adatta (con la potenza di 2 più piccola $\geq$ della richiesta)
 > 
 > Ogni split crea due blocchi della stessa dimensione detti buddy (gemelli) che possono essere riuniti. Infatti, quando libero/dealloco un blocco, controllo il suo buddy e se questo è libero unisci i due e ripeto tale processo verso l'alto. Il più grande problema di questo sistema risiede nella frammentazione interna e quindi nella quantità di byte che vanno sprecati quando alloco qualcosa in memoria
+
+> [!warning] Attenzione:
+> - *Frammentazione interna:* Succede quando viene assegnata più memoria di quella realmente richiesta. Lo spazio “in più” resta inutilizzato dentro il blocco allocato (spreco **interno** al blocco)
+> - *Frammentazione esterna:* Succede quando la memoria libera è divisa in tanti pezzi piccoli non contigui. Anche se la memoria totale è sufficiente, non si riesce ad allocare perché non è tutta attaccata (spreco **tra** i blocchi)
 
 **Rilocazione:** La rilocazione può essere **statica** se a un processo sarà sempre assegnata la stessa partizione, in questo caso si può usare un caricatore (**loader**) rilocante. Al caricamento tutti i riferimenti a indirizzi relativi sono sostituiti da indirizzi assoluti, determinati dall'indirizzo base del processo caricato. La rilocazione può essere anche **dinamica** se il processo può occupare differenti partizioni nel corso della sua vita (ad esempio partizioni variabili e caricamento dinamico). Si ha  quando avviene lo swapping tra memoria principale e secondaria: 
 - Quando l'immagine del processo è creata, viene caricata in una partizione; 
@@ -1534,26 +1538,26 @@ Gli indirizzi all'interno del nostro programma possono essere logici, ossia rife
 Quindi le locazioni di memoria riferite dal programma variano ogni volta che il processo subisce uno swap. È necessaria la rilocazione dinamica con supporto hardware. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260409130119.png" width="200">
+  <img src="Pasted image 20260409130119.png" width="300">
 </div>
 
 **Paginazione:** Nella paginazione la memoria principale è partizionata in blocchi di dimensione fissa detti **frame**. I programmi sono divisi in blocchi della stessa dimensione detti **pagine**, queste pagine sono poi caricate in frame grandi quanto la pagina (non necessariamente contigui).
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260409131628.png" width="200">
+  <img src="Pasted image 20260409131628.png" width="300">
 </div>
 
 Per ogni processo viene creata una tabella che contiene la posizione del frame per ogni pagina del processo. Il processore accede alla tabella delle pagine del processo corrente per produrre l'indirizzo fisico. 
 
 <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-  <img src="Pasted image 20260409131719.png" width="200">
-  <img src="Screenshot From 2026-04-09 13-17-49.png" width="200">
+  <img src="Pasted image 20260409131719.png" width="300">
+  <img src="Screenshot From 2026-04-09 13-17-49.png" width="300">
 </div>
 
 Le 3 pagine sono lunghe ciascuna 1024 byte, l'ultima pagina ha uno spazio “sprecato” dovuto al fatto che il programma occupa 2700 byte, quindi all'ultima pagina se ne allocano 652 e il resto non servirà. L'indirizzo relativo 1502 rappresenta la casella indicata dalla freccia, l'indirizzo logico   corrispondente è che, la casella appartiene alla pagina di numero 1, con offset = 478, ossia salterà i primi 1024 byte che appartengono alla prima pagina (la pagina 0) e partirà dal 1024-esimo byte applicandogli l'offset di 478 che ci permette di arrivare all'indirizzo 1502
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260426160131.png" width="200">
+  <img src="Pasted image 20260426160131.png" width="300">
 </div>
 
 **Segmentazione:** Il caricamento dei programmi segmentati avviene tramite segmentazione dinamica. A ogni processo servono tante partizioni, una per ogni segmento, quindi a ogni processo assegneremo tanti partizioni quanti sono i segmenti possibili. Così facendo i segmenti sono più piccoli del programma intero, quindi tutti i fenomeni problematici che si avevano quando si aveva bisogno di una partizione molto grande non vi sono più (i segmenti sono piccoli, ce ne sono quindi tanti e la lunghezza massima è limitata). Il caricamento avviene come nella partizione dinamica e riduce la frammentazione esterna. Ciò che è visibile al programmatore è uno strumento per strutturare programma e dati: segmenti codice e segmenti dati, uno per modulo, stack. Il problema scaturisce dal fatto che, perché tutto funzioni, i segmenti non possono essere troppo grandi. La dimensione dei segmenti dipende dal programmatore che deve tenere conto della massima lunghezza dei segmenti (non succede dunque che a frame più piccoli o più grandi deve variare la grandezza del programma). Quindi gli indirizzi (logici) sono fatti dalla coppia: 
@@ -1563,8 +1567,8 @@ Le 3 pagine sono lunghe ciascuna 1024 byte, l'ultima pagina ha uno spazio “spr
 **Traduzione degli indirizzi:**
 1. Vi è un indirizzo logico che è fatto da n bit, che è l'indirizzo di segmento, e un'altra parte che è l'offset.
 2. Dopodiché nel nostro sistema si ha una tabella dei segmenti (non più delle pagine) per cui ogni processo deve usare l'indice di segmento per trovare l'indirizzo fisico in cui comincia il segmento che mi interessa (indirizzo base) 
-3. comparare l'offset nei rimanenti m bits con la lunghezza del segmento (indirizzo limite). Se è più grande allora non è valido (eccezione di indirizzo) 
-4. l'indirizzo fisico a cui accedere è dato dalla somma dell'indirizzo base e dell'offset
+3. Poi bisogna comparare l'offset nei rimanenti m bits con la lunghezza del segmento (indirizzo limite). Se è più grande allora non è valido (eccezione di indirizzo) 
+4. L'indirizzo fisico a cui accedere è dato dalla somma dell'indirizzo base e dell'offset
 
 > [!info] Nota bene:
 > Non posso ancora accedere all'indirizzo perché vi potrebbe essere un'eccezione di indirizzo. Si applica dunque la protezione di memoria, ovvero confronto il risultato della mia operazione con l'indirizzo limite, se è più grande il sistema operativo segnala un'eccezione. Nella paginazione non c'è questo problema, poiché la dimensione è fissa, il massimo valore che può assumere è la dimensione del frame.
@@ -1572,7 +1576,7 @@ Le 3 pagine sono lunghe ciascuna 1024 byte, l'ultima pagina ha uno spazio “spr
 > L'aggiornamento di questi registri (base e limite) avviene di fatto una volta ogni tanto, non a ogni istruzione. Il discorso è diverso nel caso della paginazione, lì la divisione è puramente casuale.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-04-26 16-04-13.png" width="200">
+  <img src="Screenshot From 2026-04-26 16-04-13.png" width="300">
 </div>
 
 ###### Memoria virtuale
@@ -1586,7 +1590,7 @@ Dunque il punto chiave è che non è necessario che l'intero programma sia in me
 > Per tempi d'esecuzione relativamente brevi le istruzioni e i dati necessari sono tutti concentrati in una piccola parte di programma. Osservando il programma per un piccolo periodo, ci si accorge che le istruzioni e i dati sono concentrati in una piccola parte. Effettivamente per periodi relativamente lunghi (si parla di frazioni di secondo) il processo utilizza in realtà aree di programma molto piccole.
 
 *Esecuzione:*
-- Il SO carica in memoria (disco rigido) solo poche pagine (o segmenti) del programma con i dati (*Resident set)
+- Il SO carica in memoria (disco rigido) solo poche pagine (o segmenti) del programma con i dati (*resident set)
 - Quando è richiesto un indirizzo non presente in memoria principale si genera un'interruzione
 - Il SO sospende il processo e il processore è assegnato ad un altro processo e la pagina (o segmento) contenente l'indirizzo logico richiesto è caricato in memoria. Il trasferimento da disco a memoria principale avviene senza spesa di CPU.
 - Al termine del caricamento, è generata un'interruzione (dal controllore = *DMA*) in seguito alla quale il SO riattiva il processo
@@ -1599,7 +1603,7 @@ Dunque il punto chiave è che non è necessario che l'intero programma sia in me
 | ----------------------------- | ----------------------------------------------------------------------------------------------------- |
 | Memoria principale (i.e. RAM) | Memoria percepita dal programmatore e dall'utente, realizzata dal So mediante il caricamento dinamico |
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423220054.png" width="200">
+  <img src="Pasted image 20260423230054.png" width="300">
 </div>
 
 > [!info] Ricorda:
@@ -1614,18 +1618,55 @@ Dunque il punto chiave è che non è necessario che l'intero programma sia in me
 
 L'hardware deve supportare la paginazione e la segmentazione. Il SO deve includere il software per gestire il movimento delle pagine o dei segmenti fra memoria secondaria e memoria principale
 
-**Paginazione:** nel linguaggio comune, il termine memoria virtuale si riferisce alla paginazione dinamica. Nella tabella delle pagine, in paginazione dinamica, vi è un bit di presenze, che è vero se la pagina è caricata in memoria e falso se non lo è, per questo motivo il processore guarda per prima cosa quel primo bit. Poi c'è un bit modificato (dirty bit) che serve a indicare se tale pagina, nel momento in cui è stata realizzata, è stata modificata.
+**Paginazione:** nel linguaggio comune, il termine memoria virtuale si riferisce alla paginazione dinamica. Nella tabella delle pagine, in paginazione dinamica, vi è un bit di presenze, che è vero se la pagina è caricata in memoria e falso se non lo è, per questo motivo il processore guarda per prima cosa quel primo bit. Poi c'è un bit modificato (*dirty bit*) che serve a indicare se tale pagina, nel momento in cui è stata realizzata, è stata modificata.
 
 <div style="display: grid; grid-template-columns: 1fr; gap: 10px; justify-items: center;">
-  <img src="Pasted image 20260423220143.png" width="200">
-  <img src="Pasted image 20260423220222.png" width="200">
-  <img src="Pasted image 20260423220242.png" width="200">
-  <img src="Pasted image 20260423220257.png" width="200">
+  <img src="Pasted image 20260423220143.png" width="300">
+  <img src="Pasted image 20260423220222.png" width="300">
+  <img src="Pasted image 20260423220242.png" width="300">
+  <img src="Pasted image 20260423220257.png" width="300">
 </div>
 
 L'indirizzo virtuale è quello che sta nel program counter. C'è un registro che contiene il puntatore alla tabella delle pagine in memoria principale. A questo puntatore si somma l'indice di pagina e si ottiene il puntatore al descrittore di pagina, cioè la posizione (l'indirizzo) del descrittore di pagina del record che mi interessa. A questo punto si recupera l'indice di frame e si va a sostituire all'indice di pagina, per cui otterrò un nuovo indirizzo, questa volta fisico, i bit più significativi sono gli indici di frame. Ci sarà un addizionatore dedicato che ci permetterà di trovare l'indirizzo del record che ci interessa e a questo punto si può accedere alla memoria di tale record. Ci manca la verifica che il bit di presenza del caricamento sia true o false. Quando le pagine sono troppe può succedere che questa operazione diventi troppo grande per stare qui dentro, per cui si utilizza una tabella delle pagine a 2 livelli. Dunque ci sarà una tabella che mi dice in quali pagine è caricata la tabella delle pagine. Quindi per accedere alla tabella delle pagine, si dovrà anzitutto interpretare i primi bit, cioè la parte più significativa dell'indirizzo, determinare l'indice che consente di accedere alla voce corrispondente nella tabella delle pagine. Sommiamo i primi 10 bit al registro che contiene il puntatore alla pagina primaria (quindi indicano la pagina primaria), leggiamo la posizione della pagina in cui si trova il dato che ci interessa, poi all'interno di questa tabella i secondi 10 bit mi danno l'offset a cui si trova il dato.
 
-**Tabella delle pagine invertite:** poiché tabelle di pagine molto grandi dipendono dal fatto che i programmi sono molto grandi, ma non tutto il programma sta nella memoria principale, a noi basta avere i record delle pagine caricate effettivamente nella memoria principale, quindi si usa questa tabella delle pagine invertita, un array indicizzato non in base alle tabelle nel nostro programma, ma un array in cui ci sono solo le pagine caricate in memoria. Il numero di pagina è mappato in una tabella hash (il valore di hash punta alla tabella delle pagine invertita, contenente solo le pagine caricate in memoria principale), la tabella è invertita nel senso che le entries sono ordinate in ordine di frame anziché di pagina. Campi della PTE (tabella invertita):
+> [!info] In altre parole:
+> 1. Il **Program Counter** contiene un **indirizzo virtuale**.
+> 2. Questo indirizzo è diviso in:
+>     - **indice di pagina**
+>     - **offset**
+> 3. La CPU usa un registro che punta alla **tabella delle pagine**.
+> 4. Procedura:
+>     - Si prende l’**indice di pagina**
+>     - Si accede alla voce corrispondente nella tabella delle pagine
+>     - Si ottiene il **numero di frame** (memoria fisica)
+> 5. Si costruisce l’indirizzo fisico:
+>     - si sostituisce l’indice di pagina con il **frame**
+>     - si mantiene lo stesso **offset**
+> 
+> Risultato: **indirizzo fisico = frame + offset**
+> 
+> 6. Prima di accedere:
+>     - si controlla il **bit di presenza**
+>         - `1` → pagina in RAM
+>         - `0` → page fault
+> 
+> Se la tabella delle pagine è **troppo grande**, non è gestibile direttamente. Per questo esiste la tabella delle pagine a 2 livelli. L’indirizzo virtuale viene diviso in: 
+> - **indice tabella di primo livello**
+> - **indice tabella di secondo livello**
+> - **offset**
+> 
+> **Procedura:** 
+> 1. I **bit più significativi**:
+>     - indicano quale entry nella **tabella di primo livello** usare
+> 2. Questa entry contiene:
+>     - il puntatore a una **tabella di secondo livello**
+> 3. I **bit successivi**:
+>     - selezionano la voce nella **tabella di secondo livello**
+> 4. Da lì ottieni il **frame**
+> 5. Unisci:
+>     - **frame + offset** → indirizzo fisico
+
+**Tabella delle pagine invertite:** poiché tabelle di pagine molto grandi dipendono dal fatto che i programmi sono molto grandi, ma non tutto il programma sta nella memoria principale, a noi basta avere i record delle pagine caricate effettivamente nella memoria principale. Per questo si usa la tabella delle pagine invertita, un array in cui ci sono solo le pagine caricate in memoria. Il numero di pagina è mappato in una tabella hash (il valore di hash punta alla tabella delle pagine invertita, contenente solo le pagine caricate in memoria principale), la tabella è invertita nel senso che le entries sono ordinate in ordine di frame anziché di pagina. Campi della PTE (tabella invertita):
 - Numero di pagina
 - Identificatore del processo
 - Bit di controllo
@@ -1634,29 +1675,29 @@ L'indirizzo virtuale è quello che sta nel program counter. C'è un registro che
 I primi n bit sono inseriti in una funzione di hash che ci consente di cercare il nostro frame nella tabella, trovato il numero di frame gli aggiungiamo poi l'offset contenuto nell'indirizzo.
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423220420.png" width="200">
+  <img src="Pasted image 20260423220420.png" width="300">
 </div>
 
-**Translation lookaside buffer (TLB):** evita un doppio accesso in memoria a ogni riferimento (Quando devo tradurre un indirizzo logico ad un indirizzo fisico devo accedere alle tabelle delle pagine, nel caso in cui si ha un indirizzamento doppio si hanno quindi 2 accessi alla memoria):
+**Translation lookaside buffer (TLB):** evita un doppio accesso in memoria a ogni riferimento (quando devo tradurre un indirizzo logico ad un indirizzo fisico devo accedere alle tabelle delle pagine, nel caso in cui si ha un indirizzamento doppio si hanno quindi 2 accessi alla memoria):
 - Per la table entry
 - Per il dato
 
 In questa memoria veloce (cache) ci sono le PTE usate di recente. Inoltre c'è una mappa associativa che permette la ricerca simultanea del campo indice di pagina in tutti i PTE
 
 <div style="display: grid; grid-template-columns: 1fr; gap: 10px; justify-items: center;">
-  <img src="Pasted image 20260423220500.png" width="200">
-  <img src="Pasted image 20260423220523.png" width="200">
-  <img src="Pasted image 20260423220541.png" width="200">
-  <img src="Pasted image 20260423220556.png" width="200">
+  <img src="Pasted image 20260423220500.png" width="300">
+  <img src="Pasted image 20260423220523.png" width="300">
+  <img src="Pasted image 20260423220541.png" width="300">
+  <img src="Pasted image 20260423220556.png" width="300">
 </div>
 
-Dato quindi l'indirizzo virtuale, prima si controlla il TLB, se l'indirizzo c'è, prendiamo il frame e applichiamo l'offset per trovare l'indirizzo fisico, se non c'è nel TLB si fa il doppio accesso alla memoria, prima nella Page table e poi nella main memory. Se la pagina non esiste il processo viene interrotto con page fault. Questo quindi ci evita di accedere alla memoria nel caso in cui l'indirizzo sia
+Dato quindi l'indirizzo virtuale, prima si controlla il TLB: se l'indirizzo c'è, prendiamo il frame e applichiamo l'offset per trovare l'indirizzo fisico, se non c'è nel TLB si fa il doppio accesso alla memoria, prima nella Page table e poi nella main memory. Se la pagina non esiste il processo viene interrotto con page fault. Questo quindi ci evita di accedere alla memoria nel caso in cui l'indirizzo sia
 presente nel TLB, facendo tutto nel processore. Se la pagina non è neanche in memoria si inizializza la routine che gestisce l'assenza delle pagine, e la pagina viene trasferita dal disco alla memoria ovviamente se lo spazio c'è. Se la memoria è piena si rimpiazza qualche vecchia pagina che probabilmente non ci serve più (le pagine da sostituire si individuano tramite un algoritmo specifico) con la nuova pagina che prima non era presente in memoria.
 
-**Dimensioni delle pagine:** pagine troppo grandi aumentano la frammentazione interna, mentre pagine piccole la riducono, ma aumentano la dimensione della tabella delle pagine (potrebbe accadere che neanche la tabella delle pagine può stare in memoria principale), per questo si può usa la gestione dinamica delle tabella delle pagine. Il trasferimento di informazioni da disco a memoria principale avviene a blocchi, quindi le cose vengono più semplici se la pagina è grande quanto un blocco. Le caratteristiche fisiche della memoria secondaria influiscono sulla scelta (trasferimento a blocchi) e la dimensione della pagine influisce sulla frequenza degli errori di pagina
+**Dimensioni delle pagine:** pagine troppo grandi aumentano la frammentazione interna, mentre pagine piccole la riducono, ma aumentano la dimensione della tabella delle pagine (potrebbe accadere che neanche la tabella delle pagine può stare in memoria principale), per questo si può usare la gestione dinamica delle tabella delle pagine. Il trasferimento di informazioni da disco a memoria principale avviene a blocchi, quindi le cose vengono più semplici se la pagina è grande quanto un blocco. Le caratteristiche fisiche della memoria secondaria influiscono sulla scelta (trasferimento a blocchi) e la dimensione della pagine influisce sulla frequenza degli errori di pagina
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423220704.png" width="200">
+  <img src="Pasted image 20260423220704.png" width="300">
 </div>
 
 La scelta della dimensione è basata su:
@@ -1680,19 +1721,19 @@ La scelta della dimensione è basata su:
 - Flag 'modificato'
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260423220754.png" width="200">
+  <img src="Pasted image 20260423220754.png" width="300">
 </div>
 
 **Segmentazione paginata:** nella segmentazione paginata:
 - Lo spazio logico è diviso in segmenti
 - Ogni segmento è diviso in pagine di dimensione fissa, uguale alla lunghezza dei frame della memoria principale
 
-La segmentazione era visibile al programmatore, la paginazione era trasparente e affidata al sistema operativo, con la segmentazione paginata l'indirizzo virtuale si divide in numero di segmento, numero di pagina e offset. Inoltre avremo in questo caso due strutture dati, la Segment table e la Page
+La segmentazione era visibile al programmatore, la paginazione era trasparente e affidata al sistema operativo. Con la segmentazione paginata l'indirizzo virtuale si divide in numero di segmento, numero di pagina e offset. Inoltre avremo in questo caso due strutture dati, la Segment table e la Page
 table.
 
 <div style="display: grid; grid-template-columns: 1fr; gap: 10px; justify-items: center;">
-  <img src="Pasted image 20260423220836.png" width="200">
-  <img src="Pasted image 20260423220859.png" width="200">
+  <img src="Pasted image 20260423220836.png" width="300">
+  <img src="Pasted image 20260423220859.png" width="300">
 </div>
 
 **Protezione e condivisione:** la segmentazione facilita l'implementazione della protezione e della condivisione:
@@ -1713,15 +1754,14 @@ La progettazione del gestore della memoria dipende da tre decisioni fondamentali
 > - Controllo del caricamento, screening a lungo termo che influisce sul grado di multiprogrammazione
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260429121125.png" width="200">
+  <img src="Pasted image 20260429121125.png" width="300">
 </div>
 
-**Strategie di caricamento:**
-Determinano quando una pagina deve essere caricata in memoria. 
+**Strategie di caricamento:** Determinano quando una pagina deve essere caricata in memoria. 
 1. *Paginazione a richiesta:* la pagina viene caricata, quando c'è un riferimento a quella pagina ed essa non è presente in memoria. I problemi possono essere legati a molti errori di pagina all'avvio del processo (poiché nessuna pagina è presente all'inizio, errore di pagina = page fault = pagina non presente in memoria). Il principio di località suggerisce che al crescere delle pagine caricate, gli errori di pagina si riducono a un livello molto basso.
 2. *Pre-paginazione:* sono caricate altre pagine oltre a quelle che hanno determinato l'errore di pagina. Sfrutta le caratteristiche dei dispositivi di memoria secondaria, ad esempio le pagine memorizzate in aree contigue di memoria secondaria sono caricate più velocemente in serie piuttosto che una alla volta. Tuttavia possono essere caricate pagine non riferite.
 
-**Strategie di posizionamento:** Determina in quale parte della memoria principale la pagine o il segmento deve essere caricato. È importante solo per la segmentazione non paginata, può usare i criteri *first fit, best fit e next fit*. Il posizionamento influisce sulle prestazioni anche con la paginazione nei sistemi distribuiti e i sistemi distribuiti NUMA.
+**Strategie di posizionamento:** Determina in quale parte della memoria principale la pagina o il segmento deve essere caricato. È importante solo per la segmentazione non paginata, può usare i criteri *first fit, best fit e next fit*. Il posizionamento influisce sulle prestazioni anche con la paginazione nei sistemi distribuiti e i sistemi distribuiti NUMA.
 
 **Strategie di sostituzione:** seleziona la pagina in memoria principale da sostituire quando è necessario caricare una nuova pagina. L'obiettivo è selezionare la pagina che più difficilmente sarà riferita nel futuro prossimo. Bisogna fare attenzione in quanto più complessa è la politica di sostituzione, maggiore l'overhead (software e hardware) per implementarla. In alternativa si usano algoritmi non troppo complessi, ma che comunque danno un buon risultato.
 
@@ -1735,14 +1775,14 @@ Ci sono però dei frame che non possono essere sostituiti anche se inutilizzati,
 
 **First-in-first-out (FIFO):** Un'alternativa è la politica FIFO. Le pagine vengono organizzate in un buffer circolare (coda FIFO) e vengono rimosse in ordine di caricamento, si sostituisce quindi la pagina che è stata più tempo in memoria. Questo algoritmo è facile da implementare, ma il difetto sta nel fatto che ci sono parti di codice eseguite in continuazione, quindi prima o poi potrei sostituire parti di codice che sono in memoria da molto tempo, ma vengono usate spesso. 
 
-**Strategia dell'orologio:** associa una flag a ogni frame (bit di utilizzo). Questo viene settato a 1 quando la pagina è carica e ogni colta che la pagina è riferita. L'algoritmo di sostituzione scandisce circolarmente i frame
+**Strategia dell'orologio:** associa una flag a ogni frame (bit di utilizzo). Questo viene settato a 1 quando la pagina è carica e ogni volta che la pagina è riferita. L'algoritmo di sostituzione scandisce circolarmente i frame
 - Se il bit di utilizzo è 1, viene settato a 0
 - Se il bit è 0, il frame vine selezionato per lo scaricamento
 
 Una strategia più complessa distingue tra frame modificati e non modificati
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260429164237.png" width="200">
+  <img src="Pasted image 20260429164237.png" width="300">
 </div>
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
@@ -1769,15 +1809,15 @@ Una strategia più complessa distingue tra frame modificati e non modificati
 
 **Working set:** 
 
-*Definizione:* Il **working set** $W(t,\Delta)$ è l'insieme delle pagine riferite nell'intervallo di tempo virtuale $[t-\Delta,t]$ (ovvero un intervallo espresso non in un tempo reale ma in numero di riferimenti a memoria). Esso rappresenta le pagine attivamente utilizzate da un processo in un determinato periodo, e serve a stimare quanta memoria è effettivamente necessaria affinché il processo possa continuare a eseguire senza incorrere frequentemente in errori di pagina. Un processo con un working set ampio dovrebbe avere un resident set ampio. Il pallino indica che il working set non si è modificato rispetto al passo precedente. Man mano che si aumenta la dimensione del delta, i casi in cui il working set non si modifica aumentano.La decisione di incrementare o decrementare la dimensione dell'insieme residente si basa sulla valutazione delle future richieste dei processi attivi e richiede:
+*Definizione:* Il **working set** $W(t,\Delta)$ è l'insieme delle pagine riferite nell'intervallo di tempo virtuale $[t-\Delta,t]$ (ovvero un intervallo espresso non in un tempo reale ma in numero di riferimenti a memoria). Esso rappresenta le pagine attivamente utilizzate da un processo in un determinato periodo, e serve a stimare quanta memoria è effettivamente necessaria affinché il processo possa continuare a eseguire senza incorrere frequentemente in errori di pagina. Un processo con un working set ampio dovrebbe avere un resident set ampio. Il pallino (nella foto) indica che il working set non si è modificato rispetto al passo precedente. Man mano che si aumenta la dimensione del delta, i casi in cui il working set non si modifica aumentano.La decisione di incrementare o decrementare la dimensione dell'insieme residente si basa sulla valutazione delle future richieste dei processi attivi e richiede:
 - Criteri per la determinazione della dimensione dell'insieme residente 
 - Tempistica delle variazioni  
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260501104614.png" width="200">
+  <img src="Pasted image 20260501104614.png" width="300">
 </div>
 
-Una strategia possibile è quella di controllare periodicamente il working set di ogni processo e rimuovere dall'insieme residente le pagine che non sono nel working set. Un processo può essere eseguito solo se il suo working è interamente in memoria. L'implementazione di questa soluzione è difficile. Un'alternativa è agire sulla frequenza degli errori di pagina: quando gli errori di pagina diventano troppo ravvicinati, si aggiunge una pagina all'insieme resident, altrimenti si scaricano tutte le pagine non utilizzate dall'ultimo errore di pagina, e tutte le altre diventano candidate alla prossima
+Una strategia possibile è quella di controllare periodicamente il working set di ogni processo e rimuovere dall'insieme residente le pagine che non sono nel working set. Un processo può essere eseguito solo se il suo working set è interamente in memoria. L'implementazione di questa soluzione è difficile. Un'alternativa è agire sulla frequenza degli errori di pagina: quando gli errori di pagina diventano troppo ravvicinati, si aggiunge una pagina all'insieme resident, altrimenti si scaricano tutte le pagine non utilizzate dall'ultimo errore di pagina, e tutte le altre diventano candidate alla prossima
 
 **Page fault frequency:** quando c’è un errore di pagina:
 - Se il tempo virtuale dall'errore di pagina precedente è inferiore a una soglia $F$, si aggiunge una pagina all'insieme residente 
@@ -1799,14 +1839,14 @@ Una strategia possibile è quella di controllare periodicamente il working set d
 
 Per ridurre il grado di multiprogrammazione può essere necessario scaricare uno o più processi. Per fare ciò esistono 6 possibili politiche:
 1. processo con priorità minima 
-2. processo che provoca errori di pagina ultimo 
-3. processo attivato 
+2. processo che provoca errori di pagina  
+3. ultimo processo attivato 
 4. processo con l'insieme residente più piccolo 
 5. processo più grande 
 6. processo col massimo tempo di esecuzione rimanente
 ###### Scheduling
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260501105650.png" width="200">
+  <img src="Pasted image 20260501105650.png" width="300">
 </div>
 
 Lo scopo è di assegnare al processore i processi da eseguire in modo da realizzare gli obiettivi del sistema:
@@ -1821,14 +1861,14 @@ Lo scopo è di assegnare al processore i processi da eseguire in modo da realizz
 
 **Tipi di scheduling**
 <div style="display: grid; grid-template-columns: 1fr; gap: 10px; justify-items: center;">
-  <img src="Pasted image 20260501105757.png" width="200">
-  <img src="Pasted image 20260501105835.png" width="200">
-  <img src="Pasted image 20260501105857.png" width="200">
+  <img src="Pasted image 20260501105757.png" width="300">
+  <img src="Pasted image 20260501105835.png" width="300">
+  <img src="Pasted image 20260501105857.png" width="300">
 </div>
 
 **Schedulatore a lungo termine:** determina quali programmi sono ammessi nel sistema per l'esecuzione e controlla il grado di multiprogrammazione:
 - Più processi creati = più piccole frazioni del tempo di esecuzione assegnate ai processi
-- Per fornire servii soddisfacenti all 0 insieme corrente di processi, è opportuno limitarne il numero
+- Per fornire servizi soddisfacenti all'insieme corrente di processi, è opportuno limitarne il numero
 
 Per creare un processo della coda dei nuovi job, lo schedulatore deve decidere:
 - Quando il SO può accettare uno o più nuovi processi
@@ -1848,8 +1888,7 @@ Per creare un processo della coda dei nuovi job, lo schedulatore deve decidere:
 - *Chiamate di sistema:* un processo esegue una system call, si sospende
 - Segnali (e.g.semafori)
 
-Lo scheduling a breve termine è ciò che ci interessa di più, è un po’ la chiave di volta di un sistema operativo, poiché essendo chiamata molto frequentemente deve usare algoritmi rapidi e semplici, non si possono adottare politiche molto complesse, d’altra parte però se non funziona viene
-danneggiato tutto il sistema.
+Lo scheduling a breve termine è ciò che ci interessa di più, è un po’ la chiave di volta di un sistema operativo, poiché essendo chiamata molto frequentemente deve usare algoritmi rapidi e semplici, non si possono adottare politiche molto complesse, d’altra parte però se non funziona viene danneggiato tutto il sistema.
 
 **Criteri per lo scheduling a breve termine:** 
 
@@ -1866,7 +1905,7 @@ Ci sono dei criteri per fare ciò:
 4. *Criteri non relativi alle prestazioni:* sono qualitativi e difficili da misurare (e.g.predicibilità)
 
 **Criteri orientati all'utente e relativi alle prestazioni:** 
-- *Tempo di risposta:* Per un processo interattivo, questo è il tempo che trascorre dall'invio di una richiesta fino a quando la risposta non comincia ad essere ricevuta. Spesso un processo può cominciare a produrre qualche output per l'utente. mentre continua l'esecuzione. Perciò, dal punto di vista dell'utente, questa è una misura migliore del tempo di turnaround. La disciplina di scheduling dovrebbe tentare di raggiungere bassi tempi di risposta e di massimizzare il numero di utenti interattivi che hanno un tempo di risposta accettabile. 
+- *Tempo di risposta:* Per un processo interattivo, questo è il tempo che trascorre dall'invio di una richiesta fino a quando la risposta non comincia ad essere ricevuta. Spesso un processo può cominciare a produrre qualche output per l'utente mentre continua l'esecuzione. Perciò, dal punto di vista dell'utente, questa è una misura migliore del tempo di turnaround. La disciplina di scheduling dovrebbe tentare di raggiungere bassi tempi di risposta e di massimizzare il numero di utenti interattivi che hanno un tempo di risposta accettabile. 
 - *Tempo di turnaround:* È l'intervallo di tempo tra l'invio di un processo e il suo completamento. Comprende il tempo di esecuzione e il tempo speso in attesa delle risorse, compreso il processore. Questa è una misura appropriata per i job batch. 
 - *Scadenze:* Quando si può specificare il termine di completamento di un processo, la disciplina di scheduling può subordinare altri obiettivi oltre a quello di massimizzare la percentuale di scadenze raggiunta.
 - *Prevedibilità:* Un dato job può essere eseguito nello stesso tempo e allo stesso costo, indipendentemente dal carico del sistema. Un'ampia variazione nel tempo di risposta o nel tempo di turnaround è fastidiosa per l'utente: potrebbe segnalare un‘ampia oscillazione nel carico di lavoro del sistema oppure la necessità di adattare il sistema per evitare l'instabilità 
@@ -1879,7 +1918,7 @@ Ci sono dei criteri per fare ciò:
 - *Bilanciamento delle risorse:* La strategia di scheduling deve tenere impegnate le risorse del sistema, favorendo i processi che sotto utilizzano le risorse più impegnate. Questo criterio coinvolge anche lo scheduling a medio e lungo temine. 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Screenshot From 2026-05-01 11-04-38.png" width="200">
+  <img src="Screenshot From 2026-05-01 11-04-38.png" width="300">
 </div>
 
 **Funzione di selezione:** Determina quale processo, tra quelli pronti, è selezionato per l'esecuzione. Può essere basata su
@@ -1904,7 +1943,7 @@ Nel terzo caso, si tiene conto dei parametri:
 **Round robin:** il prerilascio è basato su un clock (*time slicing*). Il principale aspetto progettuale è la durata del quanto di tempo. È efficiente nei sistemi time-sharing e orientati alle transazioni e favorisce i processi processor-bound rispetto a quelli I/O-bound: *VRR (virtual round robin)* 
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260501113443.png" width="200">
+  <img src="Pasted image 20260501113443.png" width="300">
 </div>
 
 **Shortest process next (SPN):** Seleziona il processo col minimo tempo stimato di esecuzione e senza prerilascio. Un processo breve può saltare in testa alla coda pronti. Può causare starvation per processi lunghi ed è inadatto nei sistemi time-sharing (per l'assenza di prerilascio). È difficile conoscere o stimare il tempo di esecuzione:
@@ -1917,7 +1956,7 @@ Nel terzo caso, si tiene conto dei parametri:
 $$R = \frac{w+s}{s}$$con $w =$tempo di attesa e $s=$tempo stimato di esecuzione. Seleziona il processo con il più alto rapporto di risposta (tempo di turnaround normalizzato). I processi in attesa incrementano il rapporto. Favorisce i processi brevi, ma evita la starvation  
 
 > [!info] Confronto: 
-> ![[Pasted image 20260501114546.png|200]]
+> ![[Pasted image 20260501114546.png|300]]
 
 **Schedulazione fair-share:** Politiche di schedulazione basate su insiemi di processi. Ogni utilizzatore ha assegnata una 'frazione' del processore. L'obiettivo è monitorare l'uso per dare meno risorse a chi ne ha avute più della frazione spettante e più risorse a chi ne ha avute di meno. Si può assegnare una priorità determinata con: $$CPU_j(i) = \frac{CPU_j(i-1)}{2}, \ GCPU_k(i) = \frac{CPU_k(i-1)}{2}, \ P_j(i) = Base_j \ +  \frac{CPU_j(i)}{2} + \frac{GCPU_k(i)}{4 \cdot W_k}$$ove:
 - $CPU_j(i)$ = uso del processore del processo $j$ nell'intervallo $i$ 
