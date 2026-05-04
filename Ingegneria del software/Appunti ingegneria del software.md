@@ -4613,3 +4613,233 @@ Questo flusso non è pensato per essere sofisticato, ma per essere robusto, ripe
 > - Merge e conflitti fanno parte del lavoro normale: gestirli presto e spesso è meglio che rimandarli. 
 > - Le operazioni di undo richiedono attenzione al contesto (locale vs condiviso), non solo memoria dei comandi. 
 > - Buone pratiche di commit e versionamento migliorano review, tracciabilità e manutenzione del progetto.   
+
+###### Continuous integration
+Nelle lezioni precedenti sono stati introdotti diversi strumenti fondamentali per migliorare la qualità del software sviluppato: 
+- i test automatici, utilizzati per verificare in modo sistematico il comportamento atteso del codice; 
+- il mocking, impiegato per isolare le dipendenze e rendere i test più mirati e controllabili; 
+- Git, come sistema di controllo di versione per tenere traccia dell'evoluzione del progetto nel tempo. 
+
+L'uso combinato di questi strumenti contribuisce a rendere il codice più affidabile e più semplice da mantenere. Rimane tuttavia una questione aperta: come garantire che tali verifiche vengano eseguite in modo regolare, sistematico e affidabile nel tempo?   
+
+I test automatici rappresentano uno strumento efficace di verifica solo nella misura in cui vengono effettivamente eseguiti. In un processo basato esclusivamente su attività manuali: 
+- l'esecuzione dei test dipende dall'attenzione, dall'esperienza e dalla disciplina delle persone coinvolte; 
+- è possibile dimenticare di lanciare i test prima di condividere una modifica o di proseguire con altro lavoro; 
+- gli errori possono emergere quando il codice è già stato modificato più volte, rendendo più difficile individuarne la causa. 
+
+Questo tipo di approccio tende a diventare fragile e poco affidabile man mano che il progetto cresce in dimensione e complessità. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Screenshot From 2026-05-04 09-13-18.png" width="300">
+</div>
+
+**Il problema delle regressioni:** Una regressione si verifica quando una modifica introduce un errore in una funzionalità che in precedenza funzionava correttamente. Le regressioni sono spesso non intenzionali: 
+- una modifica locale può avere effetti indiretti su altre parti del sistema; 
+- il problema può non essere immediatamente evidente. 
+
+Senza verifiche sistematiche, le regressioni tendono ad accumularsi nel tempo.   
+
+**Controllo manuale e controllo automatico:** Il controllo manuale del codice presenta alcuni limiti strutturali, legati alla sua dipendenza dalle persone che lo eseguono: 
+- non è uniforme, poiché sviluppatori diversi possono adottare criteri o livelli di attenzione differenti; 
+- non è sempre ripetibile nello stesso modo, specialmente in momenti diversi o sotto pressione; 
+- può essere influenzato da fattori esterni, come fretta, distrazione o carichi di lavoro elevati. 
+
+Il controllo automatico, al contrario, introduce un meccanismo più stabile: 
+- segue regole esplicite e definite in modo formale; 
+- viene eseguito sempre nelle stesse condizioni operative; 
+- produce risultati oggettivi, ripetibili e verificabili nel tempo.   
+
+**L'idea alla base della CI:** La CI nasce con l'obiettivo di rendere automatiche le verifiche sul codice durante il suo sviluppo. L'idea di fondo è che ogni modifica introdotta nel progetto debba essere controllata in modo sistematico, e non soltanto in maniera occasionale o informale. In questo modo, la verifica diventa una parte integrante del processo di sviluppo del software, e non un'attività opzionale affidata alla sola buona volontà. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260504091603.png" width="300">
+</div>
+
+**CI:** CI è una pratica di sviluppo software che rende l'integrazione delle modifiche un'attività frequente e controllata. In un processo basato sulla CI: 
+- le modifiche vengono integrate frequentemente nel progetto; 
+- il sistema viene verificato automaticamente ad ogni integrazione. 
+
+L'obiettivo principale è ridurre il tempo che intercorre tra l'introduzione di un problema e la sua individuazione. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260504091709.png" width="300">
+</div> 
+
+**Cosa non è la CI:** La CI non sostituisce le attività di progettazione del software né la progettazione dei test automatici: 
+- richiede comunque decisioni progettuali corrette; 
+- si basa sulla presenza di test adeguati. 
+
+La CI non garantisce, da sola, l'assenza di errori nel software: 
+- verifica solo ciò che viene effettivamente controllato; 
+- non intercetta problemi non coperti dai test. 
+
+La CI non è legata a una tecnologia o a una piattaforma specifica, ma rappresenta una pratica di processo indipendente dagli strumenti utilizzati.   
+
+**CI come estensione del testing:** I test automatici definiscono cosa deve essere verificato nel sistema: 
+- descrivono il comportamento atteso del codice; 
+- formalizzano le condizioni di correttezza. 
+
+La CI stabilisce quando tali verifiche devono avvenire: 
+- ad ogni integrazione di una modifica; 
+- senza dipendere da decisioni manuali. 
+
+Il contenuto dei test rimane invariato: 
+- ciò che cambia è la frequenza di esecuzione; 
+- le verifiche diventano sistematiche e ripetibili nel tempo.   
+
+**Quando avviene la verifica:** La verifica viene eseguita ogni volta che il codice del progetto viene modificato: 
+- in seguito all'introduzione di nuove funzionalità; 
+- dopo correzioni o refactoring del codice esistente. 
+
+In pratica, ciò avviene tipicamente quando una modifica viene condivisa nel repository remoto (ad esempio con push): 
+- il sistema intercetta l'aggiornamento del codice; 
+- la verifica viene avviata senza azioni esplicite da parte degli sviluppatori. 
+
+L'intero processo avviene in modo automatico: 
+- l'esecuzione segue sempre le stesse regole; 
+- i risultati sono ripetibili e indipendenti dalle persone.   
+**Collegamento con Git:** Nel flusso di lavoro visto con Git, una modifica diventa “parte della storia” quando viene registrata con un commit. In un contesto collaborativo, i commit vengono poi condivisi su un repository remoto, rendendo la modifica visibile anche ad altri. La CI si inserisce esattamente in questo passaggio: 
+- ogni modifica condivisa può attivare automaticamente una verifica; 
+- build e test vengono eseguiti con regole sempre uguali per tutti; 
+- il risultato rende immediatamente chiaro se l'integrazione è “sana”. 
+
+In questo modo, la verifica non dipende più da scelte individuali, ma diventa una proprietà del processo.   
+
+**Verifiche minime:** Una configurazione di CI minimale esegue un insieme di verifiche fondamentali per controllare la correttezza del progetto. In particolare, il sistema verifica che: 
+- il progetto possa essere compilato correttamente, senza errori strutturali o di dipendenze; 
+- i test automatici definiti vengano eseguiti e passino senza segnalare anomalie. 
+
+Queste verifiche di base permettono di intercettare molti problemi comuni già nelle prime fasi di integrazione. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260504092106.png" width="300">
+</div> 
+
+**Errori di compilazione:** Un errore di compilazione segnala la presenza di un problema strutturale nel codice del progetto. Questo tipo di errore può dipendere, ad esempio, da: 
+- errori sintattici introdotti durante la scrittura del codice; 
+- incoerenze tra interfacce o firme dei metodi; 
+- dipendenze mancanti, errate o incompatibili. 
+
+La CI segnala questi problemi in modo immediato, prima che possano propagarsi o influenzare altre parti del sistema. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260504092200.png" width="300">
+</div> 
+
+**Fallimento dei test:** Un test che fallisce indica che il comportamento del sistema non soddisfa più le condizioni attese o dichiarate dai test. Questo può segnalare, ad esempio: 
+- una regressione, cioè un comportamento corretto in passato che non lo è più dopo una modifica; 
+- un errore logico introdotto durante lo sviluppo; 
+- un cambiamento voluto che richiede un aggiornamento dei test per riflettere il nuovo comportamento atteso. 
+
+La CI rende questi fallimenti immediatamente visibili, permettendo di intervenire prima che il problema si diffonda. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260504092318.png" width="300">
+</div>
+
+> [!example] Esempio (UniManager): individuare una regressione subito 
+> Si consideri una modifica al progetto UniManager, ad esempio sul calcolo della media dei voti di uno studente. La modifica viene integrata nel repository e attiva automaticamente la pipeline di CI: 
+> - la compilazione verifica che la struttura del progetto sia consistente; 
+> - i test controllano che il comportamento atteso sia ancora valido. 
+> 
+> In assenza di CI: 
+> - l'errore può emergere molto più tardi, ad esempio durante l'uso di quella funzionalità in un altro modulo;  
+> - individuare la causa risulta più difficile, perché il codice è già cambiato più volte. 
+> 
+> Con la CI: 
+> - il test fallisce subito dopo l'integrazione della modifica; 
+> - la regressione viene associata a una modifica recente; 
+> - il problema diventa visibile nell'arco di pochi secondi. 
+> 
+  L'obiettivo non è evitare ogni errore, ma ridurre drasticamente il tempo che intercorre tra l'introduzione di un problema e la sua individuazione.   
+  
+**Esito della verifica:** Ogni esecuzione della CI produce un esito chiaro e non ambiguo. In particolare, la verifica può risultare: 
+- **superata**, quando tutte le condizioni definite (build e test) sono soddisfatte; 
+- **fallita**, quando almeno una di tali condizioni non viene rispettata. 
+
+L'esito della verifica è oggettivo e riproducibile nel tempo, poiché deriva dall'applicazione automatica delle stesse regole. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260504092745.png" width="300">
+</div>
+
+**La CI come guardiano automatico:** La CI non prende decisioni progettuali e non valuta la qualità architetturale di una scelta. Non interpreta le intenzioni degli sviluppatori e non stabilisce se una modifica sia “giusta” dal punto di vista del dominio. Si limita a confrontare lo stato del progetto con un insieme di regole di verifica definite in anticipo (ad esempio compilazione e test), producendo un esito oggettivo. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260504092838.png" width="300">
+</div>
+
+**Impatto della CI sul processo:** La CI rende la verifica una proprietà del processo, non una scelta individuale. Effetto principale: feedback rapido sulle modifiche condivise. 
+- i problemi emergono subito dopo l'introduzione di una modifica; 
+- diventa più semplice risalire alla causa del problema. 
+
+Riduce il rischio di regressioni che si accumulano nel tempo: 
+- i comportamenti già verificati vengono controllati continuamente; 
+- le modifiche non corrette vengono intercettate prima. 
+
+Migliora l'affidabilità complessiva del progetto: 
+- le verifiche vengono eseguite sempre nello stesso modo; 
+- la qualità diventa più osservabile e meno soggettiva.   
+
+**Limiti e responsabilità:** La CI verifica solo ciò che è stato esplicitamente definito (build, test, altri check). Una pipeline “verde” non dimostra l'assenza totale di difetti: 
+- test incompleti possono nascondere problemi reali; 
+- alcune anomalie emergono solo in esercizio. 
+
+La CI non sostituisce la progettazione software: 
+- non corregge scelte architetturali sbagliate; 
+- non elimina la necessità di ragionare sul dominio applicativo. 
+
+Responsabilità condivisa del team: 
+- mantenere test significativi; 
+- migliorare progressivamente le regole di verifica.   
+
+**Dai principi agli strumenti:** La CI nasce come insieme di principi, indipendenti da qualunque tecnologia specifica. Nella pratica, tali principi vengono realizzati tramite strumenti che automatizzano le verifiche viste finora. Il ruolo di questi strumenti è operativo: 
+- eseguire automaticamente build e test; 
+- fornire un esito chiaro e immediato; 
+- rendere il processo ripetibile e sistematico.   
+
+> [!info] Esempi di piattaforme di CI 
+> Nel tempo sono nate diverse piattaforme per supportare la CI. Alcuni esempi diffusi sono: 
+> - Jenkins; 
+> - GitLab CI; 
+> - GitHub Actions. 
+> 
+> Queste piattaforme svolgono lo stesso ruolo concettuale:
+> - automatizzano le verifiche; 
+> - segnalano l'esito delle integrazioni.   
+
+> [!example] Un esempio concreto di utilizzo 
+> Si consideri un progetto software con: 
+> - una fase di compilazione; 
+> - una suite di test automatici. 
+> 
+> A ogni modifica del codice, la piattaforma di CI:
+> - compila automaticamente il progetto; 
+> - esegue i test definiti; 
+> - produce un esito complessivo. 
+>
+>Lo sviluppatore non deve eseguire manualmente queste operazioni ogni volta.   
+  
+> [!info] GitHub Actions 
+> GitHub Actions è una delle piattaforme che permettono di realizzare la CI. In questo contesto, viene considerata semplicemente come un esempio concreto di strumento. I dettagli tecnici di configurazione non rientrano negli obiettivi di questa lezione: 
+> - ciò che conta è il ruolo svolto; 
+> - non il modo specifico in cui viene configurata.   
+
+**Stato della verifica:** Ogni esecuzione della CI produce uno stato di verifica associato alla modifica effettuata. Questo stato riassume l'esito delle verifiche automatiche: 
+- build e test superati; 
+- oppure presenza di errori. 
+
+Nella pratica, questo stato viene mostrato attraverso indicatori visivi immediati: 
+- ✓ Verde — verifica superata; 
+- × Rosso — verifica fallita; 
+- ⟳ Giallo — verifica in corso. 
+
+Questi segnali forniscono un colpo d'occhio sullo stato di salute del progetto in quel momento, senza garantire l'assenza totale di problemi.   
+
+> [!info] Riepilogo:
+> - La CI rende sistematiche verifiche che altrimenti dipenderebbero dalla disciplina manuale del team. 
+> - Il valore principale della CI è il feedback rapido su modifiche condivise. 
+> - Build e test automatici sono i primi controlli da integrare; altri check possono essere aggiunti in modo progressivo. 
+> - La CI collega in modo operativo Git, testing automatico e collaborazione. 
+> - Gli strumenti (come GitHub Actions) sono mezzi per realizzare la pratica, non il centro concettuale della lezione.   
+
