@@ -4843,3 +4843,239 @@ Questi segnali forniscono un colpo d'occhio sullo stato di salute del progetto i
 > - La CI collega in modo operativo Git, testing automatico e collaborazione. 
 > - Gli strumenti (come GitHub Actions) sono mezzi per realizzare la pratica, non il centro concettuale della lezione.   
 
+###### Manutenzione ed evoluzione del software
+Una convinzione tipica (soprattutto all'inizio) è che il progetto “finisca” quando il software funziona. In realtà, il rilascio è spesso il momento in cui il sistema inizia davvero a vivere: 
+- arrivano utenti reali con bisogni reali, 
+- emergono casi limite non previsti, 
+- cambiano vincoli tecnici e contesti d'uso. 
+
+Per questo motivo, una parte rilevante dei costi e del lavoro si sposta su: 
+- correzioni, 
+- adattamenti, 
+- miglioramenti qualitativi, 
+- nuove funzionalità. 
+
+L'ingegneria del software serve a rendere questi cambiamenti gestibili, non “eroici”.  
+
+Il software non è un oggetto statico: è un sistema che opera in un ambiente che cambia. Cambiano le persone (utenti e team), cambiano le regole, cambiano gli strumenti. Ogni cambiamento introduce inevitabilmente: 
+- nuovi rischi di regressione, 
+- nuove dipendenze, 
+- nuove complessità da controllare. 
+
+Una buona progettazione non elimina il cambiamento, ma riduce il costo di “pagare” quel cambiamento nel tempo. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260504152151.png" width="300">
+</div>
+
+**Che cos'è la manutenzione del software:** Per manutenzione intendiamo le attività svolte dopo il rilascio per mantenere il sistema: 
+- corretto rispetto ai requisiti, 
+- compatibile con il contesto, 
+- utilizzabile e affidabile per gli utenti, 
+- sostenibile per chi lo mantiene. 
+
+Non è solo “fixare bug”: spesso significa anche migliorare il design, ridurre debito tecnico, rafforzare i test e rendere la pipeline più robusta. Il punto chiave è che la manutenzione è parte naturale del ciclo di vita: se la ignoriamo, il progetto tende a deteriorarsi.  
+
+**Le quattro forme di manutenzione:** Tradizionalmente distinguiamo quattro forme, utili per capire perché stiamo intervenendo: 
+- **Correttiva:** eliminare malfunzionamenti (bug). 
+- **Adattativa:** adeguarsi a cambiamenti di piattaforme, librerie, dipendenze. 
+- **Perfettiva:** migliorare qualità interna (prestazioni, leggibilità, struttura) senza nuove funzionalità. 
+- **Evolutiva:** introdurre nuove funzionalità o estensioni del sistema. 
+
+Questa classificazione è pratica perché aiuta a prevedere: 
+- impatto su test e architettura, 
+- rischio di regressioni, 
+- priorità e pianificazione. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260504152344.png" width="300">
+</div>
+
+**Manutenzione correttiva:** La manutenzione correttiva interviene quando il sistema non si comporta come atteso: 
+- bug funzionali, 
+- errori di validazione, 
+- crash, eccezioni non gestite, 
+- comportamenti incoerenti in casi limite. 
+
+Spesso nasce da: 
+- segnalazioni degli utenti, 
+- ticket e issue interne, 
+- test automatici che iniziano a fallire, 
+- problemi in produzione. 
+
+Anche un fix “piccolo” può essere rischioso se il sistema è accoppiato: per questo i test sono cruciali.  
+
+**Manutenzione adattativa:** La manutenzione adattativa si verifica quando il contesto cambia, non (necessariamente) i requisiti. Esempi tipici: 
+- aggiornamento di una libreria con API diversa, 
+- migrazione a una nuova versione del database, 
+- cambiamento di sistema operativo o ambiente di deploy, 
+- nuovi vincoli di sicurezza o autenticazione. 
+
+Qui diventa evidente il valore di una buona architettura: separare dominio e infrastruttura riduce quanto “si propaga” l'impatto delle dipendenze.  
+
+**Manutenzione perfettiva:** La manutenzione perfettiva migliora la qualità del sistema senza cambiare le funzionalità “visibili”. È spesso associata a: 
+- refactoring e semplificazione del codice, 
+- riduzione del debito tecnico accumulato, 
+- miglioramenti prestazionali mirati, 
+- riorganizzazione di moduli per aumentare coesione e ridurre accoppiamento. 
+
+È facile rimandarla perché “non aggiunge feature”, ma nel lungo periodo è ciò che rende il progetto modificabile e quindi più economico.  
+
+**Manutenzione evolutiva:** La manutenzione evolutiva introduce nuove funzionalità o estende il comportamento del sistema. È la forma che più coinvolge tutto il ciclo: 
+- aggiornamento requisiti, 
+- aggiornamento modelli e design, 
+- nuovi test e revisione di quelli esistenti, 
+- aggiornamento documentazione e release notes. 
+
+È anche quella dove il rischio di “rompere qualcosa” è più alto, perché cambiano casi d'uso e flussi. Per questo serve un processo disciplinato e una base di test affidabile.  
+
+**Architettura e costo del cambiamento:** Il costo di un cambiamento non dipende solo dalla quantità di codice da scrivere, ma da quanto lontano si propaga l'impatto. Se le responsabilità sono mescolate e le dipendenze sono “ovunque”:
+- un fix locale può richiedere modifiche in molti punti, 
+- diventa difficile capire cosa si sta rompendo, 
+- aumenta la paura di cambiare. 
+
+I principi visti nel corso (SRP, DIP, separazione dei livelli, confini architetturali) servono proprio a rendere i cambiamenti localizzati e quindi più gestibili. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260504152639.png" width="300">
+</div>
+
+**Dal problema al codice:** Quando emerge un problema (da un utente, da un log, da un test che fallisce), la tentazione naturale è “aprire l'IDE e correggere subito”. In un progetto serio, invece, conviene fermarsi un attimo e seguire un ordine: 
+- tracciare il problema in modo esplicito (issue), così da renderlo visibile e discutibile dal team; 
+- riprodurre il difetto in modo controllato, per evitare di lavorare su ipotesi vaghe o non verificabili; 
+- capire la causa (root cause), distinguendo chiaramente il sintomo osservato da ciò che lo genera. 
+
+Questo passaggio iniziale sembra “tempo perso”, ma in realtà riduce due rischi classici: 
+- correggere la cosa sbagliata (fix che maschera il sintomo ma non risolve il problema reale); 
+- introdurre regressioni non previste, perché si interviene senza sapere quali parti del sistema sono coinvolte. 
+
+In altre parole: prima comprendiamo e delimitiamo il problema, poi lo risolviamo in modo verificabile.  
+
+**Il ciclo disciplinato di modifica:** Un flusso robusto e ripetibile per introdurre un cambiamento è: issue → branch → fix → test → PR → merge. Dopo aver sviluppato e verificato la modifica su un branch dedicato, il cambiamento non viene integrato direttamente, ma passa attraverso una richiesta di integrazione (Pull Request). La Pull Request rende il cambiamento: 
+- visibile agli altri membri del team, 
+- revisionabile prima dell'integrazione, 
+- verificabile automaticamente tramite test e CI. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260504152834.png" width="300">
+</div>
+
+**Il ruolo centrale dei test:** I test non servono solo a “controllare” il codice alla fine: sono parte del lavoro di manutenzione. Un modello pratico è: 
+- un test che fallisce riproduce il bug in modo oggettivo, 
+- il fix rende il test verde, 
+- il test rimane come garanzia contro future regressioni. 
+
+Se correggiamo un bug senza aggiungere o aggiornare test, stiamo lasciando aperta la porta al ritorno dello stesso problema. Nel lungo periodo, una buona suite di test è ciò che rende possibile cambiare con fiducia.  
+
+**CI come rete di sicurezza:** La Continuous Integration automatizza controlli fondamentali: 
+- build, 
+- test, 
+- eventualmente linting e analisi statica. 
+
+Il valore della CI non è “fare i test più velocemente”, ma garantire che ogni modifica passi da una verifica ripetibile e indipendente. Collegamento con le lezioni precedenti: 
+- i test riducono regressioni, 
+- la CI impedisce che regressioni entrino nel ramo principale, 
+- la review riduce errori di design e di implementazione.  
+
+**Versioning semantico:** Per comunicare chiaramente il tipo di cambiamento introdotto si usa spesso il Semantic Versioning. Formato: MAJOR.MINOR.PATCH 
+- **MAJOR:** cambiamenti incompatibili (breaking changes). 
+- **MINOR:** nuove funzionalità retrocompatibili. 
+- **PATCH:** correzioni e piccoli fix senza modifiche di API/comportamento atteso. 
+
+È una convenzione semplice, ma estremamente utile quando: 
+- più team dipendono dallo stesso componente, 
+- dobbiamo pianificare aggiornamenti, 
+- vogliamo evitare “sorprese” agli utenti. 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260504153134.png" width="300">
+</div>
+
+**Perché il versioning conta davvero:** Il versioning non è solo un dettaglio formale, ma un vero e proprio linguaggio comune tra chi sviluppa software e chi lo utilizza o lo integra. Attraverso il numero di versione, il progetto comunica in modo sintetico il tipo di cambiamento introdotto e il livello di rischio associato. In pratica, il versioning aiuta a rispondere rapidamente a domande molto concrete: 
+- Questo aggiornamento è sicuro da applicare senza effetti collaterali? 
+- Potrebbe rompere la compatibilità con codice o servizi esistenti? 
+- Introduce nuove funzionalità oppure solo correzioni e miglioramenti interni? 
+
+Questo diventa ancora più importante quando un progetto dipende da altri pacchetti o servizi: una gestione chiara e coerente delle versioni riduce conflitti, ambiguità e tempi di diagnosi in caso di problemi. In altre parole, un buon versioning rende i cambiamenti prevedibili e aiuta team e utenti a prendere decisioni informate sugli aggiornamenti.  
+
+**Gestione delle release:** Una release non è semplicemente “fare merge” sul ramo principale, ma un momento preciso in cui un insieme di cambiamenti viene reso adottabile da utenti e altri sistemi. Preparare una release significa decidere consapevolmente che cosa entra e che cosa resta fuori in quel rilascio. In pratica, una gestione corretta delle release include: 
+- la selezione delle issue incluse, spesso organizzate in milestone o sprint target; 
+- una fase di verifica della qualità, basata su test automatici, CI e controlli aggiuntivi; 
+- la documentazione dei cambiamenti, così che gli utenti possano capire cosa è cambiato. 
+
+A supporto di questo processo si usano strumenti e pratiche consolidate: 
+- un changelog per tenere traccia delle modifiche nel tempo; 
+- delle release notes orientate all'utente e all'impatto pratico del rilascio; 
+- automazioni per creare tag di versione, generare artefatti e pubblicare il rilascio. 
+
+Una buona gestione delle release riduce sorprese e rende il ciclo di evoluzione più prevedibile.  
+
+> [!info] Caso di studio: UniManager — una feature nuova 
+> Per rendere concreto il concetto di evoluzione del software, consideriamo l'introduzione di una nuova funzionalità in UniManager, ad esempio: 
+> - il rifiuto del voto da parte dello studente, 
+> - oppure la visualizzazione della media ponderata degli esami sostenuti. 
+> 
+> Si tratta di funzionalità realistiche e plausibili, che riflettono esigenze comuni nei sistemi informativi universitari. Il punto centrale, però, non è la feature in sé, ma osservare come anche un cambiamento apparentemente “semplice” abbia un impatto su più livelli del sistema. In particolare, l'evoluzione coinvolge: 
+> - i requisiti, che devono essere chiariti e aggiornati; 
+> - il modello e il design, che possono richiedere nuove responsabilità; 
+> - l'architettura, per verificare che i confini restino coerenti; 
+> - i test, che devono proteggere il nuovo comportamento; 
+> - la versione e la release, per comunicare correttamente il cambiamento.  
+
+**Impatto sui requisiti:** Aggiungere una funzionalità significa prima di tutto chiarire: 
+- cosa deve essere possibile fare, 
+- in quali condizioni, 
+- con quali vincoli e casi limite. 
+
+Esempio (rifiuto del voto): 
+- quando lo studente può rifiutare? 
+- quante volte è consentito? 
+- cosa succede allo stato del verbale? 
+
+Requisiti chiari diventano la base per: 
+- progettare correttamente, 
+- scrivere test verificabili, 
+- evitare ambiguità tra team e utenti.  
+
+**Impatto su UML e architettura:** La nuova feature spesso richiede di aggiornare: 
+- diagrammi (stati, sequenze, classi) se li stiamo usando per documentare comportamento e responsabilità, 
+- confini architetturali: chi decide cosa? dove sta la regola? 
+
+Obiettivo: evitare di “spargere” logica di dominio ovunque. Una buona domanda guida è: questa regola è dominio (stabile) o infrastruttura (variabile)? Se i confini sono chiari, l'evoluzione diventa più locale e meno rischiosa.  
+
+**Impatto su test e CI:** Una feature nuova implica: 
+- nuovi test (unità e/o integrazione), 
+- aggiornamento di test esistenti se cambiano regole o flussi. 
+
+I test vanno pensati anche come protezione futura: la feature di oggi diventa la regressione di domani se non viene coperta. La CI deve continuare a garantire che ogni PR: 
+- compili, 
+- passi i test, 
+- non introduca rotture evidenti.  
+
+**Versione e rilascio della nuova funzionalità:** Se la nuova funzionalità è compatibile con quanto esisteva prima, tipicamente incrementiamo la MINOR: ad esempio 1.0.0 → 1.1.0. A quel punto una release “fatta bene” include: 
+- changelog con le issue chiuse, 
+- note chiare su eventuali modifiche di comportamento, 
+- indicazioni di migrazione se serve. 
+
+Il valore aggiunto è la prevedibilità: gli utenti sanno cosa aspettarsi e quando adottare l'aggiornamento.  
+
+**Evoluzione continua:** La manutenzione non è un tema separato: è il punto in cui tutto ciò che abbiamo visto converge. Requisiti chiari riducono ambiguità; architettura pulita riduce propagazione dei cambiamenti. Test e CI permettono di cambiare senza paura, documentazione riduce attrito e onboarding. Un progetto che cura questi aspetti: 
+- dura più a lungo, 
+- cresce in modo controllato, 
+- rimane comprensibile anche dopo anni.  
+
+**Messaggio finale:** Costruire buon software non significa solo farlo funzionare oggi. Significa progettarlo e mantenerlo in modo che sia ancora: 
+- comprensibile, 
+- modificabile, 
+- affidabile, domani, quando i requisiti, il contesto e le persone saranno cambiati. 
+
+L'evoluzione non è un incidente del percorso, ma la naturale prosecuzione di ogni progetto reale. Messaggio finale: il buon software si progetta pensando al cambiamento.  
+
+> [!info] Riepilogo:
+> - Il software va pensato come un sistema vivo: il rilascio iniziale apre una fase di manutenzione ed evoluzione continua. 
+> - I diversi tipi di manutenzione hanno obiettivi e rischi diversi, quindi richiedono priorità e strategie operative differenti. 
+> - Test automatici, CI e workflow disciplinato sono ciò che rende i cambiamenti più frequenti e meno rischiosi. 
+> - Architettura, refactoring e documentazione incidono direttamente sul costo futuro della manutenzione, non solo sulla qualità immediata. 
+> - Il versioning semantico aiuta a comunicare l'impatto dei rilasci e a rendere l'evoluzione più prevedibile per chi usa il software. 
+> - La visione finale del corso è che il buon software si progetta, testa e documenta pensando esplicitamente al cambiamento.   
+
