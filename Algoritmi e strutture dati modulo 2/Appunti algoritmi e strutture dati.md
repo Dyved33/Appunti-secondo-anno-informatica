@@ -332,7 +332,7 @@ Nella pratica le hash function assumono che le chiavi siano alternativamente:
 
 > [!info] $h(k) = \lfloor m(k*A \ \text{mod} \ 1)\rfloor$, dove $k*A \ \text{mod} \ 1 = k*A - \lfloor k*A \rfloor = \ \text{parte frazionaria di} \ k*A$ 
 
-**Hashing casuale:** Un ipotetico avversario malevolo, conoscendo la funzione hash, potrebbe scegliere chiavi che collidano tutte nello stesso slot, producendo il caso pessimo. Qualsiasi funzione hash statica è vulnerabile a questo attacco. La soluzione sta nello scegliere la funzione hash **casualmente**, indipendentemente dalle chiavi. Un caso particolare è l’**hashing universale**, che garantisce buone prestazioni medie quando si usa il chaining, indipendentemente dalle chiavi. Si consideri una collezione finita $\mathscr{H}$ di funzioni hash che mappi l'universo $U$ di chiavi nel range $\{0,1,...,m-1\}$. $\mathscr{H}$ è universale  se per ogni coppia di chiavi $k_1, k_2 \in U$, il numero di funzioni hash $h \in \mathscr{H}$ con $h(k_1) = h(k_2) \leq \frac{|\mathscr{H}|}{m}$. In altre parole $\mathscr{H}$ è universale se, con una funzione hash *h* scelta casualmente da $\mathscr{H}$, la probabilità di una collisione tra due chiavi distinte non supera l'$\frac{1}{m}$ di probabilità di scegliere due slot casuali e indipendenti
+**Hashing casuale:** Un ipotetico avversario malevolo, conoscendo la funzione hash, potrebbe scegliere chiavi che collidano tutte nello stesso slot, producendo il caso pessimo. Qualsiasi funzione hash statica è vulnerabile a questo attacco. La soluzione sta nello scegliere la funzione hash **casualmente**, indipendentemente dalle chiavi. Un caso particolare è l'**hashing universale**, che garantisce buone prestazioni medie quando si usa il chaining, indipendentemente dalle chiavi. Si consideri una collezione finita $\mathscr{H}$ di funzioni hash che mappi l'universo $U$ di chiavi nel range $\{0,1,...,m-1\}$. $\mathscr{H}$ è universale  se per ogni coppia di chiavi $k_1, k_2 \in U$, il numero di funzioni hash $h \in \mathscr{H}$ con $h(k_1) = h(k_2) \leq \frac{|\mathscr{H}|}{m}$. In altre parole $\mathscr{H}$ è universale se, con una funzione hash *h* scelta casualmente da $\mathscr{H}$, la probabilità di una collisione tra due chiavi distinte non supera l'$\frac{1}{m}$ di probabilità di scegliere due slot casuali e indipendenti
 
 **Proprietà hashing casuale:** Si possono ottenere limiti teorici sulle collisioni e sulle prestazioni attese. Considero una famiglia di hash function $\mathscr{H}$ su un dominio $U$ e con range $\{0,1,...,m-1\}$, le chiavi appartengono a $U$,i numeri degli slot sono in $\{0,1,...,m-1\}$, e una hash function *h* è presa casualmente da $\mathscr{H}$:
 - Uniforme: la probabilità di prendere *h* tale che $h(k) = q$ è $\frac{1}{m}$
@@ -352,7 +352,7 @@ Dato *p* e *m*, la famiglia di hash function è $\mathscr{H}_{ab} = \{h_{ab} : a
 
 **Inserimento:** 
  1. Calcolare la prima posizione scelta.
- 2. Se è libera, inserire l’elemento. 
+ 2. Se è libera, inserire l'elemento. 
  3. Se è occupata, calcolare la seconda posizione. 
  4. Continuare finché si trova uno slot libero.
  
@@ -372,7 +372,7 @@ until i == m
 error "hash table overflow"   
 ```
 
-**Ricerca:** Si segue la stessa sequenza di probe dell’inserimento, ma se si incontra uno slot vuoto, si conclude che l’elemento non è presente. Il vantaggio di tale opzione è che non servono puntatori (a differenza del chaining) e che lo spazio risparmiato può essere usato per aumentare la dimensione della tabella (slide 30 pdf 11 per avere più specifiche nella ricerca della chiave k).
+**Ricerca:** Si segue la stessa sequenza di probe dell'inserimento, ma se si incontra uno slot vuoto, si conclude che l'elemento non è presente. Il vantaggio di tale opzione è che non servono puntatori (a differenza del chaining) e che lo spazio risparmiato può essere usato per aumentare la dimensione della tabella (slide 30 pdf 11 per avere più specifiche nella ricerca della chiave k).
 
 ```
 Hah-Search(T,k)
@@ -411,7 +411,7 @@ Lo svantaggio di usare DELETED è che ora il tempo di ricerca non dipende più d
 **Teorema:** il numero atteso di probe in una ricerca con successo è al massimo $\frac{1}{\alpha}*\ln(\frac{1}{1-\alpha})$
 (su pdf ci sono le dimostrazioni di tutti e 3)
 
-**Considerazioni pratiche:** Le CPU moderne influenzano il comportamento dell’hashing.
+**Considerazioni pratiche:** Le CPU moderne influenzano il comportamento dell'hashing.
 1. Gerarchie di memoria:
 	 - Le cache sono piccole e veloci.
 	 - Organizzate in cache line (es. 64 byte contigui).
@@ -519,7 +519,7 @@ else PRINT-PATH(G,s,v.parent)
 	- 2 marcatori del tempo su ogni vertice utili per algoritmi che vedremo poi:
 		- $v.d =$ momento della scoperta del vertice 
 		- $v.f =$ tempo finale
-	- $v.\pi$ è il predecessore di $v$ nella **depth-first forest** con più di un **detpth-first tree**. Se $u = v.\pi$ allora $(u,v)$ è un ramo dell’albero
+	- $v.\pi$ è il predecessore di $v$ nella **depth-first forest** con più di un **detpth-first tree**. Se $u = v.\pi$ allora $(u,v)$ è un ramo dell'albero
 
 Questo algoritmo esplora ogni arco e inizia da vertici diversi se necessario. Appena viene scoperto un vertice inizia ad esplorare da questo (diversamente dal BFS che mette un vertice in coda così che venga esplorato successivamente). Man mano che il DFS progredisce, ogni vertice ottiene un colore:
 - Bianco = vertice ancora non scoperto
@@ -546,13 +546,18 @@ la ricerca globale fa partire una ricerca locale su ogni vertice per esplorare t
 
 > [!example] ![[Screenshot From 2026-03-16 19-15-31.png|300]]
 > Tempo = $\Theta(V+E)$
-> - l’analisi è simile a quella per il BFS
+> - l'analisi è simile a quella per il BFS
 > - $\Theta$ e non solo $O$ siccome è garantito che venga esaminato ogni vertice e ogni arco
 
 Ogni depth-first tree è fatto da archi $(u, v)$ così che $u$ sia grigio e $v$ sia bianco quando $(u, v)$ è esplorato
 
+**Struttura tipica di una DFSVisit:**
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260505115548.png" width="300">
+</div>
+
 **Teorema (delle parentesi):** per ogni $u,v$ vale esattamente una delle seguenti:
-1. $u.d < u.f <v.d < v.f$ oppure $v.d < v.f < u.d < u.f$ (cioè gli intervalli $[u.d, u.f]$ e $[v.d,v.f]$ sono disgiunti) e ne $u$, ne $v$ è discendente dall’altro
+1. $u.d < u.f <v.d < v.f$ oppure $v.d < v.f < u.d < u.f$ (cioè gli intervalli $[u.d, u.f]$ e $[v.d,v.f]$ sono disgiunti) e ne $u$, ne $v$ è discendente dall'altro
 2. $u.d < v.d <v.f < u.f$ e $v$ è discendente da $u$ ($v$ è scoperto dopo e finito prima di $u$)
 3. $v.d < u.d < u.f < v.f$ e $u$ è discendente da $v$ ($u$ è scoperto dopo e finito prima di $v$)
 
@@ -563,6 +568,10 @@ Cioè $u.d < v.d <u.f < v.f$ non può accadere ($v$ è sia scoperto che finito d
 - **Back edge:** $(u,v)$ con $u$ discendente da $v$ (arco che collega un nodo con il suo antenato, quindi il tempo di fine del figlio è minore del tempo di fine dell'antenato)
 - **Forward edge:** $(u,v)$ con $v$ discendente da $u$, ma non è un tree edge (arco che collega un nodo con il suo discendente magari già esplorato)
 - **Cross edge:** ogni altro arco. Può andare in mezzo ai vertici dello stesso depth-first tree o in depth-first tree diversi
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260505115451.png" width="300">
+</div>
 
 In un grafo non orientato, ci possono essere delle ambiguità siccome $(u,v)$ e $(v,u)$ sono lo stesso arco. Si classifica in base al primo tipo sopra descritto corrispondente
 
@@ -576,17 +585,17 @@ Si può sempre ottenere un ordine totale da un ordine parziale (o $a>b$ o $b>a$ 
 
 **Topological sort di un dag:** ordina linearmente i vertici così che se $(u,v) \in E$ allora $u$ appare da qualche parte prima di $v$:
 1. Chiama DFS(G) per valutare i tempi di fine $v.f$ per ogni vertice $v$
-2. Quando ogni vertice è finito, lo inserisce all’inizio della linked list
+2. Quando ogni vertice è finito, lo inserisce all'inizio della linked list
 3. Ritorna la linked list dei vertici
 
 Non necessita di ordinare in funzione dei tempi di fine:
 - Può far uscire i vertici appena sono finiti e capisce che voglio il *reverse* della lista
-- Oppure mette i vertici all’inizio della linked list appena sono finiti. Appena finito la lista contiene i vertici ordinati con ordine topologico 
+- Oppure mette i vertici all'inizio della linked list appena sono finiti. Appena finito la lista contiene i vertici ordinati con ordine topologico 
 
 **Tempo:** $\Theta(V+E)$
 > [!example] ![[Screenshot From 2026-03-17 23-15-57.png|300]]
 
-**Correttezza:** è necessario mostrare che se $(u,v) \in E$ allora $v.f < u.f$. Quando l’arco $(u,v)$ è esplorato, di che colore sono $u$ e $v$?
+**Correttezza:** è necessario mostrare che se $(u,v) \in E$ allora $v.f < u.f$. Quando l'arco $(u,v)$ è esplorato, di che colore sono $u$ e $v$?
 - $u$ è grigio
 - Anche $v$ è grigio? No, perché in tal caso $v$ sarebbe “antenato” di $u$ $\implies (u,v)$ è un arco nero $\implies$ contraddizione del lemma precedente (i dag non hanno archi neri) 
 - $v$ è bianco? In tal caso diventa “discendente” di $u$. In base al teorema delle parentesi $u.d < v.d<v.f<u.f$
@@ -596,16 +605,16 @@ Non necessita di ordinare in funzione dei tempi di fine:
 
 > [!example] ![[Screenshot From 2026-03-17 23-27-30.png|300]]
 
-*Nell’esempio:* L’algoritmo usa $G^T$=trasposta di $G$:
+*Nell'esempio:* L'algoritmo usa $G^T$=trasposta di $G$:
 - $G^T = (V,E^T), E^T = \{(u,v) : (v,u) \in E\}$
 - $G^T$ è $G$ con tutti gli archi invertiti
 
 > [!info] posso creare $G^T$ in $\Theta(V+E)$ di tempo se uso le liste di adiacenza
 
-**Osservazione:** $G$ e $G^T$ hanno gli stessi SCC ($u$ e $v$ sono raggiungibili l’uno dall’altro in $G$ se e solo sono raggiungibili l’uno dall’altro in $G^T$)
+**Osservazione:** $G$ e $G^T$ hanno gli stessi SCC ($u$ e $v$ sono raggiungibili l'uno dall'altro in $G$ se e solo sono raggiungibili l'uno dall'altro in $G^T$)
 - $G^{SCC} = (V^{SCC},E^{SCC})$ 
 - $V^{SCC}$ ha un vertice per ogni SCC in $G$
-- $E^{SCC}$ ha un arco se c’è un arco tra  i corrispondenti SCC in $G$
+- $E^{SCC}$ ha un arco se c'è un arco tra  i corrispondenti SCC in $G$
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
   <div style="flex: 1;">
@@ -650,7 +659,7 @@ SCC(G)
 1. Discutere di $u.d$ e $u.f$, questi si riferiranno sempre al primo DFS
 2. Estendere la notazione per $d$ e $f$ per i set di vertici $U \subseteq V$:
 	- $d(U) = \min\{u.d:u \in U\}$ (il primo discovery time in U) 
-	- $f(U) = \max\{u.f:u \in U\}$ (l’ultimo finish time in U) 
+	- $f(U) = \max\{u.f:u \in U\}$ (l'ultimo finish time in U) 
 
 **Lemma:** sia $C$ e $C'$ due SCC distinti in $G = (V,E)$. Si supponga che ci sia un arco $(u,v) \in E$ tale che $u \in C$ e $v \in C' \implies f(C) > f(C')$
 <div style="display: flex; justify-content: center;">
@@ -660,7 +669,7 @@ Ogni radice scelta dal secondo DFS può raggiungere solo:
 - I vertici nel proprio SCC
 - I vertici nei SCC già visitati nel secondo DFS
 
-Visitando i vertici di $(G^T)^{SCC}$ in ordine inverso rispetto all’ordinamento topologico
+Visitando i vertici di $(G^T)^{SCC}$ in ordine inverso rispetto all'ordinamento topologico
 ###### Disjoint-set data structures
 Le strutture dati per insiemi disgiunti (o union find) mantengono la collezione $\mathscr{S} = \{S_1,…,S_k\}$ di insiemi disgiunti e dinamici. Ogni set è identificato da un rappresentante, il quale è un qualche membro dell'insieme. Non importa quale membro sia il rappresentante, fintanto che, se si chiede due volte quale sia il rappresentate, si ottenga la stessa risposta (senza cambiare il set)
 
@@ -844,7 +853,7 @@ Per mostrare che questo algoritmo funziona usiamo il loop invariant:
 
 **Algoritmo di Kruskal:** $G = (V,E)$ è un grafo connesso, non orientato e pesato. $w: E \rightarrow \mathbb{R}$
 - Inizia con ogni vertice come componente separata e considera gli archi in ordine crescente di peso
-- Fonde ripetutamente due componenti in uno scegliendo il light edge che li connette (prende un arco $(u,v)$: se i suoi estremi sono in componenti diverse, lo aggiunge all’insieme $A$ e fa Union(u,v); altrimenti lo scarta perché creerebbe un ciclo.)
+- Fonde ripetutamente due componenti in uno scegliendo il light edge che li connette (prende un arco $(u,v)$: se i suoi estremi sono in componenti diverse, lo aggiunge all'insieme $A$ e fa Union(u,v); altrimenti lo scarta perché creerebbe un ciclo.)
 - Usa una struttura dati basata su un insieme disgiunto  per determinare quale arco connetta i vertici in componenti diversi
 
 ```Pseudocode
@@ -916,9 +925,9 @@ Si supponga che Decrease-Key possa richiedere $O(1)$ di tempo, allora $\leq |E|$
 
 > [!info] Differenza tra Kruskal e Prim:
 > - **Kruskal**: guarda gli archi uno per uno in ordine di peso e unisce componenti diverse. È “edge-driven”.
-> - **Prim**: espande un unico albero da un vertice iniziale, aggiungendo ogni volta il miglior arco verso l’esterno. È “vertex/tree-driven”.
+> - **Prim**: espande un unico albero da un vertice iniziale, aggiungendo ogni volta il miglior arco verso l'esterno. È “vertex/tree-driven”.
 > 
-> Entrambi usano il criterio del taglio, ma in modo diverso: Kruskal lavora sui tagli tra componenti, Prim sul taglio tra l’albero già costruito e il resto del grafo.
+> Entrambi usano il criterio del taglio, ma in modo diverso: Kruskal lavora sui tagli tra componenti, Prim sul taglio tra l'albero già costruito e il resto del grafo.
 
 ###### Single-source shortest path
 Come trovo il cammino minimo tra 2 punti su una mappa? Ho come input:
