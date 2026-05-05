@@ -2416,3 +2416,251 @@ Siamo sicuri che tutto sia consistente?
 > 4. Finito l’handler → ripristina lo stato
 > 5. Il programma riprende
 
+###### Socket
+Astrazione software per la comunicazione attraverso API standard e condivisa: 
+- networking socket layer user interface 
+- "uniform interface between the user process and the network protocol stacks in the kernel" (man 7 socket) 
+
+Comunicazione IPC anche attraverso una rete: scambio di pacchetti di dati ed altre operazioni. Esistono diversi communication domain, che stabiliscono la "protocol family" (`man 7 socket`), e diversi tipi di socket, che stabiliscono la modalità di comunicazione nello scambio di dati. Sono stati introdotti nel 1983 in Unix BSD 4.2. Le system calls per i socket sono più complesse rispetto, per esempio, alle pipe; le operazioni realizzate da `mkfifo(3)` ed `open(2)` per le named pipe sono divise tra più system call 
+
+**Socket domains (`man 2 socket`):**  
+
+| Name              | Purpose                        | Man page     |
+| ----------------- | ------------------------------ | ------------ |
+| AF_UNIX, AF_LOCAL | Local comunication             | `unix(7)`    |
+| AF_INET           | IPv4 internet protocols        | `ip(7)`      |
+| AF_INET 6         | IPv6 internet protocols        | `ipv6(7)`    |
+| AF_IPX            | IPX-novell protocols           |              |
+| AF_NETLINK        | Kernel user interface dev      | `netlink(7)` |
+| AF_X25            | ITU-T X.25/ISO-8208 protocol   | `x25(7)`     |
+| AF_AX25           | Amateur radio AX.25 protocol   |              |
+| AF_APPLETALK      | Apple Talk                     | `ddp(7)`     |
+| AF_PACKET         | Low level packet interface     | `packet(7)`  |
+| AF_ALG            | Interface to kernel crypto API |              |
+**Socket type (`man 2 socket`):** 
+- **SOCK_STREAM:** Provides sequenced, reliable, twoway, connection-based byte streams. An out-of-band data transmission mechanism may be supported. 
+- **SOCK_DGRAM:** Supports datagrams (connectionless, unreliable messages of a fixed maximum length). 
+- **SOCK_SEQPACKET:** Provides a sequenced, reliable, two-way connectionbased data transmission path for datagrams of fixed maximum length; a consumer is required to read an entire packet with each input system call. 
+- **SOCK_RAW:** Provides raw network protocol access. 
+- **SOCK_RDM:** Provides a reliable datagram layer that does not guarantee ordering. 
+- **SOCK_PACKET:** Obsolete and should not be used in new programs; see packet(7)
+
+> [!info] N.B.: 
+> Some socket types may not be implemented by all protocol families
+
+**Socket: passi per il collegamento:** 
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260505135541.png" width="300">
+</div> 
+
+- Il server chiama `socket(2)`, che crea un "endpoint" per la comunicazione e ritorna un file descriptor (*fd_s*) per le successive call 
+- Il server chiama `bind(2)` per associare il socket con un "indirizzo/nome" (vari tipi a seconda del domain). Storicamente tale operazione è anche detta "assegnare un nome al socket (naming)" ("My_Sock", un indirizzo IP e una porta su cui stare in ascolto, etc.) 
+- Il server chiama `listen(2)` per specificare che sul socket creato sono accettate connessioni in ingresso 
+- Con `accept(2)` il server rimane in attesa di connessioni da parte del/i client 
+- Anche il client crea un socket (endpoint) con `socket(2)` e riceve un file descriptor (fd_c) 
+- Con `connect(2)` il client si collega col socket del server usando l'indirizzo/nome associato a fd_s con `bind(2)` 
+- A connessione avvenuta il server crea un nuovo socket (*fd_new*) 
+- *fd_new* è ritornato al server dalla `accept(2)` ed è utilizzato per la comunicazione col client. Il server può chiamare nuovamente `accept(2)` per rimettersi in attesa di altre connessioni 
+
+**Creare un socket (sia lato server che client):** 
+```C
+#include <sys/socket.h>
+int socket(int domain, int type, int protocol); 
+
+domain: uno dei domini (AF_UNIX, AF_INET, etc.) 
+type: in generale uno dei tipi di socket (SOCK_STREAM, SOCK_DGRAM, etc.) 
+protocol:in molti casi ce n'è uno per ogni coppia family/type; in questo caso possiamo passare il valore 0 
+
+Ritorna il file descriptor per il nuovo socket; -1 per errore e setta errno 
+```
+
+> [!info] N.B.
+> Né POSIX.1 né Linux richiedono di includere anche sys/types.h ma in altre implementazioni potrebbe essere richiesto 
+
+**Chiamate lato server successive a `socket(2)`** 
+- `bind(2)` 
+- `listen(2) `
+- `accept(2)` 
+
+**`bind(2)`: assegnare un nome ad un socket(1):** 
+
+```C
+#include <sys/socket.h> 
+int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen); 
+
+sockfd: file descriptor del socket 
+addr : indirizzo/nome del socket 
+addrlen: lunghezza dell'indirizzo/nome 
+
+Ritorna 0 per successo; -1 per errore e setta errno 
+```
+
+Le regole per il name binding variano a seconda del domain. Consultare le seguenti pagine del man per i dettagli: 
+- For `AF_INET, see ip(7)` 
+- For `AF_INET 6, see ipv 6(7)`
+- For `AF_UNIX, see unix(7)` 
+- For `AF_APPLETALK, see ddp(7)` 
+- For `AF_PACKET, see packet(7)` 
+- For `AF_X 25, see x 25(7)` 
+- For `AF_NETLINK, see netlink(7)`
+
+La struttura `sockaddr` è definita come segue: `struct sockaddr { sa_family_t sa_family; char sa_data[14];}`. `struct sockaddr` è un tipo di dato "generico" che ha il solo ruolo di evitare una warning del compilatore
+
+Come secondo argomento occorre passare il puntatore alla struttura specifica per la famiglia (domain) di socket (`man 2 socket`). Per tale puntatore si fa il cast a `struct sockaddr *`, e ciò evita la warning.  
+
+> [!quote] Da `man 7 socket`:
+> The purpose of this type is purely to allow casting of domain-specific socket address types to a "generic" type, so as to avoid compiler warnings about type mismatches in calls to the sockets API.
+
+**`bind(2)`: assegnare un nome ad un socket `AF_UNIX`:** Un UNIX domain socket address è rappresentato nella seguente struttura: 
+```
+struct sockaddr_un 
+{ 
+sa_family_t sun_family; /* AF_UNIX */ 
+char sun_path[108]; /* pathname */ 
+}; 
+```
+
+`sun_family` contiene sempre `AF_UNIX`. `sun_path` è il pathname del socket 
+
+**`bind(2)`: assegnare un nome ad un socket `AF_INET`:**
+
+```C
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/ip.h>/* superset of previous two */ 
+
+tcp_socket = socket(AF_INET, SOCK_STREAM, 0); 
+udp_socket = socket(AF_INET, SOCK_DGRAM, 0); 
+
+int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen); 
+
+//addr: combinazione di indirizzo IP e porta di connessione: 
+
+struct sockaddr_in 
+{ 
+sa_family_t sin_family; /* address family: AF_INET */ 
+in_port_t sin_port; /* port in network byte order */ 
+struct in_addr sin_addr; /* internet address */ 
+}; 
+
+/* Internet address. */ 
+struct in_addr 
+{ 
+uint 32_t s_addr; /* address in network byte order */ 
+}; 
+```
+
+**Endianness: host e network byte order:** 
+- *endianness:* ordine dei byte nella word 
+	- **big endian:** il byte più significativo è all'indirizzo di memoria minore 
+	- **little endian:** il byte più significativo è all'indirizzo di memoria maggiore 
+- *host byte order:* come ordina la macchina. Little-endian 
+- *network byte order:* usato dai protocolli TCP/IP. Corrisponde a big-endian 
+
+**host e network byte order:** 
+```C
+#include <arpa/inet.h>
+uint 32_t htonl(uint 32_t hostlong); 
+uint 16_t htons(uint 16_t hostshort); 
+uint 32_t ntohl(uint 32_t netlong); 
+uint 16_t ntohs(uint 16_t netshort); 
+```
+
+Convertono da host byte order (little) a network byte order (big) e viceversa. Sono utilizzate, per esempio, per specificare un numero di porta (`man 3 byteorder`) 
+
+**IPv 4 "numbers-and-dots" e network byte order:** 
+
+```C
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+
+int inet_aton(const char *cp, struct in_addr *inp);// 127.0.0.1 => net b. order 
+in_addr_t inet_addr(const char *cp); // 127.0.0.1 => net b. order 
+in_addr_t inet_network(const char *cp); // 127.0.0.1 => host b. order 
+char *inet_ntoa(struct in_addr in); // net b. order => 127.0.0.1 
+struct in_addr inet_makeaddr(in_addr_t net, in_addr_t host); 
+in_addr_t inet_lnaof(struct in_addr in); 
+in_addr_t inet_netof(struct in_addr in); 
+```
+
+Sono funzioni che convertono nei diversi formati indirizzi IP: da IPv 4 "numbers-and-dots" (es.: 127.0.0.1) a intero e viceversa (`man 3 inet_aton`)
+
+**`listen(2)`: restare in ascolto:** 
+
+```C
+#include <sys/types.h>
+#include <sys/socket.h>
+
+int listen(int sockfd, int backlog); 
+``` 
+
+- *sockfd* è il file descriptor tornato da `socket(2)`
+- "marca" il socket come "passive", cioè un socket che riceverà connessioni in ingresso tramite `accept(2)` 
+- *backlog* definisce la lunghezza massima fino alla quale può crescere la coda di connessioni in sospeso 
+- se il *backlog* specificato come argomento è maggiore di /proc/sys/net/core/somaxconn esso viene ridotto a tale valore 
+
+**`accept(2)`: accettare connessioni:** 
+
+```C
+#include <sys/types.h>
+#include <sys/socket.h>
+
+int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+``` 
+
+- usata con connection-based socket types (`SOCK_STREAM`, `SOCK_SEQPACKET`). 
+- esegue le seguenti operazioni: 
+	- estrae la prima delle connessioni in coda per il socket *sockfd* in "listening" (cioè tornato da `socket(2)` e che stato oggetto di `bind(2)` e `listen(2)`)
+	- crea un nuovo socket e ne ritorna il file descriptor 
+	- il file descriptor ritornato può essere utilizzato lato server per la comunicazione col client che aveva richiesto la connessione 
+- il processo può chiamare di nuovo `accept(2)` per accettare nuove connessioni 
+- il socket referenziato da *sockfd* non è modificato 
+
+ ```C
+ #include <sys/types.h>
+ #include <sys/socket.h>
+  
+ int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+ ``` 
+ 
+- `addr` punta ad una struttura `sockaddr`. Riceve l'indirizzo/naming del socket dall'altro lato della comunicazione. Se NULL non vengono memorizzati dati 
+- se non ci sono connessioni entranti in coda e il socket NON è configurato in modalità "non bloccante" `accept()` si blocca finché non riceve connessioni. Se il socket è in modalità "non bloccante" e non ci sono connessioni in coda `accept()` fallisce ed errno è settata a `EAGAIN` or `EWOULDBLOCK`. 
+
+**`connect(2)`: connessione lato client:** 
+
+```C
+#include <sys/types.h>
+#include <sys/socket.h>
+
+int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+``` 
+
+- connette il socket referenziato da *sockfd* con l'indirizzo specificato da `addr` 
+- `addr` è lo stesso indirizzo/nome usato nella `bind(2)` dal lato server 
+- al ritorno *sockfd* è pronto per scambiare dati (se non ci sono stati errori ovviamente) 
+
+**Socket: inviare e ricevere dati:** una volta stabilita la connessione ci sono diverse funzioni per inviare e ricevere dati attraverso i sockets 
+- Invio: `send(2), sendto(2) e sendmsg(2)` 
+- Ricezione: `recv(2), recvfrom(2) e recvmsg(2)` 
+- in aggiunta possiamo utilizzare le system calls viste per i file: `write(2), read(2)`, etc. 
+- non si possono fare operazioni di seek che non siano alla posizione 0 
+
+```C
+#include <sys/socket.h>
+
+ssize_t send(int sockfd, const void buf[.len], size_t len, int flags); 
+```
+
+Utilizzabile solo se il socket è nello stato di connesso. La sola differenza tra `send(2)` e `write(2)` è la presenza dell'argomento flags. Se flags è 0 `send(2)` è equivalente a `write(2)` (per ulteriori informazioni si rimanda al man delle specifiche funzioni, in particolare per i flags di `send(2)`)
+
+```C
+#include <sys/socket.h>
+ssize_t recv(int sockfd, const void buf[.len], size_t len, int flags); 
+```
+
+La sola differenza tra `recv(2)` e `read(2)` è la presenza dell'argomento flags. Se flags è 0, `recv(2)` è "generalmente" * equivalente a `read(2)` (per ulteriori informazioni si rimanda al man delle specifiche funzioni, in particolare per i flags di `recv(2)`) 
+
+> [!info]
+> Differenza di comportamento segnalata nelle "Notes" di `man 2 recv`: "If a zero-length datagram is pending, read(2) and recv() with a flags argument of zero provide different behavior. In this circumstance, read(2) has no effect (the datagram remains pending), while recv() consumes the pending datagram." 
+
