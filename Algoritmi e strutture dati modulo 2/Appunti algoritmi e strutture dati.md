@@ -513,6 +513,10 @@ else PRINT-PATH(G,s,v.parent)
 	print v
 ```
 
+ <div style="display: flex; justify-content: center;">
+   <img src="Pasted image 20260505185236.png" width="300">
+ </div>
+
 **Depth-first search:** 
 - *Input:* un grafo $G = (V,E)$ sia orientato che non orientato. Non viene dato nessun vertice sorgente
 - *Output:*
@@ -551,7 +555,12 @@ la ricerca globale fa partire una ricerca locale su ogni vertice per esplorare t
 
 Ogni depth-first tree è fatto da archi $(u, v)$ così che $u$ sia grigio e $v$ sia bianco quando $(u, v)$ è esplorato
 
-**Struttura tipica di una DFSVisit:**
+**Struttura tipica di una DFS e DFSVisit:**
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260505185353.png" width="300">
+</div>
+
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260505115548.png" width="300">
 </div>
