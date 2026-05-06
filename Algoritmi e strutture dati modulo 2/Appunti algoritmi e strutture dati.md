@@ -996,7 +996,7 @@ Contraddice l'assunzione che $p$ sia il cammino minimo
 **Funzione per rilassare un arco $(u,v)$:** può la stima del cammino minimo per $v$ essere migliorata andando attraverso $u$ e prendendo $(u,v)$?
 
 <div style="display: flex; justify-content: center;">
-  <img src="Pasted image 20260408153001.png" width="300"><img src="Pasted image 20260408152045.png" width="300">
+  <img src="Pasted image 20260408152045.png" width="300">
 </div>
 
 Per ogni algoritmo per cammini minimi con una singola sorgente:
