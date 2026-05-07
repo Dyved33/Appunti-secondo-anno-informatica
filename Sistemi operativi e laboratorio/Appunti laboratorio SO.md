@@ -1,4 +1,4 @@
-###### Cenni Storici e Famiglie di Sistemi Operativi
+### Cenni Storici e Famiglie di Sistemi Operativi
 *Unix*
 * **Unix** è una "famiglia" di sistemi operativi **multitasking** e **multiuser** che deriva dall'originale AT&T Unix.
 * Lo sviluppo di AT&T Unix è iniziato nel 1969 al Bell Labs research center, principalmente ad opera di **Ken Thompson**, **Dennis Ritchie** e altri collaboratori.
@@ -24,7 +24,7 @@
 * Originariamente sviluppato dalla Open Handset Alliance, la sua versione più diffusa è oggi sviluppata principalmente da **Google**.
 * Il resto del sistema, inclusi software vari e utilities, è scritto principalmente in **Java**.
 * È specificamente pensato per sistemi **touchscreen mobile**, come telefoni e tablet.
-###### Concetti Base dei Sistemi Unix
+### Concetti Base dei Sistemi Unix
 **Struttura e Architettura:**
 * Sistemi **multitasking e multiuser**.
 * **Modularità**: Unix non è un sistema monolitico.
@@ -86,7 +86,7 @@
 
 **Link e Device Files:** Nel filesystem possono essere presenti file speciali chiamati **link**, che fungono da puntatori/collegamenti ad altri oggetti (in modo analogo ai collegamenti di Windows). Compiere un'operazione su un link significa implicitamente compierla sull'oggetto a cui esso punta.
 * Sono presenti anche **special files** o **device files**: espongono un dispositivo hardware all'interno del fylesystem come se fosse un normale file. Questo fornisce un'interfaccia verso l'hardware, permettendo alle system calls di eseguire operazioni di Input/Output in modo standardizzato.
-###### Primi Comandi BASH e variabili:
+### Primi Comandi BASH e variabili:
 I comandi BASH hanno tipicamente questa sintassi: `nome_comando <opzioni> <argomenti>`. 
 Le **opzioni** iniziano tipicamente con il carattere `-` e modificano il comportamento del comando; possono essere accorpate (es. `ls -ltra` equivale a `ls -l -t -r -a`) e a volte richiedono argomenti aggiuntivi. Ogni comando restituisce un valore di ritorno che informa sull'esito, dove solitamente `0` indica che è andato tutto a buon fine.
 
@@ -148,7 +148,7 @@ Le **opzioni** iniziano tipicamente con il carattere `-` e modificano il comport
 > - Sudo è il comando che mi permette di richiedere i permessi da utente root.
 > - I software vengono distribuiti in Linux sotto forma di pacchetti. 
 > - cd senza argomenti mi riporta alla home directory
-###### Attributi del file/cartella (bash)
+### Attributi del file/cartella (bash)
 Quando eseguo il comando *ls -l*, nella prima colonna, compare un carattere che mi identifica il tipo di file:
 
 | Simbolo | Tipologia          |
@@ -209,7 +209,7 @@ Per cambiare proprietario e permessi:
 > - cambia solo owner: chown utente file
 > - cambia solo gruppo: chown :gruppo file
 > - cambia entrambi: chown utente:gruppo file
-###### System call, wrappers e accesso ai file
+### System call, wrappers e accesso ai file
 Le system calls sono l'interfaccia per il programmatore ai servizi del sistema operativo (chiamata diretta al sistema). Vi si accede generalmente attraverso un API/linguaggi che la supportino. Ce ne sono vari tipi (accesso ai file, gestione di processi, IPC, semafori,...) e richiedono un "cambio di contesto": da *kernel mode* a *user mode* e viceversa.
 - Kernel mode = accesso senza limitazioni alle risorse HW/SW del sistema (memoria, dispositivi I/O, registri, codice del SO,...). Un errore in kernel mode può provocare un arresto del sistema
 - User mode = accesso limitato alle risorse di sistema (es. Memoria). Un errore in user mode può provocare il blocco del solo processo utente
@@ -380,7 +380,7 @@ int main(int argc, char *argv[]) //sono gli unici due parametri che può prender
 //se eseguo il programma con strace ./nomeProgramma vedo tutto il percorso delle varie syscalls
 ```
 
-###### Standard I/O library
+### Standard I/O library
 È un insieme di funzioni per accesso ai file, agli *streams* standard, etc che astraggono le operazioni di input-output sotto forma di streams. Le operazioni sono bufferizzate in spazio utente e ciò riduce il numero di chiamate alle sottostanti syscall e i relativi cambi di contesto ottimizzando le prestazioni. Forniscono un'interfaccia verso il SO di più alto livello rispetto alle syscall
 
 | Syscall (no bufferizzazione nello spazio utante)         | StdIO library (bufferizzazione nello spazio utente)                                                           |
@@ -390,7 +390,7 @@ int main(int argc, char *argv[]) //sono gli unici due parametri che può prender
 | `read/write`                                             | `getchar/putchar, getc/putc, fgetc/fputc, fread/fwrite, gets/puts, fgets/fputs, scanf/printf, fscanf/fprintf` |
 | `lseek`                                                  | `fseek`                                                                                                       |
 | Richiedono cambio contesto user-kernel ad ogni carattere | Tipicamente più efficaci e più veloci                                                                         |
-###### Bash: standard stream e redirezioni
+### Bash: standard stream e redirezioni
 **command-line completion:** *bash* ha la funzione di completamento delle linee di comando premendo il tasto `TAB`. Premendo una volta il tasto *TAB* ottengo:
 1. se c'è una sola possibilità il comando viene completato 
 2. altrimenti il comando viene eventualmente completato fin dove è possibile farlo in modo univoco e viene emesso un segnale sonoro
@@ -571,7 +571,7 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 > [!info] Useremo anche:
 > - `ps ax | grep –e <string1> –e <string2>` per selezionare delle righe dall'output di ps, e precisamente quelle che contengono una delle stringhe string1 o string2 o entrambe 
 > - watch `–n3 'ps ax | grep –e <string1> –e <string2>'` per eseguire lo stesso comando sopra descritto ogni 3 secondi fin quando il comando watch non viene interrotto (per esempio premendo Ctrl+c)
-###### System calls per i processi
+### System calls per i processi
 **fork():** `include <unistd.h> pid_t fork();`
 
 È una syscall che non vuole argomenti. Questo metodo ritorna -1 difficilmente (il *child* non viene creato e errno viene settata), altrimenti:
@@ -653,7 +653,7 @@ Permettono di rilasciare le risorse assegnate al *child*. Se un *child* termina 
 | `_exit(2), exit(3)` | Terminano il chiamante                           |
 | `execve(2)`         | Esegue un programma che rimpiazza il chiamante   |
 | `exec*(3)`          | Wrappers per execve(2) (sono 6)                  |
-###### File Bash
+### File Bash
 **Backtick:** in BASH le stringhe contenute tra caratteri backtick $(`)$ sono sostituite dall'output del comando che rappresentano  
 
 > [!example] 
@@ -922,7 +922,7 @@ int main()
 }
 ```
 
-###### Pipe
+### Pipe
 **IPC:** vari strumenti per la comunicazione tra processi:
 - Signal
 - Socket
@@ -1226,7 +1226,7 @@ int main()
 > - `&&` (AND logico): collega i comandi così che il secondo in successione venga eseguito subito dopo il primo. Se il primo comando fallisce, allora il resto viene saltato
 > - `&` (background):  va posto dopo un comando e esegue quest‘ultimo in modo asincrono, consentendo alla shell di continuare immediatamente senza attendere il completamento del processo (ATTENZIONE! NON legge eventuali input da terminale come password) 
 
-###### Bash scripting
+### Bash scripting
 **`-if`:** 
 > [!example] 
 > ```
@@ -1654,7 +1654,7 @@ Per assegnare il valore di ritorno ad una variabile arbitraria dobbiamo utilizza
 > 
 > some result
 > ```
-###### Threads
+### Threads
 **Posix threads:** sono parti di uno stesso programma eseguite contemporaneamente e schedulate indipendentemente l'una dall'altra. In altre parole sono "più tracce di esecuzione concorrenti in un singolo processo". Un singolo processo può "contenere" più threads. Questi condividono la memoria globale (data and heap) ma ognuno ha il proprio stack. Non è un'implementazione, ma uno standard. Sono implementati in molti SO, ma con delle differenze (vengono definiti una serie di interfacce come funzioni, file header per la programmazione di threads). Sono conosciuti come POSIX Threads o Pthreads 
 
 > [!info] `man 7 pthreads`
@@ -1808,7 +1808,7 @@ Le risorse allocate per un thread joinable sono rilasciate solo se un altro thre
 > [!info] In sostanza:
 > - con `join` il thread chiamante attende che il thread interpellato termini così da usarne le risorse (un solo thread può fare `join` con successo). Se non faccio mai `join` accumulo zombie e ad un certo punto non posso più creare thread
 > - quando il thread termina, con `detached`, le risorse vengono liberate subito e questo sparisce immediatamente. Non posso farci il `join` ne ottenere il suo valore di ritorno ne tornare indietro
-###### Race condition
+### Race condition
 Riguarda il problema della concorrenza. 
 
 > [!quote] Dalle slide del Prof. Carpi:  
@@ -1946,7 +1946,7 @@ int main(void)
 }
 ```
 
-###### Semafori (Posix):
+### Semafori (Posix):
 Servono per la sincronizzazione dei processi o dei threads per eseguire coerentemente una serie di azioni, per esempio per accedere ordinatamente a sezioni critiche di un programma o a risorse condivise. Si usano anche per la sincronizzazione dell’accesso ai dati per garantirne integrità e coerenza
 
 Storicamente ci sono 2 possibili implementazioni: POSIX o SYSTEM V. POSIX è più semplice ma meno diffusa (soprattutto tra sistemi più vecchi). SYSTEM V è una API più tradizionale
@@ -2200,7 +2200,7 @@ int main(void)
 }
 ```
 
-###### Signal
+### Signal
 Possono essere considerati come IPC (inteprocess communication) alcuni strumenti per la comunicazione tra processi: 
 - signals 
 - socket 
@@ -2416,7 +2416,7 @@ Siamo sicuri che tutto sia consistente?
 > 4. Finito l’handler → ripristina lo stato
 > 5. Il programma riprende
 
-###### Socket
+### Socket
 Astrazione software per la comunicazione attraverso API standard e condivisa: 
 - networking socket layer user interface 
 - "uniform interface between the user process and the network protocol stacks in the kernel" (man 7 socket) 

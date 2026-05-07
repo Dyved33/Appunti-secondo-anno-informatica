@@ -1,4 +1,4 @@
-###### Concetti preliminari
+### Concetti preliminari
 L'**Ordinamento Giuridico** è definito come un sistema intrinsecamente flessibile, capace di adattarsi, ma vincolato al rispetto assoluto della Costituzione. 
 La **Norma Giuridica**, è una regola di condotta obbligatoria imposte dallo stato per la convivenza sociale (***inosservanza comporta a sanzione***), esse deve possedere il requisito della costituzionalità (deve "stare sotto" la Costituzione). Il contenuto della norma si identifica con il precetto legale stesso.
 
@@ -43,7 +43,7 @@ In questo modo le fonti del diritto dell'Unione si distinguono principalmente in
 > [!INFO] Validità Linguistica
 > Ogni traduzione degli atti pubblicata nella Gazzetta Ufficiale dell'Unione Europea, nelle 27 lingue degli Stati membri, ha piena validità legale.
 
-###### Codice civile
+### Codice civile
 Il codice civile è un regio decreto perché deriva da quello precedente e ha la stessa forza normativa di un decreto e non perde di efficacia nel tempo se viene modificato. È diviso in 6 libri.
 
 **Libro 1 (riguarda le persone e la famiglia):** Quando parla di persone si riferisce sia a persone fisiche che giuridiche (soggetti di diritto). Un soggetto di diritto è un individuo cui può essere imputata una situazione giuridica soggettiva. Il soggetto di diritto acquisisce la capacità giuridica alla nascita. Non viene detto quando la persona fisica nasce perché quando venne scritto c'erano le leggi razziali in vigore (alcune persone fisiche non avevano la capacità giuridica a causa della razza). Il codice deriva dal diritto romano. In questo contesto la persona era colui che indossava una maschera (a teatro). L'ordinamento considera persona tutte le persone fisiche (non importa chi ci sia dietro la maschera).
@@ -54,7 +54,7 @@ Il codice civile è un regio decreto perché deriva da quello precedente e ha la
 
 >[!info] L'intelligenza artificiale può causare danni anche all'utilizzatore (es vettura a guida autonoma va a sbattere o investe qualcuno)
 
-###### Diritto d'autore
+### Diritto d'autore
 È un diritto fondamentale per il nostro ordinamento, vale per gli autori che producono qualcosa di creativo (1983). Tale diritto vale anche per chi fa fotografia e cinematografia (prima no perché non era una penna a produrre l'opera ma una macchina). Con il tempo anche lo script di un programma è protetto dal diritto d'autore
 
 **Banca dati:** È protetta da un diritto sui generis se protegge una visione creativa. In generale se un'opera è originale è protetta da diritto d'autore, altrimenti da diritto sui generis (ha durata limitata).
@@ -76,7 +76,7 @@ Il codice civile è un regio decreto perché deriva da quello precedente e ha la
 **Sistemi di IA ad alto rischio:** Sono ad alto rischio se sono integrati in altri prodotti (es auto a guida autonoma). Nella gestione del rischio l'IA restituisce una percentuale di rischio ma ci deve essere un controllo umano. Nell'AI act si usano 2 criteri: la piramide del rischio e le finalità generali (modelli con finalità generali creano meno problemi e quelli con più rischio hanno più restrizioni)
 
 **IA e diritto d'autore:** Il diritto d'autore è riservato agli umani. I lavori svolti sfruttando AI possono essere sottoposti a diritto d'autore, ma il lavoro deve essere documentato (per dimostrare il lavoro creativo). Si deve definire la regolamentazione dei dati con cui i modelli vengono addestrati. Se non si specifica il consenso si possono comunque usare i dati per il training (bisogna dare il dissenso esplicito). Alcuni sostengono che i sistemi vettoriali spezzettano a tal punto i dati che alla fine l'output non corrisponde all'originale. Un'altra tesi afferma che non importa il processo ma che il risultato non è originale (non dipende dall'intelletto umano)
-###### Diritti fondamentali
+### Diritti fondamentali
 **Articolo 2 della Costituzione:** È pilastro dei principi fondamentali, riconosce e garantisce i diritti inviolabili dell'uomo, sia come singolo sia nelle formazioni sociali (famiglia, associazioni), tutelando la dignità e la personalità (dopo referendum del 46). Ai diritti fondamentali di una persona si associano delle caratteristiche:
   1. Sono fondamentali perché sono il fondamento che spetta a tutti gli esseri umani (a prescindere da nome, cittadinanza, ecc...)
   2. Sono inalienabili, cioè non è possibile che il titolare di un diritto si spogli di tale diritto (questi diritti sono indisponibili). 
@@ -102,7 +102,7 @@ Il codice civile è un regio decreto perché deriva da quello precedente e ha la
 **Art 8:** Ogni individuo ha diritto alla protezione dei dati di carattere personale che lo riguardano. Dati sensibili da non trattare: razziali, orientamento sessuale, appartenenza politica, dati genetici, appartenenza religiosa. Si contravviene a questo articolo solo in casi regolamentati di necessità (norma eccezionale). Tali dati devono essere trattati secondo il principio della lealtà, per finalità determinate e in base al consenso della persona interessata o a un altro fondamento legittimo previsto dalla legge. Ogni individuo ha il diritto di accedere ai dati raccolti che lo riguardano e di ottenere la rettifica.Il nostro codice della privacy prevede illeciti penali quando non vengono rispettati i criteri previsti. 
 
 **Regolamentazione dati:** L'articolo 5 definisce come fare il trattamento dei dati personali.I dati personali sono: trattati in modo lecito, corretto e trasparente nei confronti dell'interessato («liceità, correttezza e trasparenza») e raccolti per finalità determinate, esplicite e legittime, e successivamente trattati in modo che non sia incompatibile con tali finalità. L'articolo 6 tratta la liceità del trattamento.
-###### Diritti dei minori
+### Diritti dei minori
 **Tutori di minori:** I soggetti che rappresentano la figura di genitore o di tutore legale di un minore ne assumono le veci durante le funzioni legali e ne amministrano i beni. I minori non hanno la facoltà di firmare per dei beni (anche se posseduti es il nonno mi passa in eredità dei beni). 
 
 >[!example] Se un minore che vende una proprietà, tale contratto può essere rescisso dai genitori (oppure entro 5 anni dal raggiungimento della maggiore età).
@@ -137,7 +137,7 @@ Il codice civile è un regio decreto perché deriva da quello precedente e ha la
 **Sharenting:** Si tratta della pratica di condividere informazioni relative al proprio figlio online. Ciò comporta il rischio che dei malintenzionati si avvicinino e ottengano la fiducia del figlio sulla base delle informazioni che sono state condivise. Per tale comportamento il foglio potrebbe richiedere un risarcimento (oltre alla cancellazione dei contenuti suddetti).
 
 >[!info] Esiste un decreto del 2021 che fa si ci siano dei blocchi automatici ai contenuti (classificati come dannosi) cui si accede con una sim intestata ad un minore.
-###### Protezione dati
+### Protezione dati
 **Evoluzione Storica e Principi della Protezione dei Dati:** La Dichiarazione Universale dei Diritti dell'Uomo sancisce, all'Articolo 12, il diritto alla protezione della corrispondenza. 
 
 > [!INFO] Elencare i casi in cui la legge consente di controllare la posta o la corrispondenza (es. indagini penali, specifiche tutele sul luogo di lavoro).
@@ -154,7 +154,7 @@ Nel contesto odierno, un esempio di corrispondenza privata moderna è rappresent
 Va ricordato che i diritti legati alla privacy non sono assoluti, ma subiscono limitazioni nel bilanciamento con altri diritti fondamentali. Il termine stesso relativo alla "protezione dei dati" nasce storicamente in Germania negli anni '70 (slide). L'evoluzione normativa è passata attraverso tappe fondamentali come la L. 300/1970 (Statuto dei Lavoratori), poi aggiornato con il Jobs Act) e la Convenzione di Strasburgo (1981).
 
 **Il GDPR (2016):** Il Regolamento (UE) 2016/679 (GDPR) rappresenta il pilastro normativo europeo relativo alla protezione delle persone fisiche con riguardo al Trattamento dei **Dati Personali**, nonché alla libera circolazione di tali dati. L'obiettivo principale è proteggere i diritti e le libertà fondamentali dell'Interessato, ponendo un focus specifico proprio sul diritto alla protezione dei dati personali e regolamentandone i flussi.
-###### Beni e contratti
+### Beni e contratti
 **I Beni e i Requisiti Essenziali del Contratto:** Nel diritto civile, i beni sono definiti come le "cose che possono formare oggetto di diritti" (Art. 810 c.c.). 
 Il codice civile distingue ulteriormente i beni all'Art. 812 c.c. (beni immobili e beni mobili) e all'Art. 814 c.c., che equipara ai beni mobili le energie naturali che hanno un valore economico. Non tutti i beni sono necessariamente "cose" materiali. Il legislatore prevede requisiti di forma specifici (es. forma scritta a pena di nullità) per documentare il trasferimento di determinati beni.
 
@@ -189,7 +189,7 @@ I punti chiave (rif. della prof):
 - **Scelta binaria insufficiente:** Nella maggior parte dei casi, presentare agli utenti *solo* una scelta binaria tra "acconsentire al tracciamento per pubblicità comportamentale" o "pagare una tariffa" non soddisfa i requisiti del GDPR per un consenso valido.
 - **Alternativa equivalente:** Le grandi piattaforme (Very Large Online Platforms - VLOPs) dovrebbero fornire agli interessati un'"alternativa equivalente" che non comporti il pagamento in denaro.
 - **Terza opzione gratuita:** Dovrebbe essere considerata l'offerta di un'ulteriore alternativa gratuita priva di pubblicità comportamentale (ad esempio, sostenuta da pubblicità contestuale che comporta un Trattamento di dati personali minimo o nullo).
-###### Cybersecurity
+### Cybersecurity
 **Clusit:** Ente analizza le tendenze in ambito di sicurezza informatica nel mondo. In base a questi rapporti i rischi informatici sono in continuo e netto aumento. 
 
 **Triade CIA:** <u>La  <b>triade CIA</b>  (Confidentiality, Integrity, Availability) è un modello fondamentale di cybersicurezza composto da tre pilastri: Riservatezza, Integrità e Disponibilità</u>. Serve a proteggere i dati e le risorse informatiche da accessi, modifiche o interruzioni non autorizzate, garantendo che le informazioni siano segrete, accurate e accessibili. I reati informatici incidono quasi sempre su almeno uno dei 3 elementi (della triade CIA):
@@ -216,7 +216,7 @@ Una violazione di sicurezza è ciò che comporta accidentalmente o in modo illec
 - *deep-fake* = sono usati per perpetrare delle truffe
 - *bad USB* = attacchi con strumenti fisici (ci sono utenti che inseriscono nei propri dispositivi le chiavette per strada -> si sfrutta la curiosità dell'utente)
 - *man in the middle* = l'hacker si inserisce tra utente e servizio 
-###### Successione
+### Successione
 **Libro 2 del codice civile (riguarda la successione mortis causa):** È un argomento di cui tutti gli ordinamenti si sono sempre occupati. Questa disciplina si incentra sull'esigenza necessaria per la quale un diritto di qualcuno diventi un diritto di nessuno. La cosa di nessuno non è persa, ma è abbandonata dal proprietario $\implies$ è suscettibile di apprensione da chiunque
 
 **Definizione di proprietà:** (prima della rivoluzione francese) Il proprietario è sovrano del suo bene $\implies$ può farne ciò che vuole (es. distruggerlo). Per questo motivo il proprietario deve occuparsi della successione dei suoi bene in autonomia. Dopo la rivoluzione francese si fa in modo che tutti gli eredi (**legittimari**) del proprietario abbiano una parte di eredità. La quota in questione si chiama **quota di riserva**. Se il proprietario dei beni, o tramite il testamento o come donazione, fa in modo di non rispettare questa attribuzione $\implies$ si può intentare una causa di nullità (nei confronti delle volontà del testatore). Normalmente un proprietario ha una quota di beni detta **lesiva**, cioè della quale può decidere autonomamente gli eredi (parte che esula dalla quota di riserva).
@@ -264,7 +264,7 @@ In Italia, per adattarci al GDPR (che è del 2016 ma è entrato in vigore nel 20
 | Italia                                                                                            | Germania                                                                 |
 | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | Approccio personalistico: persistenza di interessi giuridicamente tutelabili in capo a chi agisce | Approccio patrimonialistico: principio di universalità della successione |
-###### Danno e responsabilità reati
+### Danno e responsabilità reati
 Nell'ordinamento italiano, il danno risarcibile si divide principalmente in **patrimoniale** (lesione del patrimonio) e **non patrimoniale** (lesione di interessi costituzionalmente garantiti non economici). Le voci chiave del danno patrimoniale includono il danno emergente e lucro cessante, mentre il non patrimoniale racchiude il danno biologico (salute), morale (sofferenza) ed esistenziale (vita relazionale).
 1. **Danno Patrimoniale (Art. 2043 c.c.):** Consiste nella perdita economica subita dal danneggiato. Si compone di due elementi: 
  - *Danno Emergente:* La perdita economica diretta e immediata (es. spese mediche, riparazione auto).
@@ -292,7 +292,7 @@ Responsabilità contrattuale ed extra-contrattuale:
 Le differenze principali riguardano l'onere della prova, i termini di prescrizione (10 vs 5 anni) e l'entità del risarcimento.
 
 **Perché spesso si da la colpa alla piattaforma?** Perché magari l'utente ha fatto un danno e ha usufruito di strumenti come le VPN per non farsi trovare. Servendo un responsabile di un atto illecito si sanziona la piattaforma. Per quanto riguardo il risarcimento del danno c'è la possibilità di avere tutto il pagamento o dalla piattaforma o da chi ha perpetrato l'illecito. Nello specifico la piattaforma può pagare i danni provocati dall'illecito (successivi a questo) e poi si avvale del diritto di recesso 
-###### Codice di procedura civile e responsabilità civile
+### Codice di procedura civile e responsabilità civile
 Codice che riguarda la procedura processuale in ambito civile. In ambito civile, la richiesta di risarcimento del danno per un trattamento dei dati non adeguato segue regole procedurali rigorose. Il giudice valuta esclusivamente la fattispecie sottoposta alla sua attenzione, non adottando una visione "ampia" ma limitandosi alla cornice dettata dalle parti. Il processo civile è un processo di parti, cioè ci sono 2 parti private contrapposte. Queste discutono riguardo la violazione o meno di un diritto. Le parti del processo sono:
 - L’attore = colui che intenta la causa del processo
 - Il convenuto = colui che è chiamato in processo (deve rispondere della pretesa dell’attore)
@@ -322,7 +322,7 @@ Un ambito di forte scontro tra diritto alla riservatezza e altri diritti costitu
 > [!INFO] Il bilanciamento tra il diritto di cronaca e la Data Protection impone il divieto di divulgazione di dettagli clinici esuberanti rispetto alla finalità puramente informativa della notizia.
 
 **Prova contraria:** La prova contraria nel processo civile è lo strumento per contestare i fatti allegati dalla controparte, distinguendosi in diretta e indiretta. La prova contraria diretta mira a smentire i testimoni avversari sui medesimi fatti, mentre l'indiretta introduce nuovi elementi incompatibili.
-###### Guerra ibrida
+### Guerra ibrida
 Nella scelta di obiettivi militari del 28-02-2026 si è usata l’intelligenza artificiale (troppe informazioni da elaborare per un umano)
 
 **AI:** si dice AI qualsiasi modo di simulare con un computer processi mentali umani come: apprendimento, ragionamento, risoluzione di problemi, percezione, processi decisionali, linguaggio,… . L’origine si  confonde con la nascita dei computer stessi:
@@ -348,7 +348,7 @@ Nella scelta di obiettivi militari del 28-02-2026 si è usata l’intelligenza a
 - Abilità di comunicare all’esterno 
 - Esposizione a contenuti non affidabili
 
-###### *Blockchain* e contracts
+### *Blockchain* e contracts
 La blockchain nasce per risolvere il problema del **double spending** nelle monete digitali: in un sistema puramente digitale, infatti, lo stesso “valore” potrebbe essere tentato più volte se non esistesse un meccanismo condiviso di controllo (in altre parole una criptovaluta potrebbe essere spesa più volte se non ci fosse una forma di controllo). La soluzione di Bitcoin è una rete **peer-to-peer** che registra pubblicamente le transazioni in una catena di blocchi protetta da *proof-of-work*, così da rendere costosa la modifica della storia già registrata.
 
 La blockchain è un **registro digitale decentralizzato**, sicuro e immutabile, strutturato come una catena di blocchi che memorizzano dati e transazioni. Condiviso tra più nodi (computer) di una rete, elimina intermediari centrali, garantendo trasparenza e tracciabilità inalterabile grazie alla crittografia, rendendo così impossibile modificare i dati una volta registrati. Ecco i punti chiave per capire la blockchain:

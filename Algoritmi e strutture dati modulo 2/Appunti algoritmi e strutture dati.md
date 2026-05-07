@@ -1,4 +1,4 @@
-###### Alberi binari
+### Alberi binari
 Le linked lists vanno bene per rappresentare delle relazioni lineari (non tutte le relazioni sono lineari). In particolare ci concentriamo sul problema di rappresentare un albero costruito a partire da una linked data structure. Ogni nodo dell'albero è un oggetto e supponiamo che ogni nodo dell'albero contenga un attributo chiave (key). L'altro attributo d'interesse sono i puntatori che connettono ogni nodo agli altri. Un **albero binario** è un grafo non orientato rappresentato con i puntatori, caratterizzato dal fatto che ogni nodo ha al massimo due figli, uno destro e uno sinistro:
  - Ogni nodo è definito con 3 puntatori, $p,\space left,\space right$, in cui $p$ è  il puntatore al nodo padre; il nodo $left$ è il puntatore al figlio sinistro e il nodo $right$ è il puntatore al figlio destro.
  - Se il nodo $x$ non ha figli sinistri, il puntatore $left$ è inizializzato a $NIL$. Analogamente per il caso destro.
@@ -25,7 +25,7 @@ Le linked lists vanno bene per rappresentare delle relazioni lineari (non tutte 
 	- $right\_sibling$: fratello destro.
 - Se il nodo non ha figli allora $left\_child = NIL$
 - Se il nodo non ha fratelli destri allora $right\_sibling = NIL$
-###### Albero binario di ricerca
+### Albero binario di ricerca
 Si tratta di un albero binario nel quale le chiavi (cioè le informazioni contenute nei nodi) sono sempre contenute in modo da soddisfare le proprietà dell'albero.
 **Proprietà dell'albero binario di ricerca:** Considerando un nodo $x$ all' interno di un *albero binario di ricerca:*
 - se il nodo $y$  si trova nella parte sinistra del sotto-albero di $x$, allora $y.key \leq x.key$
@@ -191,7 +191,7 @@ transplant(T,u,v)
 ~~~
 
 > [!info] N.B. Sia l'algoritmo di inserimento che quello di eliminazione richiedono tempo $O(h)$ per alberi di altezza h
-###### Red-black trees
+### Red-black trees
 Il set di operazioni viste nella scorsa lezione sono veloci se l'altezza dell'albero di ricerca è piccola. Viceversa se l'altezza fosse un valore più grande le stesse operazioni sarebbero veloci tanto quanto una linked list. In questo contesto vengono introdotti gli alberi di ricerca bilanciati (**red-black trees**) che garantiscono delle operazioni che impiegano $O(log(n))$ di tempo nel caso peggiore.
 
 **Proprietà:** 
@@ -277,7 +277,7 @@ while x != T.NIL
 
    - *y* è nero e *z* è un figlio sinistro -> cambia alcuni colori e applica una rotazione destra su *z.p.p*, il quale preserva la proprietà di non avere figli rossi (essendo un nodo rosso)
 > [!example] ![[Screenshot From 2026-03-03 10-50-24.png|300]]
-###### Hash table
+### Hash table
 Una hash table è una generalizzazione di un array. In un array gli elementi vengono immagazzinati con una chiave k alla posizione k. Data la chiave k, per trovare l'elemento la cui chiave è k, mi basta guardare alla k-esima posizione dell'array (*direct addressing*). Quando non voglio allocare un array con una posizione per ogni possibile chiave uso una hash table. Uso questa struttura anche nel caso in cui il numero di chiavi immagazzinate è più piccolo del numero delle possibili chiavi. Quando si parla di hash table ci si riferisce ad un array che tipicamente usa una dimensione proporzionale al numero di chiavi che vanno immagazzinate. Per questo motivo se ho la chiave k non uso questo valore come indice nell'array, invece definisco una *hash function* (funzione di k) e usiamo il suo valore per indicizzare l'array.
 
 | Direct-address tables                                                        | Hash tables                                                                                                                                     |
@@ -431,7 +431,7 @@ Lo svantaggio di usare DELETED è che ora il tempo di ricerca non dipende più d
 > Hashing con moltiplicazione e somma: comunque facilmente hackerabili (ad es, m=16 se inserisco 26 + $k*m$ ottengo comunque collisioni sull'indice 10)
 > 
 > Hashing quadratico: meno prevedibile
-###### Grafi
+### Grafi
 Dato un grafo $G = (V,E)$, in pseudocodice si rappresenta il set di vertici con $G.V$ e il set degli archi con $G.E$.
 - $G$ può essere orientato o non orientato
 - Due modi comuni per rappresentare i grafi per gli algoritmi sono: 
@@ -548,6 +548,20 @@ DFS(G)
 la ricerca globale fa partire una ricerca locale su ogni vertice per esplorare tutto il grafo
 ```
 
+```Pseudocode
+DFS-Visit(G,u)
+	time++  // white vertex u has just been discovered
+	u.d = time
+	u.color = GRAY
+	for each vertex v in G.Adj[u]  //explore each edge (u,v)
+		if v.color == WHITE	
+			v.p = u
+			DFS-Visit(G,v)
+	time ++
+	u.f = time
+	u.color = BLACK  //blacken u because it is finished
+```
+
 > [!example] ![[Screenshot From 2026-03-16 19-15-31.png|300]]
 > Tempo = $\Theta(V+E)$
 > - l'analisi è simile a quella per il BFS
@@ -602,6 +616,7 @@ Non necessita di ordinare in funzione dei tempi di fine:
 - Oppure mette i vertici all'inizio della linked list appena sono finiti. Appena finito la lista contiene i vertici ordinati con ordine topologico 
 
 **Tempo:** $\Theta(V+E)$
+
 > [!example] ![[Screenshot From 2026-03-17 23-15-57.png|300]]
 
 **Correttezza:** è necessario mostrare che se $(u,v) \in E$ allora $v.f < u.f$. Quando l'arco $(u,v)$ è esplorato, di che colore sono $u$ e $v$?
@@ -679,7 +694,7 @@ Ogni radice scelta dal secondo DFS può raggiungere solo:
 - I vertici nei SCC già visitati nel secondo DFS
 
 Visitando i vertici di $(G^T)^{SCC}$ in ordine inverso rispetto all'ordinamento topologico
-###### Disjoint-set data structures
+### Disjoint-set data structures
 Le strutture dati per insiemi disgiunti (o union find) mantengono la collezione $\mathscr{S} = \{S_1,…,S_k\}$ di insiemi disgiunti e dinamici. Ogni set è identificato da un rappresentante, il quale è un qualche membro dell'insieme. Non importa quale membro sia il rappresentante, fintanto che, se si chiede due volte quale sia il rappresentate, si ottenga la stessa risposta (senza cambiare il set)
 
 **Operazioni:** 
@@ -791,7 +806,7 @@ Find-Set(x)
 ```
 
 **Running time:** se si usano entrambe le union (per grado e compressione del cammino), $O(m\alpha(n))$. $\alpha(n)$ è una funzione di crescita molto lenta. I limite è stretto quindi esiste una sequenza di operazioni che richiede $\Omega(m\alpha(n))$ in tempo
-###### Minimum spanning trees
+### Minimum spanning trees
 Problema ipotetico:
 - Una città ha un set di strade e un set di case
 - Una strada connette 2 sole case
@@ -815,7 +830,7 @@ Uno spanning tree il cui peso sia minimo (tra tutti gli spanning trees) è chiam
 **Proprietà di un MST:**
 - Ha $|V| -1$ archi
 - Non ha cicli
-- Potrebbe essere unico
+- Potrebbe essere unico come non
 
 > [!info] In sostanza:
 > Un minimum spanning tree (MST) è uno spanning tree di peso minimo in un grafo non orientato e pesato. Deve quindi:
@@ -938,7 +953,7 @@ Si supponga che Decrease-Key possa richiedere $O(1)$ di tempo, allora $\leq |E|$
 > 
 > Entrambi usano il criterio del taglio, ma in modo diverso: Kruskal lavora sui tagli tra componenti, Prim sul taglio tra l'albero già costruito e il resto del grafo.
 
-###### Single-source shortest path
+### Single-source shortest path
 Come trovo il cammino minimo tra 2 punti su una mappa? Ho come input:
 - Un grafo orientato $G = (V,E)$
 - Una funzione per il peso $w: E \rightarrow \mathbb{R}$    
@@ -1069,7 +1084,7 @@ Analisi: ho $|V|$ operazioni Insert e Extract-Min e $\leq |E|$ operazioni Decrea
 	- Ci sono $\Theta(V)$ operazioni Insert e Extract-Min, che richiedono $O(\lg(V))$ di tempo ammortizzato
 	- Perciò il tempo è $O(V \lg(V+E))$ 
 
-###### All-Pairs shortest path
+### All-Pairs shortest path
 Dato un grafo orientato $G = (V,E)$ e una funzione peso $w: E → \mathbb{R}, |V| = n$. Si assume che i vertici siano numerati $1,2,…,n$. Il mio obiettivo è di creare una matrice $n \times n$ $D = (d_{ij})$ di shortest-paths distances, in questo modo $d_{ij} = \delta(i,j)$ per ogni vertice $i$ e $j$. Si potrebbe eseguire l'algoritmo di Bellman-Ford per ogni vertice e avrebbe costo $O(V^2 E)$, che è $O(V^4)$ se il grafo è **denso** ($E = \Theta(V^2)$). Se non ci sono archi a peso negativo, si potrebbe eseguire l'algoritmo di Dijkstra una volta per ogni vertice. In tal caso avrei:
 - $O(VE \lg(V))$ con una binary heap, $O(V^3 \lg(V))$ se è denso
 - $O(V^2 \lg(V) + VE)$ con una Fibonacci heap, $O(V^3)$ se è denso

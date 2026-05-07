@@ -1,4 +1,4 @@
-###### Introduzione alla SE moderna
+### Introduzione alla SE moderna
 **Ingegneria del software oggi:** Quando si parla di software, si parla della struttura portante dei sistemi moderni
 - trasporti
 - comunicazione 
@@ -159,7 +159,7 @@ L'ingegneria del software offre strumenti per mantenere comprensibile un sistema
 
 L'approccio ingegneristico non elimina gli imprevisti, ma rende possibile affrontarli con metodo senza perdere stabilità.
 
-###### Processi software
+### Processi software
 Un' attività collettiva che coinvolge persone, ruoli e decisioni distribuite nel tempo. Quando si lavora con più persone, ognuna tende a seguire il proprio stile, creando
 - fraintendimenti
 - funzioni duplicate nel codice
@@ -340,7 +340,7 @@ A partire dalle epic possiamo ricavare user stories più piccole e concrete, cia
 - chi è l'attore
 - che cosa vuole ottenere
 - perché quella funzionalità è utile.
-###### Requisiti funzionali e non funzionali
+### Requisiti funzionali e non funzionali
 **Requisito:** <u>Un requisito è una descrizione chiara e condivisa di qualcosa che il sistema deve fare oppure di un vincolo che deve rispettare.</u> Possiamo vederlo come una promessa tra chi richiede il sistema e chi lo realizza. Un requisito ben scritto:
 - riduce le ambiguità e le interpretazioni personali (devono essere chiari); 
 - permette di verificare in modo oggettivo se il sistema si comporta come atteso (se ho dei vincoli questi vengono rispettati); 
@@ -486,7 +486,7 @@ I requisiti non funzionali non devono essere trascurati: anche loro entrano a pi
 - rendere l'interfaccia più accessibile o più semplice da usare. 
 
 Altri, invece, sono vincoli trasversali: non compaiono come singole attività, ma devono essere rispettati in ogni funzionalità sviluppata (ad esempio sicurezza, normativa sui dati, compatibilità con sistemi esistenti). Ignorarli nelle prime fasi porta quasi sempre a interventi più costosi, più complessi e più rischiosi nelle fasi successive. 
-###### Modellazione concettuale      
+### Modellazione concettuale      
 <u><b>Dominio</b> = Per dominio si intende l'insieme di: persone, oggetti, regole e processi reali che il software deve rappresentare e supportare.</u>
 
 **Modellazione concettuale:** La modellazione concettuale è l'attività che mira a:
@@ -686,7 +686,7 @@ Investire tempo qui fa risparmiare tempo nelle fasi successive.
 - usare nomi vaghi o poco significativi (dati1, oggetto, elemento...).
 
 È importante ricordare che in questa fase lo scopo non è “scrivere codice”, ma capire bene il problema.
-###### Use case diagram      
+### Use case diagram      
 **UML:** Iniziamo ad usare una notazione standard per rappresentare i modelli: UML (unified modelling language) che è un linguaggio visivo condiviso. UML è un linguaggio di modellazione standard, non un linguaggio di programmazione. Fornisce un insieme di diagrammi per descrivere:
 - la struttura statica del sistema
 - il comportamento dinamico
@@ -1083,7 +1083,7 @@ Non dicono ancora:
 - quali messaggi si scambiano; 
 - in che ordine avvengono le operazioni. 
 
-###### Sequence diagram e activity diagram
+### Sequence diagram e activity diagram
 Nella lezione precedente abbiamo definito la struttura del sistema: 
 - **Domain Model:** concetti del dominio e relazioni principali;
 - **Class Diagram:** classi software e legami tra classi. 
@@ -1096,7 +1096,7 @@ Useremo due viste complementari:
 - **Sequence Diagram** per le interazioni tra partecipanti; 
 - **Activity Diagram** per il flusso del processo.
 
-###### Sequence diagram
+### Sequence diagram
 Si utilizza per chiarire come uno scenario viene eseguito nel tempo. Risponde a tre domande operative: 
 - chi interagisce con chi; 
 - in quale ordine avvengono i messaggi; 
@@ -1228,7 +1228,7 @@ Errore tipico: usare strict quando basta seq, irrigidendo il modello.
   <img src="Pasted image 20260319151725.png" width="300">
 </div>
 
-###### Activity diagram
+### Activity diagram
 Con i Sequence Diagram abbiamo visto chi parla con chi e in quale ordine. Ora cambiamo punto di vista: 
 - non più il dettaglio dei messaggi tra oggetti; 
 - ma il flusso complessivo del processo. 
@@ -1354,7 +1354,7 @@ Si capisce subito chi fa cosa (studente vs sistema). Ottimo strumento di comunic
 	- usa Sequence quando il rischio è distribuire male la logica tra oggetti; 
 	- usa Activity quando il rischio è perdere la visione complessiva del processo. 
 
-###### Principi di architettura software
+### Principi di architettura software
 Nelle tre lezioni UML precedenti abbiamo usato cinque diagrammi per capire che cosa deve fare il sistema: 
 1. Use Case Diagram per funzionalità e attori; 
 2. Domain Model  per i concetti del dominio;
@@ -1694,7 +1694,7 @@ Questa suddivisione ha il vantaggio di:
 >
 >La responsabilità di ciascun passo è chiara e localizzata nel layer corretto. 
 > ![[Pasted image 20260325152144.png|300]]
-###### Stili architetturali
+### Stili architetturali
 Nella lezione precedente abbiamo visto: 
 - che cos'è l'architettura software, 
 - perché è importante pensarla esplicitamente, 
@@ -1986,7 +1986,7 @@ Sintesi per UniManager in questa fase:
 - base layered con repository centrale dei dati,
 - client–server e service-based come possibili evoluzioni successive. 
 
-###### Principi SOLID
+### Principi SOLID
 Finora ci siamo concentrati su: 
 - principi architetturali generali (modularità, separazione delle responsabilità, layering), 
 - stili architetturali (layered, client–server, repository, service-based). 
@@ -2359,7 +2359,7 @@ Obiettivo: migliorare il design senza riscrivere tutto da zero.
 	- i servizi dipendono da classi concrete di repository? 
 	- posso introdurre interfacce nel dominio e implementazioni nei layer esterni?
 
-###### Design patterns essenziali: strategy e factory method
+### Design patterns essenziali: strategy e factory method
 Nella lezione precedente abbiamo visto tutti e cinque i principi SOLID. Questi principi ci dicono come dovrebbe essere un buon design: 
 - classi con ruoli chiari; 
 - codice estendibile senza modificare quello già scritto; 
@@ -2590,7 +2590,7 @@ Effetto:
 	- favoriscono DIP: dipendenza da astrazioni (SortStrategy, ExamSession, Creator); 
 	- aiutano SRP: separano responsabilità (comportamenti / creazione) dal resto della logica.
 
-###### Design Patterns essenziali: Adapter e Observer
+### Design Patterns essenziali: Adapter e Observer
 Abbiamo visto: 
 - Strategy: rendere intercambiabili i comportamenti; 
 - Factory Method: centralizzare e strutturare la creazione degli oggetti. 
@@ -2792,7 +2792,7 @@ I pattern affrontano quattro problemi distinti: comportamenti, creazione, integr
 > - Il beneficio dei pattern dipende da come vengono applicati: migliorano il design se rispondono a una variabilità reale. 
 > - Gli esempi su UniManager mostrano come questi pattern preparino il sistema a integrazioni e notifiche future.
 
-###### Qualità del design: code smells
+### Qualità del design: code smells
 **Perché parlare di qualità interna?** Un software può funzionare ed essere comunque difficile da mantenere e da far crescere nel tempo. La qualità interna determina in modo diretto: 
 - quanto è semplice correggere bug senza introdurre effetti collaterali; 
 - quanto è facile aggiungere nuove funzionalità senza “toccare tutto”; 
@@ -3144,7 +3144,7 @@ Refactoring tipico: accorpare comportamento correlato e chiarire i confini.
 > - Riconoscere presto gli smells aiuta a intervenire con refactoring prima che il degrado diventi architetturale. 
 > - I miglioramenti di design spesso non cambiano il comportamento esterno, ma riducono fragilità e costo delle modifiche future. 
 > - Gli esempi su UniManager mostrano come collegare osservazione degli smells e refactoring concreto.
-###### Documentazione essenziale
+### Documentazione essenziale
 La documentazione viene talvolta trattata come attività accessoria. In realtà è uno strumento di ingegneria: 
 - riduce incomprensioni; 
 - accelera onboarding e passaggi di consegne; 
@@ -3419,7 +3419,7 @@ Principio: ogni documento deve avere un proprietario esplicito, non “di nessun
 > - La Javadoc è più utile quando chiarisce contratto e comportamento osservabile delle API, non i dettagli interni. 
 > - Tenere la documentazione aggiornata è parte del lavoro di sviluppo e prepara meglio testing, CI e manutenzione.
 
-###### Testing: principi e piramide del testing
+### Testing: principi e piramide del testing
 Una convinzione molto diffusa nello sviluppo software è: "Prima scrivo il codice e alla fine faccio un test per controllare se funziona". In un progetto reale questo approccio tende a produrre effetti sistematici: 
 - il feedback arriva tardi, quando il codice è già cambiato più volte e il contesto iniziale si è perso; 
 - gli errori diventano più difficili da isolare, perché entrano in gioco più componenti e più ipotesi non esplicitate; 
@@ -3676,7 +3676,7 @@ Obiettivo operativo: tanti unit test per feedback veloce, integration test mirat
 > - La rete di test automatici è ciò che rende più praticabili refactoring ed evoluzione continua del sistema. 
 > - Il test-first è utile soprattutto perché costringe a chiarire comportamento e confini prima dell'implementazione.
 
-###### JUnit 5: test
+### JUnit 5: test
 Nel ciclo di sviluppo moderno, implementazione e verifica non sono fasi separate, ma attività che procedono in modo intrecciato. Il codice viene scritto insieme ai test che ne descrivono il comportamento atteso, rendendo esplicite ipotesi e decisioni che altrimenti rimarrebbero implicite. L'esecuzione frequente dei test fornisce un feedback immediato sugli effetti delle modifiche introdotte. Questo feedback consente di individuare rapidamente errori e regressioni, prima che il contesto diventi troppo complesso o difficile da ricostruire. Nel tempo, la presenza dei test influenza il design del sistema, favorendo soluzioni più semplici, modulari e facilmente evolvibili.  
 
 **JUnit 5:** è il framework di riferimento per la scrittura ed esecuzione di test automatici in Java, progettato per supportare in modo esplicito il testing di unità. Fornisce un insieme di annotazioni, asserzioni e meccanismi di esecuzione che permettono di descrivere in modo preciso il comportamento atteso del codice. L'obiettivo principale non è “verificare che il codice funzioni” in senso generico, ma rendere eseguibili e verificabili le regole e le ipotesi su cui il sistema è costruito. L'integrazione nativa con gli ambienti di sviluppo consente l'esecuzione frequente dei test come parte naturale del lavoro quotidiano. In questo senso, JUnit 5 rappresenta lo strumento operativo che rende praticabili i principi di testing discussi finora.  
@@ -3883,7 +3883,7 @@ I dettagli implementativi possono cambiare nel tempo senza invalidare i test, se
 > - Suite rapide e isolate aumentano la frequenza di esecuzione e rendono il testing parte naturale del workflow quotidiano. 
 > - La base costruita qui prepara il passaggio al mocking per gestire collaboratori esterni e dipendenze più complesse
 
-###### Mocking con Mockito 
+### Mocking con Mockito 
 Finora i test che abbiamo visto verificano soprattutto: 
 - input → output, 
 - regole di business in una singola classe o metodo. 
@@ -4175,7 +4175,7 @@ L'obiettivo finale è avere test che rimangano stabili nel tempo, anche quando c
 > - Il mocking funziona bene quando il design è testabile (DIP, dipendenze sostituibili). 
 > - Troppi mock o verifiche troppo dettagliate sono un segnale di design da rifattorizzare.  28 
 
-###### Git: controllo di versione
+### Git: controllo di versione
 Senza un sistema di controllo di versione, la gestione delle modifiche tende a degenerare in: 
 - copie multiple dello stesso progetto (progetto_finale_v 3_definitivo 2.zip), 
 - file sovrascritti e versioni perse, 
@@ -4614,7 +4614,7 @@ Questo flusso non è pensato per essere sofisticato, ma per essere robusto, ripe
 > - Le operazioni di undo richiedono attenzione al contesto (locale vs condiviso), non solo memoria dei comandi. 
 > - Buone pratiche di commit e versionamento migliorano review, tracciabilità e manutenzione del progetto.   
 
-###### Continuous integration
+### Continuous integration
 Nelle lezioni precedenti sono stati introdotti diversi strumenti fondamentali per migliorare la qualità del software sviluppato: 
 - i test automatici, utilizzati per verificare in modo sistematico il comportamento atteso del codice; 
 - il mocking, impiegato per isolare le dipendenze e rendere i test più mirati e controllabili; 
@@ -4843,7 +4843,7 @@ Questi segnali forniscono un colpo d'occhio sullo stato di salute del progetto i
 > - La CI collega in modo operativo Git, testing automatico e collaborazione. 
 > - Gli strumenti (come GitHub Actions) sono mezzi per realizzare la pratica, non il centro concettuale della lezione.   
 
-###### Manutenzione ed evoluzione del software
+### Manutenzione ed evoluzione del software
 Una convinzione tipica (soprattutto all'inizio) è che il progetto “finisca” quando il software funziona. In realtà, il rilascio è spesso il momento in cui il sistema inizia davvero a vivere: 
 - arrivano utenti reali con bisogni reali, 
 - emergono casi limite non previsti, 

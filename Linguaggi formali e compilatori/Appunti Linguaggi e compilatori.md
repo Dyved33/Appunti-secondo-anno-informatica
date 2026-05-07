@@ -1,4 +1,4 @@
-###### **Compilatori e Interpreti**
+### **Compilatori e Interpreti**
 La traduzione del codice sorgente in un linguaggio comprensibile dalla macchina può avvenire in modalità differenti (è anche possibile la traduzione da un linguaggio di programmazione a un altro):
 * **Compilatore:** Esegue la traduzione in blocco *prima* dell'esecuzione. Prende in input il **codice sorgente** e, tramite il traduttore, restituisce il **codice oggetto** (oppure delle notifiche di errore).
 * **Interprete:** Esegue la traduzione *istruzione per istruzione*, simultaneamente all'esecuzione del programma. Prende in input sia il **codice sorgente** sia l'**input** dell'utente, producendo direttamente l'**output**.
@@ -6,7 +6,7 @@ La traduzione del codice sorgente in un linguaggio comprensibile dalla macchina 
 Esistono compilatori Ibridi (Es. Java) che combinano i due approcci:
 1. Traduttore analizza il codice sorgente e lo traduce in un **programma intermedio** (ad esempio, il *Java bytecode*).
 2. Successivamente, una **macchina virtuale** (ad esempio, la JVM) riceve gli input dell'utente e *interpreta* il codice intermedio per produrre l'output finale.
-###### **Le Fasi della Compilazione: Dall'Analisi alla Sintesi**
+### **Le Fasi della Compilazione: Dall'Analisi alla Sintesi**
 La compilazione si divide concettualmente in due macro-fasi principali:
 * **Fase Analitica (Analisi):** Riguarda la comprensione del codice in ingresso. Ha lo scopo di costruire l'**Albero Sintattico Astratto (AST)** partendo dal codice sorgente.
 * **Fase Sintetica (Sintesi):** Riguarda la generazione dell'output. Si occupa di produrre il codice oggetto finale a partire dall'AST generato.
@@ -52,7 +52,7 @@ Il passaggio dal codice sorgente al codice macchina attraversa stadi sequenziali
    > [!IMPORTANT] Il ruolo dell'Assemblatore e del Linker
    > A rigore, l'Assemblatore (se il compilatore emette assembly) e il Linker sono strumenti esterni che intervengono al termine della compilazione. Il Linker si occuperà di collegare il codice oggetto generato in questa fase con eventuali librerie esterne, producendo il file eseguibile finale.
 5. **Ottimizzazione Peep-hole:** Un'ulteriore e ultimissima fase di ottimizzazione legata alle specificità e ai "trucchi" dell'architettura hardware di destinazione.
-###### **L'Architettura Software del Compilatore**
+### **L'Architettura Software del Compilatore**
 L'organizzazione interna del compilatore definisce come i moduli comunichino effettivamente tra loro durante il processo di traduzione.
 * **Il Nucleo Centrale (Parser & Semantica):** la parte centrale di tutto il processo è l'**analizzatore sintattico**. In questa architettura, esso realizza contestualmente anche l'**analisi semantica statica**.
    > [!IMPORTANT] Avanzamento Parallelo
@@ -61,7 +61,7 @@ L'organizzazione interna del compilatore definisce come i moduli comunichino eff
 * **Dialogo Scanner-Parser:** L'analizzatore sintattico coordina il lavoro chiedendo i dati all'analizzatore lessicale tramite la chiamata alla funzione `prossimoToken()`. Questa funzione, implementata nello scanner, restituisce il `token` richiesto per continuare a costruire l'albero.
 * **Gestione degli Errori:** Il **notificatore degli errori** riceve comunicazioni dirette e incrociate dal gestore input, dall'analizzatore lessicale e dal blocco sintattico/semantico ogni volta che viene rilevata un'anomalia. Alla fine, produce in output la "lista degli errori".
 * **Generazione del Codice Finale:** Completata l'analisi senza errori bloccanti, è sempre l'analizzatore sintattico ad attivare la sintesi. Tramite chiamate a funzioni opportune, innesca il **generatore del codice**, che a sua volta emetterà il **codice oggetto** definitivo.
-###### Il problema dell'infinito e il Teorema di Cantor
+### Il problema dell'infinito e il Teorema di Cantor
 Per descrivere qualsiasi cosa, che sia la Divina Commedia o il codice genetico umano, usiamo delle parole. 
 In informatica teorica, un **linguaggio è definito come un insieme di parole**.
 * **Linguaggi Finiti:** Se un linguaggio è finito, la sua descrizione è banale poiché è possibile elencarne tutti gli elementi uno per uno. Un esempio è $L=\{a,ab,abb,abbb\}$.
@@ -72,7 +72,7 @@ Il **Teorema di Cantor** ci pone un limite matematico insuperabile: non esiste u
 > Nonostante il Teorema di Cantor, in informatica non abbiamo bisogno di descrivere *tutti* i linguaggi infiniti. È comunque possibile fornire **descrizioni finite** per *alcuni* linguaggi infiniti che ci sono particolarmente utili. Ad esempio, possiamo usare una regola descrittiva semplice come "tutte le parole sull'alfabeto $\{a,b\}$ di lunghezza dispari", oppure la notazione formale $\{a^{n}b^{n}|n\ge0\}$.
 
 Un costrutto fondamentale per generare infinità è la **chiusura di Kleene** di un linguaggio $L$ (indicata con $L^{*}$). Essa è costituita dalla parola vuota, dalle parole appartenenti a $L$ e da tutte le parole che si ottengono concatenando due o più parole di $L$. Se $L$ è un linguaggio finito, il linguaggio derivato $L^{*}$ è ben definito e, in generale, infinito.
-###### Alfabeti , Parole e le loro Proprietà (Definizioni Formali):
+### Alfabeti , Parole e le loro Proprietà (Definizioni Formali):
 Per poter costruire delle regole rigorose, dobbiamo prima definire matematicamente gli elementi base:
 * **Alfabeto ($\Sigma$):** È un insieme finito e non vuoto di simboli. I suoi elementi sono chiamati **lettere**.
     * *Esempi di alfabeti:* $\Sigma_{0}=\{a,b\}$, $\Sigma_{1}=\{0,1\}$, $\Sigma_{2}=\{a,b,c\}$ e l'alfabeto esadecimale $\Sigma_{3}=\{0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F\}$.
@@ -94,7 +94,7 @@ Per poter costruire delle regole rigorose, dobbiamo prima definire matematicamen
     * **Prefisso:** Se $x=\epsilon$, allora $v$ si trova all'inizio ed è detto prefisso.
     * **Suffisso:** Se $y=\epsilon$, allora $v$ si trova alla fine ed è detto suffisso.
     * **Fattore Proprio:** Diremo che $v$ è un fattore proprio se $v\ne w$.
-###### Linguaggi e grammatiche
+### Linguaggi e grammatiche
 Linguaggio Formale:* Ogni sottoinsieme di $\Sigma^{*}$ si dice **linguaggio formale** (o semplicemente linguaggio) sull'alfabeto $\Sigma$. Possono esserci linguaggi limitati come $L_{1}=\{a,ab,abb\}$, linguaggi infiniti come $L_{2}=\{ab^{n}a|n\ge0\}$, l'insieme vuoto $L_{3}=\emptyset$ o l'intero universo $L_{4}=\Sigma^{*}$.
 
 **L'Intuizione: Il Gioco delle Sostituzioni:** Per capire operativamente come le "regole finite" possano generare "linguaggi infiniti", analizziamo un esempio pratico basato sul linguaggio naturale. Vogliamo generare liste di nomi come "Aldo, Bianca e Carlo". Le regole logiche che governano queste frasi sono:
@@ -195,7 +195,7 @@ Non esiste un algoritmo che risolva questi problemi in caso generale (c'è una p
 - Espressività delle grammatiche
 
 La strategia è quindi quella di classificare (**gerarchia di Chomsky**) le nostre grammatiche in base alla forma delle produzioni: produzioni con una forma particolarmente semplice avranno algoritmi di ricognizione e parsing => semplici e veloci ma non in grado di generare linguaggi espressivi. Altri tipi di grammatiche con produzioni di forma più generale avranno la capacità di produrre linguaggi molto espressivi, ma avranno algoritmi di ricognizione e di parsing molto inefficienti o inesistenti.
-###### Gerarchia di Chomsky e tipi di linguaggio
+### Gerarchia di Chomsky e tipi di linguaggio
 Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più complessi ai più semplici)
 
 **Linguaggi di tipo 0:** 
@@ -246,7 +246,7 @@ Gli algoritmi di ricognizione e parsing per le grammatiche di tipo 2 si comporta
 > ![[Pasted image 20260305103801.png|300]]
 
 > [!info] Gli algoritmi di ricognizione per i linguaggi di tipo 3 esistono e sono estremamente efficienti, sono molto importanti per l'analisi lessicale ovvero l'analisi di token che costituiscono il nostro codice. Questo si ottiene attraverso la Teoria degli Automi a Stati Finiti.
-###### Automi a stati finiti deterministici
+### Automi a stati finiti deterministici
 Un automa è un dispositivo che può raggiungere un certo numero finito di configurazioni interne. Il nastro di input è diviso in celle su cui si può scrivere l'input (scrivo la stringa in ingresso e la divido nei suoi caratteri) e a ogni passo il dispositivo:
 - Legge il contenuto di una cella
 - Passa in un nuovo stato (dipende esclusivamente dallo stato precedente e dal contenuto della cella letta)
@@ -287,7 +287,7 @@ Per ogni $q \in Q, u, v \in \Sigma^*$,  si ha $\hat{\delta}(q,uv) = \hat{\delta}
 > - ![[Screenshot From 2026-03-06 10-06-15.png|300]]
 > - ![[Screenshot From 2026-03-06 10-06-27.png|300]]
 > - ![[Screenshot From 2026-03-06 10-06-39.png|300]]
-###### Automi a stati finiti non deterministici
+### Automi a stati finiti non deterministici
 Abbiamo detto che un automa è rappresentato da un grafo e che per ogni stato $q$ e ogni lettera $a$ esiste esattamente un arco uscente da $q$ con etichetta $a$. Le parole accettate da $A$ sono le etichette dei cammini dallo stato iniziale a uno stato finale.
 Se da questa definizione togliessi l'aspetto degli archi (cioè che da ogni vertice può uscire un solo arco) otterrei: una maggiore libertà nella progettazione ma avrei più difficoltà a verificare se una parola è accettata o meno. La soluzione a ciò è un modello non-deterministico che mi permette di fare una conversione automatica al modello deterministico.  Il modello non-deterministico:
 - A ogni passo il dispositivo esegue una fra le transizioni possibili (purché esista)
@@ -363,7 +363,7 @@ Se io elimino tutti questi stati inaccessibili e restringo la funzione di transi
 
 > [!info] Caso difficile:
 > ![[Pasted image 20260308174311.png|300]]
-###### Automa a stati finiti non deterministico con epsilon-transizioni
+### Automa a stati finiti non deterministico con epsilon-transizioni
 Un automa a stati finiti non deterministico con $\epsilon$-transizioni è una quintupla $A = \langle Q,\Sigma, \delta, q_0, F \rangle$, dove $Q,\Sigma, q_0, F$ sono come nell'automa deterministico, mentre la funzione $\delta: Q \times (\Sigma \cup \{\epsilon\}) \rightarrow \wp(Q)$ è la funzione di transizione, che ora non è definita solo sulle coppie *stato-lettera*, ma anche sulle coppie *stato-parolaVuota*, e restituisce un insieme di stati (potrebbe essere anche vuoto). Questo modello mi permette di saltare da uno stato all'altro senza leggere il nastro di input (anche per questo modello c'è un algoritmo che mi permette di passare da un automa di questo tipo ad un automa a stati finiti deterministico). Una parola $w \in \Sigma^*$ è *accettata* da $A$ se esistono $n\geq 0$, $a_1,...,a_n \in \Sigma \cup \{\epsilon\}$ e $q_1,..q_n \in Q$ tali che $w = a_1a_2...a_n$, $q_i \in \delta(q_{i-1},a_i)$, $1 \leq i \leq n$, $q_n \in F$ . In altre parole la parola è accettata dall'automa se esiste un cammino dallo stato iniziale a uno finale nel grafo con etichetta $w$, e se $w$ può essere scritta come una sequenza di lettere e parole vuote. L'insieme delle parole accettate da $A$ si dice *linguaggio accettato (o riconosciuto)* da $A$ e si denota con $L(A)$.
 
 **Grafo dell'automa:** A ogni automa non deterministico con $\epsilon$-transizioni $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ associamo un grafo diretto con frecce etichettate:
@@ -441,7 +441,7 @@ Sostanzialmente  è sempre possibile costruire un automa deterministico che acce
 > ![[Screenshot From 2026-03-12 11-29-04.png|300]]
 > 
 > Ricorda: ogni valutazione va fatta ricordando che "sono contemporaneamente in ognuno di questi stati". L'algoritmo che si può sfruttare prevede di: applicare uno degli input possibili per volta, raccogliere tutti i risultati conseguenti e infine allargare con $\epsilon$
-###### Espressioni regolari
+### Espressioni regolari
 La teoria dei linguaggi formali può essere vista come l'arte di rappresentare degli oggetti infiniti con una descrizione finita. Per costruire nuovi linguaggi partendo da linguaggi noti, possiamo applicare delle operazioni: 
 1. unione
 2. intersezione 
@@ -662,7 +662,7 @@ Tutti che attraversano solo stati di indice $\leq k-1$
 > - alla fine tutta la complessità del grafo si concentra in un'espressione regole
 
 > [!example] > ![[Pasted image 20260319181524.png]]
-###### Operazioni booleane
+### Operazioni booleane
 *Proposizione:* la classe dei linguaggi regolari è un'algebra Booleana (altra conseguenza del teorema di Kleene). Ciò significa che i linguaggi regolari si comportano come insiemi normali e puoi fare operazioni logiche come OR, AND e NOT (e il risultato è sempre un linguaggio regolare)
 
 *Dimostrazione:* Ci sono delle operazioni che sono naturali sulle espressioni regolari e altre operazioni che sono naturali sugli automi a stati finiti. Come abbiamo detto in precedenza, infatti, la famiglia dei linguaggi regolari è chiusa per le operazioni di unione, concatenazione e chiusura di Kleene. È anche chiusa per complemento ed intersezione, quindi per tutte le operazioni booleane.
@@ -693,7 +693,7 @@ La soluzione al mio problema è: date le espressioni regolari $E,F$, voglio sape
 > - costruisci gli automi
 > - confronti i linguaggi
 > - riduci il problema a:"esiste una parola che li distingue?"
-###### Automa minimo
+### Automa minimo
 Due parole sono uguali per un linguaggio se aggiungendo lo stesso suffisso a destra si comportano sempre nello stesso modo rispetto all'appartenenza a $L$. Da questa idea nasce l'automa minimo. Si tratta di un'automa deterministico con il minor numero possibile di stati. <u>L'automa di Nerode di un linguaggio regolare L è un automa deterministico che accetta L col minimo numero di stati possibile</u>. Quindi definisco prima la congruenza di Nerode, così da definire un'equivalenza cioè una partizione dell'insieme $\Sigma^*$ in un numero finito di classi di equivalenza. Costruisco in seguito un automa minimo partendo da queste classi di equivalenza, che accetta il linguaggio $L$. 
 
 **Equivalenza:** insieme sul quale è definita una relazione **riflessiva** ($x \sim x$), **simmetrica** ($x \sim y \implies y \sim x$) e **transitiva** ($x \sim y, y \sim z \implies x \sim z$). Ogni equivalenza divide l'insieme in **classi di equivalenza** (ogni stato sostituisce un singolo stato nell'automa finale), e queste classi formano una **partizione**. Quindi un equivalenza corrisponde ad una partizione, ogni elemento appartiene ad una sola classe e classi diverse non si intersecano. In altre parole 2 stati sono equivalenti se e solo se, per qualsiasi stringa in ingresso, portano l'automa rispettivamente a stati entrambi accettanti o entrambi non accettanti.
@@ -882,7 +882,7 @@ L'automa minimo di $L$ si ottiene nel modo seguente:
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260326102153.png" width="300">
 </div>
-###### Lemma di iterazione (proprietà dei linguaggi regolari)
+### Lemma di iterazione (proprietà dei linguaggi regolari)
 **Lemma:** sia $L$ un linguaggio regolare. Esiste un intero n tale che ogni parola $w \in L$ di lunghezza $|w| \geq n$ si può fattorizzare $w = xyz$ con $y \neq \epsilon$ e $xy^mz \in L$ per ogni $m \geq 0$. In altri termini se $L$ è un linguaggio regolare, in ogni parola di $L$ abbastanza lunga si può trovare un fattore non vuoto che può essere iterato (*pumped*) senza uscire dal linguaggio. Pertanto se un linguaggio non ha questa proprietà non può essere regolare. Ci sono, però, linguaggi che hanno questa proprietà e non sono regolari
 
 > [!tip] In altre parole:
@@ -920,7 +920,7 @@ L'automa minimo di $L$ si ottiene nel modo seguente:
 
 - Pertanto $A$ accetta tutte le parole $xy^nz$ con $n\geq0$ 
 - Cioè $xy^nz \in L$ per ogni $n\geq 0$
-###### Analisi lessicale
+### Analisi lessicale
 Come abbiamo visto inizialmente, l'analisi è la prima fase nella compilazione di un codice sorgente. Dobbiamo identificare gli elementi atomici che costituiscono il nostro codice e individuare a quale categoria lessicale fanno riferimento. Il programma sorgente viene dato in pasto all'Analizzatore lessicale, che restituirà un token al Parser ogni volta che questo deve procedere con la sua analisi sintattica. Contemporaneamente, all'invio del token, l'analizzatore scriverà nella tabella dei simboli gli attributi del token, che poi potranno essere recuperati dal parser.
 
 <div style="display: flex; justify-content: center;">
@@ -1027,7 +1027,7 @@ Troviamo il più lungo prefisso $u$ di $w$ accettato da $A_D$ e il più piccolo 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260409155211.png" width="300">
 </div>
-###### Grammatiche regolari
+### Grammatiche regolari
 *Definizione:* una grammatica a struttura di frase $G = \langle V,\Sigma,P,S \rangle$ è di tipo 3 se tutte le produzioni hanno le forme: $X \rightarrow aY, X \rightarrow a$, con $X,Y \in N, a \in \Sigma$ (cioè una variabile mi può produrre o simbolo terminale oppure un simbolo terminale con un'altra variabile). Nel caso in cui $S$ non compaia nei lati destri delle produzioni è ammessa anche la produzione $S \rightarrow \epsilon$ 
 
 *Osservazione:* la produzione $S \rightarrow \epsilon$ serve esclusivamente per generare la parola vuota
@@ -1088,7 +1088,7 @@ Le grammatiche di tipo 3 considerate finora sono evidentemente lineari destre. V
 > ![[Pasted image 20260409183732.png]]
 > 
 > La grammatica $G$, inoltre, è equivalente alla grammatica con le produzioni: $S' → \epsilon, S' → aY, S → aY, Y → aX, X → bZ, Z → bS, Z → b$
-###### Linguaggi non contestuali
+### Linguaggi non contestuali
 Sono linguaggi di tipo 2, e lo strumento necessario che ci permette di eseguire l'analisi sintattica.
 
 > [!example] Sia $P$ il linguaggio delle palindrome sull'alfabeto $\Sigma = \{a,b\}$
@@ -1182,7 +1182,7 @@ La parola che si ottiene leggendo, nell'ordine, le etichette delle foglie è la 
 > ![[Pasted image 20260411094824.png|300]]
 > 
 > $L$ è inerentemente ambiguo
-###### Semplificazioni nelle grammatiche non contestuali
+### Semplificazioni nelle grammatiche non contestuali
 Ho due problemi: 
 - di **ricognizione**: stabilire se una parola fa parte del linguaggio generato
 - di **parsing**: data una parola che è nel linguaggio, trovare una derivazione
@@ -1403,7 +1403,7 @@ L'algoritmo per le variabili accessibili prende in input una grammatica non cont
 > ![[Pasted image 20260501123226.png|300]]
 > 
 > Si ottiene la grammatica con le produzioni $S → aOb|ab, O → aob|OO|ab|x$
-###### Forma normale di Chomsky
+### Forma normale di Chomsky
 
 *Definizione:* una grammatica non contestuale si dice in forma normale di Chomsky se ha solo produzioni dei tipi
 - $X → YZ$ con $X,Y,Z \in N$
@@ -1456,7 +1456,7 @@ Restano solo produzioni $X → a$ con $X \in N$ e $a \in \Sigma$ e produzioni $X
 > $S → aSB|aB, B → b$. Una derivazione di $a^3 b^3$: $S \implies aSB \implies aaSBB \implies aaaBBB \implies aaabBB \implies aaabbB \implies aaabbb$
 
 *Teorema:* ogni linguaggio non contestuale è effettivamente generato da una grammatica non contestuale in forma normale di Greibach
-###### Algoritmo di Cocke-Kasami-Younger
+### Algoritmo di Cocke-Kasami-Younger
 *Problema di ricognizione:* ho in input una grammatica $G = \langle V, \Sigma, P ,S \rangle$ e una parola $w \in \Sigma^*$. In output ho 'SI' se $w \in L(G)$, 'NO' altrimenti
 
 *Problema di parsing:* ho in input una grammatica $G = \langle V, \Sigma, P ,S \rangle$ e una parola $w \in L(G)$. In output ho una derivazione $S \implies \alpha_1 \implies \alpha_2 \implies … \implies \alpha_n \implies w$ di $w$ in $G$ (o equivalentemente un albero di derivazione)
@@ -1512,7 +1512,7 @@ Analisi:
 1. Si mette $G$ in forma normale di Chomsky con l'algoritmo standard
 2. Si esegue il parsing nella nuova grammatica con l'algoritmo CYK
 3. Riesaminando al contrario il passo 2, si risale al parsing nella grammatica originale
-###### Lemma di iterazione per i linguaggi non contestuali
+### Lemma di iterazione per i linguaggi non contestuali
 Sia $L$ un linguaggio regolare. Esiste un intero $n$ tale che ogni parola $w \in L$ di lunghezza $|w| \geq n$ si può fattorizzare $w = xyz$ con $y \neq \epsilon$ e  $xy^kz \in L$ per ogni $k \geq 0$
 
 > [!example] 
@@ -1558,7 +1558,7 @@ per ogni $k \geq 0$
   <img src="Screenshot From 2026-05-01 12-56-24.png" width="300">
 </div>
 
-###### Parsing top-down 
+### Parsing top-down 
 In genere l'operazione di parsing richiede un tempo notevole $O(n^3)$ e non è accettabile nel caso dovessimo
 fare la compilazione di un programma molto complesso (perché come sappiamo, raramente un programma non presenta errori alla prima compilazione, quindi dovremmo fare più tentativi e di conseguenza effettuare la compilazione e il parsing più volte). Il problema di parsing ha come input una grammatica $G = \langle V,\Sigma,P,S \rangle$ e una parola $w \in L(G)$ e in output una derivazione $S \implies \alpha_1 \implies \alpha_2 \implies … \alpha_n \implies w$ di $w \in G$ (o equivalentemente un albero di derivazione)
 
@@ -1661,7 +1661,7 @@ variabile posso derivare una forma sentenziale che comincia con la variabile ste
   <img src="Pasted image 20260501132230.png" width="300">
 </div>
 
-###### Automi a pila
+### Automi a pila
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260507112643.png" width="300">
@@ -1696,11 +1696,11 @@ Sono ammesse delle $\epsilon-$transizioni in cui le operazioni di push e pop son
 
 *Definizione:* una configurazione interna dell'automa a pila $A$ è una coppia $(q,\gamma) \in Q \times \Gamma^*$. Istante per istante, la configurazione interna = stato + contenuto della pila
 
-Se leggendo una lettera $a$ sul nastro di input l’automa può passare dalla configurazione $(q, \alpha)$ alla configurazione $(q ' , \alpha' )$, allora scriveremo $(q, \alpha) \overset{a}{\models} (q ' , \alpha' )$. Similmente, se l’automa può passare dalla configurazione $(q, \alpha)$ alla configurazione $(q ' , \alpha' )$ con una $\epsilon-$transizione, allora scriveremo $(q, \alpha) \overset{\epsilon}{\models}(q ' , \alpha' )$
+Se leggendo una lettera $a$ sul nastro di input l'automa può passare dalla configurazione $(q, \alpha)$ alla configurazione $(q ' , \alpha' )$, allora scriveremo $(q, \alpha) \overset{a}{\models} (q ' , \alpha' )$. Similmente, se l'automa può passare dalla configurazione $(q, \alpha)$ alla configurazione $(q ' , \alpha' )$ con una $\epsilon-$transizione, allora scriveremo $(q, \alpha) \overset{\epsilon}{\models}(q ' , \alpha' )$
 
 *Definizione:* siano $(q,\alpha)$ e $(q',\alpha')$ due configurazioni interne e $a \in \Sigma \cup \{\epsilon\}$. Si ha $(q, \alpha) \overset{a}{\models} (q ' , \alpha' )$, se $\alpha = X\gamma, \alpha' = \beta\gamma$, $q \xrightarrow[]{a,\frac{X}{\beta}} q'$. Se $w = a_1a_2 ... a_n (a_1, ... , a_n \in \Sigma \cup {\epsilon})$ e $(q,\alpha) \overset{a_1} (q_1, \alpha1) \overset{a_2} ... \overset{a_n} (qn , \alpha_n ) = (q ' , \alpha' )$ allora scriveremo sinteticamente $(q, \alpha) \overset{w}{\models} (q ' , \alpha' )$
 
-*Osservazione:* Si ha $(q, \alpha) \overset{w}{\models} (q ' , \alpha' )$ se esiste una computazione che, leggendo $w$ sul nastro di input, porta l’automa dalla configurazione interna $(q, \alpha)$ alla configurazione interna $(q ' , \alpha' )$
+*Osservazione:* Si ha $(q, \alpha) \overset{w}{\models} (q ' , \alpha' )$ se esiste una computazione che, leggendo $w$ sul nastro di input, porta l'automa dalla configurazione interna $(q, \alpha)$ alla configurazione interna $(q ' , \alpha' )$
 
 *Definizione:* sia $A = \langle Q, \Sigma, \Gamma, \delta, q_0, Z_0, F \rangle$ un automa a pila e $w \in  \Sigma^*$. Diremo che la parola $w \in  \Sigma^*$ è accettata per lo stato finale da $A$ se si ha $(q_0, Z_0) \overset{w}{\models} (f,\gamma), f \in F, \gamma \in \Gamma^*$. Diremo che $w$ è accettata per pila vuota da $A$ se si ha $(q_0, Z_0) \overset{w}{\models} (p, \epsilon), p \in Q$. Infine diremo che $w$ è accettata per stato finale e pila vuota da $A$ se si ha $(q_0, Z_0) \overset{w}{\models} (f, \epsilon), f \in F$ 
 
@@ -1710,13 +1710,95 @@ Se leggendo una lettera $a$ sul nastro di input l’automa può passare dalla co
 > ![[Pasted image 20260507113340.png|300]]
 
 > [!example]
-> Problema: Realizzare un automa a pila che accetti per pila vuota le palindrome pari sull’alfabeto Σ = {a, b}.
+> Problema: Realizzare un automa a pila che accetti per pila vuota le palindrome pari sull'alfabeto Σ = {a, b}.
 >
 > Strategia:
-> 1. copiare nella pila la prima metà dell’input
-> 2. verificare se ciò che rimane dell’input coincide con la pila letta al contrario
+> 1. copiare nella pila la prima metà dell'input
+> 2. verificare se ciò che rimane dell'input coincide con la pila letta al contrario
 >
 > ![[Pasted image 20260507113443.png|300]] ![[Pasted image 20260507113512.png|300]]
 > 
 > Il non-determinismo ci consente di non specificare in quale punto della computazione si passa dalla fase 1 alla fase 2.
+
+> [!example] 
+> Problema: Realizzare un automa a pila che accetti per pila vuota le palindrome pari sull'alfabeto $\Sigma = \{a, b\}$. Si può ottenere il medesimo risultato con un solo stato 
+> 
+> Strategia: 
+> 1. copiare nella pila la prima metà dell'input 'sotto il simbolo iniziale $Z_0$', 
+> 2. cancellare il simbolo iniziale Z 0 dalla cima della pila, 
+> 3. verificare che ciò che rimane dell'input è uguale a ciò che abbiamo nella pila, letto in ordine inverso. 
+> 
+> ![[Pasted image 20260507223911.png|300]]
+
+> [!example]
+> Problema: Realizzare un automa a pila che accetti per pila vuota le palindrome sull'alfabeto $\Sigma = \{a, b, c\}$ che contengono una sola occorrenza della lettera $c$. 
+> 
+> Strategia:
+> 1. copiare l'input nella pila finché non si legge la $c$, 
+> 2. verificare che ciò che rimane dell'input è uguale a ciò che abbiamo nella pila, letto in ordine inverso. 
+> 
+> ![[Pasted image 20260507224126.png|300]] ![[Pasted image 20260507224205.png|300]] ![[Pasted image 20260507224222.png|300]]
+
+**Automi a pila deterministici:** 
+
+*Definizione:* Un automa a pila $A = \langle Q, \Sigma, \Gamma, \delta, q_0, Z_0, F \rangle$ è deterministico se per ogni $q \in Q, a \in \Sigma, Z \in \Gamma$ l'insieme $\delta(q, a, Z) \cup \delta(q, \epsilon, Z)$ contiene al più un elemento. Un linguaggio accettato per stato finale da un automa a pila deterministico si dirà deterministico. 
+
+> [!example]
+> Il linguaggio delle palindrome sull'alfabeto $\Sigma = \{a, b, c\}$ che contengono una sola occorrenza della lettera $c$ è deterministico. Il linguaggio delle palindrome sull'alfabeto $\Sigma = \{a, b\}$ è non-deterministico. 
+
+*Osservazione:* Se $A$ è deterministico, per ogni configurazione interna $(q, \alpha)$ e ogni lettera $a$ dell'alfabeto di input esiste al più una configurazione interna $(q' , \alpha' )$ per cui $(q, \alpha) \overset{a}{\models} (q ' , \alpha' )$ oppure $(q, \alpha) \overset{\epsilon}{\models} (q ' , \alpha' )$. In tal caso, si può verificare in tempo lineare se una parola è accettata o meno dall'automa.  
+
+**Metodi di accettazione:** 
+
+*Proposizione:* Le tre seguenti classi di linguaggi coincidono: 
+1. linguaggi accettati da automi a pila per pila vuota, 
+2. linguaggi accettati da automi a pila per stato finale, 
+3. linguaggi accettati da automi a pila per pila vuota e stato finale. 
+
+*Lemma:* Sia $L$ il linguaggio accettato da un automa a pila per pila vuota e stato finale. Esiste effettivamente un automa a pila $A$ tale che $L = L(A) = L_P (A) = L_F (A)$.  
+
+**Pila vuota e stato finale:** 
+
+*Dimostrazione:* Sia $A_0$ l'automa a pila che accetta $L$ per pila vuota e stato finale. Costruiamo un automa a pila $A$ con un unico stato finale $f$ che si comporta nel modo seguente: 
+- come primo passo, scrive un simbolo speciale # all'inizio della pila, 
+- poi simula il funzionamento dell'automa $A_0$, 
+- quando si trova in uno stato finale di $A_0$ con # sulla pila, una $\epsilon-$transizione permette di estrarre # dalla pila, in modo da svuotarla, e passare nel suo unico stato finale. 
+
+In una computazione di $A$ la pila si svuota se e solo se raggiunge lo stato finale. Quindi $$L = L(A) = L_P (A) = L_F (A)$$. Inoltre ciò avviene se e solo se l'automa $A_0$ col medesimo input raggiunge uno stato finale con pila vuota. Pertanto $$L = L(A) = L_P (A) = L_F (A)$$
+
+> [!example]
+> ![[Pasted image 20260507225456.png|300]]
+
+**Pila vuota:** 
+
+*Lemma:* Sia $L$ il linguaggio accettato da un automa a pila per pila vuota. Esiste effettivamente un automa a pila $A$ tale che $$L = L(A) = L_P (A) = L_F (A)$$
+*Dimostrazione:* Sia $A_0$ l'automa a pila che accetta $L$ per pila vuota. Posso supporre, senza perdita di generalità, che tutti gli stati siano finali. Allora $A_0$ accetta $L$ per pila vuota e stato finale. La conclusione segue dal lemma precedente.  
+
+**Stato finale:** 
+
+*Lemma:* Sia $L$ il linguaggio accettato da un automa a pila per stato finale. Esiste effettivamente un automa a pila $A$ tale che$$L = L(A) = L_P (A) = L_F (A)$$
+*Dimostrazione:* Sia $A_0$ l'automa a pila che accetta $L$ per stato finale. Costruiamo un automa a pila $A$, aggiungendo ad $A_0$ lo stato e le istruzioni necessarie a svuotare la pila quando raggiunge uno stato finale: 
+- un ulteriore stato finale $f$ , 
+- $\epsilon-$transizioni da ogni stato finale di $A_0$ in $f$ , per qualunque simbolo estratto dalla pila, senza scrivere nulla nella pila, 
+- $\epsilon-$transizioni da $f$ in $f$ , per qualunque simbolo estratto dalla pila, senza scrivere nulla nella pila, 
+
+È facile verificare che $L = L(A)$. La conclusione segue da uno dei lemmi precedenti.  
+
+> [!example]
+> ![[Pasted image 20260507225916.png|300]]
+
+**Il caso deterministico:** 
+
+*Proposizione:* Le due seguenti classi di linguaggi coincidono: 
+1. linguaggi accettati da automi a pila deterministici per pila vuota, 
+2. linguaggi accettati da automi a pila deterministici per pila vuota e stato finale. 
+
+Tale classe è inclusa strettamente nella classe dei linguaggi deterministici. 
+
+> [!example]
+> Il linguaggio $\{a n b m | n \geq m \geq 0\}$ è accettato per stato finale dall'automa a pila deterministico 
+> 
+> ![[Pasted image 20260507230112.png|300]]
+> 
+> ma non è accettato per pila vuota da nessun automa a pila deterministico
 

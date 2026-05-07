@@ -1,4 +1,4 @@
-###### Evoluzione Hardware e Multiprogrammazione
+### Evoluzione Hardware e Multiprogrammazione
 > [!NOTE] Contesto Storico
 > Agli albori dell'informatica, quando i calcolatori funzionavano ancora a valvole ed erano estremamente costosi e lenti, la presenza di un operatore umano era indispensabile per risparmiare tempo e gestire manualmente l'esecuzione.
 
@@ -74,7 +74,7 @@ Pur condividendo principi di esecuzione concorrente, hanno finalità diverse:
 
 > [!NOTE] Nuovi Dispositivi
 > I moderni sistemi operativi mobili devono tenere costantemente conto dell'energia utilizzata, dei forti limiti della **memoria** a disposizione e della presenza di innumerevoli componenti hardware aggiuntive, come i **sensori**, che richiedono driver e gestioni specifiche.
-###### Funzionamento di un sistema di elaborazione
+### Funzionamento di un sistema di elaborazione
 - *CPU:* costituita dai registri (es. Program counter che contiene l'indirizzo dell'istruzione successiva da eseguire o l'instruction register che contiene l'istruzione da eseguire,...)
 - *Memoria principale:* vengono caricati i programmi che sono costituiti da istruzioni (quelli che la CPU può eseguire) e dati (locazioni di memoria in cui mettiamo le nostre informazioni). 
 - *Moduli I/O:* relativi a tastiera, monitor e dischi
@@ -111,7 +111,7 @@ L'istruzione viene estratta, viene eseguita e, se il processo è terminato, si t
 Se avviene un'interruzione durante la gestione di un'interruzione ci sono almeno 2 possibilità:
 1. Disabilito le interruzioni durante la gestione di un'interruzione (può funzionare dato che le interruzioni sono brevi)
 2. Definisco uno schema di priorità: in questo caso il sistema permette a un'interruzione di interromperne un'altra in base ad un sistema di priorità. Ciò significa che se l'interruzione in arrivo ha una priorità **più alta** di quella attualmente in esecuzione, il processore mette in pausa la prima, viene salvato il PC e viene eseguita la seconda (quella più urgente). Alla fine della seconda istruzione, il processore recupera i dati relativi al PC e riprende la prima delle due istruzioni che ha causato un'interruzione.
-###### Sviluppo di un sistema operativo
+### Sviluppo di un sistema operativo
 **Aspetti principali nello sviluppo dei sistemi operativi:**
 - Processi
 - Gestione della memoria
@@ -162,7 +162,7 @@ Queste funzioni sono utilizzate attraverso le chiamate di sistema = interruzioni
 | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Esegue in sequenza i comandi specificati dall'utente. Viene implementato nel nucleo o programma di sistema (in questo caso ci sono molte versioni (*shells*). I comandi sono implementati nell'interprete o in programmi esterni | È un'interfaccia amichevole (*user friendly*) in cui le icone rappresentano file, directories, programmi e funzioni. Inoltre ci sono menù che permettono di selezionare i comandi e la possibilità di avere touch-screen e comandi vocali |
 | Per compiti ripetititvi                                                                                                                                                                                                          | Più intuitiva ma non accede a tutte le funzioni                                                                                                                                                                                           |
-###### System call
+### System call
 Le system call sono un'interfaccia per il programmatore ai servizi del SO. Vi si accede attraverso l'API che nasconde i dettagli al programmatore (gestita da libreria di supporto run-time). I parametri sono passati attraverso:
 - Registri
 - In un blocco o tabella di memoria dell'indirizzo in un registro
@@ -211,7 +211,7 @@ Un sistema operativo è fatto anche di programmi detti *utilities* che servono a
 - Comunicazioni
 - Servizi in background
 - Programmi applicativi
-###### Progettazione di un sistema operativo
+### Progettazione di un sistema operativo
 Non è semplice dato che devo tenere conto di che hardware si dispone e di che tipo di richiesta abbiamo da parte dell'utilizzatore. Quindi le specifiche da rispettare sono:
 - Decidere hardware
 - Decidere che sistema usare
@@ -225,7 +225,7 @@ I moderni sistemi operativi sono scritti in linguaggi come C e C++ (non più Ass
 - Portabilità
 
 Inoltre sono linguaggi più efficienti di linguaggi interpretati come Python (computer non sono fatti per mandare avanti il sistema operativo, ma per far partire programmi di sistema). Alcune sezioni critiche che richiedono altissima efficienza sono scritte in Assembler.
-###### Struttura del sistema operativo
+### Struttura del sistema operativo
 **Sistemi monolitici (Non sono divisi in moduli):** MS-DOS o UNIX tradizionale sono sistemi monolitici complessi e scritti tramite molte funzioni. Il kernel di UNIX tradizionale ha un'interfaccia verso l'hardware per la gestione delle chiamate di sistema (questo all'interno del kernel che gestisce segnali I/O, file system, driver, dispositivi di archiviazione e scheduling)
 
 **Sistemi stratificati:** Ogni layer (strato) è l'implementazione di un oggetto astratto fatto di dati e operazioni per manipolarli. Ogni strato nasconde i dettagli dell'implementazione agli strati superiori.
@@ -253,7 +253,7 @@ Non c'è differenza dal punto di vista del sistema tra questi programmi, ma ogni
 **Debugging:** Per il fatto che i SO sono sistemi complessi, ci possono essere degli errori e per questo nella loro progettazione e gestione c'è il problema del debugging. Gli errori, però, si possono presentare in situazioni particolari (difficili da individuare), considerando che il SO deve fare il suo compito nel minor tempo possibile. Quindi valutare le prestazioni di un SO (e per monitorare il comportamento del sistema) richiede una lunga sperimentazione tramite anche la generazione di file di log che registrano il comportamento del sistema e *core dump*
 
 **Generazione sistema operativo:** Scritto il codice sorgente del sistema $\rightarrow$ va compilato e configurato per il sistema su sui verrà eseguito $\rightarrow$ poi si istalla il sistema $\rightarrow$ avvia il computer e il nuovo sistema operativo. La configurazione può realizzarsi modificando il codice prima della compilazione in base al sistema su cui lo vado a installare, oppure tramite la selezione di tabelle e moduli precompilati da collegare al momento dell'installazione, oppure tramite un sistema guidato da tabelle di dati che guidano il sistema in base all'hardware.<u> Per far partire il sistema l'esecuzione inizia in un predefinito indirizzo della ROM (parte di memoria non modificabile nemmeno a computer spento = <i>read only memory</i>) che contiene il <i>bootstrap loader</i>. Questo contiene le istruzioni necessarie a caricare il <i>bootstrap program</i> che a sua volta carica il kernel e avvia l'esecuzione del sistema</u>
-###### Processi 
+### Processi 
 **Definizione:**<u> un processo (o job) è un programma (lista di istruzioni con riferimenti a delle locazioni di memoria) in esecuzione</u>. Gli elementi del processo sono:
 - Program counter (indirizzo istruzione da eseguire) e contenuto dei registri (immagine del processore)
 - Stack che contiene variabili locali, indirizzi di return o parametri delle funzioni
@@ -310,7 +310,7 @@ Il sistema ha bisogno di conoscere la situazione dei vari processi e per questo 
 - Coda di job che contiene tutti i processi 
 - Coda di ready che contiene tutti i processi pronti a partire (quelli tra i quali il processore deve decidere a chi assegnare le risorse)
 - Coda dei dispositivi (una per dispositivo) che contiene i processi in attesa di interagire con quel dispositivo (il dispositivo genera una nuova interruzione)
-###### Schedulatori e fasi del processo
+### Schedulatori e fasi del processo
 Il sistema operativo deve decidere a quali processi assegnare il processore e per fare ciò ci sono diversi schedulatori:
 - **Schedulatore a breve termine (CPU scheduler):** Prende i processi dalla coda ready e gli assegna un processore. Siccome deve essere eseguito con grande frequenza, deve essere molto veloce (i processi running vengono anche messi in coda ready proprio perché lo scheduler assegna la CPU a un processo, poi la toglie a quello per assegnarla ad un altro, così da far avanzare più processi contemporaneamente).
 - **Schedulatore a lungo termine (*job scheduler*):** Seleziona i processi da inserire in coda ready e per fare ciò controlla il grado di multiprogrammazione, cioè i programmi eseguiti contemporaneamente (regola il numero di processi presenti contemporaneamente in memoria. Se è troppo alto, la CPU si sovraccarica; se è troppo basso, le risorse restano inattive). Non viene eseguito con frequenza, per questo può applicare procedure più complesse. Ci sono ad esempio processi CPU-bound, ovvero processi che non rilasciano mai la CPU a loro assegnata a meno che non siano forzati 
@@ -361,7 +361,7 @@ Il genitore può terminare l'esecuzione del figlio con la syscall *abort()* e qu
 La terminazione di un processo figlio fa si che vengano terminati anche i figli del processo terminato (*terminazione a cascata*). Solo dopo il wait() del genitore viene deallocato il PID: 
 - Il PID però non scompare subito e il processo rimane in stato di zombie e scompare solo dopo che il genitore ha eseguito il wait()
 - Il genitore termina senza che vengano terminati i suoi processi figli, in tal caso quei processi si dicono orfani.
-###### **Threads**
+### **Threads**
 I processi sono caratterizzati da:
 - **Risorse allocate:** spazio di indirizzamento virtuale (immagine in memoria), la traccia di esecuzione, RAM, dispositivi I/O, file
 - **Scheduling:** traccia di esecuzione (alternata con altri processi), stati e priorità
@@ -435,7 +435,7 @@ Gli stati del thread sono gli stessi dei processi (in esecuzione, pronto e in at
 | 1: M     | Un thread può migrare dall'ambiente di un processo all'ambiente di un altro processo. Ciò permette al thread di muoversi facilmente tra sistemi distinti |
 | M: N     | Combina gli attributi di 1: M e M: 1                                                                                                                       |
 
-###### Legge di Amdahl
+### Legge di Amdahl
 $$\text{speedup} = \frac{\text{tempo di esecuzione su un processore}}{\text{tempo di esecuzione su N processori}} = \frac{1}{(1-f)+ \frac{f}{n}}$$La legge di Amdahl stabilisce che il miglioramento massimo delle prestazioni di un sistema, grazie alla parallelizzazione (uso di più processori), è limitato dalla parte del software che non può essere parallelizzata. In breve: l'algoritmo, non il numero di processori, determina il limite massimo di velocità.
 
 Il vantaggio lo hanno:
@@ -449,7 +449,7 @@ Il vantaggio lo hanno:
 - Per ogni task (processo o thread) c'è un *task control block* (TCB) con fork()
 - Fork() crea una nuova task, con una copia del TCB
 - Clone() crea una nuova task, ma nel suo TCB ci sono puntatori ai campi di quello del genitore (in base ai parametri passati a clone()
-###### Mutua esclusione
+### Mutua esclusione
 I processi possono interferire tra di loro in maniera positiva o negativa, negativa ad esempio quando sottrae risorse ad altri processi, in maniera positiva quando due o più processi interagiscono e ci permettono di realizzare un'attività che sfrutta l'uso di diversi processi in un'unica applicazione. La gestione dei processi può avvenire tramite: 
  - **Multiprogrammazione**: molti processi con un singolo processore, i processi avanzano attendendo che il processore si liberi; 
  - **Multiprocessing**: molti processi gestiti da un multiprocessore; 
@@ -616,7 +616,7 @@ void main() {
 - Attesa attiva (*busy-waiting*) 
 - Possibilità di stallo 
 - Possibilità di starvation
-###### Algoritmo di Dekker
+### Algoritmo di Dekker
 L'obiettivo è quello di avere un protocollo che permetta a due processi di assicurare la mutua esclusione:
 - Senza supporto hardware (salvo impossibilità di accesso simultaneo al medesimo indirizzo di memoria)
 - Senza stallo
@@ -676,7 +676,7 @@ void P0() {
 }
 ```
 
-###### Semafori
+### Semafori
 I semafori sono i meccanismi utilizzati per sincronizzare l'accesso alle sezioni critiche dei processi (porzione di codice in cui un processo accede a dati o risorse condivise tra più flussi di esecuzione). Sono formati da una variabile con valore intero, una coda e tre operazioni:
 - Inizializzazione a un valore non negativo 
 - *semWait:* decrementa il calore del semaforo. Se il valore diventa negativo, il processo è sospeso e inserito nella coda
@@ -780,7 +780,7 @@ Si usa nella programmazione parallela:
 
 L'alternativa alla condivisione di dati è lo scambio di messaggi, un meccanismo molto più sicuro poiché i processi non accedono allo spazio degli altri processi.
 
-###### Messaggi
+### Messaggi
 Anche il meccanismo dei messaggi consente la sincronizzazione per realizzare la mutua esclusione e la comunicazione per lo scambio di informazioni tra processi. 
 
 **Perché utilizzare i messaggi invece della condivisione di memoria?** In sistemi distribuiti i processi hanno difficoltà a leggere la memoria di altri processi in sistemi diversi, perciò il loro utilizzo è naturale nei sistemi distribuiti, ma anche nei sistemi a memoria condivisa questo meccanismo è utile. Hanno 2 primitive:
@@ -973,7 +973,7 @@ void consumer() {
 ```
 
  Il produttore produce, poi fa wait sul semaforo e, che prenderà valori negativi, quando il buffer sarà pieno, e wait su s per la mutua esclusione sull'accesso al buffer. Poi fa il signal a s per segnalare che ora il buffer è libero e segnala a n, incrementa quindi n di 1 dicendo che ora c'è un elemento in più nel buffer. Il consumer invece fa esattamente il contrario: facendo lo wait su n che se positivo indica che ci sono degli elementi nel buffer. Altrimenti il consumer si mette in coda, se c'è la risorsa prende la risorsa, segnala che ora e si è liberato di un elemento.
-###### Monitor
+### Monitor
 Quando si hanno programmi complessi si possono utilizzare dei programmi costruiti apposta per la concorrenza. Questi hanno degli oggetti fatti apposta per la gestione dei dati condivisi. Il monitor è un costrutto di alcuni linguaggi di programmazione con funzionalità analoghe ai semafori usato per la programmazione concorrente (disponibile in molti linguaggi e molte librerie). Si tratta di un modulo software usato per gestire:
 - I dati locali  
 - Le sequenze di inizializzazione
@@ -1031,7 +1031,7 @@ void take (char x) {
 	nextin = 0; nextout = 0; count = 0; /* buffer initially empty */ 
 }
 ```
-###### Problema dei lettori e scrittori
+### Problema dei lettori e scrittori
 Alcuni processi leggono soltanto (lettori), altri scrivono soltanto (scrittori). Imponiamo come condizioni affinché tutto vada bene che:
 - Qualsiasi numero di lettori può leggere simultaneamente i dati;
 - Un solo scrittore alla volta può scrivere i dati; 
@@ -1179,7 +1179,7 @@ void controller () {
 }
 ```
 
-###### Stallo
+### Stallo
 *Definizione:* un insieme di processi è in stallo (*deadlock*) se ogni processo è in attesa di un evento che può essere generato solo da un altro processo dell'insieme, nel caso generale non c'è una soluzione efficiente per la deadlock
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
@@ -1448,7 +1448,7 @@ Alcune politiche seguono:
 > 2. controllo disponibilità: Request[i] <= Available ? Se no → aspetta
 > 3. simulazione: Fingi di assegnare: Available -= Request[i], Allocation[i] += Request[i], Need[i] -= Request[i]. Poi esegui **l'algoritmo di sicurezza**.
 > 4. Se stato sicuro → concedi; Se NON sicuro → annulla tutto (rollback)
-###### Gestione della memoria
+### Gestione della memoria
 **Compiti della gestione della memoria:** Un programma per essere eseguito va caricato in memoria, i
 principali compiti sono:
 - *Rilocazione:* il nostro programma viene copiato nella memoria centrale, ma a priori non sappiamo in quale parte venga caricato. Per questo, nel nostro eseguibile, gli indirizzi in cui andare a prelevare le istruzioni e i dati non ci possono stare, saranno indirizzi simbolici (logici). Una volta caricati, questi indirizzi simbolici devono essere convertiti in indirizzi fisici
@@ -1579,7 +1579,7 @@ Le 3 pagine sono lunghe ciascuna 1024 byte, l'ultima pagina ha uno spazio “spr
   <img src="Screenshot From 2026-04-26 16-04-13.png" width="300">
 </div>
 
-###### Memoria virtuale
+### Memoria virtuale
 Il programma per essere eseguito deve stare in memoria, che però è limitata. Per questo i sistemi moderni sfruttano il modello della memoria virtuale. Questo è caratterizzato da:
 - Rilocazione, ovvero la traduzione degli indirizzi, che normalmente avviene a tempo di esecuzione (run-time). 
 - Il processo, inoltre, non ha necessariamente un modello continuo ma può essere paginato oppure segmentato, quindi in realtà il programma è diviso in pezzi. Il processo può avanzare anche solo se in memoria vi sono i pezzi che mi servono (cioè i processi) e non il programma intero (non serve il programma sia caricato in pezzi contigui di memoria). 
@@ -1739,7 +1739,7 @@ table.
 **Protezione e condivisione:** la segmentazione facilita l'implementazione della protezione e della condivisione:
 - Ogni record della tabella dei sementi contiene l'indirizzo base e lunghezza , per controllare accessi erronei
 - La condivisone è implementata inserendo un riferimento allo stesso segmento nella tabella dei segmenti di più processi 
-###### Memoria virtuale: politiche di gestione
+### Memoria virtuale: politiche di gestione
 La progettazione del gestore della memoria dipende da tre decisioni fondamentali:
 - Usare o meno tecniche di memoria virtuale
 - Usare la paginazione o la segmentazione o la segmentazione paginata
@@ -1844,7 +1844,7 @@ Per ridurre il grado di multiprogrammazione può essere necessario scaricare uno
 4. processo con l'insieme residente più piccolo 
 5. processo più grande 
 6. processo col massimo tempo di esecuzione rimanente
-###### Scheduling
+### Scheduling
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260501105650.png" width="300">
 </div>
@@ -1977,7 +1977,7 @@ $$R = \frac{w+s}{s}$$con $w =$tempo di attesa e $s=$tempo stimato di esecuzione.
 - Manipolazione di file 
 - Controllo dei dispositivi I/O a caratteri 
 - Processi utente
-###### Input/output
+### Input/output
 **Categorie di dispositivi I/O:**
 - Leggibili dall'uomo:
 	- Per comunicare con l'utilizzatore
