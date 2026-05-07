@@ -1137,6 +1137,26 @@ $d^{(k)}_{ij} = \begin{cases} w_{ij} & \text{se } k = 0 \\ \min\{d^{(k-1)}_{ij},
 
 Il tempo di questo algoritmo è $\Theta(n^3)$. 
 
+**Calcolare i predecessori:** è possibile valutare la matrice dei predecessori $\Pi$ mentre si calcolala matrice $D$. Sia $\Pi^{(k)} = (\pi^{(k)}_{ij}), k = 0,1,...,n$. Si definisce $\pi^{(k)}_{ij}$ ricorsivamente. Per $k = 0$, un cammino minimo da $i$ a $j$ non ha vertici intermedi: $\pi^{(0)}_{ij} = \begin{cases} NIL & \text{se } i = j \ \text{oppure } w_{ij} = \infty \\ i & \text{se } i \neq j \ \text{e } w_{ij} < \infty \end{cases}$
+
+**Chiusura transitiva:** dato un grafo orientato $G = (V,E)$, calcolo $G^* = (V, E^*)$ con $E^* = \{(i,j):$ se esiste un cammino $i \rightsquigarrow j$ in $G\}$. Si potrebbe assegnare un peso di 1 ad ogni arco e poi eseguire Floyd-Warshall:
+- Se $d_{ij} < n$ allora c'è un cammino $i \rightsquigarrow j$
+- Altrimenti $d_{ij} = \infty$ e non c'è un cammino tra i due nodi in questione
+
+Una strada più semplice consiste nel sostituire valori e operatori in Floyd-Warshall:
+- Uso una matrice delle adiacenze senza pesi
+- Min → $\lor$ (OR)
+- + → $\land$ (AND)
+- $t^{(k)}_{ij} = \begin{cases} 1 & \text{se c'è un cammino } i \rightsquigarrow j \ \text{con tutti i vertici intermedi in } \{1,2,...,k\} \\ 0 & \text{altrimenti } \end{cases}$
+- $t^{(0)}_{ij} = \begin{cases} 0 & \text{se } i \neq j \ \text{e } (i,j) \notin E \\ 1 & \text{se } i = j \ \text{oppure } (i,j) \in E \end{cases}$
+- $t^{(k)}_{ij} = t^{(k-1)}_{ij} \lor (t^{(k-1)}_{ik} \land t^{(k-1)}_{kj})$
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260507180533.png" width="300">
+</div>
+
+Il tempo di questo algoritmo è $\Theta(n^3)$, ma con operazioni più semplici di Floyd-Warshall
+
 **Algoritmo di Johnson:** se il grafo è sparso, questo paga per eseguire l'algoritmo di Dijkstra  una volta per ogni vertice. Se usiamo la Fibonacci heap per la coda di priorità, il tempo di esecuzione sarebbe $O(V^2 \lg(V) + VE)$ che è meglio del $O(V^3)$ del Floyd-Warshall (se $E = o(V^2)$). Ma l'algoritmo di Dijkstra richiede che tutti i vertici abbiano peso non negativo. Con l'algoritmo di Johnson si può costruire un grafo equivalente che non abbia archi di peso negativo. Per fare ciò ho bisogno di una funzione peso $\hat{w}$ tale che:
 1. Per ogni $u,v \in V, p$ è il cammino minimo $u \rightsquigarrow v$ usando $w$ se e solo se $p$ è il cammino minimo $u \rightsquigarrow v$ usando $\hat{w}$ 
 2. Per ogni $(u,v) \in E, \hat{w}(u,v) \geq 0$ 

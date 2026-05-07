@@ -1636,11 +1636,11 @@ L'indirizzo virtuale è quello che sta nel program counter. C'è un registro che
 >     - **offset**
 > 3. La CPU usa un registro che punta alla **tabella delle pagine**.
 > 4. Procedura:
->     - Si prende l’**indice di pagina**
+>     - Si prende l'**indice di pagina**
 >     - Si accede alla voce corrispondente nella tabella delle pagine
 >     - Si ottiene il **numero di frame** (memoria fisica)
-> 5. Si costruisce l’indirizzo fisico:
->     - si sostituisce l’indice di pagina con il **frame**
+> 5. Si costruisce l'indirizzo fisico:
+>     - si sostituisce l'indice di pagina con il **frame**
 >     - si mantiene lo stesso **offset**
 > 
 > Risultato: **indirizzo fisico = frame + offset**
@@ -1650,7 +1650,7 @@ L'indirizzo virtuale è quello che sta nel program counter. C'è un registro che
 >         - `1` → pagina in RAM
 >         - `0` → page fault
 > 
-> Se la tabella delle pagine è **troppo grande**, non è gestibile direttamente. Per questo esiste la tabella delle pagine a 2 livelli. L’indirizzo virtuale viene diviso in: 
+> Se la tabella delle pagine è **troppo grande**, non è gestibile direttamente. Per questo esiste la tabella delle pagine a 2 livelli. L'indirizzo virtuale viene diviso in: 
 > - **indice tabella di primo livello**
 > - **indice tabella di secondo livello**
 > - **offset**
@@ -1819,7 +1819,7 @@ Una strategia più complessa distingue tra frame modificati e non modificati
 
 Una strategia possibile è quella di controllare periodicamente il working set di ogni processo e rimuovere dall'insieme residente le pagine che non sono nel working set. Un processo può essere eseguito solo se il suo working set è interamente in memoria. L'implementazione di questa soluzione è difficile. Un'alternativa è agire sulla frequenza degli errori di pagina: quando gli errori di pagina diventano troppo ravvicinati, si aggiunge una pagina all'insieme resident, altrimenti si scaricano tutte le pagine non utilizzate dall'ultimo errore di pagina, e tutte le altre diventano candidate alla prossima
 
-**Page fault frequency:** quando c’è un errore di pagina:
+**Page fault frequency:** quando c'è un errore di pagina:
 - Se il tempo virtuale dall'errore di pagina precedente è inferiore a una soglia $F$, si aggiunge una pagina all'insieme residente 
 - Altrimenti si scaricano tutte le pagine con il bit di utilizzo 0 e si azzera il bit di utilizzo delle rimanenti. Questa soluzione provoca cattive prestazioni nelle transizioni a nuove località  
 
@@ -1850,7 +1850,7 @@ Per ridurre il grado di multiprogrammazione può essere necessario scaricare uno
 </div>
 
 Lo scopo è di assegnare al processore i processi da eseguire in modo da realizzare gli obiettivi del sistema:
-- *Tempo di risposta del processore:* ci sono processi interattivi, in cui l’utente interagisce con il processo e quello che vorremmo da questi processi è una risposta immediata
+- *Tempo di risposta del processore:* ci sono processi interattivi, in cui l'utente interagisce con il processo e quello che vorremmo da questi processi è una risposta immediata
 - *Throughput:* quanti lavori riusciamo a fare nel minor periodo di tempo
 - *Efficienza del processore:* si deve sempre utilizzare quanto più processore possibile
 
@@ -1888,7 +1888,7 @@ Per creare un processo della coda dei nuovi job, lo schedulatore deve decidere:
 - *Chiamate di sistema:* un processo esegue una system call, si sospende
 - Segnali (e.g.semafori)
 
-Lo scheduling a breve termine è ciò che ci interessa di più, è un po’ la chiave di volta di un sistema operativo, poiché essendo chiamata molto frequentemente deve usare algoritmi rapidi e semplici, non si possono adottare politiche molto complesse, d’altra parte però se non funziona viene danneggiato tutto il sistema.
+Lo scheduling a breve termine è ciò che ci interessa di più, è un po' la chiave di volta di un sistema operativo, poiché essendo chiamata molto frequentemente deve usare algoritmi rapidi e semplici, non si possono adottare politiche molto complesse, d'altra parte però se non funziona viene danneggiato tutto il sistema.
 
 **Criteri per lo scheduling a breve termine:** 
 
@@ -1997,9 +1997,10 @@ $$R = \frac{w+s}{s}$$con $w =$tempo di attesa e $s=$tempo stimato di esecuzione.
 - Rappresentazione dei dati: dispositivi differenti usano codifiche differenti
 - Condizioni di errore: i tipi di errore e il modo in cui sono segnalati differiscono da un dispositivo a un altro
 
-IMMAGINE
-
-MANCA QUALCOSA
+**Velocità di trasferimento:**
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260507170110.png" width="300">
+</div>
 
 **Funzioni I/O:** 
 - *I/O programmato:* il processore genera un comando di I/O per conto di un processo che rimane in attesa attiva durante il completamento dell'operazione
@@ -2007,7 +2008,7 @@ MANCA QUALCOSA
 	- Non-bloccante: il processore continua a eseguire istruzioni del processo che ha eseguito il comando di I/O
 	- Bloccante: il controllo passa al SO che sospende il processo corrente e ne schedula un altro
 
-DMA: un modulo DMA controlla lo scambio di dati tra memoria principale e dispositivo I/O
+**DMA:** un modulo DMA controlla lo scambio di dati tra memoria principale e dispositivo I/O
 
 **Evoluzione della funzione I/O:**
 1. Il processore controlla direttamente il dispositivo periferico
@@ -2018,10 +2019,15 @@ DMA: un modulo DMA controlla lo scambio di dati tra memoria principale e disposi
 
 Via via, il processore è meno coinvolto nella gestione dell'I/O
 
-IMMAGINE
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260507170211.png" width="300">
+</div>
 
 **Configurazione DMA:**
-IMMAGINE
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260507170236.png" width="300">
+</div>
 
 **Obiettivi di progettazione:** 
 - *Efficienza:* è il maggiore obiettivo della progettazione (soprattutto per I/O dal disco):
@@ -2036,8 +2042,8 @@ IMMAGINE
 **Struttura logica:**
 <div style="display: flex; align-items: flex-start; gap: 20px;">
   <div style="flex: 1;">
-    <img src=".png" style="width: 100%; border-radius: 8px;">
-  </div>
+    <img src="Pasted image 20260507170315.png" style="width: 100%; border-radius: 8px;">
+  </div> 
   <div style="flex: 1.5;">
   <ul>
   <li>I/O logico: tratta il dispositivo come una risorsa logica (open, close read, write)</li>
@@ -2051,33 +2057,47 @@ IMMAGINE
 **Buffering:** per evitare inefficienze e overhead, può essere utile eseguire trasferimenti di input in anticipo sulla richiesta e trasferimenti di output in ritardo rispetto alla richiesta
 
 - *Dispositivi a blocchi:* dischi, chiavi USB. L'informazione viene memorizzata in blocchi di dimensione fissa e il trasferimento viene eseguito un blocco alla volta. Il riferimento ai dati avviene per numero di blocco
-- *Dispositivi a flusso:* MANCA
+- *Dispositivi a flusso:* terminali, stampanti, porte di comunicazione, mouse, ecc. L'informazione non è strutturata in blocchi, invece il trasferimento dei dati avviene attraverso un flusso di bytes
 
-IMMAGINE
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260507170445.png" width="300">
+</div>
 
 **Buffer singolo (dispositivo a blocchi):** è il sistema di supporto più semplice. Quando un processo esegue una richiesta di I/O, il SO assegna un buffer all'operazione (nello spazio del sistema). Nelle operazioni di input, i dati sono trasferiti nel buffer. Input anticipato: 
 - In previsione che il blocco is richiesto
 - Terminato il trasferimento il blocco viene trasferita dal buffer allo spazio utente e ne viene immediatamente richiesto un altro
 
-Velocizza il sistema MANCA
+Velocizza il sistema: 
+- Il processo può elaborare un blocco di dati mentre il blocco successivo viene caricato
+- Il SO può scaricare il processo (o la pagina) perché il trasferimento avviene nello spazio del sistema
+
+Gli svantaggi sono:
+- Maggior complessità nella programmazione del So
+- Influenza la gestione dello swapping
 
 **Buffer singolo (dispositivo a blocchi):**
 - Una linea alla volta: i terminali in modo scroll, stampanti a linee. L'input è diviso in linee che terminano con 'invio':
 	- Il processo è sospeso in attesa della linea di input
 	- La linea di output è trasferita nel buffer il processo può continuare
-- Un byte alla volta: MANCA
+- Un byte alla volta: Terminali in modo 'form', sensori, controller
 
 **Doppio buffer:**
-IMMAGINE
 
-MANCA
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260507170728.png" width="300">
+</div>
+
+Due buffer sono assegnati all'operazione di I/O e un processo trasferisce i dati da/a un buffer mentre il SO svuota o riempe l'altro (*buffer swapping*)
 
 **Buffer circolare:** 
-IMMAGINE
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260507170917.png" width="300">
+</div>
 
 Più di due buffer sono assegnati all'operazione di I/O: sono caricati e scaricati circolarmente
 
-**Parametri di prestazione del disco:** i dettagli delle operazioi di I/O dal disco dipendono da:
+**Parametri di prestazione del disco:** i dettagli delle operazioni di I/O dal disco dipendono da:
 - Sistema di elaborazione
 - Sistema operativo 
 - Natura del canale I/O e hardware di controllo del disco
@@ -2088,26 +2108,71 @@ La velocità di rotazione del disco è costante. La testina di lettura/scrittura
 
 Il tempo necessario al settore per raggiungere la testina è detto ritardo rotazionale. La somma di tempo di tempo di ricerca e ritardo rotazionale costituisce il tempo di accesso
 
-IMMAGINE
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260507171001.png" width="300">
+</div>
 
 **Tempo di accesso:**
 - Tempo di ricerca: è il tempo necessario a muovere ilk bracci o del disco sulla traccia richiesta. Consiste di: tempo di avvio e tempo necessario per attraversare i cilindri (comprensivo di *settling time*). Più piccolo è il disco, minore è il tempo di ricerca (oggi < 10 ms)
-- Ritardo di rotazione: MANCA
-- MANCA
+- Ritardo di rotazione: Il tempo necessario al settore per raggiungere la testina (a 3600 rpm, in media 83. Ms; a 15000 rpm, in media 2 ms)
+- tempo di trasferimento: $$T = \frac{b}{rN}$$ con: 
+- $b$ = numero di bit da trasferire 
+- $N$ = numero di bit per traccia 
+- $r$ = velocità di rotazione in rps
 
-Il tempo di accesso medio è dato dalla formula:$$
-T_a = T_s + \frac{}{} MANCA
-$$
-MANCA
+Il tempo di accesso medio è dato dalla formula:$$T_a = T_s + \frac{1}{2r} + \frac{b}{rN}$$ ove:
+- $b$ = numero di bit da trasferire
+- $N$ = numero di bit per traccia 
+- $r$ = velocità di rotazione in rps
+- $T_s$ = tempo di ricerca medio
 
 > [!example]
 > Un disco con tempo di ricerca medio 4 ms, velocità rotazionale 7500 rpm, 500 settori per traccia, ciascuno da 512 byte. Un file occupa tutti i settori su 5 tracce adiacenti (organizzazione sequenziale). Il tempo per la lettura della prima traccia sarà:
 > 
-> IMMAGINE
+> ![[Pasted image 20260507171459.png|300]]
 > 
-> Per le tracce successive, il tempo di ricerca si riduce MANCA. Se i settori sono distribuiti a caso sul disco, il tempo di accesso a ogni settore è: 
+> Per le tracce successive, il tempo di ricerca si riduce quasi a 0, per cui il tempo totale necessario è: (16 + 12 + 12 + 12)ms = 64 ms
 > 
-> IMMAGINE
+> Se i settori sono distribuiti a caso sul disco, il tempo di accesso a ogni settore è:
 > 
-> Per cui il tempo totale necesario risulta, mediamente, $5 \cdot 500 \cdot 8.016 = 20.04$ secondi
+> ![[Pasted image 20260507171649.png|300]]
+> 
+> Per cui il tempo totale necessario risulta, mediamente, $5 \cdot 500 \cdot 8.016 = 20.04$ secondi
+
+**Politiche di schedulazione del disco:** l'obiettivo principale è quello di ridurre il tempo medio di ricerca 
+- **FIFO:** 
+	- Richieste processate in ordine di arrivo 
+	- Equa con tutti i processi 
+	- In presenza di molti processi, approssima la schedulazione random 
+- **Priorità:** 
+	- La politica è gestita al di fuori del software di controllo del disco 
+	- L'obiettivo non è ottimizzare l'utilizzo del disco 
+	- Priorità ai lavori brevi e ai processi interattivi 
+	- Buoni tempi di risposta per i processi interattivi ma lunghe attese per i lavori batch. In un sistema condiviso, l'utente può spezzare il lavoro in piccoli segmenti per ingannare il sistema 
+	- Inadatta per i sistemi di basi di dati  
+- **SSTF:** precedenza alla richiesta con tempo di servizio minore (*shortest service time first*) 
+	- Seleziona la richiesta che richiede il minimo movimento del braccio del disco dalla posizione corrente 
+	- Minimizza il tempo di richiesta 
+	- Possibilità di starvation 
+- **SCAN:** 
+	- Algoritmo dell'ascensore 
+	- Il braccio si muove sempre in una direzione. Soddisfa tutte le richieste su ciascuna traccia finché non raggiunge l'ultima traccia, poi inverte la direzione 
+	- Favorisce i lavori nei settori centrali  
+- **C-SCAN:** 
+	- Restringe la scansione a un'unica direzione. Raggiunta l'ultima traccia, il braccio ritorna alla prima traccia e ricomincia la scansione nella medesima direzione
+- **N-Step-SCAN:** 
+	- Evita attese troppo lunghe quando nuovi lavori arrivano sulla medesima traccia 
+	- Le richieste sono inserite in sotto-code di lunghezza N 
+	- Le sottocode sono processate una alla volta con SCAN 
+	- Le nuove richieste non possono essere inserite nella coda attualmente processata 
+- **FSCAN:** 
+	- Due sottocode 
+	- All'inizio della scansione una coda è vuota 
+	- Durante la scansione sono eseguite le richieste della coda inizialmente non vuota e tutte le nuove richieste sono inserite nell'altra
+
+<div style="display: grid; grid-template-columns: 1fr; gap: 10px; justify-items: center;">
+  <img src="Pasted image 20260507172825.png" width="300">
+  <img src="Pasted image 20260507172935.png" width="300">
+  <img src="Pasted image 20260507173033.png" width="300">
+</div>  
 

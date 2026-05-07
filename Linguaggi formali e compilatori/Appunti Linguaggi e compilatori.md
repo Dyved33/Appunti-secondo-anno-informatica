@@ -1557,7 +1557,8 @@ per ogni $k \geq 0$
 <div style="display: flex; justify-content: center;">
   <img src="Screenshot From 2026-05-01 12-56-24.png" width="300">
 </div>
-###### Parsing top-down
+
+###### Parsing top-down 
 In genere l'operazione di parsing richiede un tempo notevole $O(n^3)$ e non è accettabile nel caso dovessimo
 fare la compilazione di un programma molto complesso (perché come sappiamo, raramente un programma non presenta errori alla prima compilazione, quindi dovremmo fare più tentativi e di conseguenza effettuare la compilazione e il parsing più volte). Il problema di parsing ha come input una grammatica $G = \langle V,\Sigma,P,S \rangle$ e una parola $w \in L(G)$ e in output una derivazione $S \implies \alpha_1 \implies \alpha_2 \implies … \alpha_n \implies w$ di $w \in G$ (o equivalentemente un albero di derivazione)
 
@@ -1659,7 +1660,9 @@ variabile posso derivare una forma sentenziale che comincia con la variabile ste
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260501132230.png" width="300">
 </div>
+
 ###### Automi a pila
+
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260507112643.png" width="300">
 </div>
@@ -1713,6 +1716,7 @@ Se leggendo una lettera $a$ sul nastro di input l’automa può passare dalla co
 > 1. copiare nella pila la prima metà dell’input
 > 2. verificare se ciò che rimane dell’input coincide con la pila letta al contrario
 >
-> ![[Pasted image 20260507113443.png|300]]
-> ![[Pasted image 20260507113512.png|300]]
+> ![[Pasted image 20260507113443.png|300]] ![[Pasted image 20260507113512.png|300]]
+> 
+> Il non-determinismo ci consente di non specificare in quale punto della computazione si passa dalla fase 1 alla fase 2.
 
