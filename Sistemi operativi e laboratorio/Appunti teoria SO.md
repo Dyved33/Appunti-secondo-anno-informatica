@@ -1977,3 +1977,137 @@ $$R = \frac{w+s}{s}$$con $w =$tempo di attesa e $s=$tempo stimato di esecuzione.
 - Manipolazione di file 
 - Controllo dei dispositivi I/O a caratteri 
 - Processi utente
+###### Input/output
+**Categorie di dispositivi I/O:**
+- Leggibili dall'uomo:
+	- Per comunicare con l'utilizzatore
+	- Stampanti, terminali, video display, tastiera, mouse
+- Leggibili dalla macchina:
+	- Per comunicare con l'apparecchiatura elettronica
+	- Drive di dischi e nastri, chiavette USB, sensori, attuatori
+- Dispositivi di comunicazione:
+	- Per comunicare con dispositivi remoti
+	- Drive di linea digitale, modem
+
+**Caratteristiche dei dispositivi I/O
+- Velocità del trasferimento: possono esserci grandi differenze tra un dispositivo e un altro
+- Applicazioni:  l'uso di un particolare dispositivo influenza il software
+- Complessità di controllo: differenti dispositivi richiedono differente software. La complessità è parzialmente filtrato dalla complessità del modulo I/O che controlla il dispositivo
+- Unità di trasferimento: dispositivi a caratteri (trasferiscono un byte alla volta) o a blocchi (trasferimenti a blocchi dell'ordine dei kilobyte)
+- Rappresentazione dei dati: dispositivi differenti usano codifiche differenti
+- Condizioni di errore: i tipi di errore e il modo in cui sono segnalati differiscono da un dispositivo a un altro
+
+IMMAGINE
+
+MANCA QUALCOSA
+
+**Funzioni I/O:** 
+- *I/O programmato:* il processore genera un comando di I/O per conto di un processo che rimane in attesa attiva durante il completamento dell'operazione
+- *I/O guidato dalle interruzioni:* il processore genera un comando di I/O per conto di un processo:
+	- Non-bloccante: il processore continua a eseguire istruzioni del processo che ha eseguito il comando di I/O
+	- Bloccante: il controllo passa al SO che sospende il processo corrente e ne schedula un altro
+
+DMA: un modulo DMA controlla lo scambio di dati tra memoria principale e dispositivo I/O
+
+**Evoluzione della funzione I/O:**
+1. Il processore controlla direttamente il dispositivo periferico
+2. Viene aggiunto un controllore o modulo I/O
+3. Come al passo precedente, con l'introduzione delle interruzioni
+4. Col DMA, il modulo I/O,  diventa un processore separato con un suo instruction set specializzato (canale di I/O)
+5. Il modulo I/O viene dotato di memoria locale e diventa un computer vero e proprio (processore di I/O)ù
+
+Via via, il processore è meno coinvolto nella gestione dell'I/O
+
+IMMAGINE
+
+**Configurazione DMA:**
+IMMAGINE
+
+**Obiettivi di progettazione:** 
+- *Efficienza:* è il maggiore obiettivo della progettazione (soprattutto per I/O dal disco):
+	- Le operazioni di I/O costituiscono un collo di bottiglia
+	- I dispositivi I/O sono molto lenti rispetto a memoria principale e processore 
+- *Generalità:* ricerca uniformità nella gestione dei dispositivi:
+	- Nell'interfaccia verso i processi
+	- Nella gestione dei dispositivi da parte del SO e le relative operazioni
+ 
+ È difficile l da realizzare per le diversità tecniche dei dispositivi. La soluzione è l'approccio gerarchico, per nasconde i dettagli dei dispositivi nelle routine di basso livello
+
+**Struttura logica:**
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src=".png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  <ul>
+  <li>I/O logico: tratta il dispositivo come una risorsa logica (open, close read, write)</li>
+  <li>I/O sul dispositivo: converte le operazioni richieste in sequenze di istruzioni</li>
+  <li>Scheduling e controllo: accomodamento, scheduling, controllo, interruzioni</li>
+  <li>Gestione di directory e file e organizzazione fisica: realizzazione dell'astrazione dei file</li>
+  </ul>
+  </div>
+</div>
+
+**Buffering:** per evitare inefficienze e overhead, può essere utile eseguire trasferimenti di input in anticipo sulla richiesta e trasferimenti di output in ritardo rispetto alla richiesta
+
+- *Dispositivi a blocchi:* dischi, chiavi USB. L'informazione viene memorizzata in blocchi di dimensione fissa e il trasferimento viene eseguito un blocco alla volta. Il riferimento ai dati avviene per numero di blocco
+- *Dispositivi a flusso:* MANCA
+
+IMMAGINE
+
+**Buffer singolo (dispositivo a blocchi):** è il sistema di supporto più semplice. Quando un processo esegue una richiesta di I/O, il SO assegna un buffer all'operazione (nello spazio del sistema). Nelle operazioni di input, i dati sono trasferiti nel buffer. Input anticipato: 
+- In previsione che il blocco is richiesto
+- Terminato il trasferimento il blocco viene trasferita dal buffer allo spazio utente e ne viene immediatamente richiesto un altro
+
+Velocizza il sistema MANCA
+
+**Buffer singolo (dispositivo a blocchi):**
+- Una linea alla volta: i terminali in modo scroll, stampanti a linee. L'input è diviso in linee che terminano con 'invio':
+	- Il processo è sospeso in attesa della linea di input
+	- La linea di output è trasferita nel buffer il processo può continuare
+- Un byte alla volta: MANCA
+
+**Doppio buffer:**
+IMMAGINE
+
+MANCA
+
+**Buffer circolare:** 
+IMMAGINE
+
+Più di due buffer sono assegnati all'operazione di I/O: sono caricati e scaricati circolarmente
+
+**Parametri di prestazione del disco:** i dettagli delle operazioi di I/O dal disco dipendono da:
+- Sistema di elaborazione
+- Sistema operativo 
+- Natura del canale I/O e hardware di controllo del disco
+
+La velocità di rotazione del disco è costante. La testina di lettura/scrittura deve essere posizionata all'inizio del settore richiesto nella particolare traccia richiesta:
+- Nei dischi a teste fisse, la tracci asi ottiene selezionando elettronicamente la relativa testina
+- Nei dischi a teste mobili, è necessario spostare la testina sulla relativa traccia (tempo di ricerca)
+
+Il tempo necessario al settore per raggiungere la testina è detto ritardo rotazionale. La somma di tempo di tempo di ricerca e ritardo rotazionale costituisce il tempo di accesso
+
+IMMAGINE
+
+**Tempo di accesso:**
+- Tempo di ricerca: è il tempo necessario a muovere ilk bracci o del disco sulla traccia richiesta. Consiste di: tempo di avvio e tempo necessario per attraversare i cilindri (comprensivo di *settling time*). Più piccolo è il disco, minore è il tempo di ricerca (oggi < 10 ms)
+- Ritardo di rotazione: MANCA
+- MANCA
+
+Il tempo di accesso medio è dato dalla formula:$$
+T_a = T_s + \frac{}{} MANCA
+$$
+MANCA
+
+> [!example]
+> Un disco con tempo di ricerca medio 4 ms, velocità rotazionale 7500 rpm, 500 settori per traccia, ciascuno da 512 byte. Un file occupa tutti i settori su 5 tracce adiacenti (organizzazione sequenziale). Il tempo per la lettura della prima traccia sarà:
+> 
+> IMMAGINE
+> 
+> Per le tracce successive, il tempo di ricerca si riduce MANCA. Se i settori sono distribuiti a caso sul disco, il tempo di accesso a ogni settore è: 
+> 
+> IMMAGINE
+> 
+> Per cui il tempo totale necesario risulta, mediamente, $5 \cdot 500 \cdot 8.016 = 20.04$ secondi
+

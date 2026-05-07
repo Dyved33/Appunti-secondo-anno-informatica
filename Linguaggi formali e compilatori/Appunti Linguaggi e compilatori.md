@@ -1558,7 +1558,7 @@ per ogni $k \geq 0$
   <img src="Screenshot From 2026-05-01 12-56-24.png" width="300">
 </div>
 ###### Parsing top-down
-In genere l’operazione di parsing richiede un tempo notevole $O(n^3)$ e non è accettabile nel caso dovessimo
+In genere l'operazione di parsing richiede un tempo notevole $O(n^3)$ e non è accettabile nel caso dovessimo
 fare la compilazione di un programma molto complesso (perché come sappiamo, raramente un programma non presenta errori alla prima compilazione, quindi dovremmo fare più tentativi e di conseguenza effettuare la compilazione e il parsing più volte). Il problema di parsing ha come input una grammatica $G = \langle V,\Sigma,P,S \rangle$ e una parola $w \in L(G)$ e in output una derivazione $S \implies \alpha_1 \implies \alpha_2 \implies … \alpha_n \implies w$ di $w \in G$ (o equivalentemente un albero di derivazione)
 
 *Osservazione:* a ogni derivazione corrisponde un albero di derivazione, ma a un albero di derivazione posso corrispondere più derivazioni 
@@ -1566,11 +1566,11 @@ fare la compilazione di un programma molto complesso (perché come sappiamo, rar
 > [!example]
 > ![[Pasted image 20260501130348.png|300]]
 > 
-> Sostituendo prima una variabile invece che un’altra, otteniamo sempre lo stesso albero di parsing. Sarebbe quindi bene mettersi d’accordo su un ordine da seguire per sostituire le variabili. Per fare ciò usiamo le derivazioni sx
+> Sostituendo prima una variabile invece che un'altra, otteniamo sempre lo stesso albero di parsing. Sarebbe quindi bene mettersi d'accordo su un ordine da seguire per sostituire le variabili. Per fare ciò usiamo le derivazioni sx
 
 *Definizione:* sia $G = \langle V,\Sigma,P,S \rangle$ una grammatica non contestuale e $\alpha,\beta \in V$. Scriveremo $\alpha \implies_L\beta$ se $\beta$ si ottiene da $\alpha$ sostituendo la variabile più a sinistra con il lato destro di una sua produzione. Una derivazione sinistra di una parola $w$ è una sequenza $S = \alpha_0 \xrightarrow[L]{} \alpha_1 \xrightarrow[L]{} … \xrightarrow[L]{} \alpha_n = w$ (con '=' rappresenta una conseguenza e '=>' rappresenta una derivazione)
 
-*Proposizione:* c'è una corrispondenza biunivoca tra le derivazioni sinistre di una parola $w$ e gli alberi di derivazione associati a $w$. Ogni albero di derivazione corrisponde ad una e una sola derivazione sinistra e viceversa. Inoltre, se ho una derivazione sinistra, per costruire l’albero in realtà mi basta ricordare le produzioni che ho utilizzato, perché la variabile che ho sostituito già la so, è quella più a sinistra.
+*Proposizione:* c'è una corrispondenza biunivoca tra le derivazioni sinistre di una parola $w$ e gli alberi di derivazione associati a $w$. Ogni albero di derivazione corrisponde ad una e una sola derivazione sinistra e viceversa. Inoltre, se ho una derivazione sinistra, per costruire l'albero in realtà mi basta ricordare le produzioni che ho utilizzato, perché la variabile che ho sostituito già la so, è quella più a sinistra.
 
 *Corollario:* data una grammatica non contestuale $G$, ogni parola di $L(G)$ si ottiene dal simbolo iniziale $S$ con una derivazione sinistra. Questo perché le parole si ottengono con una derivazione, alla derivazione corrisponde un albero, e all'albero corrisponde una derivazione sinistra.
 
@@ -1592,20 +1592,20 @@ E anziché il parsing di $w \in \Sigma^*$ farò il parsing di $w$#. Quindi il ca
   <img src="Pasted image 20260501130606.png" width="300">
 </div>
 
-Abbiamo l’input che dobbiamo derivare dal simbolo iniziale, quindi passo passo esaminiamo il nostro input
-da sx verso dx e iniziamo a costruire la derivazione dall'alto in basso del nostro albero di derivazione. Ad ogni passo avremo una parte di input già analizzato (quello alla sx delle tabelline dell’esempio
-precedente), l’analisi (ciò che avevamo derivato dal nostro simbolo iniziale che faceva match con quello di sopra), a dx abbiamo l’input ancora non analizzato, e sotto quello che ci avanzava dal quale dovevamo
+Abbiamo l'input che dobbiamo derivare dal simbolo iniziale, quindi passo passo esaminiamo il nostro input
+da sx verso dx e iniziamo a costruire la derivazione dall'alto in basso del nostro albero di derivazione. Ad ogni passo avremo una parte di input già analizzato (quello alla sx delle tabelline dell'esempio
+precedente), l'analisi (ciò che avevamo derivato dal nostro simbolo iniziale che faceva match con quello di sopra), a dx abbiamo l'input ancora non analizzato, e sotto quello che ci avanzava dal quale dovevamo
 derivare la parte superiore (chiamata predizione). Le regole di questo procedimento sono:
 - Esaminiamo sempre il simbolo più a sinistra della predizione
 - Se è una variale, dobbiamo fare una predizione: va sostituito con uno dei suoi lati destri
-- Se è un terminale, deve coincidere con la prima lettera dell'input da analizzare (simbolo di **look-ahead**). In caso affermativo, viene spostato nel lato 'analisi'; in caso negativo, l’esecuzione fallisce.
+- Se è un terminale, deve coincidere con la prima lettera dell'input da analizzare (simbolo di **look-ahead**). In caso affermativo, viene spostato nel lato 'analisi'; in caso negativo, l'esecuzione fallisce.
 
-Il fallimento non significa che non possiamo fare il parsing della parola, ma solo che la predizione che abbiamo fatto è sbagliata e che quindi dobbiamo tornare indietro e farne un’altra.
+Il fallimento non significa che non possiamo fare il parsing della parola, ma solo che la predizione che abbiamo fatto è sbagliata e che quindi dobbiamo tornare indietro e farne un'altra.
 
 *Osservazione:* la predizione ha una gestione LIFO
 
 **Gestione del non-deterministico:** poiché la procedura è, in generale, non deterministica, è necessario esplorare tutte le possibili computazioni. Ci sono 2 possibilità:
-1. *In ampiezza:* si esaminano parallelamente tutti i possibili sviluppi della computazione. Richiede molta memoria, per questo a volte è preferibile l’esplorazione in profondità.
+1. *In ampiezza:* si esaminano parallelamente tutti i possibili sviluppi della computazione. Richiede molta memoria, per questo a volte è preferibile l'esplorazione in profondità.
 2. *In profondità:* si esamina una computazione alla volta, salvo tornare indietro e provare un'altra strada in caso di fallimento (**backtracking**)
 
 **Ampiezza:** dovremo tenere traccia di:
@@ -1639,7 +1639,7 @@ variabile posso derivare una forma sentenziale che comincia con la variabile ste
 > 
 > ![[Pasted image 20260501132043.png|300]]
 > 
-> (fase finale)
+> (questa è la fase finale, ricontrolla passaggi)
 
 **Parsing a discesa ricorsiva:**  Interpretiamo la produzione $S → aB | bA$ come:
 - $S$ ha successo se $a$ ha successo e poi $B$ ha successo
@@ -1659,3 +1659,60 @@ variabile posso derivare una forma sentenziale che comincia con la variabile ste
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260501132230.png" width="300">
 </div>
+###### Automi a pila
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260507112643.png" width="300">
+</div>
+
+A ogni passo la macchina legge una lettera sul nastro d input, preleva (*pop*) la lettera in cima alla pila. In base allo stato e ai due simboli letti:
+- Assume un nuovo stato
+- Scrive (*push*) in cima alla pila zero o più lettere
+- Sposta la testina di lettura del nastro di input sulla cella a destra
+
+Sono ammesse delle $\epsilon-$transizioni in cui le operazioni di push e pop sono eseguite senza leggere il nastro di input
+
+*Definizione:* un automa a pila è una settupla $A = \langle Q, \Sigma, \Gamma, \delta, q_0, Z_0, F \rangle$ dove:
+- $Q$ è un insieme finito, detto insieme degli stati
+- $\Sigma$ è un alfabeto, detto alfabeto di input
+- $\Gamma$ è un alfabeto, detto alfabeto di pula
+- $\delta: Q \times (\Sigma \cup \{\epsilon \}) \times \Gamma → \wp_F(Q \times \Gamma^*)$ è la funzione di transizione
+- $q_0 \in Q$ è lo stato iniziale
+- $Z_0 \in \Gamma$ è il simbolo iniziale della pila
+- $F \subseteq Q$ è l'insieme degli stati finali 
+
+*Funzionamento:* Inizialmente, l'automa è nello stato iniziale e la pila contiene il simbolo iniziale della pila. Supponiamo che a un dato istante della computazione l'automa si trovi nello stato $p$, riceva $a$ in input e $Z$ dall'operazione di pop. Se $\delta(p, a, Z)$ contiene una coppia $(q, \gamma)$, allora l'automa si può portare nello stato $q$ eseguendo il push di $\gamma$ sulla pila.
+
+*Osservazione:* Modello non deterministico
+
+> [!example]
+> Sia $Q = \{q_0,f\}, \Sigma = \{a,b\}, \Gamma = \{Z_0, A\}, F =\{f\}$ e $\delta$ è data da:
+> 
+> ![[Pasted image 20260507123330.png|300]]
+> 
+> Riguarda disposizione delle foto
+
+*Definizione:* una configurazione interna dell'automa a pila $A$ è una coppia $(q,\gamma) \in Q \times \Gamma^*$. Istante per istante, la configurazione interna = stato + contenuto della pila
+
+Se leggendo una lettera $a$ sul nastro di input l’automa può passare dalla configurazione $(q, \alpha)$ alla configurazione $(q ' , \alpha' )$, allora scriveremo $(q, \alpha) \overset{a}{\models} (q ' , \alpha' )$. Similmente, se l’automa può passare dalla configurazione $(q, \alpha)$ alla configurazione $(q ' , \alpha' )$ con una $\epsilon-$transizione, allora scriveremo $(q, \alpha) \overset{\epsilon}{\models}(q ' , \alpha' )$
+
+*Definizione:* siano $(q,\alpha)$ e $(q',\alpha')$ due configurazioni interne e $a \in \Sigma \cup \{\epsilon\}$. Si ha $(q, \alpha) \overset{a}{\models} (q ' , \alpha' )$, se $\alpha = X\gamma, \alpha' = \beta\gamma$, $q \xrightarrow[]{a,\frac{X}{\beta}} q'$. Se $w = a_1a_2 ... a_n (a_1, ... , a_n \in \Sigma \cup {\epsilon})$ e $(q,\alpha) \overset{a_1} (q_1, \alpha1) \overset{a_2} ... \overset{a_n} (qn , \alpha_n ) = (q ' , \alpha' )$ allora scriveremo sinteticamente $(q, \alpha) \overset{w}{\models} (q ' , \alpha' )$
+
+*Osservazione:* Si ha $(q, \alpha) \overset{w}{\models} (q ' , \alpha' )$ se esiste una computazione che, leggendo $w$ sul nastro di input, porta l’automa dalla configurazione interna $(q, \alpha)$ alla configurazione interna $(q ' , \alpha' )$
+
+*Definizione:* sia $A = \langle Q, \Sigma, \Gamma, \delta, q_0, Z_0, F \rangle$ un automa a pila e $w \in  \Sigma^*$. Diremo che la parola $w \in  \Sigma^*$ è accettata per lo stato finale da $A$ se si ha $(q_0, Z_0) \overset{w}{\models} (f,\gamma), f \in F, \gamma \in \Gamma^*$. Diremo che $w$ è accettata per pila vuota da $A$ se si ha $(q_0, Z_0) \overset{w}{\models} (p, \epsilon), p \in Q$. Infine diremo che $w$ è accettata per stato finale e pila vuota da $A$ se si ha $(q_0, Z_0) \overset{w}{\models} (f, \epsilon), f \in F$ 
+
+**Metodi di accettazione:** l'insieme delle parole accettate per lo stato finale (risp., per pila vuota, per stato finale e pila vuota) sarà chiamato il linguaggio accettato da $A$ per stato finale (risp., per pila vuota, per stato finale e pila vuota). I linguaggi accettati da $A$ per stato finale, per pila vuota, per stato finale e pila vuota sono denotati rispettivamente con $L_F(A),L_P(A),L(A)$
+
+> [!example]
+> ![[Pasted image 20260507113340.png|300]]
+
+> [!example]
+> Problema: Realizzare un automa a pila che accetti per pila vuota le palindrome pari sull’alfabeto Σ = {a, b}.
+>
+> Strategia:
+> 1. copiare nella pila la prima metà dell’input
+> 2. verificare se ciò che rimane dell’input coincide con la pila letta al contrario
+>
+> ![[Pasted image 20260507113443.png|300]]
+> ![[Pasted image 20260507113512.png|300]]
+
