@@ -205,7 +205,7 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
 > ![[Screenshot From 2026-03-05 10-15-42.png|300]]
 
 **Linguaggi di tipo 1 (grammatiche sensibili al contesto / contestuali):**
-*Definizione:* una grammatica a struttura di frase si dice sensibile al contesto se le produzioni hanno la forma: $\alpha_1X\alpha_2 \to \alpha_1\beta\alpha_2$, con $X \in N$, $\alpha_1, \alpha_2, \beta \in V^*$ , $\beta \neq \epsilon$.  Ciò significa che le produzioni di queste grammatiche hanno il lato sx che contiene una variabile, mentre il lato dx si ottiene sostituendo quella variabile con una parola qualsiasi purché non vuota. Quindi mentre prima potevamo sostituire una parola con una parola, qui possiamo sostituire solo una lettera all'interno di una parola con una parola, che per di più non deve essere vuota (posso sostituire una variabile solo se è contenuta in un  contesto). I linguaggi generati da grammatiche di tipo *q* si dicono *linguaggi di tipo 1*  o anche *sensibili al contesto*.  A differenza dei linguaggi di tipo 0, per questo tipo di linguaggi esistono algoritmi che risolvono i problemi di parsing e ricognizione, ma sono molto costosi.
+*Definizione:* una grammatica a struttura di frase si dice sensibile al contesto se le produzioni hanno la forma: $\alpha_1X\alpha_2 \to \alpha_1\beta\alpha_2$, con $X \in N$, $\alpha_1, \alpha_2, \beta \in V^*$ , $\beta \neq \epsilon$.  Ciò significa che le produzioni di queste grammatiche hanno il lato sinistra che contiene una variabile, mentre il lato destra si ottiene sostituendo quella variabile con una parola qualsiasi purché non vuota. Quindi mentre prima potevamo sostituire una parola con una parola, qui possiamo sostituire solo una lettera all'interno di una parola con una parola, che per di più non deve essere vuota (posso sostituire una variabile solo se è contenuta in un  contesto). I linguaggi generati da grammatiche di tipo *q* si dicono *linguaggi di tipo 1*  o anche *sensibili al contesto*.  A differenza dei linguaggi di tipo 0, per questo tipo di linguaggi esistono algoritmi che risolvono i problemi di parsing e ricognizione, ma sono molto costosi.
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
   <div style="flex: 1;">
@@ -220,7 +220,7 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
 > ![[Screenshot From 2026-03-05 10-22-40.png|300]]
 
 **Grammatiche monotone (sempre di tipo 1):**
-*Definizione:* una grammatica si dice *monotona* se tutte le produzioni hanno la forma: $\alpha \to \beta$ con $|\alpha| \leq |\beta|$ . Cioè una grammatica in cui tutte le produzioni hanno il lato dx che ha lunghezza maggiore o uguale a quella del lato sx. Quindi non c'è più l'obbligo di sostituire singole variabili, ma c'è la sola regola che il lato dx non può essere più corto di quello sx. Inoltre: 
+*Definizione:* una grammatica si dice *monotona* se tutte le produzioni hanno la forma: $\alpha \to \beta$ con $|\alpha| \leq |\beta|$ . Cioè una grammatica in cui tutte le produzioni hanno il lato destra che ha lunghezza maggiore o uguale a quella del lato sinistra. Quindi non c'è più l'obbligo di sostituire singole variabili, ma c'è la sola regola che il lato destra non può essere più corto di quello sinistra. Inoltre: 
 - Le grammatiche sensibili al contesto sono monotone, perché in esse si sostituisce (all'interno del contesto) una variabile con qualcosa che non è vuoto, quindi quello che otterremo sarà qualcosa di più lungo o al massimo della stessa lunghezza di quello che già abbiamo.
 - Non tutte le grammatiche monotone sono sensibili al contesto
 - Ogni grammatica monotona è equivalente a una grammatica sensibile al contesto (che genera lo stesso linguaggio)
@@ -232,7 +232,7 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
 2. Esistono algoritmi che risolvono il problema di ricognizione e il problema di parsing per grammatiche di tipo 1 (in generale sono molto costosi)
 3. Esistono linguaggi di tipo 0 per cui un tale algoritmo non esiste
 
-**Linguaggi di tipo 2 (Grammatiche non contestuali):** Una grammatica a struttura di frase si dice *non contestuale* o di *tipo 2* se le produzioni hanno la forma: $X \to \beta$, con $X \in N$, $\beta \in V^*$. Dunque una grammatica a struttura di frase si dice non contestuale se le produzioni hanno a sx una singola variabile. I linguaggi generati da grammatiche di tipo 2 si dicono *linguaggi di tipo 2* o anche *non contestuali*. Sono non contestuali perché la variabile può essere sostituita indipendentemente dal contesto in cui appare.
+**Linguaggi di tipo 2 (Grammatiche non contestuali):** Una grammatica a struttura di frase si dice *non contestuale* o di *tipo 2* se le produzioni hanno la forma: $X \to \beta$, con $X \in N$, $\beta \in V^*$. Dunque una grammatica a struttura di frase si dice non contestuale se le produzioni hanno a sinistra una singola variabile. I linguaggi generati da grammatiche di tipo 2 si dicono *linguaggi di tipo 2* o anche *non contestuali*. Sono non contestuali perché la variabile può essere sostituita indipendentemente dal contesto in cui appare.
 
 > [!example]
 > ![[Screenshot From 2026-03-05 10-33-04.png|300]]
@@ -241,7 +241,7 @@ I linguaggi di tipo 2 costituiscono una sottoclasse propria dei linguaggi di tip
 Gli algoritmi di ricognizione e parsing per le grammatiche di tipo 2 si comportano abbastanza bene, alcuni sono moderatamente efficienti . La maggior parte dei linguaggi di programmazione sono generati da una grammatica non contestuale.
 
 **Linguaggi di tipo 3 Grammatiche regolari):** 
-*Definizione:* una grammatica a struttura di frase si dice *regolare* o di *tipo 3* se le produzioni hanno la forma $X \to aY$ oppure $X \to a$, con $X,Y \in N$, $a \in \Sigma$. Dunque Le produzioni hanno una forma ancora più semplice: a sx sempre una variabile, come nelle grammatiche di tipo 2, ma a dx ho un terminale da solo o un terminale seguito da una variabile. I linguaggi generati da grammatiche di tipo 3 si dicono *linguaggi di tipo 3* o anche *regolari*. I linguaggi di tipo 3 costituiscono una sottoclasse dei linguaggi di tipo 2 perché le produzioni a sx hanno una singola variabile. Quindi un linguaggio generato da una grammatica di tipo 3, è anche un linguaggio generato da una grammatica di tipo 2. Anche in questo caso, però, ci sono linguaggi di tipo 2 che non sono linguaggi di tipo 3.
+*Definizione:* una grammatica a struttura di frase si dice *regolare* o di *tipo 3* se le produzioni hanno la forma $X \to aY$ oppure $X \to a$, con $X,Y \in N$, $a \in \Sigma$. Dunque Le produzioni hanno una forma ancora più semplice: a sinistra sempre una variabile, come nelle grammatiche di tipo 2, ma a destra ho un terminale da solo o un terminale seguito da una variabile. I linguaggi generati da grammatiche di tipo 3 si dicono *linguaggi di tipo 3* o anche *regolari*. I linguaggi di tipo 3 costituiscono una sottoclasse dei linguaggi di tipo 2 perché le produzioni a sinistra hanno una singola variabile. Quindi un linguaggio generato da una grammatica di tipo 3, è anche un linguaggio generato da una grammatica di tipo 2. Anche in questo caso, però, ci sono linguaggi di tipo 2 che non sono linguaggi di tipo 3.
 > [!example]
 > ![[Pasted image 20260305103801.png|300]]
 
@@ -700,7 +700,7 @@ Due parole sono uguali per un linguaggio se aggiungendo lo stesso suffisso a des
 
 *Osservazione:* ogni equivalenza su un insieme $S$ determina una partizione dell'insieme $S$ in classi di equivalenza. Viceversa, ogni partizione dell'insieme $S$ è associata a un'equivalenza di cui le parti sono classi di equivalenza
 
-*Definizione:* sia $\Sigma$ un alfabeto. Una relazione di equivalenza $\sim$ su $\Sigma^*$ si dice una congruenza destra (risp. Sinistra) se per ogni $u, v \in \Sigma^*$ tali che $u \sim v$ e per ogni lettera $a \in \Sigma$, si ha $ua \sim va$ (risp. $au \ \sim \ av$). <u>Una relazione che sia contemporaneamente una congruenza destra e una congruenza sinistra si dice congruenza.</u> In altre parole qui non abbiamo solo un insieme, ma un insieme che ha un'operazione definita su di esso. Ogni volta che si va a concatenare una lettera a dx di due parole equivalenti ottengo due parole equivalenti (rispettivamente per la congruenza sx).
+*Definizione:* sia $\Sigma$ un alfabeto. Una relazione di equivalenza $\sim$ su $\Sigma^*$ si dice una congruenza destra (risp. Sinistra) se per ogni $u, v \in \Sigma^*$ tali che $u \sim v$ e per ogni lettera $a \in \Sigma$, si ha $ua \sim va$ (risp. $au \ \sim \ av$). <u>Una relazione che sia contemporaneamente una congruenza destra e una congruenza sinistra si dice congruenza.</u> In altre parole qui non abbiamo solo un insieme, ma un insieme che ha un'operazione definita su di esso. Ogni volta che si va a concatenare una lettera a destra di due parole equivalenti ottengo due parole equivalenti (rispettivamente per la congruenza sinistra).
 
 > [!info] Si considerino le relazione $\sim$ su $\Sigma^*$ definite da:
 > 1. $u \sim v$ se $u$ e $v$ iniziano con la stessa lettera (o $u$ = $v$ = $\epsilon$)
@@ -713,7 +713,7 @@ Due parole sono uguali per un linguaggio se aggiungendo lo stesso suffisso a des
 **Equivalenza di Nerode:**
 *Definizione:* sia $L$ un linguaggio sull'alfabeto $\Sigma$. L'equivalenza di Nerode associata al linguaggio $L$ è la relazione $N_L$ definita in $\Sigma^*$ da: $u \ N_L \ v$ se per ogni $y \in \Sigma^*$*, $uy \in L \iff vy \in L$. Cioè, $u \ N_L \ v$ se $u$ e $v$ sono equivalenti e se hanno gli stessi completamenti a destra per entrare in $L$. 
 
-Quindi diciamo che due parole sono equivalenti se le parole che mi permettono di completare la prima ($u$, a dx) dentro una parola di $L$, sono esattamente le stesse che mi permettono di completare $v$ in una parola di $L$. Questo teorema ci da una caratterizzazione vera e propria dei linguaggi regolari in forma algebrica: un linguaggio è regolare se lo posso ottenere come unione di classi di una congruenza dx di indice finito.
+Quindi diciamo che due parole sono equivalenti se le parole che mi permettono di completare la prima ($u$, a destra) dentro una parola di $L$, sono esattamente le stesse che mi permettono di completare $v$ in una parola di $L$. Questo teorema ci da una caratterizzazione vera e propria dei linguaggi regolari in forma algebrica: un linguaggio è regolare se lo posso ottenere come unione di classi di una congruenza destra di indice finito.
 
 $N_L$ è la relazione che identifica precisamente gli stati dell'automa minimo:
 - Due parole stanno nella stessa classe se portano allo stesso "stato logico" rispetto a $L$
@@ -1100,7 +1100,7 @@ Sono linguaggi di tipo 2, e lo strumento necessario che ci permette di eseguire 
 
 *Definizione:* una grammatica si dice non contestuale o di tipo 2 (CFG) se tutte le produzioni sono della forma: $X \rightarrow \alpha$, con $X \in N, \alpha \in V^*$ (cioè se hanno a sinistra una singola variabile). Un linguaggio si dice non contestuale o di tipo 2 (CFL) se è generato da una grammatica non contestuale. 
 
-*Osservazione:* ogni grammatica lineare destra, e in generale le grammatiche lineari, sono non contestuali, perché a sx delle produzioni c'è sempre una variabile da sola. Quindi, dato che sono generati da grammatiche regolari dx, i linguaggi regolari sono non contestuali. Essi costituiscono un sotto insieme dei linguaggi non contestuali. Non vale l'inverso.
+*Osservazione:* ogni grammatica lineare destra, e in generale le grammatiche lineari, sono non contestuali, perché a sinistra delle produzioni c'è sempre una variabile da sola. Quindi, dato che sono generati da grammatiche regolari destra, i linguaggi regolari sono non contestuali. Essi costituiscono un sotto insieme dei linguaggi non contestuali. Non vale l'inverso.
 
 > [!example]
 > Sia $G$ la grammatica con le produzioni $S → \epsilon, S → aSb$. Si ha $S \implies aSb \implies aaSbb \implies … \implies a^nSb^n \implies a^nb^n$. Quindi $L(G) = \{a^nb^n | n \geq 0\}$. Pertanto $\{a^nb^n | n \geq 0\}$ è un linguaggio non contestuale. Invece non è un linguaggio regolare
@@ -1250,7 +1250,7 @@ Procediamo per induzione sul numero dei nodi dell'albero.
 > variabili che producono 𝜀.
 > 2. Poi costruisco un altro insieme in cui
 > oltre a queste variabili, aggiungo tutte
-> quelle produzioni che hanno un lato dx
+> quelle produzioni che hanno un lato destra
 > fatto interamente da variabili
 > annullabili (che conosco già grazie al
 > passo precedente).
@@ -1309,7 +1309,7 @@ Procediamo per induzione sul numero dei nodi dell'albero.
     <img src="Screenshot From 2026-04-23 10-13-12.png" style="width: 100%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
-  Abbiamo tolto tutte le produzioni unarie S → Y1, S → Y2, S → Y3 e abbiamo aggiunto tutto a dx di S. Quindi ora S le deriva direttamente
+  Abbiamo tolto tutte le produzioni unarie S → Y1, S → Y2, S → Y3 e abbiamo aggiunto tutto a destra di S. Quindi ora S le deriva direttamente
   </div>
 </div>
 
@@ -1352,7 +1352,7 @@ Procediamo per induzione sul numero dei nodi dell'albero.
 - $W_1 = \{X \in N | \ \text{c'è una produzione} \ X → w \ \text{in P con} \ w \in \Sigma^*\}$
 - $W_n = \{X \in N | \ \text{c'è una produzione} \ X → \gamma \ \text{in P con} \ \gamma \in (W_{n-1} \cup \Sigma)^*\}, n \geq 2$
 
-In altre parole creiamo un insieme di variabili ($W_n$) e gli aggiungiamo tutte le variabili che sono direttamente produttive, cioè le variabili che producono subito tutti simboli terminali (comprese le $\epsilon-$produzioni). Dopodiché gli aggiungo tutte quelle variabili che hanno un lato dx costituito da terminali e variabili che già so essere produttive. Ripeto questo procedimento finché l'insieme non cresce più. Tutte le variabili che rimangono fuori da questo insieme sono improduttive e quindi possono essere buttate via.
+In altre parole creiamo un insieme di variabili ($W_n$) e gli aggiungiamo tutte le variabili che sono direttamente produttive, cioè le variabili che producono subito tutti simboli terminali (comprese le $\epsilon-$produzioni). Dopodiché gli aggiungo tutte quelle variabili che hanno un lato destra costituito da terminali e variabili che già so essere produttive. Ripeto questo procedimento finché l'insieme non cresce più. Tutte le variabili che rimangono fuori da questo insieme sono improduttive e quindi possono essere buttate via.
 
 *Osservazione:*
 - $W_n$ contiene solo variabili annullabili; 
@@ -1370,7 +1370,7 @@ L'algoritmo per le variabili produttive prende in input una grammatica non conte
 - $K_0 = \{S\}$
 - $K_n = K_{n-1} \cup \{$variabili che compaiono nei lati destri delle produzioni delle $X \in K_{n-1} \}, n \geq 1$
 
-In altre parole creiamo un insieme di variabili ($K_n$) e gli aggiungiamo $S$ che sappiamo essere accessibile. Poi aggiungeremo tutte le variabili che compaiono nei lati dx delle produzioni di $S$. In seguito aggiungeremo tutte le variabili che hanno nel lato sx delle variabili che sappiamo già essere  accessibili. Ripetiamo il procedimento finché l'insieme non smette di crescere.
+In altre parole creiamo un insieme di variabili ($K_n$) e gli aggiungiamo $S$ che sappiamo essere accessibile. Poi aggiungeremo tutte le variabili che compaiono nei lati destra delle produzioni di $S$. In seguito aggiungeremo tutte le variabili che hanno nel lato sinistra delle variabili che sappiamo già essere  accessibili. Ripetiamo il procedimento finché l'insieme non smette di crescere.
 
 *Osservazioni:*
 - $K_n$ contiene le variabili che compaiono nelle forme sentenziali derivabili in $n$ passi dal simbolo iniziale
@@ -1567,7 +1567,7 @@ fare la compilazione di un programma molto complesso (perché come sappiamo, rar
 > [!example]
 > ![[Pasted image 20260501130348.png|300]]
 > 
-> Sostituendo prima una variabile invece che un'altra, otteniamo sempre lo stesso albero di parsing. Sarebbe quindi bene mettersi d'accordo su un ordine da seguire per sostituire le variabili. Per fare ciò usiamo le derivazioni sx
+> Sostituendo prima una variabile invece che un'altra, otteniamo sempre lo stesso albero di parsing. Sarebbe quindi bene mettersi d'accordo su un ordine da seguire per sostituire le variabili. Per fare ciò usiamo le derivazioni sinistra
 
 *Definizione:* sia $G = \langle V,\Sigma,P,S \rangle$ una grammatica non contestuale e $\alpha,\beta \in V$. Scriveremo $\alpha \implies_L\beta$ se $\beta$ si ottiene da $\alpha$ sostituendo la variabile più a sinistra con il lato destro di una sua produzione. Una derivazione sinistra di una parola $w$ è una sequenza $S = \alpha_0 \xrightarrow[L]{} \alpha_1 \xrightarrow[L]{} … \xrightarrow[L]{} \alpha_n = w$ (con '=' rappresenta una conseguenza e '=>' rappresenta una derivazione)
 
@@ -1583,10 +1583,7 @@ fare la compilazione di un programma molto complesso (perché come sappiamo, rar
 E anziché il parsing di $w \in \Sigma^*$ farò il parsing di $w$#. Quindi il cancelletto lo genererò partendo da $S'→S$# e poi avrò $S$ da cui devo derivare $w$.
 
 > [!example]
-> ![[Pasted image 20260501130517.png|300]]
-
-> [!example]
-> ![[Pasted image 20260501130548.png|300]]
+> ![[Pasted image 20260508100410.png|300]]
 
 **Parsing predittivo:** 
 <div style="display: flex; justify-content: center;">
@@ -1594,8 +1591,8 @@ E anziché il parsing di $w \in \Sigma^*$ farò il parsing di $w$#. Quindi il ca
 </div>
 
 Abbiamo l'input che dobbiamo derivare dal simbolo iniziale, quindi passo passo esaminiamo il nostro input
-da sx verso dx e iniziamo a costruire la derivazione dall'alto in basso del nostro albero di derivazione. Ad ogni passo avremo una parte di input già analizzato (quello alla sx delle tabelline dell'esempio
-precedente), l'analisi (ciò che avevamo derivato dal nostro simbolo iniziale che faceva match con quello di sopra), a dx abbiamo l'input ancora non analizzato, e sotto quello che ci avanzava dal quale dovevamo
+da sinistra verso destra e iniziamo a costruire la derivazione dall'alto in basso del nostro albero di derivazione. Ad ogni passo avremo una parte di input già analizzato (quello alla sinistra delle tabelline dell'esempio
+precedente), l'analisi (ciò che avevamo derivato dal nostro simbolo iniziale che faceva match con quello di sopra), a destra abbiamo l'input ancora non analizzato, e sotto quello che ci avanzava dal quale dovevamo
 derivare la parte superiore (chiamata predizione). Le regole di questo procedimento sono:
 - Esaminiamo sempre il simbolo più a sinistra della predizione
 - Se è una variale, dobbiamo fare una predizione: va sostituito con uno dei suoi lati destri
@@ -1614,10 +1611,11 @@ Il fallimento non significa che non possiamo fare il parsing della parola, ma so
 - Delle produzioni utilizzate in ogni tentativo di parsing
 - Delle predizioni relative a ciascun tentativo
 
-> [!example]
->  $S' → S$#,$A → a | aA, C → c | cC, S → AB | DC, B → bc | bBc, D → ab |aDb$ 
->  
-   ![[Screenshot From 2026-05-01 13-08-31.png|300]] ![[Pasted image 20260501130909.png|300]]
+> [!example] Esempio esplorazione in ampiezza:
+>  ![[Pasted image 20260508100615.png|300]]
+
+> [!example] Esempio esplorazione in profondità:
+> ![[Pasted image 20260508100755.png|300]]
 
 **Recursione destra:** 
 
@@ -1627,7 +1625,7 @@ Il fallimento non significa che non possiamo fare il parsing della parola, ma so
 > ![[Pasted image 20260501130947.png|300]]
 
 *Osservazione:* il metodo fallisce se $X \implies^* X\alpha$ per qualche $X \in N, \alpha \in V$ (*recursione destra* = da una
-variabile posso derivare una forma sentenziale che comincia con la variabile stessa). Questo comporta che nella parte dx della nostra tabella non ci saranno mai solo terminali come prima lettera, e di conseguenza dovremo ripetere all'infinito gli stessi passaggi.
+variabile posso derivare una forma sentenziale che comincia con la variabile stessa). Questo comporta che nella parte destra della nostra tabella non ci saranno mai solo terminali come prima lettera, e di conseguenza dovremo ripetere all'infinito gli stessi passaggi.
 
 *Proposizione:* ogni grammatica non contestuale è equivalente a una grammatica priva di recursione destra. Per esempio, le grammatiche in forma normale di Greibach sono prive di recursione destra
 
@@ -1642,7 +1640,11 @@ variabile posso derivare una forma sentenziale che comincia con la variabile ste
 > 
 > (questa è la fase finale, ricontrolla passaggi)
 
-**Parsing a discesa ricorsiva:**  Interpretiamo la produzione $S → aB | bA$ come:
+**Come realizzare un parser:**  
+- Usare dei programmi che fanno questo lavoro
+- Costruirci da soli il parser
+
+Nella seconda opzione, la procedura più semplice da seguire è quella di realizzare un **parser a discesa ricorsiva**. Ovvero scrivere tante procedure quante sono le variabili della nostra grammatica. Interpretiamo la produzione $S → aB | bA$ come:
 - $S$ ha successo se $a$ ha successo e poi $B$ ha successo
 - oppure $b$ ha successo e poi $A$ ha successo 
 
@@ -1653,9 +1655,7 @@ variabile posso derivare una forma sentenziale che comincia con la variabile ste
 - posizione nell'input al momento della chiamata (locale).
 
 > [!example]
-> $S' → S$#, $A → a|aA, C → c|cC, S → AB|DC, B → bc | bBc, D → ab | aDb$
-> 
-> ![[Pasted image 20260501132153.png|300]] ![[Pasted image 20260501132208.png|300]]
+> ![[Pasted image 20260508101149.png|300]]
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260501132230.png" width="300">
@@ -1667,12 +1667,9 @@ variabile posso derivare una forma sentenziale che comincia con la variabile ste
   <img src="Pasted image 20260507112643.png" width="300">
 </div>
 
-A ogni passo la macchina legge una lettera sul nastro d input, preleva (*pop*) la lettera in cima alla pila. In base allo stato e ai due simboli letti:
-- Assume un nuovo stato
-- Scrive (*push*) in cima alla pila zero o più lettere
-- Sposta la testina di lettura del nastro di input sulla cella a destra
+Nel capitolo precedente abbiamo visto come si fa il parsing top-down, dove costruiamo l'albero di parsing partendo dalla radice e producendo le foglie. In sostanza la struttura dati che ci serve è una sequenza di pile (stack) che contengono la cosiddetta predizione in cui leggiamo il simbolo che sta più a sinistra ed eventualmente lo andiamo a sostituire inserendo al posto della prima variabile, la predizione. 
 
-Sono ammesse delle $\epsilon-$transizioni in cui le operazioni di push e pop sono eseguite senza leggere il nastro di input
+Un **automa a pila** è un modello astratto di macchina (un automa a stati finiti con uno stack) che ci permette di definire i linguaggi non contestuali, esattamente come i linguaggi che sono accettati da questo nuovo modello di macchina astratta. È costituito da un'unità di controllo e un nastro di input (come l'automa a stati finiti) con in più uno stack. Ad ogni passo la macchina legge una lettera dal nastro di input e preleva (*pop*) il simbolo che sta in cima allo stack (se è vuoto, la macchina si blocca). Dopodiché, in base allo stato e ai due simboli letti, la macchina: assume un nuovo stato, scrive (*push*) in cima allo stack 0 o più lettere, e poi sposta la testina di lettura dal nastro di input sulla cella a destra. Sono ammesse delle 𝜀-transizioni in cui le operazioni di push e pop sono eseguite senza leggere il nastro di input. Quindi estrae e legge dalla pila, ma non tocca il nastro di input.
 
 *Definizione:* un automa a pila è una settupla $A = \langle Q, \Sigma, \Gamma, \delta, q_0, Z_0, F \rangle$ dove:
 - $Q$ è un insieme finito, detto insieme degli stati
@@ -1683,7 +1680,7 @@ Sono ammesse delle $\epsilon-$transizioni in cui le operazioni di push e pop son
 - $Z_0 \in \Gamma$ è il simbolo iniziale della pila
 - $F \subseteq Q$ è l'insieme degli stati finali 
 
-*Funzionamento:* Inizialmente, l'automa è nello stato iniziale e la pila contiene il simbolo iniziale della pila. Supponiamo che a un dato istante della computazione l'automa si trovi nello stato $p$, riceva $a$ in input e $Z$ dall'operazione di pop. Se $\delta(p, a, Z)$ contiene una coppia $(q, \gamma)$, allora l'automa si può portare nello stato $q$ eseguendo il push di $\gamma$ sulla pila.
+*Funzionamento:* Inizialmente, l'automa è nello stato iniziale e la pila contiene il simbolo iniziale della pila. Supponiamo che a un dato istante della computazione l'automa si trovi nello stato $p$, riceva $a$ in input e $Z$ dall'operazione di pop. Se $\delta(p, a, Z)$ contiene una coppia $(q, \gamma)$, allora l'automa si può portare nello stato $q$ eseguendo il push di $\gamma$ sulla pila ($\gamma$ è quello che scrivo nella pila al posto della $Z$ che è stata estratta).
 
 *Osservazione:* Modello non deterministico
 
@@ -1691,8 +1688,6 @@ Sono ammesse delle $\epsilon-$transizioni in cui le operazioni di push e pop son
 > Sia $Q = \{q_0,f\}, \Sigma = \{a,b\}, \Gamma = \{Z_0, A\}, F =\{f\}$ e $\delta$ è data da:
 > 
 > ![[Pasted image 20260507123330.png|300]]
-> 
-> Riguarda disposizione delle foto
 
 *Definizione:* una configurazione interna dell'automa a pila $A$ è una coppia $(q,\gamma) \in Q \times \Gamma^*$. Istante per istante, la configurazione interna = stato + contenuto della pila
 
@@ -1703,6 +1698,13 @@ Se leggendo una lettera $a$ sul nastro di input l'automa può passare dalla conf
 *Osservazione:* Si ha $(q, \alpha) \overset{w}{\models} (q ' , \alpha' )$ se esiste una computazione che, leggendo $w$ sul nastro di input, porta l'automa dalla configurazione interna $(q, \alpha)$ alla configurazione interna $(q ' , \alpha' )$
 
 *Definizione:* sia $A = \langle Q, \Sigma, \Gamma, \delta, q_0, Z_0, F \rangle$ un automa a pila e $w \in  \Sigma^*$. Diremo che la parola $w \in  \Sigma^*$ è accettata per lo stato finale da $A$ se si ha $(q_0, Z_0) \overset{w}{\models} (f,\gamma), f \in F, \gamma \in \Gamma^*$. Diremo che $w$ è accettata per pila vuota da $A$ se si ha $(q_0, Z_0) \overset{w}{\models} (p, \epsilon), p \in Q$. Infine diremo che $w$ è accettata per stato finale e pila vuota da $A$ se si ha $(q_0, Z_0) \overset{w}{\models} (f, \epsilon), f \in F$ 
+
+> [!info] IN altre parole:
+> - Una parola viene **accettata per stato finale** se c'è una computazione che all'inizio parte con la mia parola sul nastro, stato iniziale, e simbolo iniziale della pila (soltanto nella prima); mano mano legge tutta la mia parola (consuma tutto il nastro di input) e alla fine si trova in uno stato finale che appartiene a $F$. Quindi c'è una computazione che mi parte da $(q_0, w, Z_0)$ e arriva allo stato finale, $\epsilon$ (nastro di input vuoto), $\gamma$
+> - Una parola è **accettata per pila vuota** se c'è una computazione che parte con la solita configurazione iniziale $(q_0, w, Z_0)$ e termina in uno stato non-finale perché sia il nastro di input che la pila sono vuote. 
+> - Una parola è **accettata per stato finale e pila vuota**, se si verificano entrambe le condizioni viste in precedenza
+> 
+> Ciò sta ad indicare che ogni automa riconosce 3 linguaggi che potrebbero essere diversi
 
 **Metodi di accettazione:** l'insieme delle parole accettate per lo stato finale (risp., per pila vuota, per stato finale e pila vuota) sarà chiamato il linguaggio accettato da $A$ per stato finale (risp., per pila vuota, per stato finale e pila vuota). I linguaggi accettati da $A$ per stato finale, per pila vuota, per stato finale e pila vuota sono denotati rispettivamente con $L_F(A),L_P(A),L(A)$
 
@@ -1755,16 +1757,16 @@ Se leggendo una lettera $a$ sul nastro di input l'automa può passare dalla conf
 2. linguaggi accettati da automi a pila per stato finale, 
 3. linguaggi accettati da automi a pila per pila vuota e stato finale. 
 
-*Lemma:* Sia $L$ il linguaggio accettato da un automa a pila per pila vuota e stato finale. Esiste effettivamente un automa a pila $A$ tale che $L = L(A) = L_P (A) = L_F (A)$.  
-
 **Pila vuota e stato finale:** 
+*Lemma:* Sia $L$ il linguaggio accettato da un automa a pila per pila vuota e stato finale. Esiste effettivamente un automa a pila $A$ tale che $L = L(A) = L_P (A) = L_F (A)$.  
 
 *Dimostrazione:* Sia $A_0$ l'automa a pila che accetta $L$ per pila vuota e stato finale. Costruiamo un automa a pila $A$ con un unico stato finale $f$ che si comporta nel modo seguente: 
 - come primo passo, scrive un simbolo speciale # all'inizio della pila, 
 - poi simula il funzionamento dell'automa $A_0$, 
 - quando si trova in uno stato finale di $A_0$ con # sulla pila, una $\epsilon-$transizione permette di estrarre # dalla pila, in modo da svuotarla, e passare nel suo unico stato finale. 
 
-In una computazione di $A$ la pila si svuota se e solo se raggiunge lo stato finale. Quindi $$L = L(A) = L_P (A) = L_F (A)$$. Inoltre ciò avviene se e solo se l'automa $A_0$ col medesimo input raggiunge uno stato finale con pila vuota. Pertanto $$L = L(A) = L_P (A) = L_F (A)$$
+In una computazione di $A$ la pila si svuota se e solo se raggiunge lo stato finale. Quindi $$L = L(A) = L_P (A) = L_F (A)$$
+Inoltre ciò avviene se e solo se l'automa $A_0$ col medesimo input raggiunge uno stato finale con pila vuota. Pertanto $$L = L(A) = L_P (A) = L_F (A)$$
 
 > [!example]
 > ![[Pasted image 20260507225456.png|300]]
@@ -1801,4 +1803,120 @@ Tale classe è inclusa strettamente nella classe dei linguaggi deterministici.
 > ![[Pasted image 20260507230112.png|300]]
 > 
 > ma non è accettato per pila vuota da nessun automa a pila deterministico
+
+### Teorema di caratterizzazione dei linguaggi non contestuali
+Questo teorema ha la funzione di far vedere che i linguaggi accettati dagli automi finiti, quel modello di macchina astratta introdotta nel capitolo precedente, coincidono con la classe dei linguaggi non contestuali (di tipo 2), generati da una grammatica non contestuale. Come per i linguaggi regolari avevamo l’automa a stati finiti che definiva il modello di computazione per verificare se una parola apparteneva o meno al linguaggio, così il modello di macchina per i linguaggi non contestuali è l’automa a pila.
+
+*Teorema:* un linguaggio è non contestuale se e solo se è riconosciuto da un automa a pila.
+
+*Proposizione:* sua $G$ una grammatica non contestuale. Esiste effettivamente un automa a pula con un solo stato che accetta per pila vuota il linguaggio generato da $G$
+
+*Proposizione:* sia $A$ un automa a pila con un solo stato. Esiste effettivamente un a grammatica non contestuale $G$ che genera il linguaggio accettato per pila vuota da $A$
+
+*Proposizione:* sia $A$ un automa a pula. Esiste effettivamente automa a pila con un solo stato che accetta per pila vuota il medesimo linguaggio di $A$
+
+**Dalla grammatica all'automa:** 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260508131000.png" width="300">
+</div>
+
+Lo sappiamo già fare perché abbiamo già visto il parsing predittivo che non è altro che un automa a pila
+
+*Procedura non deterministica:*
+- Esaminiamo sempre il simbolo più a sinistra della predizione (in cima allo stack)
+- Se è una variabile, dobbiamo fare una produzione: va sostituito con uno dei suoi lati destri (simile ad una $\epsilon-$transizione di un automa a pila)
+- Se il simbolo a sinistra è un terminale deve coincidere con la prima lettera dell'input da analizzare (simbolo di *look-ahead*). In caso affermativo, viene spostato nel lato 'analisi'; in caso negativo, l'esecuzione fallisce
+
+*Osservazione:* la predizione ha una gestione LIFO. Quindi, salvo la gestione dell'output, ho un automa a pila con un solo stato
+
+**Costruzione dell'automa:** 
+
+*Proposizione:* ogni linguaggio non contestuale p accettato per pila vuota da un automa pila con un solo stato
+
+*Dimostrazione:* sia $L = L(G)$ con $G = \langle V, \Sigma, P, S \rangle$. Costruiamo $A$ con un solo stato e
+- Alfabeto di input $\Sigma$
+- Alfabeto di pila $V$
+- Simbolo iniziale della pila $S$
+- Transizioni 
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260508131231.png" width="300">
+</div>
+
+Verifichiamo che $L(G) = L_P(A)$ 
+
+*Verifica:* 
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260508131335.png" width="300">
+</div>
+
+Verifichiamo che $L_P(A) \subseteq L(G)$. Se $w \in L_P(A)$, allora avremo $$w = a_1a_2…a_n, S = \alpha_0 \overset{a_1}{\models} \alpha_1 \overset{a_2}{\models} … \overset{a_n}{\models} \alpha_n = \epsilon, a_1,…,a_n \in \Sigma \cup \{\epsilon\}$$
+Dalla definizione di $A$, o $a_i = \epsilon$ e $\alpha_{i-1} \implies \alpha_i$ o $a_i \in \Sigma$ e $\alpha_{i-1} = a_i\alpha_i$. In ambo i casi $\alpha_{i-1} \implies^* a_i\alpha_i, i = 1,…,n$. Pertanto, $$S = \alpha_0 \overset{*}{\Rightarrow} a_1\alpha_1 \overset{*}{\Rightarrow} a_1 a_2\alpha_2 \overset{*}{\Rightarrow} … \overset{*}{\Rightarrow} a_1a_2...a_n\alpha_n = w$$ 
+e quindi $w \in L(G)$  
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260508131656.png" width="300">
+</div>
+
+Verifichiamo che $L(G) \subseteq L_P(A)$. Ricordiamo che ogni parola di $L(G)$ si ottiene dal simbolo iniziale con una derivazione sinistra (cioè sostituendo sempre la variabile più a sinistra). Quindi se $w \in L(G)$, avremo $S \implies u_1X_1\alpha_1 \underset{L}{\Rightarrow} u_1u_2X_2\alpha_2 \underset{L}{\Rightarrow} … \underset{L}{\Rightarrow} u_1u_2…u_n = w, u_1, …, u_n \in \Sigma^*, X_1,…,X_{n-1} \in N$ e $\alpha_1,…,\alpha_{n-1} \in N^*$. Pertanto $X_{i-1}\alpha_{i-1} \implies_L u_iX_i\alpha_i$ e, per la definizione di $A$, $X_{i-1}\alpha_{i-1} \overset{\epsilon}{\models} u_iX_i\alpha_i$. Inoltre $u_{i-1}X_{i}\alpha_{i} \overset{u_i}{\models} X_i\alpha_i$. Quindi, $S \overset{\epsilon}{\models} u_1X_1 \overset{u_1}{\models} X_1\alpha_1 \overset{\epsilon}{\models} u_2X_2\alpha_2 \overset{\epsilon}{\models} … \overset{u_n}{\models} \epsilon$, sicché $w = u_1u_2…u_n \in L_P(A)$ 
+
+> [!example]
+> Sia $L = {a^nb^n | n \geq 0}$. $L$ è generato dalle produzioni $$S → aSb | \epsilon$$ L'automa a pila corrispondente avrà alfabeto di input $\{a, b\}$, alfabeto di pila $\{S, a, b\}$, simbolo iniziale della pila $S$ e la funzione di transizione
+> 
+> ![[Pasted image 20260508133302.png|300]]
+> 
+> Le $\epsilon-$produzioni sostituiscono ad ogni variabile in cima alla pila i lati destri delle produzioni. Per ognuna delle produzioni $A→B→b$ mettiamo una $\epsilon$ all'incrocio tra il lato sinistro e destro della produzione
+
+**Dall'automa alla grammatica:** 
+
+*Proposizione:* Sia $A$ un automa a pila con un solo stato. Esiste effettivamente una grammatica non contestuale $G$ che genera il linguaggio accettato per pila vuota da $A$. 
+
+*Dimostrazione:* Sia $A = \langle \{q 0\}, \Sigma, \Gamma, \delta, q_0, Z_0, \{q_0\}\rangle$. Possiamo supporre $\Gamma \cap \Sigma = \emptyset$. Costruiamo $G = \langle V , \Sigma, P, Z_0\rangle$ con 
+- vocabolario $V = \Sigma \cup \Gamma$, 
+- alfabeto dei simboli terminali $\Sigma$, 
+- simbolo iniziale $Z_0$, 
+- la produzione $X → a\alpha$, per ogni transizione $q_0 \xrightarrow []{a,\frac{X}{\alpha}} q_0$. 
+
+Verificheremo che $L(G) = L_P(A)$. 
+
+*Verifica:* 
+Sostituiamo ogni transizione $q_0 \xrightarrow[]{a,\frac{X}{\alpha}}q_0$ di $A$ ($a \in \Sigma, X \in \Gamma, \alpha \in \Gamma^*$) con la coppia di transizioni $$q_0 \xrightarrow[]{\epsilon,\frac{X}{a\alpha}}q_0 , q_0 \xrightarrow[]{a,\frac{a}{\epsilon}} q_0$$
+Poiché $\Gamma \cap \Sigma = \emptyset$, la prima transizione deve essere necessariamente seguita dalla seconda. Pertanto, il linguaggio accettato dall'automa non cambia. Si verifica facilmente che, in base alla dimostrazione della proposizione precedente, questo nuovo automa è proprio l'automa a pila che accetta $L(G)$.  
+
+> [!example]
+> Sia $A$ l'automa a pila con un unico stato, alfabeto di input $\Sigma = \{a, b, \bar{a}, \bar{b}\}$, alfabeto di pila $\{S, A, B\}$, simbolo iniziale della pila $S$ e la funzione di transizione
+> 
+> ![[Pasted image 20260508134812.png|300]]
+> 
+> La grammatica corrispondente avrà le produzioni $S → aA | bB, A → aAA | bBA | \bar{a}, B → aAB | bBB | \bar{b}$. Se $S$ legge 'a', scrive $A$; se $S$ legge 'a barrato', si limita a fare il pop senza il push
+
+**Eliminazione degli stati:** 
+
+*Proposizione:* Sia $A$ un automa a pila. Esiste effettivamente un automa a pila con un solo stato che accetta per pila vuota il medesimo linguaggio di $A$. 
+
+Idea della dimostrazione: Dato un automa a pila $A$, realizzare un automa a pila con un solo stato che simula $A$, registrando nella pila anche lo stato di $A$. 
+
+Problema: Se $A$ non fa push, nella simulazione non posso registrare lo stato. 
+
+Soluzione: Nell'automa a uno stato ogni cella della pila contiene 
+- il simbolo di pila di $A$, 
+- uno stato arbitrario (cioè tutti, per il non-determinismo), 
+- lo stato arbitrario contenuto nella cella sottostante, 
+- solo la cella top, al posto dello stato arbitrario contiene lo stato dell'automa simulato.  
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260508135350.png" width="300">
+</div>
+
+**Costruzione dell'automa:** Dato $A = \langle Q, \Sigma, \Gamma, \delta, q_0, Z_0, F \rangle$, definiamo $A'$ con: 
+- un solo stato, 
+- alfabeto di pila $\Gamma' = Q \times \Gamma \times Q$, 
+- simbolo iniziale della pila $Z_0' = (q_0, Z_0, q_0)$, 
+- la funzione di transizione è definita come segue: Per ogni transizione $p q_0 \xrightarrow[]{a,\frac{X}{X_n...X_1}}q$ in $A$, in $A'$ ci sono le transizioni $q_0 \xrightarrow[]{a, \frac{(p,X,s_1)}{(q,X_n,s_n)(s_n,X_{n-1},s_{n-1})...(S_2,X_1,s_1)}}q_0, a \in \Sigma \cup {\epsilon}, X , X_1, . . . , X_n \in N, p, q, s_1, . . . , s_n \in Q$, Per ogni transizione $p\xrightarrow[]{a,\frac{X}{\epsilon}}q$ in $A$, in $A'$ c'è la transizione $$q_0 \xrightarrow[]{a,\frac{(p,X,q)}{\epsilon}}q_0, a \in \Sigma \cup \{\epsilon\}, p,q \in Q$$
+
+Si verifica che $L_P (A) = L_P (A' )$.
+
+> [!info] N.N.
+> Tutto ciò funziona per la classe di automi a pila con un solo stato. Perché esiste effettivamente un automa a pila con un solo stato, che accetta per pila vuota lo stesso linguaggio accettato da un automa qualunque con un qualsiasi numero di stati? Se ho la pila, lo stato lo scrivo sulla pila: l’automa ad ogni passo guarda lo stato, guarda il simbolo in cima alla pila e fa delle cose, e scrive lo stato nuovo sulla pila. Tuttavia, se l’automa non scrive nulla sulla pila, dove scrivo lo stato? Sulla pila non andrò a scrivere solo lo stato, ma scriverò anche cosa c’è scritto sotto. 
 

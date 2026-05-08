@@ -1866,6 +1866,16 @@ Lo scopo è di assegnare al processore i processi da eseguire in modo da realizz
   <img src="Pasted image 20260501105857.png" width="300">
 </div>
 
+> [!info] Ricorda:
+> Tutti gli stati possibili di un processo: 
+> - Ready; 
+> - Running; 
+> - Blocked; 
+> - Blocked/Suspend; 
+> - Ready/Suspend; 
+> - New; 
+> - Exit.
+
 **Schedulatore a lungo termine:** determina quali programmi sono ammessi nel sistema per l'esecuzione e controlla il grado di multiprogrammazione:
 - Più processi creati = più piccole frazioni del tempo di esecuzione assegnate ai processi
 - Per fornire servizi soddisfacenti all'insieme corrente di processi, è opportuno limitarne il numero
@@ -1888,7 +1898,7 @@ Per creare un processo della coda dei nuovi job, lo schedulatore deve decidere:
 - *Chiamate di sistema:* un processo esegue una system call, si sospende
 - Segnali (e.g.semafori)
 
-Lo scheduling a breve termine è ciò che ci interessa di più, è un po' la chiave di volta di un sistema operativo, poiché essendo chiamata molto frequentemente deve usare algoritmi rapidi e semplici, non si possono adottare politiche molto complesse, d'altra parte però se non funziona viene danneggiato tutto il sistema.
+Lo scheduling a breve termine è ciò che ci interessa di più, è un po' la chiave di volta di un sistema operativo, poiché essendo chiamata molto frequentemente deve usare algoritmi rapidi e semplici, non si possono adottare politiche molto complesse, d'altra parte però se non funziona viene danneggiato tutto il sistema. Si devono usare quindi dei criteri che vengono stabiliti dal progettista che permettano di allocare la CPU in modo da ottimizzare alcuni aspetti del comportamento del sistema.
 
 **Criteri per lo scheduling a breve termine:** 
 
@@ -1940,7 +1950,7 @@ Nel terzo caso, si tiene conto dei parametri:
 	
 **First come first served (FCFS):** si tratta della gestione più semplice (FIFO). Ogni processo pronto è inserito nella coda pronti e quando il processo in esecuzione termina o è sospeso, viene selezionato per l'esecuzione il processo che è stato più a lungo nella coda pronti. Favorisce i processi lunghi rispetto a quelli brevi e i processi processor-bound rispetto a quelli I/O-bound  
 
-**Round robin:** il prerilascio è basato su un clock (*time slicing*). Il principale aspetto progettuale è la durata del quanto di tempo. È efficiente nei sistemi time-sharing e orientati alle transazioni e favorisce i processi processor-bound rispetto a quelli I/O-bound: *VRR (virtual round robin)* 
+**Round robin:** Politica molto usata soprattutto su sistemi a multi-utente. C’è un clock che definisce il *time-slice* (fetta di tempo assegnata a ciascun processo) quando ad un processo viene assegnato il processore. Se il processo si sospende, tornerà all’ultimo posto della coda e se non si sospende, entro il time-slice, il processo viene pre rilasciato. Il principale aspetto progettuale è la durata del quanto di tempo, ogni processo interattivo dovrebbe riuscire a fare i propri compiti nel quanto. È molto efficiente nei sistemi time-sharing e orientati alle transazioni. Favorisce i processi processor-bound rispetto a quelli I/O bound. L’alternativa è quella del VRR (virtual round robin), dove i processori che non utilizzano tutto il quanto di tempo sono premiati alla successiva esecuzione. 
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260501113443.png" width="300">
@@ -1950,15 +1960,17 @@ Nel terzo caso, si tiene conto dei parametri:
 - Media aritmetica della durata delle esecuzioni precedenti:$$S_{n+1} = \frac{1}{n}\sum\limits^n_{i=1} T_i = \frac{T_n + (n-1)S_{n-1}}{n}$$
 - Media esponenziale: $$S_{n+1} = \alpha\sum\limits^n_{i=1} (1 - \alpha)^{n-i}T_i + (1-\alpha)^nS_1 = \alpha T_n + (1-\alpha)S_n$$
 
+Se il tempo di esecuzione supera la stima del programmatore, il programma può essere terminato. 
+
 **Shortest remaining time (SRT):** si tratta di un SPN con prerilascio. Seleziona il processo col minimo tempo stimato di esecuzione e potrebbe causare starvation per processi lunghi. Migliora il tempo di turnaround rispetto a SPN, perché i job brevi hanno precedenza immediata sui job lunghi. Evita i prerilasci addizionali di Round Robin e non favorisce i lavori lunghi come FCFS. L'overhead è causato dalla stima del tempo di esecuzione  
 
 **Highest Response Ratio Next (HRRN):**
-$$R = \frac{w+s}{s}$$con $w =$tempo di attesa e $s=$tempo stimato di esecuzione. Seleziona il processo con il più alto rapporto di risposta (tempo di turnaround normalizzato). I processi in attesa incrementano il rapporto. Favorisce i processi brevi, ma evita la starvation  
+$$R = \frac{w+s}{s}$$con $w =$tempo di attesa e $s=$tempo stimato di esecuzione. Cerca di eliminare il problema della starvation tenendo conto anche del tempo di attesa. Seleziona il processo con il più alto rapporto $R$ di risposta (tempo di turnaround normalizzato), questa è più alta per i processi brevi poiché se $s$ è piccola la frazione è molto alta. Processi che sono in attesa da molto tempo avranno una $w$ molto grande e quindi finiranno per essere eseguiti. Quindi i processi brevi sono comunque favoriti, ma si evita la starvation.   
 
 > [!info] Confronto: 
 > ![[Pasted image 20260501114546.png|300]]
 
-**Schedulazione fair-share:** Politiche di schedulazione basate su insiemi di processi. Ogni utilizzatore ha assegnata una 'frazione' del processore. L'obiettivo è monitorare l'uso per dare meno risorse a chi ne ha avute più della frazione spettante e più risorse a chi ne ha avute di meno. Si può assegnare una priorità determinata con: $$CPU_j(i) = \frac{CPU_j(i-1)}{2}, \ GCPU_k(i) = \frac{CPU_k(i-1)}{2}, \ P_j(i) = Base_j \ +  \frac{CPU_j(i)}{2} + \frac{GCPU_k(i)}{4 \cdot W_k}$$ove:
+**Schedulazione fair-share:** quando ho sistemi multi-thread dobbiamo tenere conto di due aspetti, a quali processi assegnare la CPU, ma anche a quale utilizzatore assegnare il processore. Si usano politiche di schedulazione basate su insiemi di processi. Ogni utilizzatore ha assegnata una 'frazione' del processore. L'obiettivo è monitorare l'uso per dare meno risorse a chi ne ha avute più della frazione spettante e più risorse a chi ne ha avute di meno. Si può assegnare una priorità determinata con: $$CPU_j(i) = \frac{CPU_j(i-1)}{2}, \ GCPU_k(i) = \frac{CPU_k(i-1)}{2}, \ P_j(i) = Base_j \ +  \frac{CPU_j(i)}{2} + \frac{GCPU_k(i)}{4 \cdot W_k}$$ove:
 - $CPU_j(i)$ = uso del processore del processo $j$ nell'intervallo $i$ 
 - $GCPU_k(i)$ = uso del processore del gruppo $k$ nell'intervallo $i$ 
 - $P_j(i)$ = priorità del processo $j$ all'inizio dell'intervallo $i$ 
@@ -2002,7 +2014,7 @@ $$R = \frac{w+s}{s}$$con $w =$tempo di attesa e $s=$tempo stimato di esecuzione.
   <img src="Pasted image 20260507170110.png" width="300">
 </div>
 
-**Funzioni I/O:** 
+**Funzioni I/O:** ci sono 2 modi per gestire l'input/output
 - *I/O programmato:* il processore genera un comando di I/O per conto di un processo che rimane in attesa attiva durante il completamento dell'operazione
 - *I/O guidato dalle interruzioni:* il processore genera un comando di I/O per conto di un processo:
 	- Non-bloccante: il processore continua a eseguire istruzioni del processo che ha eseguito il comando di I/O
@@ -2015,7 +2027,7 @@ $$R = \frac{w+s}{s}$$con $w =$tempo di attesa e $s=$tempo stimato di esecuzione.
 2. Viene aggiunto un controllore o modulo I/O
 3. Come al passo precedente, con l'introduzione delle interruzioni
 4. Col DMA, il modulo I/O,  diventa un processore separato con un suo instruction set specializzato (canale di I/O)
-5. Il modulo I/O viene dotato di memoria locale e diventa un computer vero e proprio (processore di I/O)ù
+5. Il modulo I/O viene dotato di memoria locale e diventa un computer vero e proprio (processore di I/O)
 
 Via via, il processore è meno coinvolto nella gestione dell'I/O
 
@@ -2024,6 +2036,7 @@ Via via, il processore è meno coinvolto nella gestione dell'I/O
 </div>
 
 **Configurazione DMA:**
+Per organizzare i DMA ho diverse possibilità. La più semplice è la (a): un singolo bus a cui è connesso tutto, la memoria, il processore, il DMA e i dispositivi I/O. Il vantaggio è la semplicità, ma il difetto sta nel fatto che sulla stessa linea devono passare i dati dal dispositivo al DMA, dal DMA alla memoria e i dati fra lo scambio di dati e processore. Per questo  può essere preferibile il modello (b) in cui c’è ancora un singolo bus, ma i dispositivi sono ancora connessi, ognuno con il proprio DMA. La terza possibilità (c) è creare due bus, uno a cui sono collegati tutti i dispositivi I/O che è collegato al DMA e l’altro bus, collegato agli elementi del sistema. 
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260507170236.png" width="300">
@@ -2032,12 +2045,12 @@ Via via, il processore è meno coinvolto nella gestione dell'I/O
 **Obiettivi di progettazione:** 
 - *Efficienza:* è il maggiore obiettivo della progettazione (soprattutto per I/O dal disco):
 	- Le operazioni di I/O costituiscono un collo di bottiglia
-	- I dispositivi I/O sono molto lenti rispetto a memoria principale e processore 
+	- I dispositivi I/O sono molto lenti rispetto a memoria principale e processore (soprattutto per I/O dal disco)
 - *Generalità:* ricerca uniformità nella gestione dei dispositivi:
 	- Nell'interfaccia verso i processi
 	- Nella gestione dei dispositivi da parte del SO e le relative operazioni
  
- È difficile l da realizzare per le diversità tecniche dei dispositivi. La soluzione è l'approccio gerarchico, per nasconde i dettagli dei dispositivi nelle routine di basso livello
+ È difficile da realizzare per le diversità tecniche dei dispositivi. La soluzione è l'approccio gerarchico, per nasconde i dettagli dei dispositivi nelle routine di basso livello
 
 **Struttura logica:**
 <div style="display: flex; align-items: flex-start; gap: 20px;">
@@ -2059,11 +2072,13 @@ Via via, il processore è meno coinvolto nella gestione dell'I/O
 - *Dispositivi a blocchi:* dischi, chiavi USB. L'informazione viene memorizzata in blocchi di dimensione fissa e il trasferimento viene eseguito un blocco alla volta. Il riferimento ai dati avviene per numero di blocco
 - *Dispositivi a flusso:* terminali, stampanti, porte di comunicazione, mouse, ecc. L'informazione non è strutturata in blocchi, invece il trasferimento dei dati avviene attraverso un flusso di bytes
 
+**Buffer singolo (dispositivo a blocchi):** Col buffering i dati vengono quindi trasferiti prima in quest’area di memoria principale e poi vengono lette dal buffer al processo.
+
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260507170445.png" width="300">
 </div>
 
-**Buffer singolo (dispositivo a blocchi):** è il sistema di supporto più semplice. Quando un processo esegue una richiesta di I/O, il SO assegna un buffer all'operazione (nello spazio del sistema). Nelle operazioni di input, i dati sono trasferiti nel buffer. Input anticipato: 
+Il buffer singolo per un dispositivo a blocchi è il sistema di supporto più semplice. Quando un processo esegue una richiesta di I/O, il SO assegna un buffer all'operazione (nello spazio del sistema). Nelle operazioni di input, i dati sono trasferiti nel buffer. Input anticipato: 
 - In previsione che il blocco is richiesto
 - Terminato il trasferimento il blocco viene trasferita dal buffer allo spazio utente e ne viene immediatamente richiesto un altro
 
@@ -2087,7 +2102,7 @@ Gli svantaggi sono:
   <img src="Pasted image 20260507170728.png" width="300">
 </div>
 
-Due buffer sono assegnati all'operazione di I/O e un processo trasferisce i dati da/a un buffer mentre il SO svuota o riempe l'altro (*buffer swapping*)
+Alternativamente si possono usare due buffer per l’operazione di I/O, uno in cui il processo trasferisce i dati e l’altro che il SO svuota o riempie, questo ci permette di agire ancora più velocemente poiché non si deve attendere che il buffer si sia svuotato.
 
 **Buffer circolare:** 
 
@@ -2095,18 +2110,18 @@ Due buffer sono assegnati all'operazione di I/O e un processo trasferisce i dati
   <img src="Pasted image 20260507170917.png" width="300">
 </div>
 
-Più di due buffer sono assegnati all'operazione di I/O: sono caricati e scaricati circolarmente
+Più di due buffer sono assegnati all'operazione di I/O caricati e scaricati circolarmente
 
 **Parametri di prestazione del disco:** i dettagli delle operazioni di I/O dal disco dipendono da:
 - Sistema di elaborazione
 - Sistema operativo 
 - Natura del canale I/O e hardware di controllo del disco
 
-La velocità di rotazione del disco è costante. La testina di lettura/scrittura deve essere posizionata all'inizio del settore richiesto nella particolare traccia richiesta:
+Il disco è diviso in tracce, cerchi concentrici che contengono il materiale ferro-magnetico usato per memorizzare le cose, su ogni disco c’è una testina che scorre sulla traccia, per certi dischi c’è una testina per ogni traccia. La velocità di rotazione del disco è costante. La testina di lettura/scrittura deve essere posizionata all'inizio del settore richiesto nella particolare traccia richiesta:
 - Nei dischi a teste fisse, la tracci asi ottiene selezionando elettronicamente la relativa testina
 - Nei dischi a teste mobili, è necessario spostare la testina sulla relativa traccia (tempo di ricerca)
 
-Il tempo necessario al settore per raggiungere la testina è detto ritardo rotazionale. La somma di tempo di tempo di ricerca e ritardo rotazionale costituisce il tempo di accesso
+Il tempo necessario al settore per raggiungere la testina è detto *ritardo rotazionale*. La somma di tempo di tempo di ricerca e ritardo rotazionale costituisce il *tempo di accesso*, dopo il quale siamo all’inizio del settore che ci interessa e la testina può leggere o scrivere i dati che ci interessano.
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260507171001.png" width="300">
@@ -2114,7 +2129,7 @@ Il tempo necessario al settore per raggiungere la testina è detto ritardo rotaz
 
 **Tempo di accesso:**
 - Tempo di ricerca: è il tempo necessario a muovere ilk bracci o del disco sulla traccia richiesta. Consiste di: tempo di avvio e tempo necessario per attraversare i cilindri (comprensivo di *settling time*). Più piccolo è il disco, minore è il tempo di ricerca (oggi < 10 ms)
-- Ritardo di rotazione: Il tempo necessario al settore per raggiungere la testina (a 3600 rpm, in media 83. Ms; a 15000 rpm, in media 2 ms)
+- Ritardo di rotazione: Il tempo necessario al settore per raggiungere la testina. Più il disco gira velocemente, minor tempo impiegherà il settore ad arrivare (a 3600 rpm, in media 83. Ms; a 15000 rpm, in media 2 ms)
 - tempo di trasferimento: $$T = \frac{b}{rN}$$ con: 
 - $b$ = numero di bit da trasferire 
 - $N$ = numero di bit per traccia 
@@ -2140,35 +2155,13 @@ Il tempo di accesso medio è dato dalla formula:$$T_a = T_s + \frac{1}{2r} + \fr
 > Per cui il tempo totale necessario risulta, mediamente, $5 \cdot 500 \cdot 8.016 = 20.04$ secondi
 
 **Politiche di schedulazione del disco:** l'obiettivo principale è quello di ridurre il tempo medio di ricerca 
-- **FIFO:** 
-	- Richieste processate in ordine di arrivo 
-	- Equa con tutti i processi 
-	- In presenza di molti processi, approssima la schedulazione random 
-- **Priorità:** 
-	- La politica è gestita al di fuori del software di controllo del disco 
-	- L'obiettivo non è ottimizzare l'utilizzo del disco 
-	- Priorità ai lavori brevi e ai processi interattivi 
-	- Buoni tempi di risposta per i processi interattivi ma lunghe attese per i lavori batch. In un sistema condiviso, l'utente può spezzare il lavoro in piccoli segmenti per ingannare il sistema 
-	- Inadatta per i sistemi di basi di dati  
-- **SSTF:** precedenza alla richiesta con tempo di servizio minore (*shortest service time first*) 
-	- Seleziona la richiesta che richiede il minimo movimento del braccio del disco dalla posizione corrente 
-	- Minimizza il tempo di richiesta 
-	- Possibilità di starvation 
-- **SCAN:** 
-	- Algoritmo dell'ascensore 
-	- Il braccio si muove sempre in una direzione. Soddisfa tutte le richieste su ciascuna traccia finché non raggiunge l'ultima traccia, poi inverte la direzione 
-	- Favorisce i lavori nei settori centrali  
-- **C-SCAN:** 
-	- Restringe la scansione a un'unica direzione. Raggiunta l'ultima traccia, il braccio ritorna alla prima traccia e ricomincia la scansione nella medesima direzione
-- **N-Step-SCAN:** 
-	- Evita attese troppo lunghe quando nuovi lavori arrivano sulla medesima traccia 
-	- Le richieste sono inserite in sotto-code di lunghezza N 
-	- Le sottocode sono processate una alla volta con SCAN 
-	- Le nuove richieste non possono essere inserite nella coda attualmente processata 
-- **FSCAN:** 
-	- Due sottocode 
-	- All'inizio della scansione una coda è vuota 
-	- Durante la scansione sono eseguite le richieste della coda inizialmente non vuota e tutte le nuove richieste sono inserite nell'altra
+- **FIFO:** Le richieste sono processate nel loro ordine di arrivo. È semplice da implementare ed è equa per tutti i processi. In presenza di molti processi approssima il tempo impiegato dalla schedulazione random 
+- **Priorità:** La gestione a priorità è eseguita al di fuori del software di controllo del disco. L’obiettivo non è quindi ottimizzare l’utilizzo del disco, ma ottimizzare il comportamento globale. La priorità verrebbe data ai lavori brevi o ai processi interattivi. Si hanno buoni tempi di risposta per i processi a cui la priorità è data, ma lunghe attese per i lavori che in generale hanno bassa priorità (un problema potrebbe essere la starvation dei lavori con bassa priorità). Ad esempio i lavori batch, in un sistema condiviso, l’utente può spezzare il lavoro in piccoli segmenti per “ingannare” il sistema. È inoltre inadatta per i sistemi di basi di dati. 
+- **SSTF:** precedenza alla richiesta con tempo di servizio minore (*shortest service time first*). Seleziona quindi la richiesta che richiede il minimo movimento del braccio del disco dalla posizione corrente. Questo minimizza il tempo di richiesta, ma anche qui c’è la possibilità di starvation per lavori che richiedono tempo di servizio più alto
+- **SCAN:** Detto anche l’algoritmo dell’ascensore, come per gli ascensori c’è una fase di salita e una di discesa. Nella fase di salita il disco si ferma su un cilindro e fa tutti i lavori su quel cilindro, poi passa al prossimo cilindro superiore se c’è richiesta di altri lavori su cilindri superiori a quello precedente. Quando a salire non ci sono altre richieste comincia la fase di discesa. Il braccio quindi si muove sempre in una direzione e soddisfa tutte le richieste su ciascuna traccia finché non raggiunge l’ultima traccia, poi inverte la direzione. Si ha una buona performance e si ha una soluzione al problema dell’attesa indefinita poiché prima o poi tutte le richieste vengono completate, vengono favoriti i settori centrali poiché vengono incontrati sia in discesa che in salita.
+- **C-SCAN:** Restringe la scansione a un'unica direzione. Raggiunta l'ultima traccia, il braccio ritorna alla prima traccia e ricomincia la scansione nella medesima direzione
+- **N-Step-SCAN:** Evita attese troppo lunghe quando nuovi lavori arrivano sulla medesima traccia. Le richieste sono inserite in sotto-code di lunghezza N che sono processate una alla volta con SCAN. Le nuove richieste non possono essere inserite nella coda attualmente processata 
+- **FSCAN:** Si hanno due sottocode, all'inizio della scansione una coda è vuota, durante la scansione sono eseguite le richieste della coda inizialmente non vuota e tutte le nuove richieste sono inserite nell’altra.
 
 <div style="display: grid; grid-template-columns: 1fr; gap: 10px; justify-items: center;">
   <img src="Pasted image 20260507172825.png" width="300">
