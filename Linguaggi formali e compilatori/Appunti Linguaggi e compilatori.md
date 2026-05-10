@@ -1562,7 +1562,7 @@ per ogni $k \geq 0$
 In genere l'operazione di parsing richiede un tempo notevole $O(n^3)$ e non è accettabile nel caso dovessimo
 fare la compilazione di un programma molto complesso (perché come sappiamo, raramente un programma non presenta errori alla prima compilazione, quindi dovremmo fare più tentativi e di conseguenza effettuare la compilazione e il parsing più volte). Il problema di parsing ha come input una grammatica $G = \langle V,\Sigma,P,S \rangle$ e una parola $w \in L(G)$ e in output una derivazione $S \implies \alpha_1 \implies \alpha_2 \implies … \alpha_n \implies w$ di $w \in G$ (o equivalentemente un albero di derivazione)
 
-*Osservazione:* a ogni derivazione corrisponde un albero di derivazione, ma a un albero di derivazione posso corrispondere più derivazioni 
+*Osservazione:* a ogni derivazione corrisponde un albero di derivazione, ma a un albero di derivazione possono corrispondere più derivazioni 
 
 > [!example]
 > ![[Pasted image 20260501130348.png|300]]
@@ -1591,9 +1591,7 @@ E anziché il parsing di $w \in \Sigma^*$ farò il parsing di $w$#. Quindi il ca
 </div>
 
 Abbiamo l'input che dobbiamo derivare dal simbolo iniziale, quindi passo passo esaminiamo il nostro input
-da sinistra verso destra e iniziamo a costruire la derivazione dall'alto in basso del nostro albero di derivazione. Ad ogni passo avremo una parte di input già analizzato (quello alla sinistra delle tabelline dell'esempio
-precedente), l'analisi (ciò che avevamo derivato dal nostro simbolo iniziale che faceva match con quello di sopra), a destra abbiamo l'input ancora non analizzato, e sotto quello che ci avanzava dal quale dovevamo
-derivare la parte superiore (chiamata predizione). Le regole di questo procedimento sono:
+da sinistra verso destra e iniziamo a costruire la derivazione dall'alto in basso del nostro albero di derivazione. Ad ogni passo avremo una parte di input già analizzato (quello alla sinistra delle tabelline dell'esempio precedente), l'analisi (ciò che avevamo derivato dal nostro simbolo iniziale che faceva match con quello di sopra), a destra abbiamo l'input ancora non analizzato, e sotto quello che ci avanzava dal quale dovevamo derivare la parte superiore (chiamata predizione). Le regole di questo procedimento sono:
 - Esaminiamo sempre il simbolo più a sinistra della predizione
 - Se è una variale, dobbiamo fare una predizione: va sostituito con uno dei suoi lati destri
 - Se è un terminale, deve coincidere con la prima lettera dell'input da analizzare (simbolo di **look-ahead**). In caso affermativo, viene spostato nel lato 'analisi'; in caso negativo, l'esecuzione fallisce.
@@ -1606,7 +1604,7 @@ Il fallimento non significa che non possiamo fare il parsing della parola, ma so
 1. *In ampiezza:* si esaminano parallelamente tutti i possibili sviluppi della computazione. Richiede molta memoria, per questo a volte è preferibile l'esplorazione in profondità.
 2. *In profondità:* si esamina una computazione alla volta, salvo tornare indietro e provare un'altra strada in caso di fallimento (**backtracking**)
 
-**Ampiezza:** dovremo tenere traccia di:
+**Ampiezza:** dovremo tenere traccia:
 - Della lettera che stiamo esaminando (simbolo di **look-ahead**)
 - Delle produzioni utilizzate in ogni tentativo di parsing
 - Delle predizioni relative a ciascun tentativo
@@ -1674,7 +1672,7 @@ Un **automa a pila** è un modello astratto di macchina (un automa a stati finit
 *Definizione:* un automa a pila è una settupla $A = \langle Q, \Sigma, \Gamma, \delta, q_0, Z_0, F \rangle$ dove:
 - $Q$ è un insieme finito, detto insieme degli stati
 - $\Sigma$ è un alfabeto, detto alfabeto di input
-- $\Gamma$ è un alfabeto, detto alfabeto di pula
+- $\Gamma$ è un alfabeto, detto alfabeto di pila
 - $\delta: Q \times (\Sigma \cup \{\epsilon \}) \times \Gamma → \wp_F(Q \times \Gamma^*)$ è la funzione di transizione
 - $q_0 \in Q$ è lo stato iniziale
 - $Z_0 \in \Gamma$ è il simbolo iniziale della pila
@@ -1699,7 +1697,7 @@ Se leggendo una lettera $a$ sul nastro di input l'automa può passare dalla conf
 
 *Definizione:* sia $A = \langle Q, \Sigma, \Gamma, \delta, q_0, Z_0, F \rangle$ un automa a pila e $w \in  \Sigma^*$. Diremo che la parola $w \in  \Sigma^*$ è accettata per lo stato finale da $A$ se si ha $(q_0, Z_0) \overset{w}{\models} (f,\gamma), f \in F, \gamma \in \Gamma^*$. Diremo che $w$ è accettata per pila vuota da $A$ se si ha $(q_0, Z_0) \overset{w}{\models} (p, \epsilon), p \in Q$. Infine diremo che $w$ è accettata per stato finale e pila vuota da $A$ se si ha $(q_0, Z_0) \overset{w}{\models} (f, \epsilon), f \in F$ 
 
-> [!info] IN altre parole:
+> [!info] In altre parole:
 > - Una parola viene **accettata per stato finale** se c'è una computazione che all'inizio parte con la mia parola sul nastro, stato iniziale, e simbolo iniziale della pila (soltanto nella prima); mano mano legge tutta la mia parola (consuma tutto il nastro di input) e alla fine si trova in uno stato finale che appartiene a $F$. Quindi c'è una computazione che mi parte da $(q_0, w, Z_0)$ e arriva allo stato finale, $\epsilon$ (nastro di input vuoto), $\gamma$
 > - Una parola è **accettata per pila vuota** se c'è una computazione che parte con la solita configurazione iniziale $(q_0, w, Z_0)$ e termina in uno stato non-finale perché sia il nastro di input che la pila sono vuote. 
 > - Una parola è **accettata per stato finale e pila vuota**, se si verificano entrambe le condizioni viste in precedenza
@@ -1809,11 +1807,11 @@ Questo teorema ha la funzione di far vedere che i linguaggi accettati dagli auto
 
 *Teorema:* un linguaggio è non contestuale se e solo se è riconosciuto da un automa a pila.
 
-*Proposizione:* sua $G$ una grammatica non contestuale. Esiste effettivamente un automa a pula con un solo stato che accetta per pila vuota il linguaggio generato da $G$
+*Proposizione:* sua $G$ una grammatica non contestuale. Esiste effettivamente un automa a pila con un solo stato che accetta per pila vuota il linguaggio generato da $G$
 
-*Proposizione:* sia $A$ un automa a pila con un solo stato. Esiste effettivamente un a grammatica non contestuale $G$ che genera il linguaggio accettato per pila vuota da $A$
+*Proposizione:* sia $A$ un automa a pila con un solo stato. Esiste effettivamente una grammatica non contestuale $G$ che genera il linguaggio accettato per pila vuota da $A$
 
-*Proposizione:* sia $A$ un automa a pula. Esiste effettivamente automa a pila con un solo stato che accetta per pila vuota il medesimo linguaggio di $A$
+*Proposizione:* sia $A$ un automa a pila. Esiste effettivamente automa a pila con un solo stato che accetta per pila vuota il medesimo linguaggio di $A$
 
 **Dalla grammatica all'automa:** 
 
@@ -1917,6 +1915,6 @@ Soluzione: Nell'automa a uno stato ogni cella della pila contiene
 
 Si verifica che $L_P (A) = L_P (A' )$.
 
-> [!info] N.N.
+> [!info] N.B.
 > Tutto ciò funziona per la classe di automi a pila con un solo stato. Perché esiste effettivamente un automa a pila con un solo stato, che accetta per pila vuota lo stesso linguaggio accettato da un automa qualunque con un qualsiasi numero di stati? Se ho la pila, lo stato lo scrivo sulla pila: l’automa ad ogni passo guarda lo stato, guarda il simbolo in cima alla pila e fa delle cose, e scrive lo stato nuovo sulla pila. Tuttavia, se l’automa non scrive nulla sulla pila, dove scrivo lo stato? Sulla pila non andrò a scrivere solo lo stato, ma scriverò anche cosa c’è scritto sotto. 
 

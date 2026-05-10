@@ -2449,6 +2449,7 @@ Comunicazione IPC anche attraverso una rete: scambio di pacchetti di dati ed alt
 > Some socket types may not be implemented by all protocol families
 
 **Socket: passi per il collegamento:** 
+
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260505135541.png" width="300">
 </div> 

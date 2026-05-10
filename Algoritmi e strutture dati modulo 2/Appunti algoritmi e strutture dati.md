@@ -1096,7 +1096,7 @@ Si assuma che il grafo $G$ sia dato come matrice di adiacenza di pesi: $W = (w_{
 - $r \geq 1$: quindi $l^{(r)}_{ij} = \min \{l^{(r-1)}_{ij}, \min \{l^{(r-1)}_{ik} + w_{kj}: 1 \leq k \leq n\}\} = \min \{l^{(r-1)}_{ik} + w_{kj}: 1 \leq k \leq n\}$ con $k$ i range con ogni possibile predecessore di $j$ e sapendo che $w_{jj} = 0 \ \forall \ j$ 
 - Si osserva che quando $r = 1$ si ha che $l^{(1)}_{ij} = w_{ij}$. Concettualmente quando il cammino è ristretto ad un solo arco, il peso del cammino minimo $i \rightsquigarrow j$ deve essere $w_{ij}$ 
 
-**Calcolo di una soluzione bottom-up:** si calcolano $L^{(1)},L^{(2)},…,L^{(n)}$. Si inizia da $L^{(1)} = W$ siccome $l^{(1)}_{ij} = w_{ij}$, andando da $L^{(r-1)}$ a $L^{(r)}$ 
+**Calcolo di una soluzione bottom-up (metodo tropicale):** si calcolano $L^{(1)},L^{(2)},…,L^{(n)}$. Si inizia da $L^{(1)} = W$ siccome $l^{(1)}_{ij} = w_{ij}$, andando da $L^{(r-1)}$ a $L^{(r)}$ 
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260421215145.png" width="300">

@@ -1898,7 +1898,7 @@ Per creare un processo della coda dei nuovi job, lo schedulatore deve decidere:
 - *Chiamate di sistema:* un processo esegue una system call, si sospende
 - Segnali (e.g.semafori)
 
-Lo scheduling a breve termine è ciò che ci interessa di più, è un po' la chiave di volta di un sistema operativo, poiché essendo chiamata molto frequentemente deve usare algoritmi rapidi e semplici, non si possono adottare politiche molto complesse, d'altra parte però se non funziona viene danneggiato tutto il sistema. Si devono usare quindi dei criteri che vengono stabiliti dal progettista che permettano di allocare la CPU in modo da ottimizzare alcuni aspetti del comportamento del sistema.
+Lo scheduling a breve termine è ciò che ci interessa di più. È la chiave di volta di un sistema operativo poiché, essendo chiamata molto frequentemente, deve usare algoritmi rapidi e semplici e non si possono adottare politiche molto complesse. D'altra parte però se non funziona viene danneggiato tutto il sistema. Si devono usare quindi dei criteri che vengono stabiliti dal progettista che permettano di allocare la CPU in modo da ottimizzare alcuni aspetti del comportamento del sistema.
 
 **Criteri per lo scheduling a breve termine:** 
 
@@ -1916,12 +1916,12 @@ Ci sono dei criteri per fare ciò:
 
 **Criteri orientati all'utente e relativi alle prestazioni:** 
 - *Tempo di risposta:* Per un processo interattivo, questo è il tempo che trascorre dall'invio di una richiesta fino a quando la risposta non comincia ad essere ricevuta. Spesso un processo può cominciare a produrre qualche output per l'utente mentre continua l'esecuzione. Perciò, dal punto di vista dell'utente, questa è una misura migliore del tempo di turnaround. La disciplina di scheduling dovrebbe tentare di raggiungere bassi tempi di risposta e di massimizzare il numero di utenti interattivi che hanno un tempo di risposta accettabile. 
-- *Tempo di turnaround:* È l'intervallo di tempo tra l'invio di un processo e il suo completamento. Comprende il tempo di esecuzione e il tempo speso in attesa delle risorse, compreso il processore. Questa è una misura appropriata per i job batch. 
+- *Tempo di turnaround:* È l'intervallo di tempo tra l'invio di un processo e il suo completamento. Comprende il tempo di esecuzione e il tempo speso in attesa delle risorse, compreso il processore. Questa è una misura appropriata per i *job batch* (programma o gruppo di task che viene eseguito automaticamente, richiedendo un'interazione umana minima una volta partito). 
 - *Scadenze:* Quando si può specificare il termine di completamento di un processo, la disciplina di scheduling può subordinare altri obiettivi oltre a quello di massimizzare la percentuale di scadenze raggiunta.
 - *Prevedibilità:* Un dato job può essere eseguito nello stesso tempo e allo stesso costo, indipendentemente dal carico del sistema. Un'ampia variazione nel tempo di risposta o nel tempo di turnaround è fastidiosa per l'utente: potrebbe segnalare un‘ampia oscillazione nel carico di lavoro del sistema oppure la necessità di adattare il sistema per evitare l'instabilità 
 
 **Criteri orientati al sistema e relativi alle prestazioni:**
-- *Throughput:* La strategia di scheduling dovrebbe tentare di massimizzare il numero di processi completati per unità di tempo. Così si misura la quantità di lavoro eseguito. che dipende chiaramente dalla lunghezza media di un processo, ma che è anche influenzata dalla strategia di scheduling che può avere effetti sull'utilizzazione. 
+- *Throughput:* La strategia di scheduling dovrebbe tentare di massimizzare il numero di processi completati per unità di tempo. Così si misura la quantità di lavoro eseguito che dipende chiaramente dalla lunghezza media di un processo, ma che è anche influenzata dalla strategia di scheduling che può avere effetti sull'utilizzazione. 
 - *Utilizzazione del processore:* Questa è la percentuale del tempo in cui il processore è occupato. Per un sistema costoso e condiviso, questo è un criterio significativo, mentre in sistemi a singolo utente e in alcuni altri sistemi, come i sistemi a tempo reale, questo criterio è meno importante.
 - *Fairness:* In assenza di indicazioni da parte dell'utente, oppure del sistema, i processi devono essere trattati allo stesso modo, e nessun processo deve subire starvation. 
 - *Priorità:* Quando si assegna una priorità ai processi, la strategia di scheduling deve favorire i processi a più alta priorità. 
@@ -1950,7 +1950,7 @@ Nel terzo caso, si tiene conto dei parametri:
 	
 **First come first served (FCFS):** si tratta della gestione più semplice (FIFO). Ogni processo pronto è inserito nella coda pronti e quando il processo in esecuzione termina o è sospeso, viene selezionato per l'esecuzione il processo che è stato più a lungo nella coda pronti. Favorisce i processi lunghi rispetto a quelli brevi e i processi processor-bound rispetto a quelli I/O-bound  
 
-**Round robin:** Politica molto usata soprattutto su sistemi a multi-utente. C’è un clock che definisce il *time-slice* (fetta di tempo assegnata a ciascun processo) quando ad un processo viene assegnato il processore. Se il processo si sospende, tornerà all’ultimo posto della coda e se non si sospende, entro il time-slice, il processo viene pre rilasciato. Il principale aspetto progettuale è la durata del quanto di tempo, ogni processo interattivo dovrebbe riuscire a fare i propri compiti nel quanto. È molto efficiente nei sistemi time-sharing e orientati alle transazioni. Favorisce i processi processor-bound rispetto a quelli I/O bound. L’alternativa è quella del VRR (virtual round robin), dove i processori che non utilizzano tutto il quanto di tempo sono premiati alla successiva esecuzione. 
+**Round robin:** Politica molto usata soprattutto su sistemi a multi-utente. C’è un clock che definisce il *time-slice* (fetta di tempo assegnata a ciascun processo) quando ad un processo viene assegnato il processore. Se il processo si sospende, tornerà all’ultimo posto della coda e se non si sospende, entro il time-slice, il processo viene pre-rilasciato. Il principale aspetto progettuale è la durata del quanto di tempo, ogni processo interattivo dovrebbe riuscire a fare i propri compiti nel quanto. È molto efficiente nei sistemi time-sharing e orientati alle transazioni. Favorisce i processi processor-bound rispetto a quelli I/O bound. L’alternativa è quella del VRR (virtual round robin), dove i processori che non utilizzano tutto il quanto di tempo sono premiati alla successiva esecuzione. 
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260501113443.png" width="300">
@@ -2003,7 +2003,7 @@ $$R = \frac{w+s}{s}$$con $w =$tempo di attesa e $s=$tempo stimato di esecuzione.
 
 **Caratteristiche dei dispositivi I/O
 - Velocità del trasferimento: possono esserci grandi differenze tra un dispositivo e un altro
-- Applicazioni:  l'uso di un particolare dispositivo influenza il software
+- Applicazioni: l'uso di un particolare dispositivo influenza il software
 - Complessità di controllo: differenti dispositivi richiedono differente software. La complessità è parzialmente filtrato dalla complessità del modulo I/O che controlla il dispositivo
 - Unità di trasferimento: dispositivi a caratteri (trasferiscono un byte alla volta) o a blocchi (trasferimenti a blocchi dell'ordine dei kilobyte)
 - Rappresentazione dei dati: dispositivi differenti usano codifiche differenti
@@ -2036,7 +2036,7 @@ Via via, il processore è meno coinvolto nella gestione dell'I/O
 </div>
 
 **Configurazione DMA:**
-Per organizzare i DMA ho diverse possibilità. La più semplice è la (a): un singolo bus a cui è connesso tutto, la memoria, il processore, il DMA e i dispositivi I/O. Il vantaggio è la semplicità, ma il difetto sta nel fatto che sulla stessa linea devono passare i dati dal dispositivo al DMA, dal DMA alla memoria e i dati fra lo scambio di dati e processore. Per questo  può essere preferibile il modello (b) in cui c’è ancora un singolo bus, ma i dispositivi sono ancora connessi, ognuno con il proprio DMA. La terza possibilità (c) è creare due bus, uno a cui sono collegati tutti i dispositivi I/O che è collegato al DMA e l’altro bus, collegato agli elementi del sistema. 
+Per organizzare i DMA ho diverse possibilità. La più semplice è la (a): un singolo bus a cui è connesso tutto, la memoria, il processore, il DMA e i dispositivi I/O. Il vantaggio è la semplicità, ma il difetto sta nel fatto che sulla stessa linea devono passare i dati dal dispositivo al DMA, dal DMA alla memoria e i dati fra lo scambio di dati e processore. Per questo  può essere preferibile il modello (b) in cui c’è ancora un singolo bus, ma i dispositivi sono ancora connessi, ognuno con il proprio DMA. La terza possibilità (c) è creare due bus, uno a cui sono collegati tutti i dispositivi I/O (che è collegato al DMA) e l’altro bus, collegato agli elementi del sistema. 
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260507170236.png" width="300">
@@ -2079,7 +2079,7 @@ Per organizzare i DMA ho diverse possibilità. La più semplice è la (a): un si
 </div>
 
 Il buffer singolo per un dispositivo a blocchi è il sistema di supporto più semplice. Quando un processo esegue una richiesta di I/O, il SO assegna un buffer all'operazione (nello spazio del sistema). Nelle operazioni di input, i dati sono trasferiti nel buffer. Input anticipato: 
-- In previsione che il blocco is richiesto
+- In previsione che il blocco sia richiesto
 - Terminato il trasferimento il blocco viene trasferita dal buffer allo spazio utente e ne viene immediatamente richiesto un altro
 
 Velocizza il sistema: 
@@ -2090,7 +2090,7 @@ Gli svantaggi sono:
 - Maggior complessità nella programmazione del So
 - Influenza la gestione dello swapping
 
-**Buffer singolo (dispositivo a blocchi):**
+**Buffer singolo (dispositivo a flusso):**
 - Una linea alla volta: i terminali in modo scroll, stampanti a linee. L'input è diviso in linee che terminano con 'invio':
 	- Il processo è sospeso in attesa della linea di input
 	- La linea di output è trasferita nel buffer il processo può continuare
@@ -2102,7 +2102,7 @@ Gli svantaggi sono:
   <img src="Pasted image 20260507170728.png" width="300">
 </div>
 
-Alternativamente si possono usare due buffer per l’operazione di I/O, uno in cui il processo trasferisce i dati e l’altro che il SO svuota o riempie, questo ci permette di agire ancora più velocemente poiché non si deve attendere che il buffer si sia svuotato.
+Alternativamente si possono usare due buffer per l’operazione di I/O, uno in cui il processo trasferisce i dati e l’altro che il SO svuota o riempie. Questo ci permette di agire ancora più velocemente poiché non si deve attendere che il buffer si sia svuotato.
 
 **Buffer circolare:** 
 
@@ -2118,7 +2118,7 @@ Più di due buffer sono assegnati all'operazione di I/O caricati e scaricati cir
 - Natura del canale I/O e hardware di controllo del disco
 
 Il disco è diviso in tracce, cerchi concentrici che contengono il materiale ferro-magnetico usato per memorizzare le cose, su ogni disco c’è una testina che scorre sulla traccia, per certi dischi c’è una testina per ogni traccia. La velocità di rotazione del disco è costante. La testina di lettura/scrittura deve essere posizionata all'inizio del settore richiesto nella particolare traccia richiesta:
-- Nei dischi a teste fisse, la tracci asi ottiene selezionando elettronicamente la relativa testina
+- Nei dischi a teste fisse, la traccia si ottiene selezionando elettronicamente la relativa testina
 - Nei dischi a teste mobili, è necessario spostare la testina sulla relativa traccia (tempo di ricerca)
 
 Il tempo necessario al settore per raggiungere la testina è detto *ritardo rotazionale*. La somma di tempo di tempo di ricerca e ritardo rotazionale costituisce il *tempo di accesso*, dopo il quale siamo all’inizio del settore che ci interessa e la testina può leggere o scrivere i dati che ci interessano.
@@ -2128,9 +2128,9 @@ Il tempo necessario al settore per raggiungere la testina è detto *ritardo rota
 </div>
 
 **Tempo di accesso:**
-- Tempo di ricerca: è il tempo necessario a muovere ilk bracci o del disco sulla traccia richiesta. Consiste di: tempo di avvio e tempo necessario per attraversare i cilindri (comprensivo di *settling time*). Più piccolo è il disco, minore è il tempo di ricerca (oggi < 10 ms)
+- Tempo di ricerca: è il tempo necessario a muovere il braccio del disco sulla traccia richiesta. Consiste di: tempo di avvio e tempo necessario per attraversare i cilindri (comprensivo di *settling time*). Più piccolo è il disco, minore è il tempo di ricerca (oggi < 10 ms)
 - Ritardo di rotazione: Il tempo necessario al settore per raggiungere la testina. Più il disco gira velocemente, minor tempo impiegherà il settore ad arrivare (a 3600 rpm, in media 83. Ms; a 15000 rpm, in media 2 ms)
-- tempo di trasferimento: $$T = \frac{b}{rN}$$ con: 
+- tempo di trasferimento: $$T = \frac{b}{rN}$$con: 
 - $b$ = numero di bit da trasferire 
 - $N$ = numero di bit per traccia 
 - $r$ = velocità di rotazione in rps
