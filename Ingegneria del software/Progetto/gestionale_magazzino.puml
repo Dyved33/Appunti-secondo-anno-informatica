@@ -1,0 +1,526 @@
+' ============================================================
+' [1] DIAGRAMMA DEI CASI D'USO
+' ============================================================
+@startuml 01_UseCaseDiagram
+title Gestionale Magazzino — Use Case Diagram
+
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam ArrowColor #444444
+skinparam ActorBorderColor #2E86AB
+skinparam ActorBackgroundColor #D6EAF8
+skinparam UsecaseBorderColor #1A5276
+skinparam UsecaseBackgroundColor #EBF5FB
+skinparam NoteBackgroundColor #FDFEFE
+skinparam NoteBorderColor #AAB7B8
+
+' ─── ATTORI ───────────────────────────────────────────────
+actor "Fornitore"           as SUP  #D5E8D4
+actor "Magazziniere"        as WRK  #DAE8FC
+actor "Resp. Magazzino"     as MGR  #FFF2CC
+actor "Cliente"             as CLT  #F8CECC
+actor "Amministratore"      as ADM  #E1D5E7
+actor "Sistema (Scheduler)" as SYS  #F5F5F5
+
+' ─── PACCHETTO: RICEZIONE MERCE ──────────────────────────
+package "Ricezione Merce" {
+  usecase "Invia Ordine di Acquisto"      as UC_OA
+  usecase "Ricevi Merce"                  as UC_RM
+  usecase "Controlla Qualità / Quantità"  as UC_CQ
+  usecase "Registra DDT in entrata"       as UC_DDT
+  usecase "Stocca Articoli"               as UC_ST
+}
+
+' ─── PACCHETTO: GESTIONE MAGAZZINO ───────────────────────
+package "Gestione Magazzino" {
+  usecase "Visualizza Stock"              as UC_VS
+  usecase "Aggiorna Giacenze"             as UC_AG
+  usecase "Gestisci Ubicazioni"           as UC_UB
+  usecase "Allerta Scorte Minime"         as UC_AL
+  usecase "Esegui Inventario"             as UC_INV
+}
+
+' ─── PACCHETTO: EVASIONE ORDINI ──────────────────────────
+package "Evasione Ordini" {
+  usecase "Ricevi Ordine Cliente"         as UC_OC
+  usecase "Verifica Disponibilità"        as UC_VD
+  usecase "Prepara / Preleva Merce"       as UC_PP
+  usecase "Genera Documento di Trasporto" as UC_GDT
+  usecase "Registra Spedizione"           as UC_RS
+}
+
+' ─── PACCHETTO: REPORTING ─────────────────────────────────
+package "Reporting & Amministrazione" {
+  usecase "Genera Report Movimenti"       as UC_REP
+  usecase "Gestisci Anagrafiche"          as UC_ANA
+  usecase "Gestisci Utenti e Ruoli"       as UC_USR
+}
+
+' ─── RELAZIONI ATTORI ─────────────────────────────────────
+SUP  --> UC_OA
+SUP  --> UC_DDT
+
+WRK  --> UC_RM
+WRK  --> UC_CQ
+WRK  --> UC_ST
+WRK  --> UC_AG
+WRK  --> UC_PP
+WRK  --> UC_GDT
+WRK  --> UC_RS
+WRK  --> UC_VS
+
+MGR  --> UC_OA
+MGR  --> UC_INV
+MGR  --> UC_VS
+MGR  --> UC_UB
+MGR  --> UC_REP
+MGR  --> UC_ANA
+
+CLT  --> UC_OC
+
+SYS  --> UC_AL
+SYS  --> UC_VD
+
+ADM  --> UC_USR
+ADM  --> UC_ANA
+ADM  --> UC_REP
+
+' ─── RELAZIONI TRA CASI D'USO ────────────────────────────
+UC_RM   ..> UC_CQ    : <<include>>
+UC_RM   ..> UC_DDT   : <<include>>
+UC_CQ   ..> UC_ST    : <<include>>
+UC_ST   ..> UC_AG    : <<include>>
+
+UC_OC   ..> UC_VD    : <<include>>
+UC_VD   ..> UC_PP    : <<include>>
+UC_PP   ..> UC_GDT   : <<include>>
+UC_GDT  ..> UC_RS    : <<include>>
+UC_RS   ..> UC_AG    : <<include>>
+
+UC_AG   ..> UC_AL    : <<extend>>
+
+note bottom of UC_AL
+  Il sistema invia notifica
+  automatica quando la giacenza
+  scende sotto la soglia minima
+end note
+
+@enduml
+
+
+' ============================================================
+' [2] DIAGRAMMA DELLE CLASSI
+' ============================================================
+@startuml 02_ClassDiagram
+title Gestionale Magazzino — Class Diagram
+
+skinparam classAttributeIconSize 0
+skinparam ClassBorderColor #1A5276
+skinparam ClassBackgroundColor #EBF5FB
+skinparam ClassHeaderBackgroundColor #2E86AB
+skinparam ClassFontColor white
+skinparam ArrowColor #444444
+skinparam NoteBackgroundColor #FFFDE7
+skinparam NoteBorderColor #F9A825
+
+' ─── UTENTI / RUOLI ───────────────────────────────────────
+abstract class Utente {
+  - id : UUID
+  - nome : String
+  - cognome : String
+  - email : String
+  - passwordHash : String
+  - attivo : Boolean
+  + login() : Boolean
+  + logout() : void
+}
+
+class Magazziniere {
+  + registraRicezione(ddt: DDT) : void
+  + preleva(rigaOrdine: RigaOrdine) : void
+  + eseguiInventario() : List<Discrepanza>
+}
+
+class ResponsabileMagazzino {
+  + approvaOrdineAcquisto(oa: OrdineAcquisto) : void
+  + impostaScortaMinima(art: Articolo, qty: int) : void
+  + generaReport(da: Date, a: Date) : Report
+}
+
+class Amministratore {
+  + creaUtente(u: Utente) : void
+  + assegnaRuolo(u: Utente, r: Ruolo) : void
+  + gestisciAnagrafiche() : void
+}
+
+Utente <|-- Magazziniere
+Utente <|-- ResponsabileMagazzino
+Utente <|-- Amministratore
+
+' ─── ANAGRAFICA ───────────────────────────────────────────
+class Fornitore {
+  - id : UUID
+  - ragioneSociale : String
+  - partitaIva : String
+  - indirizzo : String
+  - telefono : String
+  - email : String
+  - leadTimeDays : int
+  + getArticoliForniti() : List<Articolo>
+}
+
+class Cliente {
+  - id : UUID
+  - ragioneSociale : String
+  - partitaIva : String
+  - indirizzo : String
+  - telefono : String
+  - email : String
+  + getOrdini() : List<OrdineCliente>
+}
+
+' ─── CATALOGO ─────────────────────────────────────────────
+class Articolo {
+  - codice : String
+  - descrizione : String
+  - unitaMisura : String
+  - prezzoAcquisto : Decimal
+  - prezzoVendita : Decimal
+  - scortaMinima : int
+  - scortaRiordino : int
+  + getGiacenzaTotale() : int
+  + getUbicazioni() : List<Ubicazione>
+  + isUnderScortaMinima() : Boolean
+}
+
+class Ubicazione {
+  - codice : String       ' es. "A-02-03" (corsia-scaffale-ripiano)
+  - corsiaId : String
+  - scaffaleId : String
+  - pianoId : String
+  - capienza : int
+  + getGiacenza() : int
+  + isDisponibile() : Boolean
+}
+
+class GiacenzaUbicazione {
+  - quantita : int
+  - dataUltimoMovimento : DateTime
+}
+
+' ─── MOVIMENTI ────────────────────────────────────────────
+abstract class Movimento {
+  - id : UUID
+  - data : DateTime
+  - quantita : int
+  - note : String
+  + registra() : void
+}
+
+class MovimentoEntrata {
+  - ddt : DDT
+}
+
+class MovimentoUscita {
+  - ordineCliente : OrdineCliente
+}
+
+class MovimentoRettifica {
+  - motivazione : String
+  - operatore : Utente
+}
+
+Movimento <|-- MovimentoEntrata
+Movimento <|-- MovimentoUscita
+Movimento <|-- MovimentoRettifica
+
+' ─── ORDINI ACQUISTO ──────────────────────────────────────
+class OrdineAcquisto {
+  - numero : String
+  - data : Date
+  - stato : StatoOA
+  - note : String
+  + calcTotale() : Decimal
+  + approva() : void
+  + chiudi() : void
+}
+
+enum StatoOA {
+  BOZZA
+  INVIATO
+  CONFERMATO
+  RICEVUTO_PARZIALE
+  RICEVUTO
+  ANNULLATO
+}
+
+class RigaOrdineAcquisto {
+  - quantitaOrdinata : int
+  - quantitaRicevuta : int
+  - prezzoUnitario : Decimal
+  + getQtaRimanente() : int
+}
+
+class DDT {
+  - numero : String
+  - data : Date
+  - vettore : String
+  - colli : int
+  - pesoKg : Decimal
+  - stato : StatoDDT
+}
+
+enum StatoDDT {
+  ATTESA
+  CONTROLLATO
+  ACCETTATO
+  RIFIUTATO
+}
+
+' ─── ORDINI CLIENTE ───────────────────────────────────────
+class OrdineCliente {
+  - numero : String
+  - data : Date
+  - stato : StatoOC
+  - priorita : int
+  + calcTotale() : Decimal
+  + conferma() : void
+  + evadi() : void
+  + isEvadibile() : Boolean
+}
+
+enum StatoOC {
+  RICEVUTO
+  CONFERMATO
+  IN_PREPARAZIONE
+  PRONTO
+  SPEDITO
+  CONSEGNATO
+  ANNULLATO
+}
+
+class RigaOrdineCliente {
+  - quantitaRichiesta : int
+  - quantitaEvasa : int
+  - prezzoUnitario : Decimal
+  + getQtaRimanente() : int
+}
+
+class DocumentoTrasporto {
+  - numero : String
+  - data : Date
+  - corriere : String
+  - numeroTracking : String
+  - pesoKg : Decimal
+}
+
+' ─── RELAZIONI ────────────────────────────────────────────
+Articolo       "1"   --   "0..*" GiacenzaUbicazione : giaciuto in >
+Ubicazione     "1"   --   "0..*" GiacenzaUbicazione : contiene >
+Articolo       "1"   --   "0..*" Movimento          : riguarda >
+Movimento      "*"   --   "1"    Ubicazione          : ubicazione >
+
+OrdineAcquisto "1"   *--  "1..*" RigaOrdineAcquisto : composto da >
+RigaOrdineAcquisto "*" --> "1"   Articolo            : riferisce >
+OrdineAcquisto "*"   -->  "1"    Fornitore           : inviato a >
+OrdineAcquisto "1"   --   "0..*" DDT                 : evaso con >
+DDT            "1"   --   "0..*" MovimentoEntrata    : genera >
+
+OrdineCliente  "1"   *--  "1..*" RigaOrdineCliente  : composto da >
+RigaOrdineCliente "*" --> "1"    Articolo            : riferisce >
+OrdineCliente  "*"   -->  "1"    Cliente             : ricevuto da >
+OrdineCliente  "1"   --   "0..1" DocumentoTrasporto  : spedito con >
+DocumentoTrasporto "1" -- "0..*" MovimentoUscita     : genera >
+
+OrdineAcquisto "*"  -->  "1"    ResponsabileMagazzino : approvato da >
+DDT            "*"  -->  "1"    Magazziniere           : gestito da >
+
+OrdineAcquisto "0..*" -- "0..*" StatoOA
+OrdineCliente  "0..*" -- "0..*" StatoOC
+DDT            "0..*" -- "0..*" StatoDDT
+
+note right of GiacenzaUbicazione
+  Tabella di join che lega
+  Articolo ↔ Ubicazione con
+  la quantità fisica presente
+end note
+
+note bottom of Articolo
+  scortaMinima → soglia per alert
+  scortaRiordino → qty proposta
+  nell'ordine di acquisto
+end note
+
+@enduml
+
+
+' ============================================================
+' [3] SEQUENCE — RICEZIONE MERCE DA FORNITORE
+' ============================================================
+@startuml 03_Sequence_RicezioneMerce
+title Sequence — Ricezione Merce da Fornitore
+
+skinparam sequenceArrowThickness 2
+skinparam SequenceBoxBorderColor #2E86AB
+skinparam SequenceLifeLineBorderColor #2E86AB
+skinparam SequenceParticipantBackgroundColor #EBF5FB
+skinparam SequenceParticipantBorderColor #1A5276
+skinparam NoteBackgroundColor #FFFDE7
+skinparam NoteBorderColor #F9A825
+
+actor       "Fornitore"          as SUP
+participant "Magazziniere"       as WRK
+participant "Sistema"            as SYS
+database    "DB Magazzino"       as DB
+participant "Resp. Magazzino"    as MGR
+
+SUP  -> SYS  : Invia DDT (elettronico / cartaceo)
+activate SYS
+SYS  -> DB   : Cerca OrdineAcquisto collegato
+DB  --> SYS  : OrdineAcquisto (numero, righe attese)
+SYS --> WRK  : Notifica arrivo merce con dettagli OA
+deactivate SYS
+
+WRK  -> WRK  : Controlla colli / imballaggi
+WRK  -> SYS  : Registra DDT (numero, data, vettore)
+activate SYS
+SYS  -> DB   : Salva DDT con stato=ATTESA
+DB  --> SYS  : OK
+deactivate SYS
+
+loop Per ogni riga DDT
+  WRK  -> SYS  : Scansione / inserimento articolo + qty ricevuta
+  activate SYS
+  SYS  -> DB   : Verifica articolo e OA
+  DB  --> SYS  : Dati articolo + qty ordinata
+  alt Quantità e qualità OK
+    SYS --> WRK  : OK — indicazione ubicazione di stoccaggio
+    WRK  -> SYS  : Conferma stoccaggio in ubicazione (es. A-02-03)
+    SYS  -> DB   : Aggiorna GiacenzaUbicazione (+qty)
+    SYS  -> DB   : Crea MovimentoEntrata
+    SYS  -> DB   : Aggiorna RigaOrdineAcquisto.qtaRicevuta
+  else Discrepanza / merce danneggiata
+    SYS --> WRK  : ALERT — discrepanza rilevata
+    WRK  -> MGR  : Segnala anomalia
+    MGR  -> SYS  : Decisione (accetta parziale / rifiuta)
+    SYS  -> DB   : Aggiorna DDT.stato = RIFIUTATO / parziale
+  end
+  deactivate SYS
+end
+
+WRK  -> SYS  : Chiudi ricezione DDT
+activate SYS
+SYS  -> DB   : DDT.stato = ACCETTATO
+SYS  -> DB   : Aggiorna OrdineAcquisto.stato
+SYS  -> SYS  : Verifica scorte minime
+
+alt Scorta minima superata al ribasso
+  SYS  -> MGR  : Notifica scorta minima — proponi riordino
+end
+deactivate SYS
+
+@enduml
+
+
+' ============================================================
+' [4] SEQUENCE — EVASIONE ORDINE CLIENTE
+' ============================================================
+@startuml 04_Sequence_EvasioneOrdine
+title Sequence — Evasione Ordine Cliente
+
+skinparam sequenceArrowThickness 2
+skinparam SequenceBoxBorderColor #A04000
+skinparam SequenceLifeLineBorderColor #A04000
+skinparam SequenceParticipantBackgroundColor #FEF9E7
+skinparam SequenceParticipantBorderColor #7D6608
+skinparam NoteBackgroundColor #EAF2FF
+skinparam NoteBorderColor #2E86AB
+
+actor       "Cliente"            as CLT
+participant "Sistema"            as SYS
+participant "Magazziniere"       as WRK
+database    "DB Magazzino"       as DB
+participant "Corriere / Logist." as LOG
+
+CLT  -> SYS  : Invia Ordine (articoli, qty, indirizzo)
+activate SYS
+SYS  -> DB   : Salva OrdineCliente (stato=RICEVUTO)
+
+SYS  -> DB   : Verifica disponibilità per ogni riga
+
+alt Tutto disponibile
+  SYS  -> DB   : OrdineCliente.stato = CONFERMATO
+  SYS --> CLT  : Conferma ordine + data consegna stimata
+else Disponibilità parziale
+  SYS --> CLT  : Notifica: disponibile parziale — attendi / accetta parziale
+  CLT  -> SYS  : Conferma scelta
+  SYS  -> DB   : Aggiorna righe evadibili
+else Nessuna disponibilità
+  SYS --> CLT  : Notifica: articolo non disponibile
+  CLT  -> SYS  : Annulla / attendi riassortimento
+end
+deactivate SYS
+
+SYS  -> WRK  : Assegna picking list (ubicazioni + qty)
+activate WRK
+loop Per ogni riga picking
+  WRK  -> SYS  : Scansione ubicazione + articolo
+  SYS  -> DB   : Aggiorna GiacenzaUbicazione (-qty)
+  SYS  -> DB   : Crea MovimentoUscita
+end
+WRK  -> SYS  : Conferma picking completato
+deactivate WRK
+
+SYS  -> SYS  : Genera DocumentoTrasporto (DDT uscita)
+SYS  -> DB   : Salva DDT uscita + OrdineCliente.stato=PRONTO
+
+WRK  -> LOG  : Consegna colli al corriere
+LOG --> SYS  : Numero tracking spedizione
+SYS  -> DB   : OrdineCliente.stato = SPEDITO
+SYS  -> DB   : DDT.numeroTracking = <tracking>
+SYS --> CLT  : Notifica spedizione + tracking
+
+@enduml
+
+
+' ============================================================
+' [5] STATE DIAGRAM — CICLO DI VITA ORDINE CLIENTE
+' ============================================================
+@startuml 05_StateDiagram_OrdineCliente
+title State Diagram — Ciclo di Vita Ordine Cliente
+
+skinparam state {
+  BackgroundColor #EBF5FB
+  BorderColor     #1A5276
+  ArrowColor      #444444
+  StartColor      #1A5276
+  EndColor        #C0392B
+}
+
+[*] --> RICEVUTO    : ordine inserito
+
+RICEVUTO        --> CONFERMATO       : disponibilità verificata
+RICEVUTO        --> ANNULLATO        : cliente annulla\no merce mancante
+
+CONFERMATO      --> IN_PREPARAZIONE  : picking avviato
+CONFERMATO      --> ANNULLATO        : cliente annulla
+
+IN_PREPARAZIONE --> PRONTO           : picking completato
+IN_PREPARAZIONE --> CONFERMATO       : sospeso / rimandato
+
+PRONTO          --> SPEDITO          : ritirato dal corriere
+PRONTO          --> IN_PREPARAZIONE  : errore — rilavorazione
+
+SPEDITO         --> CONSEGNATO       : consegna confermata
+SPEDITO         --> SPEDITO          : in transito
+
+CONSEGNATO      --> [*]
+ANNULLATO       --> [*]
+
+note right of IN_PREPARAZIONE
+  Il magazziniere riceve
+  la picking list e preleva
+  la merce dalle ubicazioni
+end note
+
+@enduml
