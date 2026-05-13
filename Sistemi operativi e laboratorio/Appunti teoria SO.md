@@ -1950,7 +1950,7 @@ Nel terzo caso, si tiene conto dei parametri:
 	
 **First come first served (FCFS):** si tratta della gestione più semplice (FIFO). Ogni processo pronto è inserito nella coda pronti e quando il processo in esecuzione termina o è sospeso, viene selezionato per l'esecuzione il processo che è stato più a lungo nella coda pronti. Favorisce i processi lunghi rispetto a quelli brevi e i processi processor-bound rispetto a quelli I/O-bound  
 
-**Round robin:** Politica molto usata soprattutto su sistemi a multi-utente. C’è un clock che definisce il *time-slice* (fetta di tempo assegnata a ciascun processo) quando ad un processo viene assegnato il processore. Se il processo si sospende, tornerà all’ultimo posto della coda e se non si sospende, entro il time-slice, il processo viene pre-rilasciato. Il principale aspetto progettuale è la durata del quanto di tempo, ogni processo interattivo dovrebbe riuscire a fare i propri compiti nel quanto. È molto efficiente nei sistemi time-sharing e orientati alle transazioni. Favorisce i processi processor-bound rispetto a quelli I/O bound. L’alternativa è quella del VRR (virtual round robin), dove i processori che non utilizzano tutto il quanto di tempo sono premiati alla successiva esecuzione. 
+**Round robin:** Politica molto usata soprattutto su sistemi a multi-utente. C'è un clock che definisce il *time-slice* (fetta di tempo assegnata a ciascun processo) quando ad un processo viene assegnato il processore. Se il processo si sospende, tornerà all'ultimo posto della coda e se non si sospende, entro il time-slice, il processo viene pre-rilasciato. Il principale aspetto progettuale è la durata del quanto di tempo, ogni processo interattivo dovrebbe riuscire a fare i propri compiti nel quanto. È molto efficiente nei sistemi time-sharing e orientati alle transazioni. Favorisce i processi processor-bound rispetto a quelli I/O bound. L'alternativa è quella del VRR (virtual round robin), dove i processori che non utilizzano tutto il quanto di tempo sono premiati alla successiva esecuzione. 
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260501113443.png" width="300">
@@ -2036,7 +2036,7 @@ Via via, il processore è meno coinvolto nella gestione dell'I/O
 </div>
 
 **Configurazione DMA:**
-Per organizzare i DMA ho diverse possibilità. La più semplice è la (a): un singolo bus a cui è connesso tutto, la memoria, il processore, il DMA e i dispositivi I/O. Il vantaggio è la semplicità, ma il difetto sta nel fatto che sulla stessa linea devono passare i dati dal dispositivo al DMA, dal DMA alla memoria e i dati fra lo scambio di dati e processore. Per questo  può essere preferibile il modello (b) in cui c’è ancora un singolo bus, ma i dispositivi sono ancora connessi, ognuno con il proprio DMA. La terza possibilità (c) è creare due bus, uno a cui sono collegati tutti i dispositivi I/O (che è collegato al DMA) e l’altro bus, collegato agli elementi del sistema. 
+Per organizzare i DMA ho diverse possibilità. La più semplice è la (a): un singolo bus a cui è connesso tutto, la memoria, il processore, il DMA e i dispositivi I/O. Il vantaggio è la semplicità, ma il difetto sta nel fatto che sulla stessa linea devono passare i dati dal dispositivo al DMA, dal DMA alla memoria e i dati fra lo scambio di dati e processore. Per questo  può essere preferibile il modello (b) in cui c'è ancora un singolo bus, ma i dispositivi sono ancora connessi, ognuno con il proprio DMA. La terza possibilità (c) è creare due bus, uno a cui sono collegati tutti i dispositivi I/O (che è collegato al DMA) e l'altro bus, collegato agli elementi del sistema. 
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260507170236.png" width="300">
@@ -2072,7 +2072,7 @@ Per organizzare i DMA ho diverse possibilità. La più semplice è la (a): un si
 - *Dispositivi a blocchi:* dischi, chiavi USB. L'informazione viene memorizzata in blocchi di dimensione fissa e il trasferimento viene eseguito un blocco alla volta. Il riferimento ai dati avviene per numero di blocco
 - *Dispositivi a flusso:* terminali, stampanti, porte di comunicazione, mouse, ecc. L'informazione non è strutturata in blocchi, invece il trasferimento dei dati avviene attraverso un flusso di bytes
 
-**Buffer singolo (dispositivo a blocchi):** Col buffering i dati vengono quindi trasferiti prima in quest’area di memoria principale e poi vengono lette dal buffer al processo.
+**Buffer singolo (dispositivo a blocchi):** Col buffering i dati vengono quindi trasferiti prima in quest'area di memoria principale e poi vengono lette dal buffer al processo.
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260507170445.png" width="300">
@@ -2102,7 +2102,7 @@ Gli svantaggi sono:
   <img src="Pasted image 20260507170728.png" width="300">
 </div>
 
-Alternativamente si possono usare due buffer per l’operazione di I/O, uno in cui il processo trasferisce i dati e l’altro che il SO svuota o riempie. Questo ci permette di agire ancora più velocemente poiché non si deve attendere che il buffer si sia svuotato.
+Alternativamente si possono usare due buffer per l'operazione di I/O, uno in cui il processo trasferisce i dati e l'altro che il SO svuota o riempie. Questo ci permette di agire ancora più velocemente poiché non si deve attendere che il buffer si sia svuotato.
 
 **Buffer circolare:** 
 
@@ -2117,11 +2117,11 @@ Più di due buffer sono assegnati all'operazione di I/O caricati e scaricati cir
 - Sistema operativo 
 - Natura del canale I/O e hardware di controllo del disco
 
-Il disco è diviso in tracce, cerchi concentrici che contengono il materiale ferro-magnetico usato per memorizzare le cose, su ogni disco c’è una testina che scorre sulla traccia, per certi dischi c’è una testina per ogni traccia. La velocità di rotazione del disco è costante. La testina di lettura/scrittura deve essere posizionata all'inizio del settore richiesto nella particolare traccia richiesta:
+Il disco è diviso in tracce, cerchi concentrici che contengono il materiale ferro-magnetico usato per memorizzare le cose, su ogni disco c'è una testina che scorre sulla traccia, per certi dischi c'è una testina per ogni traccia. La velocità di rotazione del disco è costante. La testina di lettura/scrittura deve essere posizionata all'inizio del settore richiesto nella particolare traccia richiesta:
 - Nei dischi a teste fisse, la traccia si ottiene selezionando elettronicamente la relativa testina
 - Nei dischi a teste mobili, è necessario spostare la testina sulla relativa traccia (tempo di ricerca)
 
-Il tempo necessario al settore per raggiungere la testina è detto *ritardo rotazionale*. La somma di tempo di tempo di ricerca e ritardo rotazionale costituisce il *tempo di accesso*, dopo il quale siamo all’inizio del settore che ci interessa e la testina può leggere o scrivere i dati che ci interessano.
+Il tempo necessario al settore per raggiungere la testina è detto *ritardo rotazionale*. La somma di tempo di tempo di ricerca e ritardo rotazionale costituisce il *tempo di accesso*, dopo il quale siamo all'inizio del settore che ci interessa e la testina può leggere o scrivere i dati che ci interessano.
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260507171001.png" width="300">
@@ -2156,12 +2156,12 @@ Il tempo di accesso medio è dato dalla formula:$$T_a = T_s + \frac{1}{2r} + \fr
 
 **Politiche di schedulazione del disco:** l'obiettivo principale è quello di ridurre il tempo medio di ricerca 
 - **FIFO:** Le richieste sono processate nel loro ordine di arrivo. È semplice da implementare ed è equa per tutti i processi. In presenza di molti processi approssima il tempo impiegato dalla schedulazione random 
-- **Priorità:** La gestione a priorità è eseguita al di fuori del software di controllo del disco. L’obiettivo non è quindi ottimizzare l’utilizzo del disco, ma ottimizzare il comportamento globale. La priorità verrebbe data ai lavori brevi o ai processi interattivi. Si hanno buoni tempi di risposta per i processi a cui la priorità è data, ma lunghe attese per i lavori che in generale hanno bassa priorità (un problema potrebbe essere la starvation dei lavori con bassa priorità). Ad esempio i lavori batch, in un sistema condiviso, l’utente può spezzare il lavoro in piccoli segmenti per “ingannare” il sistema. È inoltre inadatta per i sistemi di basi di dati. 
-- **SSTF:** precedenza alla richiesta con tempo di servizio minore (*shortest service time first*). Seleziona quindi la richiesta che richiede il minimo movimento del braccio del disco dalla posizione corrente. Questo minimizza il tempo di richiesta, ma anche qui c’è la possibilità di starvation per lavori che richiedono tempo di servizio più alto
-- **SCAN:** Detto anche l’algoritmo dell’ascensore, come per gli ascensori c’è una fase di salita e una di discesa. Nella fase di salita il disco si ferma su un cilindro e fa tutti i lavori su quel cilindro, poi passa al prossimo cilindro superiore se c’è richiesta di altri lavori su cilindri superiori a quello precedente. Quando a salire non ci sono altre richieste comincia la fase di discesa. Il braccio quindi si muove sempre in una direzione e soddisfa tutte le richieste su ciascuna traccia finché non raggiunge l’ultima traccia, poi inverte la direzione. Si ha una buona performance e si ha una soluzione al problema dell’attesa indefinita poiché prima o poi tutte le richieste vengono completate, vengono favoriti i settori centrali poiché vengono incontrati sia in discesa che in salita.
+- **Priorità:** La gestione a priorità è eseguita al di fuori del software di controllo del disco. L'obiettivo non è quindi ottimizzare l'utilizzo del disco, ma ottimizzare il comportamento globale. La priorità verrebbe data ai lavori brevi o ai processi interattivi. Si hanno buoni tempi di risposta per i processi a cui la priorità è data, ma lunghe attese per i lavori che in generale hanno bassa priorità (un problema potrebbe essere la starvation dei lavori con bassa priorità). Ad esempio i lavori batch, in un sistema condiviso, l'utente può spezzare il lavoro in piccoli segmenti per “ingannare” il sistema. È inoltre inadatta per i sistemi di basi di dati. 
+- **SSTF:** precedenza alla richiesta con tempo di servizio minore (*shortest service time first*). Seleziona quindi la richiesta che richiede il minimo movimento del braccio del disco dalla posizione corrente. Questo minimizza il tempo di richiesta, ma anche qui c'è la possibilità di starvation per lavori che richiedono tempo di servizio più alto
+- **SCAN:** Detto anche l'algoritmo dell'ascensore, come per gli ascensori c'è una fase di salita e una di discesa. Nella fase di salita il disco si ferma su un cilindro e fa tutti i lavori su quel cilindro, poi passa al prossimo cilindro superiore se c'è richiesta di altri lavori su cilindri superiori a quello precedente. Quando a salire non ci sono altre richieste comincia la fase di discesa. Il braccio quindi si muove sempre in una direzione e soddisfa tutte le richieste su ciascuna traccia finché non raggiunge l'ultima traccia, poi inverte la direzione. Si ha una buona performance e si ha una soluzione al problema dell'attesa indefinita poiché prima o poi tutte le richieste vengono completate, vengono favoriti i settori centrali poiché vengono incontrati sia in discesa che in salita.
 - **C-SCAN:** Restringe la scansione a un'unica direzione. Raggiunta l'ultima traccia, il braccio ritorna alla prima traccia e ricomincia la scansione nella medesima direzione
 - **N-Step-SCAN:** Evita attese troppo lunghe quando nuovi lavori arrivano sulla medesima traccia. Le richieste sono inserite in sotto-code di lunghezza N che sono processate una alla volta con SCAN. Le nuove richieste non possono essere inserite nella coda attualmente processata 
-- **FSCAN:** Si hanno due sottocode, all'inizio della scansione una coda è vuota, durante la scansione sono eseguite le richieste della coda inizialmente non vuota e tutte le nuove richieste sono inserite nell’altra.
+- **FSCAN:** Si hanno due sottocode, all'inizio della scansione una coda è vuota, durante la scansione sono eseguite le richieste della coda inizialmente non vuota e tutte le nuove richieste sono inserite nell'altra.
 
 <div style="display: grid; grid-template-columns: 1fr; gap: 10px; justify-items: center;">
   <img src="Pasted image 20260507172825.png" width="300">
@@ -2169,3 +2169,216 @@ Il tempo di accesso medio è dato dalla formula:$$T_a = T_s + \frac{1}{2r} + \fr
   <img src="Pasted image 20260507173033.png" width="300">
 </div>  
 
+### Gestione dei file
+**File:** Collezione di dati creata dall'utilizzatore. Dal punto di vista dell'utilizzatore è una delle parti più importanti del SO 
+
+**Proprietà:** 
+- *Persistenza:* Memorizzati su disco o altro supporto, non scompaiono quando l'utilizzatore termina il suo lavoro 
+- *Condivisione:* Hanno un nome e permessi di accesso associati che ne permettono la condivisione 
+- *Struttura:* Sono organizzati in strutture gerarchiche (o più complesse) per riflettere le relazioni tra file  
+
+**File system:** È uno strumento per memorizzare dati organizzati in file. Colleziona funzioni per operare sui file. Gestisce anche degli attributi associati ai file 
+
+**Operazioni fornite:** 
+- Crea, 
+- Cancella 
+- Apri 
+- Chiudi 
+- Leggi 
+- Scrivi  
+
+**Sistema di gestione dei file:** Fornisce servizi agli utenti e alle applicazioni che permettono l'utilizzo dei file 
+
+*Obiettivi:* 
+- Incontrare le esigenze degli utenti 
+- Garantire la validità dei dati 
+- Ottimizzare le prestazioni 
+- Provvedere il supporto I/O per i vari tipi di dispositivi di memorizzazione 
+- Minimizzare il rischio di perdita o distruzione dei dati 
+- Fornire un insieme di procedure I/O con interfaccia standardizzata 
+- Provvedere il supporto I/O per più utenti, (nei sistemi multi-utente)  
+
+*Esigenze degli utenti:* 
+- Creare, cancellare, leggere, scrivere, modificare i file 
+- Accesso controllato ai file di altri utenti 
+- Controllo del tipo di accesso consentito agli altri utenti 
+- Possibilità di muovere dati tra i file 
+- Backup e ripristino dei file in caso di danneggiamento 
+- Accesso ai file per nome, anziché per numero identificatore  
+
+**Architettura del sistema di gestione dei file:**
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260513130712.png" width="300">
+</div>
+
+**Driver dei dispositivi:** il livello più basso:
+- Comunica direttamente con i dispositivi periferici 
+- È responsabile dell'avvio delle operazioni I/O su un dispositivo 
+- Gestisce il completamento delle richieste di I/O  
+
+**Base del file system:** 
+- Interfaccia primaria con l'ambiente esterno (livello dell'I/O fisico) 
+- Si occupa dei blocchi di dati scambiati con il disco (o i nastri) 
+- Controlla il posizionamento dei blocchi nella memoria secondaria 
+- Organizza i buffer in memoria principale 
+- Non conosce né il contenuto dei dati né la struttura del file  
+
+**Supervisore dell'I/O base:** 
+- Responsabile di inizio e terminazione di tutte le operazioni di I/O su file 
+- Gestisce le strutture di controllo per i dispositivi I/O, la schedulazione dei dispositivi e lo stato dei file. 
+- Seleziona il dispositivo su cui eseguire I/O 
+- Si occupa della schedulazione del disco e degli altri dispositivi per ottimizzare le prestazioni 
+- Assegna i buffer I/O e alloca la memoria secondaria  
+
+**I/O logico:** 
+- Abilita utenti e applicazioni ad accedere ai record 
+- Fornisce le funzioni di I/O ai record di tipo generale 
+- Realizza le basi di dati relative ai file  
+
+**Metodi di accesso:** si tratta del livello più prossimo all'utilizzatore. Fornisce un'interfaccia standard tra le applicazioni e il file system e i dispositivi. Esistono differenti metodi di accesso riflettono differenti strutture dei file e modi differenti di accedere ai dati  
+
+**Directory:** 
+
+*Operazioni richieste:* 
+- Ricerca 
+- Crea file 
+- Cancella file 
+- Listare il contenuto della directory 
+- Aggiornare la directory  
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260513131112.png" width="300">
+</div>
+
+**Schema a due livelli:** 
+- Una directory principale e una directory per ogni utente 
+- La directory principale contiene una entry per ogni directory utente con l'indirizzo e i diritti di accesso 
+- Ogni directory utente è una lista di files dell'utente 
+- Nomi unici solo all'interno di ciascuna directory 
+- Il SO impone le restrizioni di accesso sulle directory 
+
+Ogni directory utente può contenere sottodirectory e file (schema ad albero)  
+
+**Organizzazione dei file:** 
+
+*File a mucchio:* 
+- dati in ordine di arrivo 
+- record con campi differenti o in ordine differente 
+- accesso ai record per ricerca esaustiva 
+
+*File sequenziale:* 
+- record in formato fisso 
+- record identificati dal campo chiave 
+- utile per le applicazioni batch (ricerche lente) 
+- modifiche nel file delle transazioni 
+
+*File sequenziale indicizzato:* 
+- aggiunge un indice per accesso random 
+- accelera l'accesso ai record 
+- modifiche con il file di overflow (contiene i nuovi record accessibili mediante puntatori dal file indicizzato)  
+
+*File indicizzato:* 
+- record accessibili attraverso gli indici: un indice totale e un indice per ogni campo. Vanno aggiornati a ogni modifica di record 
+- ammessi record a lunghezza variabile 
+- veloce accesso ai record 
+
+*File diretto o a hash:* 
+- mediante hashing della chiave si può accedere direttamente al blocco del record 
+- nessuna organizzazione sequenziale dei record  
+
+**Allocazione dei file:** In memoria secondaria, un file consiste di una collezione di blocchi. Il SO gestisce l'allocazione dei blocchi ai file. L'approccio scelto per l'allocazione dei file influenza la gestione dello spazio libero. Lo spazio è allocato in una o più porzioni (insiemi di blocchi contigui) 
+
+*FAT:* Struttura dati che tiene traccia dei blocchi allocati al file 
+
+*Preallocazione o allocazione dinamica ?* 
+- La preallocazione richiede che la dimensione del file sia dichiarata al momento della creazione. Per questo la stima è difficile e c'è una tendenza a sovraestimare 
+- L'allocazione dinamica alloca lo spazio al file in base alle necessità  
+
+**Dimensione delle porzioni:** Due esigenze in contrasto: 
+- Contiguità dello spazio migliora le prestazioni specie per SO orientati alle transazioni 
+- Un gran numero di porzioni piccole aumenta la dimensione delle tabelle per gestire i dati di allocazione 
+- Porzioni di taglia fissa facilita la riallocazione dello spazio 
+
+*Porzioni contigue grandi e variabili:* 
+- Prestazioni efficienti 
+- La dimensione variabile evita sprechi di spazio 
+- Tabelle di allocazione piccole 
+
+*Blocchi:* 
+- Maggiore flessibilità 
+- Possono richiedere tabelle di allocazione grandi 
+- La contiguità non è un obiettivo (blocchi allocati quando richiesti)  
+
+**Allocazione contigua:** 
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260513131951.png" width="300">
+</div>
+
+**Allocazione contigua (dopo compattazione):**
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260513132130.png" width="300">
+</div>
+
+**Allocazione a catena:**
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260513132210.png" width="300">
+</div>
+
+**Allocazione a catena (dopo compattazione):**
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260513132328.png" width="300">
+</div>
+
+**Allocazione indicizzata con porzioni a blocchi:**
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260513132428.png" width="300">
+</div>
+
+**Allocazione indicizzata con porzioni a lunghezza variabile:**
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260513132503.png" width="300">
+</div>
+
+**Gestione degli spazi liberi:** È necessario conoscere i blocchi disponibili: *tabella di allocazione del disco* 
+
+*Bitmap:* 
+- Un vettore con un bit per ogni blocco 0 = libero, 1 = allocato 
+- dimensione minima 
+
+*Porzioni libere concatenate:* 
+- In ogni porzione libera, la lunghezza e un puntatore alla porzione libera successiva; 
+- Nessuno spreco di spazio 
+- I puntatori vanno aggiornati a ogni allocazione o rilascio 
+
+*Indicizzazione:* 
+- Spazio libero trattato come un file con la sua FAT 
+- Per contenere le dimensioni, indice basato su porzioni a lunghezza variabile  
+
+**Gestione file in UNIX:** esistono 6 tipi di file:
+1. *ordinari:* contiene dati arbitrari in 0 o più blocchi 
+2. *directory:* contiene una lista di filename più i puntatori ai relativi i-node 
+3. *speciali:* usati per accedere ai dispositivi periferici 
+4. *pipe con nome:* per la comunicazione tra processi 
+5. *link:* nome alternativo per un file esistente 
+6. *link simbolico:* un file dati contenente il nome di un file al quale è collegato  
+
+**I-node:** 
+- tutti i tipi di file UNIX sono amministrati dal Sistema Operativo attraverso gli i-node (index node) 
+- l'i-node contiene le informazioni chiave di cui il sistema ha bisogno per un particolare file 
+- più nomi di file possono essere associati a un singolo i-node 
+- un i-node è associato a un unico file e ogni file è controllato da un unico i-node  
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260513132848.png" width="300">
+</div>
+
+**Allocazione dei file:** 
+- Allocazione a blocchi 
+- allocazione dinamica 
+- indicizzazione mediante puntatori diretti (nell'i-node) e tre puntatori indiretti (singoli, doppi, tripli)  
+
+**Struttura del volume:** Il file system UNIX risiede su un singolo disco logico. Contiene: 
+- *Boot:* block codice per avviare il sistema 
+- *Superblock:* informazioni e attributi del file system 
+- *Tabella degli i-node* 
+- *Blocchi dati:* spazio disponibile per i file dati e le directory  
