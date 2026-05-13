@@ -2170,33 +2170,25 @@ Il tempo di accesso medio è dato dalla formula:$$T_a = T_s + \frac{1}{2r} + \fr
 </div>  
 
 ### Gestione dei file
-**File:** Collezione di dati creata dall'utilizzatore. Dal punto di vista dell'utilizzatore è una delle parti più importanti del SO 
+Tutti i dati sono contenuti nei file, una collezione di dati che il sistema ci permette di interpretare grazie ad una struttura logica. È considerata fra le parti più importanti del Sistema Operativo lato utente
 
 **Proprietà:** 
-- *Persistenza:* Memorizzati su disco o altro supporto, non scompaiono quando l'utilizzatore termina il suo lavoro 
-- *Condivisione:* Hanno un nome e permessi di accesso associati che ne permettono la condivisione 
+- *Persistenza:* i file sono memorizzati su disco o altro supporto, non scompaiono quando l'utilizzatore termina il suo lavoro (con lo spegnimento del PC)
+- *Condivisione:* Hanno un nome e dei permessi di accesso associati che ne permettono la condivisione (interessante soprattutto nei sistemi condivisi perché utenti differenti possono essere autorizzati o meno a fare uso dei vari file)
 - *Struttura:* Sono organizzati in strutture gerarchiche (o più complesse) per riflettere le relazioni tra file  
 
-**File system:** È uno strumento per memorizzare dati organizzati in file. Colleziona funzioni per operare sui file. Gestisce anche degli attributi associati ai file 
-
-**Operazioni fornite:** 
-- Crea, 
-- Cancella 
-- Apri 
-- Chiudi 
-- Leggi 
-- Scrivi  
+**File system:** Per poter organizzare i nostri file abbiamo bisogno di una parte del sistema operativo detto “gestore del file system”.​ Questo fornisce una serie di operazioni che permettono di operare sui file e anche di gestire gli attributi associati ai file (per esempio i permessi). Le principali operazione che il file system ci deve assicurare: creare i file, cancellazione dei file, apertura (per scrivere o leggere il file), chiusura, lettura (di vecchie informazioni) e scrittura (di nuove informazioni)
 
 **Sistema di gestione dei file:** Fornisce servizi agli utenti e alle applicazioni che permettono l'utilizzo dei file 
 
-*Obiettivi:* 
-- Incontrare le esigenze degli utenti 
-- Garantire la validità dei dati 
-- Ottimizzare le prestazioni 
-- Provvedere il supporto I/O per i vari tipi di dispositivi di memorizzazione 
-- Minimizzare il rischio di perdita o distruzione dei dati 
-- Fornire un insieme di procedure I/O con interfaccia standardizzata 
-- Provvedere il supporto I/O per più utenti, (nei sistemi multi-utente)  
+*Obiettivi:*
+- Incontrare le esigenze degli utenti (i principali metodi di accesso ai file usando windows sono quelli che utilizzano l'interfaccia grafica, molto utile per gli utenti meno esperti)
+- Permettono di modificare i dati in maniera veloce.
+- Garantire la validità dei dati (le operazioni che coinvolgono i dispositivi sono quelle che danno i maggiori problemi, a causa delle parti meccaniche, fili… quindi bisogna verificare che le operazioni siano state portate a termine senza errori oppure segnalare gli errori).
+- Provvedere all'input/output dei dispositivi (disco fisso, disco ottico, nastro, penna USB…)
+- Minimizzare il rischio di perdita o distruzione dei dati (un backup del contenuto del disco è sempre utile).
+- Fornire un'interfaccia standardizzata, uniforme.
+- ​ Nei sistemi multiutente deve essere previsto il supporto input/output. 
 
 *Esigenze degli utenti:* 
 - Creare, cancellare, leggere, scrivere, modificare i file 
@@ -2211,10 +2203,7 @@ Il tempo di accesso medio è dato dalla formula:$$T_a = T_s + \frac{1}{2r} + \fr
   <img src="Pasted image 20260513130712.png" width="300">
 </div>
 
-**Driver dei dispositivi:** il livello più basso:
-- Comunica direttamente con i dispositivi periferici 
-- È responsabile dell'avvio delle operazioni I/O su un dispositivo 
-- Gestisce il completamento delle richieste di I/O  
+Il sistema di gestione dei file viene organizzato a strati. Partendo dal livello più basso, troviamo l'hardware dei dispositivi di memorizzazione (dischi, nastri, chiavette, CD, ecc.). I **Driver dei Dispositivi** comunicano direttamente con queste periferiche e gestiscono le operazioni di input/output, sia il loro avvio che il loro completamento.  
 
 **Base del file system:** 
 - Interfaccia primaria con l'ambiente esterno (livello dell'I/O fisico) 
@@ -2230,16 +2219,16 @@ Il tempo di accesso medio è dato dalla formula:$$T_a = T_s + \frac{1}{2r} + \fr
 - Si occupa della schedulazione del disco e degli altri dispositivi per ottimizzare le prestazioni 
 - Assegna i buffer I/O e alloca la memoria secondaria  
 
-**I/O logico:** 
+**Gestore logico di I/O:** permette di vedere un file come una collezione di record logici di lunghezza fissa o variabile
 - Abilita utenti e applicazioni ad accedere ai record 
 - Fornisce le funzioni di I/O ai record di tipo generale 
 - Realizza le basi di dati relative ai file  
 
-**Metodi di accesso:** si tratta del livello più prossimo all'utilizzatore. Fornisce un'interfaccia standard tra le applicazioni e il file system e i dispositivi. Esistono differenti metodi di accesso riflettono differenti strutture dei file e modi differenti di accedere ai dati  
+**Metodi di accesso:** si tratta del livello più prossimo all'utente e alle applicazioni. Il sistema
+operativo deve fornire questi diversi metodi per accedere ai file, in base alla loro organizzazione logica. Questo strato realizza un'interfaccia uniforme e standardizzata.​ Differenti metodi di accesso sono dovuti alle diverse strutture logiche con cui i file possono essere organizzati.
 
-**Directory:** 
-
-*Operazioni richieste:* 
+**Directory:** Il file system utilizza le directory per organizzare i file. Per l'utente i file hanno un nome e un utilizzatore associato. Immaginiamo di avere dei cassetti, all'interno dei quali ci sono altri
+cassetti e poi ci sono i file. Noi abbiamo la possibilità di navigare fra le directory. Operazioni possibili sulla directory:
 - Ricerca 
 - Crea file 
 - Cancella file 
@@ -2261,20 +2250,21 @@ Ogni directory utente può contenere sottodirectory e file (schema ad albero)
 
 **Organizzazione dei file:** 
 
-*File a mucchio:* 
-- dati in ordine di arrivo 
+*File a mucchio:* meccanismo più semplice per organizzare i dati
+- dati registrati in ordine di arrivo 
 - record con campi differenti o in ordine differente 
 - accesso ai record per ricerca esaustiva 
 
+Ogni nuovo record viene attaccato in coda al file. Sono però difficili da leggere, infatti per trovare un record bisogna leggere tutto il file.
+
 *File sequenziale:* 
-- record in formato fisso 
+- record in formato fisso (ogni record ha gli stessi campi)
 - record identificati dal campo chiave 
 - utile per le applicazioni batch (ricerche lente) 
-- modifiche nel file delle transazioni 
+- Il file delle transazione contiene i nuovi record (aggiunti successivamente)
 
 *File sequenziale indicizzato:* 
-- aggiunge un indice per accesso random 
-- accelera l'accesso ai record 
+- aggiunge un indice per accesso random (accesso ai record più rapido)
 - modifiche con il file di overflow (contiene i nuovi record accessibili mediante puntatori dal file indicizzato)  
 
 *File indicizzato:* 
@@ -2286,13 +2276,11 @@ Ogni directory utente può contenere sottodirectory e file (schema ad albero)
 - mediante hashing della chiave si può accedere direttamente al blocco del record 
 - nessuna organizzazione sequenziale dei record  
 
-**Allocazione dei file:** In memoria secondaria, un file consiste di una collezione di blocchi. Il SO gestisce l'allocazione dei blocchi ai file. L'approccio scelto per l'allocazione dei file influenza la gestione dello spazio libero. Lo spazio è allocato in una o più porzioni (insiemi di blocchi contigui) 
+**Allocazione dei file:** In memoria secondaria, un file consiste di una collezione di blocchi. Il SO gestisce l'allocazione dei blocchi di file. L'approccio scelto per l'allocazione dei file influenza la gestione dello spazio libero. Lo spazio è allocato in una o più porzioni (insiemi di blocchi contigui) 
 
-*FAT:* Struttura dati che tiene traccia dei blocchi allocati al file 
-
-*Preallocazione o allocazione dinamica ?* 
-- La preallocazione richiede che la dimensione del file sia dichiarata al momento della creazione. Per questo la stima è difficile e c'è una tendenza a sovraestimare 
-- L'allocazione dinamica alloca lo spazio al file in base alle necessità  
+*FAT:* Struttura dati che tiene traccia dei blocchi allocati al file. Ci sono 2 possibilità per allocare: 
+- *La preallocazione:* creo il mio file, dichiaro quanti blocchi sono necessari, il sistema seleziona i  blocchi che mi servono facendo si che siano contigui e quindi che vi si possa accedere rapidamente. Problema: la stima dello spazio necessario è difficile, si tende a sovrastimare. Mi permette comunque di allocare gli spazi in maniera intelligente perché lo faccio prima
+- *L'allocazione dinamica* alloca lo spazio al file in base alle necessità  
 
 **Dimensione delle porzioni:** Due esigenze in contrasto: 
 - Contiguità dello spazio migliora le prestazioni specie per SO orientati alle transazioni 
@@ -2308,8 +2296,10 @@ Ogni directory utente può contenere sottodirectory e file (schema ad albero)
 - Maggiore flessibilità 
 - Possono richiedere tabelle di allocazione grandi 
 - La contiguità non è un obiettivo (blocchi allocati quando richiesti)  
+- I blocchi vengono assegnati dinamicamente (è inutile - preallocare se perdiamo la contiguità)
 
-**Allocazione contigua:** 
+**Allocazione contigua:** potremmo dover ricorrere alla compattazione per avere dei blocchi contigui liberi. 
+
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260513131951.png" width="300">
 </div>
@@ -2319,7 +2309,8 @@ Ogni directory utente può contenere sottodirectory e file (schema ad albero)
   <img src="Pasted image 20260513132130.png" width="300">
 </div>
 
-**Allocazione a catena:**
+**Allocazione a catena:** si perde la continuità, ogni blocco contiene un puntatore al blocco successivo: non abbiamo problemi di compattazione.
+
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260513132210.png" width="300">
 </div>
@@ -2329,30 +2320,22 @@ Ogni directory utente può contenere sottodirectory e file (schema ad albero)
   <img src="Pasted image 20260513132328.png" width="300">
 </div>
 
-**Allocazione indicizzata con porzioni a blocchi:**
+**Allocazione indicizzata con porzioni a blocchi:** il primo blocco contiene tutti i puntatori verso gli blocchi. È così molto rapido per accedere magari all’ultimo blocco.
+
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260513132428.png" width="300">
 </div>
 
-**Allocazione indicizzata con porzioni a lunghezza variabile:**
+**Allocazione indicizzata con porzioni a lunghezza variabile:** la differenza è che qua nei limiti del possibile i blocchi solo allocati in porzioni di lunghezza variabile. Nel primo blocco ci sono i puntatori ai primi blocchi della porzione. Il vantaggio è che almeno parzialmente i blocchi sono contigui.
+
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260513132503.png" width="300">
 </div>
 
-**Gestione degli spazi liberi:** È necessario conoscere i blocchi disponibili: *tabella di allocazione del disco* 
-
-*Bitmap:* 
-- Un vettore con un bit per ogni blocco 0 = libero, 1 = allocato 
-- dimensione minima 
-
-*Porzioni libere concatenate:* 
-- In ogni porzione libera, la lunghezza e un puntatore alla porzione libera successiva; 
-- Nessuno spreco di spazio 
-- I puntatori vanno aggiornati a ogni allocazione o rilascio 
-
-*Indicizzazione:* 
-- Spazio libero trattato come un file con la sua FAT 
-- Per contenere le dimensioni, indice basato su porzioni a lunghezza variabile  
+**Gestione degli spazi liberi:** È necessario conoscere i blocchi disponibili: per questo con la *tabella di allocazione del disco* troviamo i blocchi ancora disponibili. Ho vari meccanismi:
+- *Bitmap:* Un vettore con un bit per ogni blocco 0 = libero, 1 = allocato. La dimensione è minima 
+- *Porzioni libere concatenate:* In ogni porzione libera, la lunghezza è un puntatore alla porzione libera successiva. Non c'è spreco di spazio. I puntatori vanno aggiornati a ogni allocazione o rilascio 
+- *Indicizzazione:* Spazio libero trattato come un file con la sua FAT. Per contenere le dimensioni, indice basato su porzioni a lunghezza variabile  
 
 **Gestione file in UNIX:** esistono 6 tipi di file:
 1. *ordinari:* contiene dati arbitrari in 0 o più blocchi 
@@ -2362,11 +2345,7 @@ Ogni directory utente può contenere sottodirectory e file (schema ad albero)
 5. *link:* nome alternativo per un file esistente 
 6. *link simbolico:* un file dati contenente il nome di un file al quale è collegato  
 
-**I-node:** 
-- tutti i tipi di file UNIX sono amministrati dal Sistema Operativo attraverso gli i-node (index node) 
-- l'i-node contiene le informazioni chiave di cui il sistema ha bisogno per un particolare file 
-- più nomi di file possono essere associati a un singolo i-node 
-- un i-node è associato a un unico file e ogni file è controllato da un unico i-node  
+**I-node:** tutti i tipi di file UNIX sono amministrati dal Sistema Operativo attraverso gli i-node (index node). L'i-node contiene le informazioni chiave di cui il sistema ha bisogno per un particolare file. Più nomi di file possono essere associati a un singolo i-node. Un i-node è associato a un unico file e ogni file è controllato da un unico i-node  
 
 <div style="display: flex; justify-content: center;">
   <img src="Pasted image 20260513132848.png" width="300">
@@ -2375,10 +2354,10 @@ Ogni directory utente può contenere sottodirectory e file (schema ad albero)
 **Allocazione dei file:** 
 - Allocazione a blocchi 
 - allocazione dinamica 
-- indicizzazione mediante puntatori diretti (nell'i-node) e tre puntatori indiretti (singoli, doppi, tripli)  
+- Indicizzazione mediante puntatori diretti (nell'i-node) e tre puntatori indiretti (singoli, doppi, tripli)  
 
 **Struttura del volume:** Il file system UNIX risiede su un singolo disco logico. Contiene: 
-- *Boot:* block codice per avviare il sistema 
+- *Boot block:* codice per avviare il sistema 
 - *Superblock:* informazioni e attributi del file system 
 - *Tabella degli i-node* 
 - *Blocchi dati:* spazio disponibile per i file dati e le directory  

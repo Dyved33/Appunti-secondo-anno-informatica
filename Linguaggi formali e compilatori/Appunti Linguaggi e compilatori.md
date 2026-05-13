@@ -1918,3 +1918,66 @@ Si verifica che $L_P (A) = L_P (A' )$.
 > [!info] N.B.
 > Tutto ciò funziona per la classe di automi a pila con un solo stato. Perché esiste effettivamente un automa a pila con un solo stato, che accetta per pila vuota lo stesso linguaggio accettato da un automa qualunque con un qualsiasi numero di stati? Se ho la pila, lo stato lo scrivo sulla pila: l’automa ad ogni passo guarda lo stato, guarda il simbolo in cima alla pila e fa delle cose, e scrive lo stato nuovo sulla pila. Tuttavia, se l’automa non scrive nulla sulla pila, dove scrivo lo stato? Sulla pila non andrò a scrivere solo lo stato, ma scriverò anche cosa c’è scritto sotto. 
 
+### Parsing top-down deterministico
+
+> [!example]
+> $S' → S$#, $S → aB|bA, A → a|aS|bAA, B → b|bS|aBB$. Vogliamo fare fil parsing di $aabb$#
+> 
+> ![[Pasted image 20260513154312.png|300]]
+
+*Osservazione:* possiamo scartare le produzioni che iniziano con un terminale diverso dal simbolo di look-ahead
+
+**La funzione FIRST:*
+
+*Definizione:* sia $G = \langle V, \Sigma, P,S \rangle$ una grammatica non contestuale priva di $\epsilon-$produzioni, la funzione FIRST: $V^+ → \wp(\Sigma)$ è definita da $$ FIRST(\alpha) = \{a \in \Sigma | \alpha \overset{*}{\Rightarrow} a\beta, \beta \in V^*\}, \alpha \in V^*$$
+In altri termini $FIRST(\alpha)$ è l'insieme dei terminali che possono comparire come prima ,lettera di una conseguenza di $\alpha$ 
+
+*Problema:* cerchiamo una dericazione sinistra di $w$: $S$# = $\alpha_0 \underset{L}{\Rightarrow} \alpha_1 \underset{L}{\Rightarrow} \alpha_2 \underset{L}{\Rightarrow} … \underset{L}{\Rightarrow} \alpha_n = w$#. Fissato $i = 0,… n-1$, si avrà:$\alpha_i = uX\beta, \alpha_{i+1} = u\gamma\beta, X→ \gamma$ in $P$ con $u \in \Sigma^*, X \in N$ e $\beta \in V^*$, e anche $w$# = $uv, \gamma\beta \underset{L}{\overset{*}{\Rightarrow}} v, v \in (\Sigma \cup \{$#$\})^*$. Sia $a$ la prima lettera di $v$, allora si deve avere $a \in FIRST(\gamma)$ 
+
+*Conclusione:* nel parsing dobbiamo scegliere sempre produzioni $X → \gamma$ tali che $FIRST(\gamma)$ contenga il simbolo di look-ahead
+
+**Tabella di parsing:** Per ottimizzare il parsing, conviene pre-calcolare $FIRST(\alpha)$ per tutti i lati destri delle produzioni e costruire una tabella in cui a ogni coppia $(X , a) \in N \times \Sigma$ corrispondono le produzioni $X → \gamma$ tali che $a \in FIRST(\gamma)$. Una tale tabella prende il nome di **Tabella di parsing**. 
+
+*Definizione:* Una grammatica non-contestuale $G$ priva di $\epsilon-$produzioni si dice di classe **LL(1)** se per ogni coppia di produzioni distinte $X → \alpha | \gamma$ si ha $FIRST(\alpha) \cap FIRST(\gamma) = \emptyset$. 
+
+In altri termini, una grammatica LL(1) è una grammatica la cui tabella di parsing contiene al più una produzione in ogni ingresso. Questo assicura che il parsing può essere effettuato in maniera deterministica. 
+
+*Osservazione:* Il termine LL(1) viene da: derivazione Left-most, input esaminato Left-to-right, 1 simbolo di look-ahead.
+
+**Parsing LL(1)** ho un automa a pila deterministico che prende in input la tabella di parsing, la tabella di una grammatica non contestuale e una parola $w = a_1a_2…a_n$#. In output restituisce le produzioni di una derivazione sinistra di $w$
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260513155934.png" width="300">
+</div>
+
+**Generazione della tabella di parsing:**
+1. se la prima lettera di $\alpha$ è un simbolo terminale $b$, allora $FIRST(\alpha) = \{b\}$; 
+2. se la prima lettera di $\alpha$ è una variabile $X$ , allora per ogni produzione $X → \beta$, i terminali di $FIRST(\beta)$ sono anche terminali di $FIRST(\alpha)$, 
+3. tutti gli elementi di $FIRST(\alpha)$ con $\alpha$ lato destro di qualche produzione, si trovano applicando un numero finito di volte le regole precedenti
+
+*Calcolo di $FIRST(\alpha)$:* 
+1. poniamo $FIRST(\alpha) = \emptyset$ per tutti i lati destri $\alpha$ delle produzioni di $G$. 
+2. ricalcoliamo tali insiemi usando le regole 1–2 e i valori attuali degli insiemi $FIRST(\beta)$. 
+3. iteriamo il passo precedente, arrestandoci solo quando nessuno degli insiemi $FIRST(\alpha)$ subisce modifiche.
+
+> [!example]
+> Si consideri la grammatica con le produzioni $S → FS|Q|aSbS, F → c, Q → q$
+> 
+> ![[Pasted image 20260513160409.png|300]] ![[Pasted image 20260513160426.png|300]]
+> 
+> ![[Pasted image 20260513160557.png|300]]
+> 
+> (immagine solo della situazione finale)
+
+**$\epsilon-$produzioni:**
+
+*Definizione:* sia $G = \langle V, \Sigma, P,S \rangle$ una grammatica non contestuale. Le funzioni $FIRST: V^* → \wp(\Sigma \cup \{\epsilon\})$ e $FOLLOW: N → \wp(\Sigma)$ sono definite da:$$FIRST(\alpha) = \{\alpha \in \Sigma | \alpha \overset{*}\Rightarrow a\beta, \beta \in V^*\}, \alpha \in V^*, \alpha \not{\overset{*}\Rightarrow} \epsilon$$ $$ FIRST(\alpha) = \{\alpha \in \Sigma | \alpha \overset{*}\Rightarrow a\beta, \beta \in V^*\} \cup \{\epsilon\}, \alpha \in V^*, \alpha \overset{*}\Rightarrow \epsilon$$ $$
+ FOLLOW(X) = \{\alpha \in \Sigma | S\# \overset{*}\Rightarrow \beta Xa\gamma, \beta, \gamma \in V^*\}, X \in N$$
+*Problema:* Cerchiamo una derivazione sinistra di $w$: $$S\# = \alpha_0 \underset{L}\Rightarrow \alpha_1 \underset{L}\Rightarrow  \alpha2 \underset{L}\Rightarrow · · · \underset{L}\Rightarrow \alpha_n = w\#$$
+Fissato i = 0, . . . , n − 1, si avrà \alphai = uX 𝛽 , \alphai+1 = u𝛾𝛽 , X → 𝛾 in P , con u ∈ Σ * , X ∈ N e 𝛽 ∈ V * , e anche w# = uv , 𝛾𝛽 *⇒ L v , v ∈ (Σ ∪ {#}) * . Sia a la prima lettera di v. Allora si deve avere a ∈ FIRST(𝛾) oppure 𝛾 ⇒* 𝜀 e 𝛽 ⇒* v. In quest’ultimo caso, 𝜀 ∈ FIRST(𝛾) e a ∈ FOLLOW(X ). Conclusione Nel parsing, dobbiamo scegliere sempre produzioni X → 𝛾 tali che il simbolo di look-ahead a soddisfi la condizione a ∈ FIRST(𝛾) oppure 𝜀 ∈ FIRST(𝛾) e a ∈ FOLLOW(X ). Tabella di parsing In presenza di 𝜀-produzioni, nella tabella di parsing dovremo inserire per ogni coppia (X , a) ∈ N × Σ, le produzioni X → 𝛾 tali che a ∈ FIRST(𝛾) oppure 𝜀 ∈ FIRST(𝛾) e a ∈ FOLLOW(X ). Definizione Una grammatica non-contestuale G si dice di classe LL(1) se per ogni coppia di produzioni distinte X → \alpha | 𝛾 si ha 1 FIRST(\alpha) ∩ FIRST(𝛾) = ∅, 2 se 𝜀 ∈ FIRST(\alpha), allora 𝜀 ̸∈ FIRST(𝛾) e FOLLOW(X ) ∩ FIRST(𝛾) = ∅. Anche in questo caso, una grammatica è LL(1) se e solo se la sua tabella di parsing contiene al più una produzione in ogni ingresso. Parsing top-down deterministico Linguaggi Formali e Compilatori 2024/25 12/16 Calcolo di FIRST 1 se la prima lettera di \alpha è un simbolo terminale b, allora FIRST(\alpha) = b; 2 se la prima lettera di \alpha è una variabile X , allora per ogni produzione X → 𝛽, i terminali di FIRST(𝛽) sono anche terminali di FIRST(\alpha); 3 se la prima lettera di \alpha è una variabile annullabile, allora le due condizioni precedenti sono verificate anche dalla seconda lettera di \alpha; se quest’ultima è una variabile annullabile, allora anche dalla terza, e così via; 4 se tutte le lettere di \alpha sono variabili annullabili, allora 𝜀 ∈ FIRST(\alpha); 5 Tutti gli elementi di FIRST(\alpha) con \alpha lato destro di qualche produzione, si trovano applicando un numero finito di volte le regole precedenti. Calcolo di FIRST(\alpha) 1 Poniamo FIRST(\alpha) = ∅ per tutti i lati destri \alpha delle produzioni di G. 2 Ricalcoliamo tali insiemi usando le regole 1–4 e i valori attuali degli insiemi FIRST(𝛽). 3 Iteriamo il passo precedente, arrestandoci solo quando nessuno degli insiemi FIRST(\alpha) subisce modifiche. Esempio Si consideri la grammatica con le produzioni S → FQ | aSbS, F → CF | 𝜀, C → c, Q → q. L’unica variabile annullabile è F. Calcolo di FIRST sui lati destri delle produzioni: FQ aSbS CF 𝜀 c q 1. ∅ ∅ ∅ ∅ ∅ ∅ 2. ∅ a ∅ 𝜀 c q 3. q a c 𝜀 c q 4. c, q a c 𝜀 c q 5. c, q a c 𝜀 c q Parsing top-down deterministico Linguaggi Formali e Compilatori 2024/25 14/16 Calcolo di FOLLOW 1 L’insieme FOLLOW(S) contiene #. 2 Se c’è una produzione X → \alphaY 𝛽 con X , Y ∈ N, \alpha, 𝛽 ∈ V * , allora tutti i terminali contenuti in FIRST(𝛽) sono contenuti anche in FOLLOW(Y ). 3 Se inoltre 𝜀 ∈ FIRST(𝛽), cioè 𝛽 ⇒* 𝜀, allora tutti i terminali contenuti in FOLLOW(X ) sono contenuti anche in FOLLOW(Y ). 4 Tutti gli elementi di FOLLOW(Y ), Y ∈ N, si trovano applicando un numero finito di volte le regole precedenti. Calcolo di FOLLOW(Y ) 1 per tutte le variabili Y , poniamo FOLLOW(Y ) uguale a ciò che si ottiene applicando le regole 1. e 2. 2 aggiungiamo a tali insiemi i terminali ottenuti usando la regola 3 e i valori attuali degli insiemi FOLLOW(X ). 3 iteriamo il passo precedente, arrestandoci solo quando nessuno degli insiemi FOLLOW(Y ) subisce modifiche.
+
+> [!example]
+> Si consideri la grammatica con le produzioni $S → FQ|aSbS, F → CF|\epsilon, C → c, Q →q$
+> 
+> ![[Pasted image 20260513161746.png|300]]
+
