@@ -488,7 +488,7 @@ I requisiti non funzionali non devono essere trascurati: anche loro entrano a pi
 Altri, invece, sono vincoli trasversali: non compaiono come singole attività, ma devono essere rispettati in ogni funzionalità sviluppata (ad esempio sicurezza, normativa sui dati, compatibilità con sistemi esistenti). Ignorarli nelle prime fasi porta quasi sempre a interventi più costosi, più complessi e più rischiosi nelle fasi successive. 
 ### Modellazione concettuale      
 <u><b>Dominio</b> = Per dominio si intende l'insieme di: persone, oggetti, regole e processi reali che il software deve rappresentare e supportare.</u>
-
+\
 **Modellazione concettuale:** La modellazione concettuale è l'attività che mira a:
 - identificare i concetti importanti del dominio; 
 - chiarire quali responsabilità ha ciascun concetto; 

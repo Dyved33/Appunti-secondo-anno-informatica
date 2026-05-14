@@ -383,13 +383,13 @@ Ci si convince facilmente a questo punto che:
 
 *Dimostrazione:* Gli stati dell'automa deterministico registreranno l'insieme degli stati raggiungibili dalle computazioni dell'automa non deterministico sul medesimo input. Accetto la parola se fra questi ce uno finale
 
-**$\epsilon$-chiusura:** Se però con l'automa a stati finiti non deterministico le nostre computazioni si limitavano alla potenza-numero-di-lettere della parola, ora teoricamente posso avere anche infinite ε-transizioni (la concatenazione di un miliardo di ε, è sempre una parola vuota). Quindi bisogna utilizzare una tecnica per trattare queste ε-transizioni: la ε-chiusura di uno stato. 
+**$\epsilon$-chiusura:** Se però con l'automa a stati finiti non deterministico le nostre computazioni si limitavano alla potenza-numero-di-lettere della parola, ora teoricamente posso avere anche infinite $\epsilon-$transizioni (la concatenazione di un miliardo di $\epsilon$, è sempre una parola vuota). Quindi bisogna utilizzare una tecnica per trattare queste $\epsilon-$transizioni: la $\epsilon-$chiusura di uno stato. 
 
 *Definizione:* sia $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ un automa a stati finiti non deterministico con $\epsilon$-transizioni, la $\epsilon$-chiusura di uno stato $q \in Q$ è il più piccolo sottoinsieme $C_{\epsilon}(q)$ di $Q$ tale che:
 - $q \in C_{\epsilon}(q)$
 - Per ogni $p \in C_{\epsilon}(q)$, $\delta(p,\epsilon) \subseteq C_{\epsilon}(q)$
 
-La $\epsilon$-chiusura di un insieme di stati $S \subseteq Q$ è l'unione delle $\epsilon$ chiusure dei singoli stati di $S: C_{\epsilon}(S) = \bigcup\limits_{q \in S} C_{\epsilon}(q)$.  In altre parole la ε-chiusura di uno stato è l'insieme degli stati che da questo si possono raggiungere utilizzando solo ε- transizioni (questo insieme deve contenere lo stato stesso).
+La $\epsilon$-chiusura di un insieme di stati $S \subseteq Q$ è l'unione delle $\epsilon$ chiusure dei singoli stati di $S: C_{\epsilon}(S) = \bigcup\limits_{q \in S} C_{\epsilon}(q)$.  In altre parole la $\epsilon-$chiusura di uno stato è l'insieme degli stati che da questo si possono raggiungere utilizzando solo $\epsilon-$transizioni (questo insieme deve contenere lo stato stesso).
 > [!example] ![[Screenshot From 2026-03-12 10-31-58.png|300]]
 > - $C_{\epsilon}(q_0)$ deve contenere $q_3$ perché con $\epsilon$-transizioni vado in $q_3$
 > - $C_{\epsilon}(\{q_0,q_1\})$ è la $\epsilon$-chiusura della coppia di stati $q_0,q_1$ che si ottiene facendo l'unione delle chiusure dei due stati
@@ -507,7 +507,7 @@ Esiste una procedura effettiva che:
 - Data un'espressione regolare, produce un automa a stati finiti che accetta il linguaggio denotato da tale espressione (*sintesi*)
 - Dato un'automa a stati finiti, produce un'espressione regolare che denota il linguaggio accettato da tale  automa (*analisi*)
 
-Utilizzeremo esclusivamente automi non deterministici con 𝜀-transizioni con un unico stato finale (non restrittivo)
+Utilizzeremo esclusivamente automi non deterministici con $\epsilon-$transizioni con un unico stato finale (non restrittivo)
 
 Un'espressione regolare, dove $E$ e $F$ sono espressioni regolari, può essere:
 
@@ -549,7 +549,7 @@ Allora $A$ accetta il linguaggio denotato da $(E+F)$
      <img src="Screenshot From 2026-03-13 11-14-59.png" style="width: 100%; border-radius: 8px;">
    </div>
   <div style="flex: 1.5;">
-<b>Concatenazione:</b> si connette con una ε-transizione lo stato finale del primo automa con lo stato iniziale del secondo automa. Lo stato iniziale del nuovo automa sarà quello del primo automa, mentre il suo stato finale sarà quello del secondo automa.
+<b>Concatenazione:</b> si connette con una epsilon-transizione lo stato finale del primo automa con lo stato iniziale del secondo automa. Lo stato iniziale del nuovo automa sarà quello del primo automa, mentre il suo stato finale sarà quello del secondo automa.
    </div>
  </div>
 
@@ -569,7 +569,7 @@ Allora $A$ accetta il linguaggio denotato da $(EF)$
      <img src="Screenshot From 2026-03-13 11-18-53.png" style="width: 100%; border-radius: 8px;">
    </div>
   <div style="flex: 1.5;">
-<b>Chiusura di Kleene:</b> abbiamo l'automa E che riconosce una certa espressione, e poi il nuovo automa che riconosce la chiusura di Kleene del linguaggio accettato da questo, ovvero che accetti tutte le parole che si ottengono concatenando 0 o più parole accettate dall'automa di partenza. Aggiungo una ε transizione che dallo stato finale mi riporta a quello iniziale: così da accettare tutte le parole che si ottengono concatenando una o più parole dell'automa di partenza. Mi manca però il riconoscimento della parola vuota, quindi aggiungo un nuovo stato iniziale e un nuovo stato finale e poi una ε-transizione dallo stato iniziale nuovo a quello vecchio, una ε-transizione dallo stato finale vecchio a quello nuovo, e una ε-transizione dallo stato iniziale nuovo allo stato finale nuovo.
+<b>Chiusura di Kleene:</b> abbiamo l'automa E che riconosce una certa espressione, e poi il nuovo automa che riconosce la chiusura di Kleene del linguaggio accettato da questo, ovvero che accetti tutte le parole che si ottengono concatenando 0 o più parole accettate dall'automa di partenza. Aggiungo una ε transizione che dallo stato finale mi riporta a quello iniziale: così da accettare tutte le parole che si ottengono concatenando una o più parole dell'automa di partenza. Mi manca però il riconoscimento della parola vuota, quindi aggiungo un nuovo stato iniziale e un nuovo stato finale e poi una \epsilon-transizione dallo stato iniziale nuovo a quello vecchio, una \epsilon-transizione dallo stato finale vecchio a quello nuovo, e una \epsilon-transizione dallo stato iniziale nuovo allo stato finale n\uovo.
    </div>
  </div>
 
@@ -746,7 +746,7 @@ Posso vedere queste classi come gli stati di un automa, in cui la transizione co
     <img src="Pasted image 20260320102535.png" style="width: 100%; border-radius: 8px;">
   </div>
   <div style="flex: 1.5;">
-  L'ovale  rappresenta l'insieme di tutte le parole sull'alfabeto Sigma. Viene partizionato in 2 parti:
+  L'ovale  rappresenta l'insieme di tutte le parole sull'alfabeto Sigma. Viene partizionato iN_2 parti:
   <li>Linguaggio L, cioè le parole che stanno nel linguaggio L</li>
   <li>Le parole che stanno fuori da linguaggio L e che non appartengono ad esso</li>
   
@@ -1667,7 +1667,7 @@ Nella seconda opzione, la procedura più semplice da seguire è quella di realiz
 
 Nel capitolo precedente abbiamo visto come si fa il parsing top-down, dove costruiamo l'albero di parsing partendo dalla radice e producendo le foglie. In sostanza la struttura dati che ci serve è una sequenza di pile (stack) che contengono la cosiddetta predizione in cui leggiamo il simbolo che sta più a sinistra ed eventualmente lo andiamo a sostituire inserendo al posto della prima variabile, la predizione. 
 
-Un **automa a pila** è un modello astratto di macchina (un automa a stati finiti con uno stack) che ci permette di definire i linguaggi non contestuali, esattamente come i linguaggi che sono accettati da questo nuovo modello di macchina astratta. È costituito da un'unità di controllo e un nastro di input (come l'automa a stati finiti) con in più uno stack. Ad ogni passo la macchina legge una lettera dal nastro di input e preleva (*pop*) il simbolo che sta in cima allo stack (se è vuoto, la macchina si blocca). Dopodiché, in base allo stato e ai due simboli letti, la macchina: assume un nuovo stato, scrive (*push*) in cima allo stack 0 o più lettere, e poi sposta la testina di lettura dal nastro di input sulla cella a destra. Sono ammesse delle 𝜀-transizioni in cui le operazioni di push e pop sono eseguite senza leggere il nastro di input. Quindi estrae e legge dalla pila, ma non tocca il nastro di input.
+Un **automa a pila** è un modello astratto di macchina (un automa a stati finiti con uno stack) che ci permette di definire i linguaggi non contestuali, esattamente come i linguaggi che sono accettati da questo nuovo modello di macchina astratta. È costituito da un'unità di controllo e un nastro di input (come l'automa a stati finiti) con in più uno stack. Ad ogni passo la macchina legge una lettera dal nastro di input e preleva (*pop*) il simbolo che sta in cima allo stack (se è vuoto, la macchina si blocca). Dopodiché, in base allo stato e ai due simboli letti, la macchina: assume un nuovo stato, scrive (*push*) in cima allo stack 0 o più lettere, e poi sposta la testina di lettura dal nastro di input sulla cella a destra. Sono ammesse delle $\epsilon-$transizioni in cui le operazioni di push e pop sono eseguite senza leggere il nastro di input. Quindi estrae e legge dalla pila, ma non tocca il nastro di input.
 
 *Definizione:* un automa a pila è una settupla $A = \langle Q, \Sigma, \Gamma, \delta, q_0, Z_0, F \rangle$ dove:
 - $Q$ è un insieme finito, detto insieme degli stati
@@ -1710,7 +1710,7 @@ Se leggendo una lettera $a$ sul nastro di input l'automa può passare dalla conf
 > ![[Pasted image 20260507113340.png|300]]
 
 > [!example]
-> Problema: Realizzare un automa a pila che accetti per pila vuota le palindrome pari sull'alfabeto Σ = {a, b}.
+> Problema: Realizzare un automa a pila che accetti per pila vuota le palindrome pari sull'alfabeto \Sigma = {a, b}.
 >
 > Strategia:
 > 1. copiare nella pila la prima metà dell'input
@@ -1803,7 +1803,7 @@ Tale classe è inclusa strettamente nella classe dei linguaggi deterministici.
 > ma non è accettato per pila vuota da nessun automa a pila deterministico
 
 ### Teorema di caratterizzazione dei linguaggi non contestuali
-Questo teorema ha la funzione di far vedere che i linguaggi accettati dagli automi finiti, quel modello di macchina astratta introdotta nel capitolo precedente, coincidono con la classe dei linguaggi non contestuali (di tipo 2), generati da una grammatica non contestuale. Come per i linguaggi regolari avevamo l’automa a stati finiti che definiva il modello di computazione per verificare se una parola apparteneva o meno al linguaggio, così il modello di macchina per i linguaggi non contestuali è l’automa a pila.
+Questo teorema ha la funzione di far vedere che i linguaggi accettati dagli automi finiti, quel modello di macchina astratta introdotta nel capitolo precedente, coincidono con la classe dei linguaggi non contestuali (di tipo 2), generati da una grammatica non contestuale. Come per i linguaggi regolari avevamo l'automa a stati finiti che definiva il modello di computazione per verificare se una parola apparteneva o meno al linguaggio, così il modello di macchina per i linguaggi non contestuali è l'automa a pila.
 
 *Teorema:* un linguaggio è non contestuale se e solo se è riconosciuto da un automa a pila.
 
@@ -1916,7 +1916,7 @@ Soluzione: Nell'automa a uno stato ogni cella della pila contiene
 Si verifica che $L_P (A) = L_P (A' )$.
 
 > [!info] N.B.
-> Tutto ciò funziona per la classe di automi a pila con un solo stato. Perché esiste effettivamente un automa a pila con un solo stato, che accetta per pila vuota lo stesso linguaggio accettato da un automa qualunque con un qualsiasi numero di stati? Se ho la pila, lo stato lo scrivo sulla pila: l’automa ad ogni passo guarda lo stato, guarda il simbolo in cima alla pila e fa delle cose, e scrive lo stato nuovo sulla pila. Tuttavia, se l’automa non scrive nulla sulla pila, dove scrivo lo stato? Sulla pila non andrò a scrivere solo lo stato, ma scriverò anche cosa c’è scritto sotto. 
+> Tutto ciò funziona per la classe di automi a pila con un solo stato. Perché esiste effettivamente un automa a pila con un solo stato, che accetta per pila vuota lo stesso linguaggio accettato da un automa qualunque con un qualsiasi numero di stati? Se ho la pila, lo stato lo scrivo sulla pila: l'automa ad ogni passo guarda lo stato, guarda il simbolo in cima alla pila e fa delle cose, e scrive lo stato nuovo sulla pila. Tuttavia, se l'automa non scrive nulla sulla pila, dove scrivo lo stato? Sulla pila non andrò a scrivere solo lo stato, ma scriverò anche cosa c'è scritto sotto. 
 
 ### Parsing top-down deterministico
 
@@ -1932,7 +1932,7 @@ Si verifica che $L_P (A) = L_P (A' )$.
 *Definizione:* sia $G = \langle V, \Sigma, P,S \rangle$ una grammatica non contestuale priva di $\epsilon-$produzioni, la funzione FIRST: $V^+ → \wp(\Sigma)$ è definita da $$ FIRST(\alpha) = \{a \in \Sigma | \alpha \overset{*}{\Rightarrow} a\beta, \beta \in V^*\}, \alpha \in V^*$$
 In altri termini $FIRST(\alpha)$ è l'insieme dei terminali che possono comparire come prima ,lettera di una conseguenza di $\alpha$ 
 
-*Problema:* cerchiamo una dericazione sinistra di $w$: $S$# = $\alpha_0 \underset{L}{\Rightarrow} \alpha_1 \underset{L}{\Rightarrow} \alpha_2 \underset{L}{\Rightarrow} … \underset{L}{\Rightarrow} \alpha_n = w$#. Fissato $i = 0,… n-1$, si avrà:$\alpha_i = uX\beta, \alpha_{i+1} = u\gamma\beta, X→ \gamma$ in $P$ con $u \in \Sigma^*, X \in N$ e $\beta \in V^*$, e anche $w$# = $uv, \gamma\beta \underset{L}{\overset{*}{\Rightarrow}} v, v \in (\Sigma \cup \{$#$\})^*$. Sia $a$ la prima lettera di $v$, allora si deve avere $a \in FIRST(\gamma)$ 
+*Problema:* cerchiamo una derivazione sinistra di $w$: $S$# = $\alpha_0 \underset{L}{\Rightarrow} \alpha_1 \underset{L}{\Rightarrow} \alpha_2 \underset{L}{\Rightarrow} … \underset{L}{\Rightarrow} \alpha_n = w$#. Fissato $i = 0,… n-1$, si avrà:$\alpha_i = uX\beta, \alpha_{i+1} = u\gamma\beta, X→ \gamma$ in $P$ con $u \in \Sigma^*, X \in N$ e $\beta \in V^*$, e anche $w$# = $uv, \gamma\beta \underset{L}{\overset{*}{\Rightarrow}} v, v \in (\Sigma \cup \{$#$\})^*$. Sia $a$ la prima lettera di $v$, allora si deve avere $a \in FIRST(\gamma)$ 
 
 *Conclusione:* nel parsing dobbiamo scegliere sempre produzioni $X → \gamma$ tali che $FIRST(\gamma)$ contenga il simbolo di look-ahead
 
@@ -1974,10 +1974,123 @@ In altri termini, una grammatica LL(1) è una grammatica la cui tabella di parsi
 *Definizione:* sia $G = \langle V, \Sigma, P,S \rangle$ una grammatica non contestuale. Le funzioni $FIRST: V^* → \wp(\Sigma \cup \{\epsilon\})$ e $FOLLOW: N → \wp(\Sigma)$ sono definite da:$$FIRST(\alpha) = \{\alpha \in \Sigma | \alpha \overset{*}\Rightarrow a\beta, \beta \in V^*\}, \alpha \in V^*, \alpha \not{\overset{*}\Rightarrow} \epsilon$$ $$ FIRST(\alpha) = \{\alpha \in \Sigma | \alpha \overset{*}\Rightarrow a\beta, \beta \in V^*\} \cup \{\epsilon\}, \alpha \in V^*, \alpha \overset{*}\Rightarrow \epsilon$$ $$
  FOLLOW(X) = \{\alpha \in \Sigma | S\# \overset{*}\Rightarrow \beta Xa\gamma, \beta, \gamma \in V^*\}, X \in N$$
 *Problema:* Cerchiamo una derivazione sinistra di $w$: $$S\# = \alpha_0 \underset{L}\Rightarrow \alpha_1 \underset{L}\Rightarrow  \alpha2 \underset{L}\Rightarrow · · · \underset{L}\Rightarrow \alpha_n = w\#$$
-Fissato i = 0, . . . , n − 1, si avrà \alphai = uX 𝛽 , \alphai+1 = u𝛾𝛽 , X → 𝛾 in P , con u ∈ Σ * , X ∈ N e 𝛽 ∈ V * , e anche w# = uv , 𝛾𝛽 *⇒ L v , v ∈ (Σ ∪ {#}) * . Sia a la prima lettera di v. Allora si deve avere a ∈ FIRST(𝛾) oppure 𝛾 ⇒* 𝜀 e 𝛽 ⇒* v. In quest’ultimo caso, 𝜀 ∈ FIRST(𝛾) e a ∈ FOLLOW(X ). Conclusione Nel parsing, dobbiamo scegliere sempre produzioni X → 𝛾 tali che il simbolo di look-ahead a soddisfi la condizione a ∈ FIRST(𝛾) oppure 𝜀 ∈ FIRST(𝛾) e a ∈ FOLLOW(X ). Tabella di parsing In presenza di 𝜀-produzioni, nella tabella di parsing dovremo inserire per ogni coppia (X , a) ∈ N × Σ, le produzioni X → 𝛾 tali che a ∈ FIRST(𝛾) oppure 𝜀 ∈ FIRST(𝛾) e a ∈ FOLLOW(X ). Definizione Una grammatica non-contestuale G si dice di classe LL(1) se per ogni coppia di produzioni distinte X → \alpha | 𝛾 si ha 1 FIRST(\alpha) ∩ FIRST(𝛾) = ∅, 2 se 𝜀 ∈ FIRST(\alpha), allora 𝜀 ̸∈ FIRST(𝛾) e FOLLOW(X ) ∩ FIRST(𝛾) = ∅. Anche in questo caso, una grammatica è LL(1) se e solo se la sua tabella di parsing contiene al più una produzione in ogni ingresso. Parsing top-down deterministico Linguaggi Formali e Compilatori 2024/25 12/16 Calcolo di FIRST 1 se la prima lettera di \alpha è un simbolo terminale b, allora FIRST(\alpha) = b; 2 se la prima lettera di \alpha è una variabile X , allora per ogni produzione X → 𝛽, i terminali di FIRST(𝛽) sono anche terminali di FIRST(\alpha); 3 se la prima lettera di \alpha è una variabile annullabile, allora le due condizioni precedenti sono verificate anche dalla seconda lettera di \alpha; se quest’ultima è una variabile annullabile, allora anche dalla terza, e così via; 4 se tutte le lettere di \alpha sono variabili annullabili, allora 𝜀 ∈ FIRST(\alpha); 5 Tutti gli elementi di FIRST(\alpha) con \alpha lato destro di qualche produzione, si trovano applicando un numero finito di volte le regole precedenti. Calcolo di FIRST(\alpha) 1 Poniamo FIRST(\alpha) = ∅ per tutti i lati destri \alpha delle produzioni di G. 2 Ricalcoliamo tali insiemi usando le regole 1–4 e i valori attuali degli insiemi FIRST(𝛽). 3 Iteriamo il passo precedente, arrestandoci solo quando nessuno degli insiemi FIRST(\alpha) subisce modifiche. Esempio Si consideri la grammatica con le produzioni S → FQ | aSbS, F → CF | 𝜀, C → c, Q → q. L’unica variabile annullabile è F. Calcolo di FIRST sui lati destri delle produzioni: FQ aSbS CF 𝜀 c q 1. ∅ ∅ ∅ ∅ ∅ ∅ 2. ∅ a ∅ 𝜀 c q 3. q a c 𝜀 c q 4. c, q a c 𝜀 c q 5. c, q a c 𝜀 c q Parsing top-down deterministico Linguaggi Formali e Compilatori 2024/25 14/16 Calcolo di FOLLOW 1 L’insieme FOLLOW(S) contiene #. 2 Se c’è una produzione X → \alphaY 𝛽 con X , Y ∈ N, \alpha, 𝛽 ∈ V * , allora tutti i terminali contenuti in FIRST(𝛽) sono contenuti anche in FOLLOW(Y ). 3 Se inoltre 𝜀 ∈ FIRST(𝛽), cioè 𝛽 ⇒* 𝜀, allora tutti i terminali contenuti in FOLLOW(X ) sono contenuti anche in FOLLOW(Y ). 4 Tutti gli elementi di FOLLOW(Y ), Y ∈ N, si trovano applicando un numero finito di volte le regole precedenti. Calcolo di FOLLOW(Y ) 1 per tutte le variabili Y , poniamo FOLLOW(Y ) uguale a ciò che si ottiene applicando le regole 1. e 2. 2 aggiungiamo a tali insiemi i terminali ottenuti usando la regola 3 e i valori attuali degli insiemi FOLLOW(X ). 3 iteriamo il passo precedente, arrestandoci solo quando nessuno degli insiemi FOLLOW(Y ) subisce modifiche.
+Fissato $i = 0, . . . , n − 1$, si avrà $\alpha_i = uX \beta , \alpha_{i+1} = u\gamma\beta , X → \gamma$ in $P$ , con $u \in \Sigma^* , X \in N$ e $\beta \in V^*$, e anche $w\# = uv , \gamma\beta \overset{*}{\underset{L}\Rightarrow} v , v \in (\Sigma \cup {\#})^*$ . Sia $a$ la prima lettera di $v$. Allora si deve avere $a \in FIRST(\gamma)$ oppure $\gamma \Rightarrow^* \epsilon$ e $\beta \Rightarrow^* v$. In quest'ultimo caso, $\epsilon \in FIRST(\gamma)$ e $a \in FOLLOW(X )$. 
+
+*Conclusione:* Nel parsing, dobbiamo scegliere sempre produzioni $X → \gamma$ tali che il simbolo di look-ahead a soddisfi la condizione $a \in FIRST(\gamma)$ oppure $\epsilon \in FIRST(\gamma)$ e $a \in FOLLOW(X )$.
+
+**Tabella di parsing:** In presenza di $\epsilon-$produzioni, nella tabella di parsing dovremo inserire per ogni coppia $(X , a) \in N \times \Sigma$, le produzioni $X → \gamma$ tali che $a \in FIRST(\gamma)$ oppure $\epsilon \in FIRST(\gamma)$ e $a \in FOLLOW(X )$. 
+
+*Definizione:* Una grammatica non-contestuale $G$ si dice di classe LL(1) se per ogni coppia di produzioni distinte $X → \alpha | \gamma$ si ha 
+1. $FIRST(\alpha) \cap FIRST(\gamma) = \emptyset$, 
+2. se $\epsilon \in FIRST(\alpha)$, allora $\epsilon \notin FIRST(\gamma)$ e F$OLLOW(X ) \cap FIRST(\gamma) = \emptyset$. 
+
+Anche in questo caso, una grammatica è LL(1) se e solo se la sua tabella di parsing contiene al più una produzione in ogni ingresso. 
+
+**Calcolo di FIRST:** 
+1. se la prima lettera di $\alpha$ è un simbolo terminale $b$, allora $FIRST(\alpha) = b$; 
+2. se la prima lettera di $\alpha$ è una variabile $X$ , allora per ogni produzione $X → \beta$, i terminali di $FIRST(\beta)$ sono anche terminali di $FIRST(\alpha)$; 
+3. se la prima lettera di $\alpha$ è una variabile annullabile, allora le due condizioni precedenti sono verificate anche dalla seconda lettera di $\alpha$; se quest'ultima è una variabile annullabile, allora anche dalla terza, e così via; 
+4. se tutte le lettere di $\alpha$ sono variabili annullabili, allora $\epsilon \in FIRST(\alpha)$; 
+5. Tutti gli elementi di $FIRST(\alpha)$ con $\alpha$ lato destro di qualche produzione, si trovano applicando un numero finito di volte le regole precedenti. 
+
+*Calcolo di $FIRST(\alpha)$:* 
+1. Poniamo $FIRST(\alpha) = \emptyset$ per tutti i lati destri $\alpha$ delle produzioni di $G$. 
+2. Ricalcoliamo tali insiemi usando le regole 1–4 e i valori attuali degli insiemi $FIRST(\beta)$. 
+3. Iteriamo il passo precedente, arrestandoci solo quando nessuno degli insiemi $FIRST(\alpha)$ subisce modifiche. 
+
+> [!example]
+> Si consideri la grammatica con le produzioni $S → FQ | aSbS, F → CF | \epsilon, C → c, Q → q$. L'unica variabile annullabile è $F$. Calcolo di $FIRST$ sui lati destri delle produzioni:
+> 
+> ![[Pasted image 20260514103916.png|300]]
+
+**Calcolo di FOLLOW:** 
+1. L'insieme $FOLLOW(S)$ contiene $\#$. 
+2. Se c'è una produzione $X → \alpha Y \beta$ con $X , Y \in N, \alpha, \beta \in V^*$ , allora tutti i terminali contenuti in $FIRST(\beta)$ sono contenuti anche in $FOLLOW(Y )$. 
+3. Se inoltre $\epsilon \in FIRST(\beta)$, cioè $\beta \Rightarrow^* \epsilon$, allora tutti i terminali contenuti in $FOLLOW(X )$ sono contenuti anche in $FOLLOW(Y )$. 
+4. Tutti gli elementi di $FOLLOW(Y ), Y \in N$, si trovano applicando un numero finito di volte le regole precedenti. 
+
+*Calcolo di $FOLLOW(Y )$:* 
+1. per tutte le variabili $Y$ , poniamo $FOLLOW(Y )$ uguale a ciò che si ottiene applicando le regole 1. e 2. 
+2. aggiungiamo a tali insiemi i terminali ottenuti usando la regola e i valori attuali degli insiemi $FOLLOW(X )$. 
+3. iteriamo il passo precedente, arrestandoci solo quando nessuno degli insiemi $FOLLOW(Y )$ subisce modifiche.
 
 > [!example]
 > Si consideri la grammatica con le produzioni $S → FQ|aSbS, F → CF|\epsilon, C → c, Q →q$
 > 
 > ![[Pasted image 20260513161746.png|300]]
 
+### Proprietà di chiusura dei linguaggi non contestuali
+**Operazioni regolari:** 
+
+*Proposizione:* La classe dei linguaggi non contestuali è chiusa per le operazioni regolari: unione, concatenazione e chiusura di Kleene. 
+
+> [!example]
+> Le grammatiche $G_1$ e $G_2$ che hanno, rispettivamente, le produzioni $S → aSb | ab e S → bSa | ba$, generano i linguaggi $L_1 = \{a^nb^n | n > 0\}$ e $L_2 = \{b^n a^n | n > 0\}$. Consideriamo la grammatica con le produzioni $S → S_1 | S_2, S_1 → aS_1b | ab, S_2 → bS_2a | ba$. Tale grammatica genera il linguaggio $L = L_1 \cup L_2$. Invece la grammatica con le produzioni $S → S_1 S_2, S_1 → aS_1 b | ab, S_2 → bS_2 a | ba$ genera il linguaggio $L = L_1 L_2 = \{a^n b^n+m a m \}$. Infine, la grammatica con le produzioni $S → S_1 S | \epsilon, S_1 → aS_1 b | ab$ genera il linguaggio $L = L_1^* = {\epsilon} \cup \{a^{n_1} b^{n_1} a^{n_2} b^{n^2} · · · a^{n_k} b^{n_k} | k, n_1, . . . , n_k > 0\}$.  
+
+*Dimostrazione:* Siano $L_1 = L(G_1), L_2 = L(G_2)$ con $G_1 = \langle V_1, \Sigma, P_1, S_1\rangle$ e $G_2 = \langle V_2, \Sigma, P_2, S_2\rangle$. Possiamo supporre $N_1 \cap N_2 = \emptyset$. Costruiamo la grammatica $G = \langle V , \Sigma, P, S\rangle$ con:
+- $N = \{S\} \cup N_1 \cup N_2$, 
+- $P = P_1 \cup P_2 \cup \{S → S_1 | S_2\}$. 
+
+La grammatica $G$ genera $L_1 \cup L_2$. Costruiamo la grammatica $G = \langle V , \Sigma, P, S\rangle$ con 
+- $N = \{S\} \cup N_1 \cup N_2$, 
+- $P = P_1 \cup P_2 \cup {S → S_1 S_2}$. 
+
+La grammatica $G$ genera $L_1 L_2$. Costruiamo la grammatica $G = \langle V , \Sigma, P, S\rangle$ con 
+- $N = \{S\} \cup N_1$, 
+- $P = P_1 \cup {S → S_1 S | \epsilon}$. 
+
+La grammatica $G$ genera $L_1^*$  
+
+> [!example]
+> I linguaggi $L_1 = \{a^n b^n | n \geq 0\}, L_2 = \{b^n c^n | n \geq 0\}, a^* , c^*$ sono non contestuali. Per la proposizione precedente, lo saranno anche $$L_3 = L_1 c^* = \{a^n b^n c^m | m, n \geq 0\} \ , \ L_4 = a^*L_2 = \{a^m b^n c^n | m, n \geq 0\}$$ ma non la loro intersezione $$L_3 \cap L_4 = \{a^n b^n c^n | n \geq 0\}$$ *Pertanto:* La famiglia dei linguaggi non contestuali non è chiusa per intersezione né per complemento.  
+
+**Intersezione con linguaggi regolari:** 
+
+*Proposizione:* L'intersezione di un linguaggio non contestuale con un linguaggio regolare è un linguaggio non contestuale. 
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+  <div style="flex: 1;">
+    <img src="Pasted image 20260514112705.png" style="width: 100%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1.5;">
+  Dimostrazione: Un linguaggio regolare R è accettato da un automa a stati finiti A_1, Un linguaggio non contestuale L è accettato da un automa a pila A_2 con un solo stato, L'intersezione R ∩ L è accettata, per stato finale e pila vuota, da un automa a pila che simula A_1 e A_2 in parallelo.
+  </div>
+</div>
+
+**Linguaggio di Dick:** Il linguaggio di Dick $D_n$ è il linguaggio sull'alfabeto $\Sigma_n = \{a_1, a_2, … , a_n , b_1, b_2,…, b_n \}$. generato dalla grammatica con le produzioni $S → a_iSb_iS , i = 1, 2, . . . n , S → \epsilon$. 
+
+*Equivalentemente:* sequenze di parentesi ben bilanciate 
+
+Accettato dall'automa a pila deterministico 
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260514113127.png" width="300">
+</div>
+
+> [!example]
+> Sia $R = a_1^* b_1^*$ . Allora $$D_1 \cap R = \{a^{n_1} b^{n_1} | n \geq 0\}$$ Si ha $D_1 \cap a_1^* b_1^* = \{a^{n_1} b^{n_1} | n \geq 0\}$ e, come sappiamo, questo linguaggio è non contestuale. Sia $R = (a_1 + a_2)^* (b_1 + b_2)^*$ . Allora il linguaggio $$L = D_2 \cap R$$ è l'insieme delle parole $uv$ con $u \in \{a_1, a_2\}^*$ e $v$ ottenuta da $u$ sostituendo le lettere $a_1$ e $a_2$ rispettivamente con $b_1$ e $b_2$ e capovolgendo la parola ottenuta.  
+
+**Morfismi:** 
+
+*Definizione:* Un morfismo $f : \Sigma^* → \Gamma^*$ è una funzione tale che 
+- $f (\epsilon) = \{\epsilon\}$, 
+- $f (a_1 · · · a_n ) = f (a_1)· · · f (a_n )$, per ogni $a_1,… , a_n \in \Sigma, n > 0$. 
+
+*Osservazione:* Un morfismo è completamente determinato dalle immagini delle lettere. 
+
+> [!example] 
+> Sia $f : \{a, b\}^* → \{a, b\}^*$ il morfismo definito da $$f (a) = a \ , \ f (b) = bb$$ 
+> Per es., si ha $f (bab) = bbabb$. Se $L = \{a^n b^n | n \geq 0\}$, allora $f (L) = \{a^n b^{2n} | n \geq 0\}$.  
+
+**Chiusura:** 
+
+*Proposizione:* La classe dei linguaggi non contestuali è chiusa per morfismi. 
+
+> [!example] 
+> Sia $L = \{a^n b^n | n \geq 0\}$ e $f : \{a, b\}^* → \{a, b\}^*$ il morfismo definito da $$f (a) = a, f (b) = bb$$ L è generato dalla grammatica con produzioni $$S → aSb | \epsilon$$ $f (L)$ è generato dalla grammatica con produzioni $$S → ASB | \epsilon, A → a, B → bb$$.  
+
+**Teorema di rappresentazione:** 
+
+> [!example] 
+> Sia $D_2$ il linguaggio di Dick sull'alfabeto $\Sigma_2 = \{a_1, a_2, b_1, b_2\}, R = (a_1 + a_2)^* (b_1 + b_2)^*$ e $f : \Sigma^*_2 → \{a, b\}^*$ il morfismo definito da $$f (a_1) = f (b_1) = a, f (a_2) = f (b_2) = b$$ Allora $$f (D_2 \cap R)$$ è l'insieme delle palindrome pari sull'alfabeto $\Gamma$. 
+
+*Teorema (Chomsky, Schützenberger):* Un linguaggio $L$ è non contestuale se e soltanto se esistono un intero $k > 0$, un linguaggio regolare $R$ e un morfismo $f$ tali che $$L = f (D_k \cap R)$$

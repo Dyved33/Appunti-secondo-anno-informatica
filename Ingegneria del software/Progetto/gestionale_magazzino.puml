@@ -1,26 +1,15 @@
-' ============================================================
-' [1] DIAGRAMMA DEI CASI D'USO
-' ============================================================
-@startuml 01_UseCaseDiagram
-title Gestionale Magazzino — Use Case Diagram
+DIAGRAMMA DEI CASI D'USO
+
+@startuml UseCaseDiagram
+title Use Case Diagram
 
 skinparam actorStyle awesome
 skinparam packageStyle rectangle
-skinparam ArrowColor #444444
-skinparam ActorBorderColor #2E86AB
-skinparam ActorBackgroundColor #D6EAF8
-skinparam UsecaseBorderColor #1A5276
-skinparam UsecaseBackgroundColor #EBF5FB
-skinparam NoteBackgroundColor #FDFEFE
-skinparam NoteBorderColor #AAB7B8
 
 ' ─── ATTORI ───────────────────────────────────────────────
-actor "Fornitore"           as SUP  #D5E8D4
-actor "Magazziniere"        as WRK  #DAE8FC
-actor "Resp. Magazzino"     as MGR  #FFF2CC
-actor "Cliente"             as CLT  #F8CECC
-actor "Amministratore"      as ADM  #E1D5E7
-actor "Sistema (Scheduler)" as SYS  #F5F5F5
+actor "Magazziniere" as MAG 
+actor "Contabile" as CONT
+actor "Amministrazione" as ADM  
 
 ' ─── PACCHETTO: RICEZIONE MERCE ──────────────────────────
 package "Ricezione Merce" {
@@ -60,14 +49,14 @@ package "Reporting & Amministrazione" {
 SUP  --> UC_OA
 SUP  --> UC_DDT
 
-WRK  --> UC_RM
-WRK  --> UC_CQ
-WRK  --> UC_ST
-WRK  --> UC_AG
-WRK  --> UC_PP
-WRK  --> UC_GDT
-WRK  --> UC_RS
-WRK  --> UC_VS
+MAG  --> UC_RM
+MAG  --> UC_CQ
+MAG  --> UC_ST
+MAG  --> UC_AG
+MAG  --> UC_PP
+CONT --> UC_GDT
+CONT --> UC_RS
+CONT --> UC_VS
 
 MGR  --> UC_OA
 MGR  --> UC_INV
