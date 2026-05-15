@@ -1028,6 +1028,7 @@ Troviamo il più lungo prefisso $u$ di $w$ accettato da $A_D$ e il più piccolo 
   <img src="Pasted image 20260409155211.png" width="300">
 </div>
 ### Grammatiche regolari
+
 *Definizione:* una grammatica a struttura di frase $G = \langle V,\Sigma,P,S \rangle$ è di tipo 3 se tutte le produzioni hanno le forme: $X \rightarrow aY, X \rightarrow a$, con $X,Y \in N, a \in \Sigma$ (cioè una variabile mi può produrre o simbolo terminale oppure un simbolo terminale con un'altra variabile). Nel caso in cui $S$ non compaia nei lati destri delle produzioni è ammessa anche la produzione $S \rightarrow \epsilon$ 
 
 *Osservazione:* la produzione $S \rightarrow \epsilon$ serve esclusivamente per generare la parola vuota
@@ -1927,7 +1928,7 @@ Si verifica che $L_P (A) = L_P (A' )$.
 
 *Osservazione:* possiamo scartare le produzioni che iniziano con un terminale diverso dal simbolo di look-ahead
 
-**La funzione FIRST:*
+**La funzione FIRST:**
 
 *Definizione:* sia $G = \langle V, \Sigma, P,S \rangle$ una grammatica non contestuale priva di $\epsilon-$produzioni, la funzione FIRST: $V^+ → \wp(\Sigma)$ è definita da $$ FIRST(\alpha) = \{a \in \Sigma | \alpha \overset{*}{\Rightarrow} a\beta, \beta \in V^*\}, \alpha \in V^*$$
 In altri termini $FIRST(\alpha)$ è l'insieme dei terminali che possono comparire come prima ,lettera di una conseguenza di $\alpha$ 
@@ -2027,7 +2028,7 @@ Anche in questo caso, una grammatica è LL(1) se e solo se la sua tabella di par
 > [!example]
 > Le grammatiche $G_1$ e $G_2$ che hanno, rispettivamente, le produzioni $S → aSb | ab e S → bSa | ba$, generano i linguaggi $L_1 = \{a^nb^n | n > 0\}$ e $L_2 = \{b^n a^n | n > 0\}$. Consideriamo la grammatica con le produzioni $S → S_1 | S_2, S_1 → aS_1b | ab, S_2 → bS_2a | ba$. Tale grammatica genera il linguaggio $L = L_1 \cup L_2$. Invece la grammatica con le produzioni $S → S_1 S_2, S_1 → aS_1 b | ab, S_2 → bS_2 a | ba$ genera il linguaggio $L = L_1 L_2 = \{a^n b^n+m a m \}$. Infine, la grammatica con le produzioni $S → S_1 S | \epsilon, S_1 → aS_1 b | ab$ genera il linguaggio $L = L_1^* = {\epsilon} \cup \{a^{n_1} b^{n_1} a^{n_2} b^{n^2} · · · a^{n_k} b^{n_k} | k, n_1, . . . , n_k > 0\}$.  
 
-*Dimostrazione:* Siano $L_1 = L(G_1), L_2 = L(G_2)$ con $G_1 = \langle V_1, \Sigma, P_1, S_1\rangle$ e $G_2 = \langle V_2, \Sigma, P_2, S_2\rangle$. Possiamo supporre $N_1 \cap N_2 = \emptyset$. Costruiamo la grammatica $G = \langle V , \Sigma, P, S\rangle$ con:
+*Dimostrazione:* voglio esplicitare qual è la costruzione per realizzare la grammatica non contestuale che mi genera l'unione, la concatenazione o la chiusura di Kleene, date ,e grammatiche che mi generano i due linguaggi di partenza. Siano $L_1 = L(G_1), L_2 = L(G_2)$ con $G_1 = \langle V_1, \Sigma, P_1, S_1\rangle$ e $G_2 = \langle V_2, \Sigma, P_2, S_2\rangle$. Possiamo supporre $N_1 \cap N_2 = \emptyset$. Costruiamo la grammatica $G = \langle V , \Sigma, P, S\rangle$ con:
 - $N = \{S\} \cup N_1 \cup N_2$, 
 - $P = P_1 \cup P_2 \cup \{S → S_1 | S_2\}$. 
 
@@ -2042,9 +2043,10 @@ La grammatica $G$ genera $L_1 L_2$. Costruiamo la grammatica $G = \langle V , \S
 La grammatica $G$ genera $L_1^*$  
 
 > [!example]
-> I linguaggi $L_1 = \{a^n b^n | n \geq 0\}, L_2 = \{b^n c^n | n \geq 0\}, a^* , c^*$ sono non contestuali. Per la proposizione precedente, lo saranno anche $$L_3 = L_1 c^* = \{a^n b^n c^m | m, n \geq 0\} \ , \ L_4 = a^*L_2 = \{a^m b^n c^n | m, n \geq 0\}$$ ma non la loro intersezione $$L_3 \cap L_4 = \{a^n b^n c^n | n \geq 0\}$$ *Pertanto:* La famiglia dei linguaggi non contestuali non è chiusa per intersezione né per complemento.  
+> I linguaggi $L_1 = \{a^n b^n | n \geq 0\}, L_2 = \{b^n c^n | n \geq 0\}, a^* , c^*$ sono non contestuali. Per la proposizione precedente, lo saranno anche (otteniamo un linguaggio non contestuale) $$L_3 = L_1 c^* = \{a^n b^n c^m | m, n \geq 0\} \ , \ L_4 = a^*L_2 = \{a^m b^n c^n | m, n \geq 0\}$$ ma non la loro intersezione $$L_3 \cap L_4 = \{a^n b^n c^n | n \geq 0\}$$ *Pertanto:* La famiglia dei linguaggi non contestuali non è chiusa per intersezione né per complemento.  
 
 **Intersezione con linguaggi regolari:** 
+Se faccio l’intersezione non è detto che mi venga fuori un linguaggio non- contestuale (infatti quello dell’esempio non è non-contestuale). Però se uno è non contestuale e l’altro è regolare, sono certo che mi venga fuori un linguaggio non contestuale. 
 
 *Proposizione:* L'intersezione di un linguaggio non contestuale con un linguaggio regolare è un linguaggio non contestuale. 
 
@@ -2057,7 +2059,7 @@ La grammatica $G$ genera $L_1^*$
   </div>
 </div>
 
-**Linguaggio di Dick:** Il linguaggio di Dick $D_n$ è il linguaggio sull'alfabeto $\Sigma_n = \{a_1, a_2, … , a_n , b_1, b_2,…, b_n \}$. generato dalla grammatica con le produzioni $S → a_iSb_iS , i = 1, 2, . . . n , S → \epsilon$. 
+**Linguaggio di Dick:** Il linguaggio di Dick $D_n$ è il linguaggio sull'alfabeto $\Sigma_n = \{a_1, a_2, … , a_n , b_1, b_2,…, b_n \}$. generato dalla grammatica con le produzioni $S → a_iSb_iS , i = 1, 2, . . . n , S → \epsilon$ (non contestuale)
 
 *Equivalentemente:* sequenze di parentesi ben bilanciate 
 
@@ -2072,8 +2074,10 @@ Accettato dall'automa a pila deterministico
 **Morfismi:** 
 
 *Definizione:* Un morfismo $f : \Sigma^* → \Gamma^*$ è una funzione tale che 
-- $f (\epsilon) = \{\epsilon\}$, 
-- $f (a_1 · · · a_n ) = f (a_1)· · · f (a_n )$, per ogni $a_1,… , a_n \in \Sigma, n > 0$. 
+- $f (\epsilon) = \{\epsilon\}$: la parola vuota vale la parola vuota
+- $f (a_1 · · · a_n ) = f (a_1)· · · f (a_n )$, per ogni $a_1,… , a_n \in \Sigma, n > 0$: una parola che è la concatenazione dei n lettere, l'immagine si trova anche concatenando l'imagine delle lettere
+
+Cioè è una funzione che definita sull'alfabeto $\Sigma$ mi restituisce parole sull'alfabeto $\Gamma$ 
 
 *Osservazione:* Un morfismo è completamente determinato dalle immagini delle lettere. 
 
@@ -2083,7 +2087,7 @@ Accettato dall'automa a pila deterministico
 
 **Chiusura:** 
 
-*Proposizione:* La classe dei linguaggi non contestuali è chiusa per morfismi. 
+*Proposizione:* La classe dei linguaggi non contestuali è chiusa per morfismi. Cioè se prendo un linguaggio non contestuale e un morfismo, faccio l'immagine di tutte le parole del linguaggio non contestuale, ottengo un nuovo linguaggio anche lui non contestuale 
 
 > [!example] 
 > Sia $L = \{a^n b^n | n \geq 0\}$ e $f : \{a, b\}^* → \{a, b\}^*$ il morfismo definito da $$f (a) = a, f (b) = bb$$ L è generato dalla grammatica con produzioni $$S → aSb | \epsilon$$ $f (L)$ è generato dalla grammatica con produzioni $$S → ASB | \epsilon, A → a, B → bb$$.  
