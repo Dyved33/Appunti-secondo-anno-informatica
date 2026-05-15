@@ -3,6 +3,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#define MY_LOCAL_Socket"/tmp"
+
 #define MY_PORT		5152
 #define MY_IP		"10.0.2.15"
 
