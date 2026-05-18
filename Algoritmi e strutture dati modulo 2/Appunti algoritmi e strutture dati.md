@@ -1,4 +1,4 @@
-### Alberi binari
+Proce### Alberi binari
 Le linked lists vanno bene per rappresentare delle relazioni lineari (non tutte le relazioni sono lineari). In particolare ci concentriamo sul problema di rappresentare un albero costruito a partire da una linked data structure. Ogni nodo dell'albero è un oggetto e supponiamo che ogni nodo dell'albero contenga un attributo chiave (key). L'altro attributo d'interesse sono i puntatori che connettono ogni nodo agli altri. Un **albero binario** è un grafo non orientato rappresentato con i puntatori, caratterizzato dal fatto che ogni nodo ha al massimo due figli, uno destro e uno sinistro:
  - Ogni nodo è definito con 3 puntatori, $p,\space left,\space right$, in cui $p$ è  il puntatore al nodo padre; il nodo $left$ è il puntatore al figlio sinistro e il nodo $right$ è il puntatore al figlio destro.
  - Se il nodo $x$ non ha figli sinistri, il puntatore $left$ è inizializzato a $NIL$. Analogamente per il caso destro.
@@ -63,7 +63,8 @@ treeSearch(x,k)
     return x
  if k < x.key
     return treeSearch(x.left,k)
- else return treeSearch(x.right,k)
+ else 
+ 	return treeSearch(x.right,k)
  
  iterativeTreeSearch(x,k)
   while x != NIL && k != x.key
@@ -109,6 +110,7 @@ treeSuccessor(x)
 Tale procedura presenta 2 casi:
  - il sotto-albero destro di x è non vuoto => il successore di x è il nodo più a sinistra nel sotto-albero destro di x.
  - Il sotto-albero destro di x è vuoto e x ha un successore y => y è il più piccolo "genitore" di x il cui figlio (di y) è a sua volta un "genitore" di x
+ 
  L'algoritmo per trovare il successore di un nodo richiede $O(h)$ tempo per un albero di altezza h in quanto segue o un *path-up* o un *path-down* dell'albero. Anche la procedura per trovare un predecessore, dato che è simmetrica a quella per trovare il successore, ha costo $O(h)$
 
 **Inserimento:** Sia la procedura di inserimento che quella di eliminazione causano delle modifiche all'albero (per rispettare le proprietà degli alberi binari di ricerca). La procedura per inserire un nodo dentro ad un albero binario di ricerca richiede un albero *T* e un nodo *z* la cui chiave deve essere già riempita con *z.left* = $NIL$ e *z.right* = $NIL$. 
