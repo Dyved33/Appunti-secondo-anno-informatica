@@ -1,0 +1,93 @@
+@startuml DomainModel_GestionaleMagazzino
+
+skinparam class {
+  BackgroundColor #FAFAFA
+  BorderColor     #333333
+  ArrowColor      #555555
+}
+skinparam classAttributeIconSize 0
+hide methods
+hide circle
+
+' ── NOTA: Il Domain Model è concettuale.
+'    Nessun tipo, nessun id tecnico, nessun metodo.
+'    Solo concetti del dominio, attributi essenziali e relazioni significative.
+
+class Utente {
+  username
+  nome
+  cognome
+  ruolo
+}
+
+class Categoria {
+  codice
+  nome
+  descrizione
+}
+
+class Prodotto {
+  codice
+  nome
+  descrizione
+  unitàMisura
+  prezzoUnitario
+}
+
+class Giacenza {
+  quantitàDisponibile
+}
+
+class OrdineEntrata {
+  numero
+  data
+  stato
+  note
+}
+
+class OrdineUscita {
+  numero
+  data
+  stato
+  note
+}
+
+class RigaOrdineEntrata {
+  quantità
+  prezzoUnitario
+}
+
+class RigaOrdineUscita {
+  quantità
+}
+
+class DDT {
+  numero
+  data
+  note
+}
+
+' ── ASSOCIAZIONI ────────────────────────────────────
+
+' Un prodotto appartiene a una categoria
+Prodotto       "0..*" --> "1"    Categoria          : appartiene a
+
+' La giacenza traccia lo stock corrente di un prodotto
+Giacenza       "1"    --  "1"    Prodotto            : traccia stock di
+
+' Gli ordini contengono righe (composizione: le righe non esistono senza l'ordine)
+OrdineEntrata  "1"    *-- "1..*" RigaOrdineEntrata   : contiene
+OrdineUscita   "1"    *-- "1..*" RigaOrdineUscita    : contiene
+
+' Ogni riga riguarda un prodotto
+RigaOrdineEntrata "1..*" --> "1" Prodotto            : riguarda
+RigaOrdineUscita  "1..*" --> "1" Prodotto            : riguarda
+
+' Un ordine di uscita può generare un DDT
+OrdineUscita   "1"    --> "0..1" DDT                 : genera
+
+' Un utente registra ordini
+Utente         "1"    --> "0..*" OrdineEntrata        : registra
+Utente         "1"    --> "0..*" OrdineUscita         : registra
+
+@enduml

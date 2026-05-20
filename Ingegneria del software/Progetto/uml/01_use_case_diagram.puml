@@ -1,0 +1,115 @@
+@startuml UC_GestionaleMagazzino
+
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #FAFAFA
+  BorderColor     #333333
+  ArrowColor      #555555
+}
+skinparam actor {
+  BackgroundColor #E8F4FD
+  BorderColor     #2980B9
+}
+
+left to right direction
+
+' ── ATTORI ──────────────────────────────────────────
+actor "Magazziniere"   as Mag
+actor "Contabile"      as Cont
+actor "Amministratore" as Admin
+
+' L'Amministratore eredita tutte le capacità del Magazziniere
+Admin --|> Mag
+
+' ── SISTEMA ─────────────────────────────────────────
+rectangle "Gestionale Magazzino" {
+
+  package "Autenticazione" {
+    usecase "Effettuare Login"       as UC_Login
+    usecase "Validare Credenziali"   as UC_ValCred
+    usecase "Recuperare Password"    as UC_RecPwd
+  }
+
+  package "Gestione Prodotti" {
+    usecase "Visualizzare Catalogo"  as UC_VisCat
+    usecase "Ricercare Prodotto"     as UC_Search
+    usecase "Aggiungere Prodotto"    as UC_AddProd
+    usecase "Modificare Prodotto"    as UC_ModProd
+    usecase "Eliminare Prodotto"     as UC_DelProd
+    usecase "Validare Dati Prodotto" as UC_ValProd
+    usecase "Gestire Categorie"      as UC_Cat
+  }
+
+  package "Gestione Inventario" {
+    usecase "Visualizzare Giacenze"      as UC_VisGiac
+    usecase "Aggiornare Giacenze"        as UC_AggGiac
+    usecase "Eseguire Inventario Fisico" as UC_InvFis
+    usecase "Esportare Report Giacenze"  as UC_RepGiac
+  }
+
+  package "Gestione Ordini" {
+    usecase "Registrare Ordine Entrata" as UC_OrdIn
+    usecase "Registrare Ordine Uscita"  as UC_OrdOut
+    usecase "Visualizzare Ordini"       as UC_VisOrd
+    usecase "Verificare Disponibilità"  as UC_VerDisp
+    usecase "Generare DDT"              as UC_DDT
+    usecase "Approvare Ordine"          as UC_AppOrd
+    usecase "Generare Report Ordini"    as UC_RepOrd
+  }
+
+  ' ── ASSOCIAZIONI ATTORE → CASO D'USO ────────────
+  Mag  --> UC_Login
+  Cont --> UC_Login
+
+  Mag  --> UC_VisCat
+  Mag  --> UC_OrdIn
+  Mag  --> UC_OrdOut
+  Mag  --> UC_VisGiac
+  Mag  --> UC_InvFis
+  Mag  --> UC_VisOrd
+
+  Cont --> UC_VisOrd
+  Cont --> UC_VisGiac
+  Cont --> UC_RepOrd
+  Cont --> UC_RepGiac
+
+  Admin --> UC_AddProd
+  Admin --> UC_ModProd
+  Admin --> UC_DelProd
+  Admin --> UC_Cat
+  Admin --> UC_AppOrd
+
+  ' ── RELAZIONI <<include>> ────────────────────────
+  ' Il login include sempre la validazione delle credenziali
+  UC_Login   ..> UC_ValCred : <<include>>
+
+  ' La visualizzazione catalogo include la ricerca (search bar integrata)
+  UC_VisCat  ..> UC_Search  : <<include>>
+
+  ' Aggiungere/Modificare un prodotto richiede sempre la validazione dei dati
+  UC_AddProd ..> UC_ValProd : <<include>>
+  UC_ModProd ..> UC_ValProd : <<include>>
+
+  ' Un ordine di uscita verifica SEMPRE la disponibilità prima di procedere
+  UC_OrdOut  ..> UC_VerDisp : <<include>>
+
+  ' Qualsiasi movimento aggiorna sempre le giacenze
+  UC_OrdIn   ..> UC_AggGiac : <<include>>
+  UC_OrdOut  ..> UC_AggGiac : <<include>>
+
+  ' ── RELAZIONI <<extend>> ─────────────────────────
+  ' Durante il login, l'utente PUÒ recuperare la password (se dimenticata)
+  UC_RecPwd  ..> UC_Login  : <<extend>>
+
+  ' Al termine di un ordine uscita, si PUÒ generare il DDT (non sempre richiesto)
+  UC_DDT     ..> UC_OrdOut : <<extend>>
+
+  ' Un ordine di entrata PUÒ richiedere approvazione (es. sopra una certa soglia di valore)
+  UC_AppOrd  ..> UC_OrdIn  : <<extend>>
+
+  ' Dall'inventario fisico si PUÒ aggiornare le giacenze se ci sono discrepanze
+  UC_AggGiac ..> UC_InvFis : <<extend>>
+}
+
+@enduml

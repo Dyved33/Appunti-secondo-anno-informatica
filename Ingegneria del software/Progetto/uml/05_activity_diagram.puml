@@ -1,0 +1,87 @@
+@startuml AD_RegistraOrdineUscita
+
+' Scenario: Registrare Ordine di Uscita
+' Vista complementare al Sequence Diagram: mostra il flusso di processo end-to-end
+' con le decisioni, i rami alternativi e le responsabilità per ruolo (swimlane).
+
+skinparam activity {
+  BackgroundColor #FAFAFA
+  BorderColor     #333333
+  ArrowColor      #555555
+  StartColor      #2C3E50
+  EndColor        #2C3E50
+  DiamondBackgroundColor #FFF9E6
+  DiamondBorderColor #B8860B
+  BarColor        #2C3E50
+}
+skinparam swimlane {
+  BorderColor #AAAAAA
+  TitleFontStyle bold
+}
+
+|Magazziniere|
+start
+:Avvia nuovo ordine di uscita;
+
+|Sistema|
+:Crea bozza OrdineUscita;
+note right : stato = BOZZA
+
+' ── Ciclo di aggiunta righe ─────────────────────────
+|Magazziniere|
+repeat
+
+  :Seleziona prodotto e inserisce quantità desiderata;
+
+  |Sistema|
+  :Verifica disponibilità in Giacenza;
+
+  if (quantità disponibile >= quantità richiesta?) then (sì)
+    :Aggiunge RigaOrdineUscita all'ordine;
+    |Magazziniere|
+    :Visualizza riga confermata;
+  else (no)
+    |Magazziniere|
+    :Riceve avviso "Quantità non disponibile";
+    :Modifica la quantità o rimuove il prodotto;
+  endif
+
+repeat while (vuole aggiungere altri prodotti?) is (sì)
+->no;
+
+' ── Conferma ordine ─────────────────────────────────
+:Richiede conferma dell'ordine;
+
+|Sistema|
+if (l'ordine contiene almeno una riga?) then (sì)
+
+  ' Fork: aggiornamento giacenze (può avvenire in parallelo con persistenza ordine)
+  fork
+    :Aggiorna Giacenza per ogni riga\n(sottrae quantità disponibile);
+  fork again
+    :Imposta stato OrdineUscita = CONFERMATO;
+  end fork
+
+  |Magazziniere|
+  :Visualizza riepilogo ordine confermato;
+
+  ' ── Generazione DDT (opzionale) ─────────────────
+  if (vuole generare il DDT?) then (sì)
+    |Sistema|
+    :Genera documento DDT\nassociato all'ordine;
+    |Magazziniere|
+    :Visualizza e scarica DDT;
+  endif
+
+  :Operazione completata con successo;
+
+else (no)
+  |Sistema|
+  :Mostra errore "Impossibile confermare:\nordine privo di righe";
+  |Magazziniere|
+  :Aggiunge almeno una riga o annulla l'operazione;
+endif
+
+stop
+
+@enduml

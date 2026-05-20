@@ -1,0 +1,107 @@
+@startuml SD_RegistraOrdineUscita
+
+' Scenario: Registrare Ordine di Uscita
+' Flusso principale: il Magazziniere apre un nuovo ordine, aggiunge righe prodotto,
+' il sistema verifica la disponibilità per ogni riga, conferma l'ordine e aggiorna
+' le giacenze. Il DDT è opzionale.
+
+skinparam sequence {
+  ArrowColor      #555555
+  LifeLineBorderColor #333333
+  ParticipantBackgroundColor #FAFAFA
+  ParticipantBorderColor #333333
+  ActorBackgroundColor #E8F4FD
+  ActorBorderColor #2980B9
+  BoxBackgroundColor #F4F8FF
+}
+
+actor      "Magazziniere"     as Mag
+boundary   "ui:UI"            as UI
+control    "svc:OrdineService" as OrdSvc
+control    "inv:GiacenzaService" as InvSvc
+control    "ddt:DDTService"   as DDTSvc
+entity     "ord:OrdineUscita" as Ord
+
+' ── 1. Apertura nuovo ordine ────────────────────────
+Mag -> UI : nuovoOrdineUscita()
+activate UI
+
+UI -> OrdSvc : creaOrdineUscita()
+activate OrdSvc
+
+OrdSvc -> Ord ** : <<create>>
+note right of Ord : stato = BOZZA
+
+OrdSvc --> UI : ordineCreato(ord)
+deactivate OrdSvc
+
+UI --> Mag : mostraFormOrdine()
+
+' ── 2. Aggiunta righe (loop su più prodotti) ────────
+loop [per ogni prodotto che il Magazziniere vuole aggiungere]
+
+  Mag -> UI : aggiungiRiga(prodotto, quantità)
+  activate UI
+
+  UI -> OrdSvc : aggiungiRiga(ord, prodotto, quantità)
+  activate OrdSvc
+
+  OrdSvc -> InvSvc : verificaDisponibilità(prodotto, quantità)
+  activate InvSvc
+  InvSvc --> OrdSvc : esitoDisponibilità
+  deactivate InvSvc
+
+  alt [disponibilità >= quantità richiesta]
+    OrdSvc -> Ord : aggiungiRigaOrdineUscita(prodotto, quantità)
+    OrdSvc --> UI : rigaAggiunta(OK)
+    UI --> Mag : visualizzaRigaConfermata()
+  else [disponibilità < quantità richiesta]
+    OrdSvc --> UI : errore("Quantità non disponibile")
+    UI --> Mag : visualizzaErroreDisponibilità()
+  end
+
+  deactivate OrdSvc
+  deactivate UI
+
+end
+
+' ── 3. Conferma ordine ──────────────────────────────
+Mag -> UI : confermaOrdine()
+activate UI
+
+UI -> OrdSvc : confermaOrdine(ord)
+activate OrdSvc
+
+OrdSvc -> OrdSvc : verificaOrdineNonVuoto(ord)
+
+break [ordine privo di righe]
+  OrdSvc --> UI : errore("Impossibile confermare: ordine vuoto")
+  UI --> Mag : visualizzaErroreOrdineVuoto()
+end
+
+' Aggiornamento giacenze per tutte le righe dell'ordine
+OrdSvc -> InvSvc : aggiornaGiacenze(ord.righe)
+activate InvSvc
+InvSvc --> OrdSvc : giacenzeAggiornate(OK)
+deactivate InvSvc
+
+OrdSvc -> Ord : setStato(CONFERMATO)
+OrdSvc --> UI : ordineConfermato(OK)
+deactivate OrdSvc
+
+UI --> Mag : visualizzaRiepilogoOrdine()
+
+' ── 4. Generazione DDT (opzionale) ──────────────────
+opt [Magazziniere richiede generazione DDT]
+  Mag -> UI : generaDDT()
+  UI -> DDTSvc : generaDDT(ord)
+  activate DDTSvc
+  DDTSvc --> UI : ddt(OK)
+  deactivate DDTSvc
+  UI --> Mag : visualizzaDDT(ddt)
+end
+
+UI --> Mag : confermaFinalizzazione()
+deactivate UI
+
+@enduml
