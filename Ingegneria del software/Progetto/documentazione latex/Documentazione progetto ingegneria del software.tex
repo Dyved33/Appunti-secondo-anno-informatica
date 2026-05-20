@@ -1,0 +1,81 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{enumitem}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\title{Documentazione Software}
+\author{}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section{Specifica e Requisiti}
+	Problema affrontato e come. Vanno documentati i requisiti funzionali e non funzionali, i vincoli e le metriche di successo.
+	
+	\subsection{Identificazione dei vincoli e analisi del dominio}
+	Bisogna mettere per iscritto i limiti organizzativi, le tecnologie imposte e il contesto in cui il sistema opererà.
+	
+	\subsection{Requisiti Funzionali}
+	Una descrizione chiara delle azioni che il sistema deve permettere e i servizi che deve offrire. Devono specificare nel dettaglio interazioni come inserire, modificare, cancellare dati o avviare procedure.
+	
+	\subsection{Requisiti Non Funzionali}
+	Documentazione di come il sistema deve comportarsi in termini di qualità e limiti. Devono includere aspettative su prestazioni, sicurezza, affidabilità, accessibilità, compatibilità e rispetto delle normative esterne (es. privacy).
+	
+	\subsection{Requisiti Misurabili (Metriche)}
+	Gli obiettivi vaghi (come ``il sistema deve essere veloce'') devono essere obbligatoriamente riscritti e documentati come requisiti oggettivi, misurabili e verificabili (es. ``rispondere entro 2 secondi per il 95\% delle richieste'').
+	
+	\subsection{Livelli di Requisiti}
+	I requisiti devono essere scritti tenendo conto di due prospettive:
+	\begin{itemize}
+		\item \textbf{Lato utente}: usando un linguaggio semplice orientato ai bisogni.
+		\item \textbf{Lato sistema}: una descrizione tecnica più precisa per guidare l'implementazione.
+	\end{itemize}
+	
+	\section{Artefatti di Pianificazione Agili (Scrum)}
+	
+	Se si utilizzano metodi agili, la documentazione tradizionale viene sostituita o affiancata da artefatti testuali specifici.
+	
+	\subsection{Product Backlog}
+	L'elenco scritto e ordinato di tutte le funzionalità, i miglioramenti e i bug che devono essere gestiti nel sistema.
+	
+	\subsection{Epic}
+	Documentazione di macro-aree funzionali del sistema da cui poi derivare compiti più piccoli.
+	
+	\subsection{User Stories}
+	Brevi frasi scritte dal punto di vista dell'utente che popolano il backlog. Devono essere redatte seguendo una forma ben precisa:
+	
+	\begin{quote}
+		«Come (tipo di utente), voglio (azione) per (obiettivo/beneficio)».
+	\end{quote}
+	
+	\subsection{Criteri di Accettazione}
+	Condizioni scritte esplicitamente per ogni singola User Story. Stabiliscono con chiarezza oggettiva quando una specifica funzionalità può essere considerata completata in via definitiva.
+	
+	\section{Documentazione Tecnica e di Progetto}
+	
+	Questa è la documentazione necessaria per non far collassare il sistema sotto il suo stesso debito tecnico e per guidare chi sviluppa e mantiene il codice.
+	
+	\subsection{Decisioni Progettuali}
+	Bisogna documentare le scelte architetturali prese. Questo serve per rendere esplicito il modo di lavorare ed evitare che si diventi incapaci di capire in futuro il perché sono state fatte certe scelte strutturali.
+	
+	\subsection{Documentazione Mirata (Back-end)}
+	Testi che spiegano l'architettura, la struttura interna del codice e le dipendenze tra i moduli. Deve supportare la comprensione tecnica del sistema senza però risultare troppo pesante.
+	
+	\subsection{Progettazione dei Test}
+	Sulla base dei requisiti verificabili raccolti, vanno redatti i test (e gli aggiornamenti dei test stessi nel tempo) per provare oggettivamente che il sistema si comporti come atteso.
+	
+	\section{Documentazione di Processo (es. Modello Waterfall)}
+	
+	Nei modelli più tradizionali come il Waterfall (a cascata), la produzione documentale è uno dei pilastri centrali dello sviluppo.
+	
+	\subsection{Documentazione iniziale (Forte)}
+	Documenti corposi scritti all'inizio del progetto che servono come ``contratto'' e input per le fasi successive. Questa documentazione va stilata per garantire la tracciabilità delle decisioni, per poter svolgere audit/verifiche formali e per mantenere l'allineamento perfetto tra i team tecnici e le figure non tecniche (committenti, utenti).
+	
+\end{document}
