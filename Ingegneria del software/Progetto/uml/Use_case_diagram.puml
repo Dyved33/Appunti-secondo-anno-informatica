@@ -2,11 +2,19 @@
 
 skinparam packageStyle rectangle
 skinparam actorStyle awesome
+
+skinparam package {
+  BackgroundColor #f9f9f9
+  BorderColor     #888177
+  Shadowing       false
+}
+
 skinparam usecase {
-  BackgroundColor #FAFAFA
   BorderColor     #333333
   ArrowColor      #555555
+  BackgroundColor #f1d5f5
 }
+
 skinparam actor {
   BackgroundColor #E8F4FD
   BorderColor     #2980B9
@@ -19,8 +27,8 @@ actor "Magazziniere"   as Mag
 actor "Contabile"      as Cont
 actor "Amministratore" as Admin
 
-' L'Amministratore eredita tutte le capacità del Magazziniere
-Admin --|> Mag
+' L'Amministratore eredita tutte le capacità del Magazziniere DA CONTROLLARE SE HA SENSO
+Admin --|> Mag   
 
 ' ── SISTEMA ─────────────────────────────────────────
 rectangle "Gestionale Magazzino" {
@@ -86,6 +94,7 @@ rectangle "Gestionale Magazzino" {
 
   ' La visualizzazione catalogo include la ricerca (search bar integrata)
   UC_VisCat  ..> UC_Search  : <<include>>
+  UC_DelProd  ..> UC_Search  : <<include>>
 
   ' Aggiungere/Modificare un prodotto richiede sempre la validazione dei dati
   UC_AddProd ..> UC_ValProd : <<include>>
@@ -97,13 +106,11 @@ rectangle "Gestionale Magazzino" {
   ' Qualsiasi movimento aggiorna sempre le giacenze
   UC_OrdIn   ..> UC_AggGiac : <<include>>
   UC_OrdOut  ..> UC_AggGiac : <<include>>
+  UC_OrdOut  ..> UC_DDT : <<include>>
 
   ' ── RELAZIONI <<extend>> ─────────────────────────
   ' Durante il login, l'utente PUÒ recuperare la password (se dimenticata)
-  UC_RecPwd  ..> UC_Login  : <<extend>>
-
-  ' Al termine di un ordine uscita, si PUÒ generare il DDT (non sempre richiesto)
-  UC_DDT     ..> UC_OrdOut : <<extend>>
+  UC_Login  ..> UC_RecPwd : <<extend>>
 
   ' Un ordine di entrata PUÒ richiedere approvazione (es. sopra una certa soglia di valore)
   UC_AppOrd  ..> UC_OrdIn  : <<extend>>

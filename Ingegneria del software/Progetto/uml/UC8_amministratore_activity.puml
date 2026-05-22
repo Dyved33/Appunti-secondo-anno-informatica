@@ -1,0 +1,83 @@
+@startuml UC8_Amministratore_AD
+
+skinparam activity {
+  BackgroundColor #FAFAFA
+  BorderColor #333333
+  ArrowColor #555555
+  DiamondBackgroundColor #FFF9E6
+  DiamondBorderColor #B8860B
+}
+
+|Amministratore|
+start
+:Sceglie sezione da gestire;
+
+if (Merci?) then (sì)
+  |Sistema|
+  :Carica e mostra merci con valore totale;
+
+  |Amministratore|
+  if (vuole agire su un prodotto?) then (sì)
+    :Seleziona prodotto;
+
+    if (Modifica?) then (sì)
+      :Inserisce nuovi dati;
+
+      |Sistema|
+      :Aggiorna prodotto;
+
+    else (no — Elimina)
+      |Sistema|
+      :Elimina prodotto;
+    endif
+
+    |Amministratore|
+    :Visualizza conferma;
+  endif
+
+else (no)
+  if (Fatture?) then (sì)
+    |Sistema|
+    :Carica e mostra elenco fatture;
+
+    |Amministratore|
+    if (vuole agire su una fattura?) then (sì)
+      :Seleziona fattura;
+
+      if (Annulla?) then (sì)
+        |Sistema|
+        :Imposta stato Fattura = ANNULLATA;
+
+      else (no — Elimina)
+        |Sistema|
+        :Elimina fattura;
+      endif
+
+      |Amministratore|
+      :Visualizza conferma;
+    endif
+
+  else (no — Resi)
+    |Sistema|
+    :Carica e mostra elenco resi;
+
+    |Amministratore|
+    :Seleziona un reso;
+
+    if (Approva?) then (sì)
+      |Sistema|
+      :Imposta stato Reso = APPROVATO;
+
+    else (no — Rifiuta)
+      |Sistema|
+      :Imposta stato Reso = RIFIUTATO;
+    endif
+
+    |Amministratore|
+    :Visualizza conferma;
+  endif
+endif
+
+stop
+
+@enduml

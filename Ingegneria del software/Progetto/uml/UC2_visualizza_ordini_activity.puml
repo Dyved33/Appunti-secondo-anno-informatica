@@ -1,0 +1,29 @@
+@startuml UC2_VisualizzaOrdini_AD
+
+skinparam activity {
+  BackgroundColor #FAFAFA
+  BorderColor #333333
+  ArrowColor #555555
+  DiamondBackgroundColor #FFF9E6
+  DiamondBorderColor #B8860B
+}
+
+|Magazziniere|
+start
+:Apre sezione Ordini;
+
+|Sistema|
+:Carica e mostra elenco ordini\n(entrata e uscita);
+
+|Magazziniere|
+if (vuole vedere il dettaglio di un ordine?) then (sì)
+  :Seleziona un ordine dall'elenco;
+
+  |Sistema|
+  :Carica e mostra dettaglio ordine\ncon righe prodotto;
+
+endif
+
+stop
+
+@enduml

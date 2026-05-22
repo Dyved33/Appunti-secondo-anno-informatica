@@ -1,0 +1,120 @@
+@startuml ClassDiagram_GestionaleMagazzino
+
+skinparam class {
+  BackgroundColor #FAFAFA
+  BorderColor     #333333
+  ArrowColor      #555555
+}
+skinparam classAttributeIconSize 0
+hide methods
+hide circle
+
+' ── ENUM ────────────────────────────────────
+
+enum Ruolo {
+  MAGAZZINIERE
+  CONTABILE
+  AMMINISTRATORE
+}
+
+enum StatoOrdineEntrata {
+  BOZZA
+  IN_APPROVAZIONE
+  APPROVATO
+  RICEVUTO
+  ANNULLATO
+}
+
+enum StatoOrdineUscita {
+  BOZZA
+  CONFERMATO
+  EVASO
+  ANNULLATO
+}
+
+' ── CLASSI ──────────────────────────────────────────
+
+class Utente {
+  # id           : int
+  # passwordHash : String
+  + nome         : String
+  + cognome      : String
+  + ruolo        : Ruolo
+}
+
+class Categoria {
+  # id          : int
+  # codice      : String
+  + nome        : String
+  + descrizione : String
+}
+
+class Prodotto {
+  # id             : int
+  # codice         : String
+  + nome           : String
+  + descrizione    : String
+  + unitàMisura    : String
+  - prezzoUnitario : double
+}
+
+class Giacenza {
+  # id                   : int
+  # quantitàDisponibile  : int
+}
+
+class OrdineEntrata {
+  # id     : int
+  # numero : String
+  # data   : LocalDate
+  # stato  : StatoOrdineEntrata
+  # note   : String
+}
+
+class OrdineUscita {
+  # id     : int
+  # numero : String
+  # data   : LocalDate
+  # stato  : StatoOrdineUscita
+  # note   : String
+}
+
+class RigaOrdineEntrata {
+  # id             : int
+  # quantità       : int
+  # prezzoUnitario : double
+}
+
+class RigaOrdineUscita {
+  # id       : int
+  # quantità : int
+}
+
+class DDT {
+  # id     : int
+  # numero : String
+  # data   : LocalDate
+  # note   : String
+}
+
+' ── RELAZIONI ───────────────────────────────────────
+
+Prodotto           -->     Categoria            : appartiene a
+
+' Composizione: la Giacenza dipende dall'esistenza del Prodotto
+Prodotto             *--      Giacenza             : tiene traccia in
+
+' Composizione: le righe non esistono senza l'ordine padre
+OrdineEntrata        *--   RigaOrdineEntrata    : contiene
+OrdineUscita          *--  RigaOrdineUscita     : contiene
+
+RigaOrdineEntrata  -->      Prodotto             : riguarda
+RigaOrdineUscita  -->     Prodotto             : riguarda
+
+' Un ordine di uscita può generare al più un DDT
+OrdineUscita         -->   DDT                  : genera
+
+Utente                -->   OrdineEntrata         : registra
+Utente               -->   OrdineUscita          : registra
+
+@enduml

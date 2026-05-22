@@ -1,0 +1,105 @@
+@startuml UC8_Amministratore_SD
+
+skinparam sequence {
+  ArrowColor      #555555
+  ParticipantBackgroundColor #FAFAFA
+  ParticipantBorderColor #333333
+  ActorBackgroundColor #E8F4FD
+  ActorBorderColor #2980B9
+}
+
+actor    "Amministratore"      as Admin
+boundary "ui:UI"               as UI
+control  "svc:ProdottoService" as ProdSvc
+control  "svc:FatturaService"  as FatSvc
+control  "svc:ResoService"     as ResoSvc
+
+' ── 1. Gestione Merci ────────────────────────────────
+group Gestione Merci
+  Admin -> UI : apriMerci()
+  activate UI
+  UI -> ProdSvc : getProdottiConValore()
+  activate ProdSvc
+  ProdSvc --> UI : listaProdottiConValore
+  deactivate ProdSvc
+  UI --> Admin : mostraMerciConValoreTotale()
+
+  alt [Admin modifica un prodotto]
+    Admin -> UI : modificaProdotto(prodotto, dati)
+    UI -> ProdSvc : aggiornaProdotto(prodotto.id, dati)
+    activate ProdSvc
+    ProdSvc --> UI : prodottoAggiornato
+    deactivate ProdSvc
+    UI --> Admin : mostraConferma()
+  else [Admin elimina un prodotto]
+    Admin -> UI : eliminaProdotto(prodotto)
+    UI -> ProdSvc : eliminaProdotto(prodotto.id)
+    activate ProdSvc
+    ProdSvc --> UI : prodottoEliminato
+    deactivate ProdSvc
+    UI --> Admin : mostraConferma()
+  end
+  deactivate UI
+end
+
+' ── 2. Gestione Fatture ──────────────────────────────
+group Gestione Fatture
+  Admin -> UI : apriElencoFatture()
+  activate UI
+  UI -> FatSvc : getFatture()
+  activate FatSvc
+  FatSvc --> UI : listaFatture
+  deactivate FatSvc
+  UI --> Admin : mostraElencoFatture()
+
+  alt [Admin annulla una fattura]
+    Admin -> UI : annullaFattura(fattura)
+    UI -> FatSvc : annullaFattura(fattura.id)
+    activate FatSvc
+    FatSvc --> UI : fatturaAnnullata
+    deactivate FatSvc
+    UI --> Admin : mostraConferma()
+  else [Admin elimina una fattura]
+    Admin -> UI : eliminaFattura(fattura)
+    UI -> FatSvc : eliminaFattura(fattura.id)
+    activate FatSvc
+    FatSvc --> UI : fatturaEliminata
+    deactivate FatSvc
+    UI --> Admin : mostraConferma()
+  end
+  deactivate UI
+end
+
+' ── 3. Gestione Resi ─────────────────────────────────
+group Gestione Resi
+  Admin -> UI : apriElencoResi()
+  activate UI
+  UI -> ResoSvc : getResi()
+  activate ResoSvc
+  ResoSvc --> UI : listaResi
+  deactivate ResoSvc
+  UI --> Admin : mostraElencoResi()
+
+  Admin -> UI : selezionaReso(reso)
+
+  alt [Admin approva il reso]
+    Admin -> UI : approvaReso(reso)
+    UI -> ResoSvc : approvaReso(reso.id)
+    activate ResoSvc
+    ResoSvc --> UI : resoApprovato
+    note right : stato = APPROVATO
+    deactivate ResoSvc
+    UI --> Admin : mostraConferma()
+  else [Admin rifiuta il reso]
+    Admin -> UI : rifiutaReso(reso)
+    UI -> ResoSvc : rifiutaReso(reso.id)
+    activate ResoSvc
+    ResoSvc --> UI : resoRifiutato
+    note right : stato = RIFIUTATO
+    deactivate ResoSvc
+    UI --> Admin : mostraConferma()
+  end
+  deactivate UI
+end
+
+@enduml

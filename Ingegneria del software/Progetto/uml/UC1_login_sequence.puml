@@ -1,0 +1,67 @@
+@startuml UC1_Login_SD
+
+skinparam sequence {
+  ArrowColor      #555555
+  ParticipantBackgroundColor #FAFAFA
+  ParticipantBorderColor #333333
+  ActorBackgroundColor #E8F4FD
+  ActorBorderColor #2980B9
+}
+
+actor    "Utente"          as User
+boundary "ui:UI"           as UI
+control  "svc:AuthService" as Auth
+
+' ── FLUSSO PRINCIPALE: Login ─────────────────────────────────────
+group Login
+  User -> UI : inserisciCredenziali(username, password)
+  activate UI
+  UI -> Auth : login(username, password)
+  activate Auth
+  Auth -> Auth : verificaCredenziali(username, password)
+
+  alt [credenziali valide]
+    Auth --> UI : loginOK(ruolo)
+    UI --> User : mostraHomePage()
+  else [credenziali non valide]
+    Auth -> Auth : incrementaTentativiFalliti()
+    alt [tentativiFalliti >= 3]
+      Auth --> UI : errore("Account bloccato")
+      UI --> User : mostraMessaggioBloccato()
+    else [tentativiFalliti < 3]
+      Auth --> UI : errore("Credenziali non valide")
+      UI --> User : mostraErroreLogin()
+    end
+  end
+  deactivate Auth
+  deactivate UI
+end
+
+' ── FLUSSO ALTERNATIVO: Recupero Password ────────────────────────
+group Recupero Password
+  User -> UI : selezionaRecuperoPassword()
+  activate UI
+  UI -> Auth : richiediDomandaSicurezza(username)
+  activate Auth
+  Auth --> UI : domandaSicurezza
+  UI --> User : mostraDomandaSicurezza(domanda)
+
+  User -> UI : rispondiDomanda(risposta)
+  UI -> Auth : verificaRisposta(username, risposta)
+
+  alt [risposta corretta]
+    Auth --> UI : OK
+    UI --> User : mostraFormNuovaPassword()
+    User -> UI : impostaNuovaPassword(nuovaPassword)
+    UI -> Auth : aggiornaPassword(username, nuovaPassword)
+    Auth --> UI : passwordAggiornata()
+    UI --> User : mostraConfermaAggiornamento()
+  else [risposta errata]
+    Auth --> UI : errore("Risposta non corretta")
+    UI --> User : mostraErroreRisposta()
+  end
+  deactivate Auth
+  deactivate UI
+end
+
+@enduml
