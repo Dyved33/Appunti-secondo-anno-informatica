@@ -80,7 +80,7 @@
 3. Se non ci sono ordini, il sistema mostra un messaggio informativo.
 
 #### US2.2 — Visualizzazione dettaglio ordine
-> *Come magazziniere, voglio vedere il dettaglio di un ordine selezionato, in modo da controllare i prodotti e le quantità coinvolte.*
+> *Visualizzazione elenco ordini*
 
 **Criteri di accettazione:**
 1. Il dettaglio mostra: numero ordine, data, stato e l'elenco delle righe con prodotto e quantità.

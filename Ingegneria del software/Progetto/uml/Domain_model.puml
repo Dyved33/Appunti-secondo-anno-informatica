@@ -39,6 +39,8 @@ class OrdineEntrata {
   data
   stato
   note
+  quantità
+  prezzoUnitario
 }
 
 class OrdineUscita {
@@ -46,14 +48,6 @@ class OrdineUscita {
   data
   stato
   note
-}
-
-class OrdineEntrata {
-  quantità
-  prezzoUnitario
-}
-
-class OrdineUscita {
   quantità
 }
 

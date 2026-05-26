@@ -5,308 +5,282 @@
 \usepackage[italian]{babel}
 \usepackage{enumitem}
 \usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{longtable}
 
 \geometry{margin=2.5cm}
 
-\title{Documentazione Software \\ \large Gestionale Locale per la Gestione del Magazzino}
-\author{}
-\date{}
+\title{Documentazione Tecnica di Progetto \\ \large Gestionale Locale per la Gestione del Magazzino}
+\author{Gruppo 11}
+\date{26 Maggio 2026}
 
 \begin{document}
 
 \maketitle
 
-\section{Specifica e Requisiti}
-<<<<<<< HEAD
+\section*{Storico delle Versioni}
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+\textbf{Versione} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} \\
+\midrule
+v1.0 & 26/05/2026 & Strutturazione iniziale, analisi requisiti e allineamento UML & Gruppo 11 \\
+\bottomrule
+\end{tabular}
+\end{center}
 
-\subsection{Identificazione dei vincoli e analisi del dominio}
-Questo software ha come obiettivo quello di gestire le dinamiche interne di un azienda che necessiti di un magazzino. Nello specifico abbiamo immaginato un contesto con 3 attori principali:
-il magazziniere, ovvero colui che si occupa di gestire le merci in entrata e in uscita, l'amministratore, che si occupa di gestire i prezzi e le esportazioni fiscali, e infine il contabile,
-che si occupa di gestire i documenti contabili. L'applicazione è destinata all'ottimizzazione logistica all'interno di un magazzino merci e deve operare in un contesto puramente locale (offline).
-Abbiamo valutato tale scelta in modo tale che 	da rispondere a specifici vincoli ambientali e di sicurezza dell'infrastruttura ospitante, la quale potrebbe presentare zone prive di connettività
-internet stabile o politiche aziendali restrittive riguardo all'esposizione di dati sensibili all'esterno della rete aziendale.
+\newpage
+\tableofcontents
+\newpage
 
-I vincoli tecnologici imposti prevedono:
+\section{Introduzione}
+\subsection{Scopo del Progetto}
+Il software ha l'obiettivo di gestire le dinamiche logistiche interne di un'azienda, ottimizzando la gestione del magazzino, della movimentazione delle merci in entrata/uscita e della documentazione contabile associata.
+
+\subsection{Obiettivi e Ambito (Scope)}
+L'applicazione opera in un contesto puramente locale (offline). Questa scelta risponde a specifici vincoli ambientali e di sicurezza dell'infrastruttura ospitante, la quale potrebbe presentare zone prive di connettività internet stabile o politiche aziendali restrittive riguardo all'esposizione di dati sensibili all'esterno della rete aziendale. Il sistema gestisce l'intero ciclo di vita della merce: dalla registrazione dei prodotti a magazzino alla generazione dei documenti di trasporto (DDT) e della fatturazione.
+
+\subsection{Glossario}
 \begin{itemize}
-	\item \textbf{Ambiente di esecuzione}: Non ci sono requisiti di compatibilità specifici. Il software deve poter essere fruibile da un qualsiasi sistema operativo desktop moderno
-	\item \textbf{Archiviazione dati}: Utilizzo di un sistema di gestione di basi di dati incorporato (embedded), identificato in MySQL (???).
-	\item \textbf{Interfaccia}: Sviluppo di un'interfaccia grafica leggera e reattiva che non richieda risorse hardware elevate per l'esecuzione (???).
+    \item \textbf{DDT}: Documento di Trasporto.
+    \item \textbf{RBAC}: Role-Based Access Control (Gestione permessi basata sui ruoli).
+    \item \textbf{MVC}: Model-View-Controller (Pattern architetturale).
+    \item \textbf{DAO}: Data Access Object (Oggetto per l'accesso ai dati).
+    \item \textbf{Stock-out}: Condizione di esaurimento delle scorte di un prodotto.
 \end{itemize}
 
-\subsection{Requisiti Funzionali}
-I requisiti funzionali descrivono in modo dettagliato le azioni che il sistema deve consentire e i servizi che deve offrire all'utente finale. Nel contesto del gestionale di magazzino, si
-identificano le seguenti macro-funzionalità:
+\section{Analisi dei Requisiti}
+\subsection{Attori del Sistema}
 \begin{itemize}
-	\item \textbf{Tutti}
-	      \begin{itemize}
-		      \item Il login dei vari attori con permessi diversi si effettua tramite nome utente e password. (estensione possibile:) Abbiamo valutato di inserire una forma di sicurezza basata su passfrase in caso l'utente si sia dimenticato la propria password.
-	      \end{itemize}
-	\item \textbf{Il Magazziniere}
-	      \begin{itemize}
-		      \item deve poter vedere sia le merci in entrata che quelle in uscita.
-		      \item deve poter inserire le merci in entrata e in uscita.
-		      \item deve poter modificare o anche solo visionare le giacenze.
-		      \item deve poter produrre un DDT (documento di trasporto) per ogni merce in uscita. Allo stesso tempo l'ordine passa dallo stato "Non evaso" a "Evaso".
-		      \item deve poter visionare il DDT per ogni merce in entrata e confrontontarlo con quella reale, a questo punto deve poter inviare un allert contenete la quantita registrata se non corrispondente a quella del DDT.
-		      \item deve poter consultare lo storico degli ordini.
-		      \item deve poter controllare un reso (sia come elenco sia nel dettaglio)
-	      \end{itemize}
-	\item \textbf{Il Contabile}
-	\begin{itemize}
-		      \item deve poter visionare sia come elenco che nel dettaglio gli ordini ricevuti, deve poterli filtrare per evasi e non evasi e deve poter generare una fattura
-		      \item deve poter essere in grado di modificare i prezzi di vendita e di acquisto
-		      \item deve poter visualizzare e gestire ogni reso. Se necessario, deve poter generare una nota di credito
-	      \end{itemize}
-	\item \textbf{L'Amministratore}
-	\begin{itemize}
-		      \item deve poter visionare le merci in magazzino e i relativi prezzi, deve poter produrre e/o controllare le fatture e deve poter gestire i resi
-	      \end{itemize}
+    \item \textbf{Magazziniere}: Gestisce il flusso fisico delle merci (carico/scarico), effettua la scansione dei codici a barre, consulta le giacenze e genera i DDT per la merce in uscita.
+    \item \textbf{Contabile}: Visiona l'elenco e il dettaglio degli ordini, gestisce le fatture, le note di credito e modifica i listini dei prezzi di acquisto e vendita.
+    \item \textbf{Amministratore}: Supervisione globale del sistema, consultazione delle merci e dei prezzi, controllo delle fatture, gestione dei resi e generazione della reportistica avanzata dell'inventario.
 \end{itemize}
 
-\subsection{Requisiti Non Funzionali}
-I requisiti non funzionali definiscono le caratteristiche qualitative del sistema e i limiti entro i quali deve operare per garantire standard elevati di affidabilità, sicurezza e usabilità. Di
-seguito proponiamo un elenco di requisiti non funzionali specifici e relativi ai funzionali sopra descritti:
-\begin{itemize}
-	\item Il sistema riceve un ordine sottoforma di elenco con: Id ordine, ordinante, Id oggetto, quantità oggetto richiesto, data ordine, ordine evaso o non evaso
-	\item Il sistema deve strutturare la giacenza degli oggetti presenti nel magazzino. Deve poterli catalogare in funzione delle categorie: Id oggetto, nome oggetto, quantità, prezzo di vendita,
-	      gruppi di filtraggio, attivo o non attivo. Il sistema deve inoltre poter eliminare un oggetto
-	\item Il sistema deve poter generare un DDT con le informazioni del cliente relative a: dati cliente, trasportatore, merci e quantità. Inoltre il sistema cambia lo stato dell'ordine da
-	      "Non evaso" a "Evaso"
-	\item Il sistema deve modificare le quantità di un oggetto presente in magazzino di cui sia stato fatto un reso
-	\item Il sistema deve generare un documento di vendita con i dati del cliente e le quantità degli ordini. La fattura deve essere registrata con progressivo (numero???) e anno e deve essere
-	      conservata
-	\item Il sistema deve calcolare automaticamente il prezzo di vendita di un oggetto in funzione del prezzo di acquisto x la quantità richiesta. Il sistema deve poter dare il valore totale
-	      corrente del magazzino
-	\item Il sistema deve poter fornire i dati della fattura in maniera automatica estrapolandoli da database. Deve, inoltre, permettere la modifica manuale
-	\item Il sistema deve poter mostrare i dati su un reso effettuato e deve mostrare se è stato elaborato o meno
-	\item Il sistema deve poter stampare i report per merci nel magazzino e relativo valore, le fatture emesse e i resi effettuati ad uso esclusivo dell'utente con permessi di amministratore
-\end{itemize}
+\subsection{Requisiti Funzionali (RF)}
+\begin{longtable}{p{0.15\textwidth} p{0.6\textwidth} p{0.15\textwidth}}
+\caption{Requisiti Funzionali} \\
+\toprule
+\textbf{ID} & \textbf{Descrizione} & \textbf{Priorità} \\
+\midrule
+RF-01 & Login degli utenti tramite username e password basato su ruoli (RBAC). & Alta \\
+RF-02 & Blocco automatico dell'account utente a seguito di 3 tentativi di login falliti. & Alta \\
+RF-03 & Recupero della password utente tramite verifica di una domanda di sicurezza preimpostata. & Media \\
+RF-04 & Visualizzazione, inserimento e modifica dei dati anagrafici dei prodotti e delle categorie. & Alta \\
+RF-05 & Consultazione in tempo reale dell'elenco delle giacenze di magazzino. & Alta \\
+RF-06 & Registrazione di un nuovo Ordine di Entrata e aggiornamento automatico incrementale delle giacenze. & Alta \\
+RF-07 & Registrazione di un nuovo Ordine di Uscita e decremento automatico delle giacenze dei prodotti coinvolti. & Alta \\
+RF-08 & Generazione automatica di un DDT per ogni Ordine di Uscita evaso. & Alta \\
+RF-09 & Passaggio automatico dello stato dell'Ordine di Uscita da "Confermato" a "Evaso" alla creazione del DDT. & Alta \\
+RF-10 & Notifica visiva immediata per i prodotti la cui giacenza scende sotto la soglia minima di sicurezza. & Media \\
+RF-11 & Consultazione e gestione dei resi della merce con relativo ripristino delle quantità in giacenza. & Media \\
+RF-12 & Visualizzazione e filtraggio degli ordini ricevuti (evasi e non evasi) da parte del contabile. & Alta \\
+RF-13 & Generazione e conservazione di fatture di vendita e note di credito con numerazione progressiva annuale. & Alta \\
+RF-14 & Modifica manuale dei listini dei prezzi di vendita e di acquisto dei prodotti. & Media \\
+RF-15 & Integrazione software per l'acquisizione rapida dei codici a barre dei prodotti tramite lettore ottico. & Media \\
+\bottomrule
+\end{longtable}
 
-?????
-\subsection{Requisiti Misurabili (Metriche)}
-Gli obiettivi qualitativi espressi in modo vago devono essere convertiti in metriche oggettive, quantificabili e verificabili in fase di collaudo:
-\begin{itemize}
-	\item \textbf{Tempo di risposta alla scansione}: A seguito della lettura di un codice a barre tramite lettore ottico, il sistema deve completare la decodifica, effettuare l'aggiornamento della
-	      giacenza nel database locale e aggiornare l'interfaccia grafica in un tempo inferiore a 0.5 secondi per il 95\% delle operazioni, ipotizzando una base dati contenente fino a 50.000 articoli
-	      distinti.
-	\item \textbf{Efficienza della reportistica}: La generazione di un report annuale completo dell'inventario, comprensivo di valorizzazione economica totale del magazzino, non deve richiedere
-	      più di 3 secondi di elaborazione CPU.
-	\item \textbf{Impronta di memorizzazione}: L'eseguibile dell'applicazione e le sei dipendenze non devono occupare più di 200 MB di spazio su disco rigido all'atto dell'installazione.
-	      L'incremento del file di database deve mantenersi lineare, stimato in meno di 10 MB ogni 10.000 transazioni registrate storicamente.
-\end{itemize}
+\subsection{Requisiti Non Funzionali (RNF)}
+\begin{longtable}{p{0.15\textwidth} p{0.25\textwidth} p{0.45\textwidth}}
+\caption{Requisiti Non Funzionali} \\
+\toprule
+\textbf{ID} & \textbf{Categoria} & \textbf{Descrizione} \\
+\midrule
+RNF-01 & Prestazioni & Il tempo di risposta alla scansione di un codice a barre deve essere inferiore a 0.5s per il 95\% delle operazioni. \\
+RNF-02 & Prestazioni & La generazione di un report annuale dell'inventario non deve richiedere più di 3s di elaborazione CPU. \\
+RNF-03 & Portabilità & Funzionamento garantito in modalità offline su qualsiasi sistema operativo desktop moderno. \\
+RNF-04 & Sicurezza & Dati archiviati interamente in locale senza alcuna esposizione o transito all'esterno della rete aziendale. \\
+RNF-05 & Archiviazione & Utilizzo di un database embedded SQLite, memorizzato in un singolo file binario locale. \\
+RNF-06 & Usabilità & Interfaccia grafica (GUI) leggera, reattiva e ottimizzata per hardware a risorse limitate. \\
+\bottomrule
+\end{longtable}
 
-\subsection{Livelli di Requisiti}
-La formulazione dei requisiti viene strutturata secondo due distinte prospettive per garantire l'allineamento tra le necessità del business e l'implementazione tecnica:
-\begin{itemize}
-	\item \textbf{Lato utente}: L'operatore del magazzino deve ricevere una notifica visiva immediata e persistente (es. un banner rosso o un'icona di avviso accanto all'articolo) non appena
-	      la disponibilità fisica di un determinato prodotto scende al di sotto della sua soglia minima di sicurezza preimpostata, al fine di prevenire situazioni di stock-out.
-	\item \textbf{Lato sistema}: La logica di back-end deve agganciarsi al modulo delle transazioni del database. Ad ogni operazione di \textit{Scarico}, il sistema esegue una query di verifica
-	      sulla tabella \texttt{Articoli}; se il valore del campo \texttt{quantita\_attuale} risulta inferiore al valore del campo \texttt{soglia\_minima}, il sistema deve impostare un flag booleano
-	      interno (\texttt{stato\_sotto\_soglia = true}) e scatenare un evento software asincrono. Tale evento verrà intercettato dal componente della View per attivare dinamicamente l'allarme visivo
-	      sull'interfaccia utente.
-\end{itemize}
+\subsection{Analisi dei Casi d'Uso}
+Il sistema è documentato tramite diagrammi dei casi d'uso che mappano le interazioni tra i tre attori principali e le macro-funzionalità del sistema. I flussi dettagliati delle operazioni principali sono descritti nei diagrammi di attività allegati nella cartella di progetto.
 
-\section{Artefatti di Pianificazione Agili (Scrum)}???
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UseCaseDiagram.png}
+    \caption{Diagramma dei Casi d'Uso Generale}
+\end{figure}
 
+\section{Progettazione e Architettura}
+\subsection{Scelte Architetturali}
+Il software adotta rigorosamente il pattern architetturale \textbf{Model-View-Controller (MVC)}. Questa scelta garantisce la netta separazione tra la logica di business e l'interfaccia utente, abbattendo il debito tecnico. Il motore di database scelto è \textbf{SQLite} per rispondere al vincolo di esecuzione locale e portabilità assoluta (zero configurazione iniziale, assenza di demoni di rete in background e facilità di backup tramite la copia di un singolo file binario).
+
+\subsection{Modello del Dominio}
+Il dominio dell'applicazione è incentrato sulle entità fondamentali per il tracciamento logistico, mappate nel file \texttt{Domain\_model.puml}: \texttt{Utente}, \texttt{Prodotto}, \texttt{Categoria}, \texttt{Giacenza}, \texttt{OrdineEntrata}, \texttt{OrdineUscita} e \texttt{DDT}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/DomainModel.png}
+    \caption{Modello del Dominio}
+\end{figure}
+
+\subsection{Design Dettagliato (Diagramma delle Classi)}
+La struttura interna del codice segue rigorosamente lo schema delle classi definito in \texttt{Class\_diagram.puml}. Per isolare la persistenza dei dati, viene adottato il pattern \textbf{DAO (Data Access Object)}. Le classi DAO incapsulano la totalità delle istruzioni SQL ed eseguono le query sul database SQLite, garantendo che lo strato dei Controller dipenda esclusivamente da oggetti di dominio e mai dal dialetto SQL sottostante.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../out/ClassDiagram.png}
+    \caption{Diagramma delle Classi}
+\end{figure}
+
+\subsection{Comportamento del Sistema (Diagrammi di Sequenza)}
+I flussi di interazione dinamica tra i componenti della View, della logica di controllo (Service) e dello strato dei dati sono formalizzati tramite diagrammi di sequenza. Di seguito viene riportato, a titolo esemplificativo, il diagramma di sequenza relativo al processo di login e recupero delle credenziali (\texttt{UC1\_login\_sequence.puml}).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC1_Login_SD.png}
+    \caption{Diagramma di Sequenza: Login e Recupero Password (UC1)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC1_Login_AD.png}
+    \caption{Diagramma di Attività: Login e Recupero Password (UC1)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC2_VisualizzaOrdini_SD.png}
+    \caption{Diagramma di Sequenza: Visualizzazione Ordini (UC2)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC2_VisualizzaOrdini_AD.png}
+    \caption{Diagramma di Attività: Visualizzazione Ordini (UC2)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC3_GestioneGiacenze_SD.png}
+    \caption{Diagramma di Sequenza: Gestione Giacenza (UC3)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC3_GestioneGiacenze_AD.png}
+    \caption{Diagramma di Attività: Gestione Giacenza (UC3)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC4_GeneraDDT_SD.png}
+    \caption{Diagramma di Sequenza: Generazione DDT (UC4)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC4_GeneraDDT_AD.png}
+    \caption{Diagramma di Attività: Generazione DDT (UC4)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC5_Resi_SD.png}
+    \caption{Diagramma di Sequenza: Resi (UC5)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC5_Resi_AD.png}
+    \caption{Diagramma di Attività: Resi (UC5)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC6_ContabileOrdini_SD.png}
+    \caption{Diagramma di Sequenza: Contabile Ordini (UC6)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC6_ContabileOrdini_AD.png}
+    \caption{Diagramma di Attività: Contabile Ordini (UC6)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC7_ContabilePrezzi_SD.png}
+    \caption{Diagramma di Sequenza: Contabile Prezzi (UC7)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC7_ContabilePrezzi_AD.png}
+    \caption{Diagramma di Attività: Contabile Prezzi (UC7)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC8_Amministratore_SD.png}
+    \caption{Diagramma di Sequenza: Amministratore (UC8)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../out/UC8_Amministratore_AD.png}
+    \caption{Diagramma di Attività: Amministratore (UC8)}
+\end{figure}
+
+\section{Gestione del Progetto (Scrum)}
 \subsection{Backlog}
-L'elenco ordinato dei requisiti tecnici e funzionali necessari alla realizzazione del sistema unito alle user stories generate in fase di sviluppo comprende:
+L'elenco ordinato e prioritizzato dei requisiti tecnici necessari al completamento del primo ciclo di sviluppo comprende:
 \begin{enumerate}
-	\item Configurazione dell'architettura software di base, dell'ambiente di sviluppo e della connessione al database MySQL.
-	\item Definizione dello schema logico della base dati (creazione delle tabelle \texttt{Articoli}, \texttt{Movimenti}, \texttt{Utenti}, \texttt{Fornitori}).
-	\item Sviluppo delle interfacce grafiche e delle funzioni CRUD per la gestione dell'Anagrafica Articoli.
-	\item Implementazione del modulo di movimentazione (logica e maschere per le operazioni di Carico e Scarico).
+	\item Configurazione dell'architettura software di base, dell'ambiente di sviluppo locale e della connessione al file SQLite.
+	\item Definizione dello schema logico della base dati tramite script SQL (creazione delle tabelle \texttt{Utente}, \texttt{Prodotto}, \texttt{Categoria}, \texttt{Giacenza}, \texttt{OrdineEntrata}, \texttt{OrdineUscita}, \texttt{RigaOrdineEntrata}, \texttt{RigaOrdineUscita}, \texttt{DDT}).
+	\item Sviluppo delle interfacce grafiche e delle funzioni CRUD per la gestione dell'Anagrafica Prodotti e Categorie.
+	\item Implementazione del modulo di movimentazione (logica e maschere per la compilazione di \texttt{OrdineEntrata} e \texttt{OrdineUscita}).
 	\item Integrazione software per l'acquisizione dell'input da lettore di codici a barre tramite emulazione tastiera.
-	\item Sviluppo del sottosistema di controllo e notifica visiva per gli articoli sotto la soglia minima di scorta.
-	\item Progettazione ed implementazione del motore di reportistica ed esportazione dati in formato PDF e CSV.
-	\item Sviluppo del modulo di autenticazione locale e gestione dei permessi basata sui ruoli (RBAC).
-	\item Implementazione delle routine software per l'esecuzione del backup automatico e del ripristino del database.
+	\item Sviluppo del sottosistema di controllo e notifica visiva per i prodotti sotto la soglia minima inseriti in \texttt{Giacenza}.
+	\item Progettazione ed implementazione del motore di reportistica ed esportazione dell'inventario in formato PDF e CSV.
+	\item Sviluppo del modulo di autenticazione locale e gestione dei permessi basata sui ruoli tramite \texttt{AuthService}.
 \end{enumerate}
 
 \subsection{User Stories}
-Le storie riflettono i bisogni concreti degli attori del sistema scritti secondo la formula standard del framework Scrum:
-\begin{quote}
-	«Come \textit{magazziniere}, voglio \textit{poter scansionare il codice a barre di un articolo in arrivo tramite il lettore ottico}, per \textit{aggiornare la quantità in giacenza nel sistema in modo rapido, automatizzato e senza il rischio di commettere errori manuali di digitazione}».
-\end{quote}
-
-?????
+Le storie riflettono i bisogni concreti degli attori scritti secondo gli standard del framework Scrum:
+\begin{itemize}
+    \item \textbf{US-01 (Accesso con credenziali)}: "Come utente, voglio accedere all'applicazione con username e password, in modo da poter utilizzare le funzionalità del mio ruolo".
+    \item \textbf{US-02 (Scansione Barcode)}: "Come magazziniere, voglio poter scansionare il codice a barre di un prodotto in arrivo tramite il lettore ottico, per aggiornare la quantità in giacenza nel sistema in modo rapido, automatizzato e senza commettere errori manuali".
+    \item \textbf{US-03 (Sicurezza Account)}: "Come amministratore del sistema, voglio che il software blocchi l'account dopo 3 tentativi falliti, per impedire ad utenti non autorizzati di indovinare le password d'accesso dei dipendenti".
+    \item \textbf{US-04 (Recupero Password)}: "Come utente, voglio poter recuperare la mia password dimenticata rispondendo a una domanda di sicurezza preimpostata".
+    \item \textbf{US-05 (Visualizzazione elenco ordini)}: "Come magazziniere, voglio vedere l'elenco di tutti gli ordini di entrata e uscita, in modo da avere una panoramica completa dei movimenti del magazzino".
+    \item \textbf{US-06 (Visualizzazione dettaglio ordini)}: "Come magazziniere, voglio vedere il dettaglio di un ordine di entrata o uscita selezionato, in modo da conoscere i prodotti coinvolti e le relative quantità".
+    \item \textbf{US-07 (Registrazione Ordini in entrata)}: "Come magazziniere, voglio registrare un ordine di entrata con i prodotti ricevuti, in modo da aggiornare automaticamente le giacenze".
+    \item \textbf{US-08 (Registrazione Ordini in uscita)}: "Come magazziniere, voglio registrare un ordine di uscita con i prodotti richiesti, in modo da aggiornare automaticamente le giacenze".
+    \item \textbf{US-09 (Generazione DDT)}: "Come magazziniere, voglio generare un documento di trasporto (DDT) per ogni ordine di uscita evaso, in modo da avere una documentazione ufficiale per la merce in uscita".
+    \item \textbf{US-10 (Visualizzare Giacenze)}: "Come magazziniere, voglio visualizzare in tempo reale le giacenze di magazzino, in modo da sapere sempre la quantità disponibile di ogni prodotto".
+    \item \textbf{US-11 (Stampa inventario)}: "Come magazziniere, voglio stampare un documento inventario, in modo da avere un registro fisico dello stato del magazzino".
+    \item \textbf{US-12 (Gestione resi)}: "Come magazziniere, voglio gestire i resi della merce, in modo da poter ripristinare le quantità in giacenza e tenere traccia dei movimenti di reso".
+    \item \textbf{US-13 (Visualizzazione ordini per contabile)}: "Come contabile, voglio visualizzare l'elenco degli ordini ricevuti (evasi e non evasi), in modo da poter gestire la fatturazione e le note di credito".
+    \item \textbf{US-14 (Generazione Fatture)}: "Come contabile, voglio generare fatture per gli ordini di uscita evasi, in modo da poter emettere documenti ufficiali per i clienti".
+    \item \textbf{US-14 (Gestione prezzi)}: "Come contabile, voglio poter modificare manualmente i listini dei prezzi di vendita e di acquisto dei prodotti, in modo da mantenere aggiornati i prezzi nel sistema".
+    \item \textbf{US-15 (Reportistica inventario)}: "Come amministratore, voglio generare report avanzati dell'inventario, in modo da avere una visione dettagliata dello stato del magazzino e delle tendenze di consumo dei prodotti".
+\end{itemize}
 
 \subsection{Criteri di Accettazione}
-I criteri di accettazione definiscono i vincoli formali affinché la User Story sopra citata possa essere considerata completata ("Done"):
+Vengono definiti i vincoli formali affinché la User Story \textbf{US-01} possa essere considerata completata ("Done"):
 \begin{itemize}
 	\item \textbf{Criterio 1}: Il sistema deve riconoscere e decodificare correttamente e senza latenza i codici a barre conformi allo standard internazionale EAN-13.
-	\item \textbf{Criterio 2}: Al momento della scansione riuscita all'interno della schermata di carico, i dati identificativi dell'articolo devono comparire istantaneamente nei campi visivi e la relativa giacenza nel database deve essere incrementata automaticamente di una unità (o del valore impostato nel moltiplicatore di input).
-	\item \textbf{Criterio 3}: Qualora il codice a barre scansionato non trovi corrispondenza all'interno della tabella \texttt{Articoli}, il sistema deve inibire il salvataggio automatico, emettere un feedback acustico di errore ed aprire una finestra pop-up contestuale che consenta all'operatore di inserire l'articolo ex-novo in anagrafica o annullare l'operazione in corso.
+	\item \textbf{Criterio 2}: Al momento della scansione riuscita all'interno della schermata di carico, i dati identificativi del prodotto devono comparire istantaneamente nei campi visivi e la relativa quantità nella tabella \texttt{Giacenza} deve essere incrementata automaticamente nel database.
+	\item \textbf{Criterio 3}: Qualora il codice a barre scansionato non trovi corrispondenza all'interno della tabella \texttt{Prodotto}, il sistema deve inibire il salvataggio automatico, emettere un feedback acustico di errore ed aprire una finestra pop-up contestuale che consenta all'operatore di inserire il prodotto ex-novo in anagrafica o annullare l'operazione.
 \end{itemize}
 
-\section{Documentazione Tecnica e di Progetto}
-Questo capitolo delinea le scelte architetturali interne del software e i criteri di progettazione volti a prevenire il debito tecnico e garantire la manutenibilità a lungo termine.
+\section{Strategia di Verifica e Validazione}
+\subsection{Piano di Testing}
+Il piano prevede una suite di test di unità (Unit Testing) sistematici eseguiti sulla Business Logic tramite JUnit. I test sono focalizzati sulla verifica delle transazioni e sul rispetto dei vincoli di integrità del magazzino.
 
-\subsection{Decisioni Progettuali}
-La scelta strategica di utilizzare SQLite come motore di database principale risponde direttamente al vincolo di esecuzione locale e portabilità. A differenza di architetture client-server, SQLite compila l'intera base dati in un singolo file binario residente nella cartella dell'applicazione. Questa decisione riduce a zero i prerequisiti di installazione sulle macchine client, non richiede l'attivazione di demoni o servizi di rete che consumano risorse in background, e semplifica drasticamente le procedure di manutenzione: l'intero sistema può essere spostato o salvato tramite una semplice operazione di copia del file di database.
-
-\subsection{Documentazione Mirata (Back-end)}
-Il codice sorgente dell'applicazione adotta rigorosamente il pattern architetturale \textbf{Model-View-Controller (MVC)}, strutturando le dipendenze in modo unidirezionale per evitare accoppiamenti forti:
+\subsection{Casi di Test (Test Cases)}
+\textbf{TC-01}: Tentativo di scarico merce con quantità richiesta superiore alla giacenza fisica attuale.
 \begin{itemize}
-	\item \textbf{Model (Modello)}: Comprende le classi rappresentanti le entità di dominio (\texttt{Articolo}, \texttt{Movimento}, \texttt{Utente}) e lo strato dei Data Access Object (DAO). Le classi DAO incapsulano la totalità delle istruzioni SQL, gestendo l'apertura e la chiusura delle connessioni al file SQLite e garantendo l'isolamento della persistenza.
-	\item \textbf{Controller (Controllore)}: Costituisce il nucleo della logica di business (business logic). Si occupa di validare i dati di input, coordinare i flussi operativi, calcolare le valorizzazioni inventariali e invocare i DAO appropriati. Il Controller non conosce i dettagli dell'interfaccia grafica.
-	\item \textbf{View (Vista)}: Costituita dai componenti dell'interfaccia grafica utente (GUI). Ha il solo compito di renderizzare i dati inviati dal Controller e catturare gli input fisici (tastiera, mouse, scanner) per inoltrarli al rispettivo Controllore, senza eseguire alcuna query diretta o calcolo computazionale sui dati.
+	\item \textbf{Scenario}: Un prodotto registrato in anagrafica dispone di una quantità fisica in \texttt{Giacenza} pari a 5 unità. Viene inserito un \texttt{OrdineUscita} con una \texttt{RigaOrdineUscita} richiedente l'uscita di 6 unità del medesimo prodotto.
+	\item \textbf{Input}: Invocazione della funzione di business \texttt{registraScarico()} con quantità = 6.
+	\item \textbf{Risultato Atteso}: Il sistema deve intercettare preventivamente l'incoerenza prima di modificare i dati, bloccare l'esecuzione della transazione sul database SQLite tramite un'operazione di \texttt{ROLLBACK} e sollevare un'eccezione software personalizzata di tipo \texttt{GiacenzaInsufficienteException}. L'interfaccia utente cattura l'eccezione e mostra un messaggio di errore bloccante, impedendo che i dati assumano valori negativi incongruenti.
 \end{itemize}
 
-\subsection{Progettazione dei Test}
-Al fine di garantire la robustezza logica del software rispetto a input errati o anomalie operative, viene definita una suite di test di unità (Unit Testing). Il test cardine per la sicurezza del magazzino è focalizzato sulla prevenzione delle giacenze negative:
-\begin{quote}
-	\textit{Scenario di test}: Supponendo che un articolo registrato in anagrafica disponga di una quantità fisica in giacenza pari a 5 unità, se viene invocata la funzione di business \texttt{registraScarico()} richiedendo l'uscita di 6 unità, il sistema deve intercettare preventivamente l'incoerenza, bloccare l'esecuzione della transazione sul database tramite un'operazione di \texttt{ROLLBACK} e sollevare un'eccezione software personalizzata di tipo \texttt{GiacenzaInsufficienteException}. L'interfaccia utente dovrà catturare tale eccezione per visualizzare un messaggio di errore bloccante, impedendo che i dati di magazzino assumano valori negativi incongruenti.
-\end{quote}
-
-\section{Documentazione di Processo (es. Modello Waterfall)}
-Nei contesti di sviluppo tradizionali o regolamentati, la produzione documentale iniziale costituisce il cardine per la tracciabilità delle scelte progettuali e la stipula del contratto operativo con gli stakeholder.
-
-\subsection{Documentazione iniziale (Forte)}
-La documentazione redatta prima della fase di codifica assume un valore vincolante e strutturato per allineare i team di sviluppo e le figure non tecniche della committenza. Essa è costituita da:
-\begin{enumerate}
-	\item \textbf{Diagramma Entità-Relazione (ER)}: Lo schema concettuale e logico dettagliato che definisce le tabelle del database, descrivendo i primi tipi di dato di ciascun attributo, le chiavi primarie, le chiavi esterne e i vincoli di integrità referenziale (es. la cancellazione a cascata dei movimenti al variare di un articolo, se ammessa, o il blocco restrittivo).
-	\item \textbf{Wireframe e Storyboard delle Interfacce}: Documentazione visiva statica che mappa l'esatta disposizione dei componenti grafici (campi di testo, pulsanti, griglie dati) di ogni schermata dell'applicativo, descrivendo le transizioni logiche da una finestra all'altra a seguito di eventi utente.
-	\item \textbf{Specifica dei Requisiti di Sistema}: Elenco dei requisiti hardware e software minimi richiesti sulla macchina ospitante per garantire l'esecuzione corretta dell'applicazione (es. architettura CPU x86/x64 da almeno 1.6 GHz, 4 GB di RAM libera, 500 MB di spazio disponibile su disco a stato solido, e la versione specifica del framework di runtime o della Java Virtual Machine/.NET CLR).
-\end{enumerate}
-Questo patrimonio informativo garantisce la possibilità di condurre audit formali sulla qualità del software, facilita l'onboarding di nuovi sviluppatori nel team e protegge il progetto da derive dei requisiti (scope creep).
-
-=======
-
-\subsection{Identificazione dei vincoli e analisi del dominio}
-Questo software ha come obiettivo quello di gestire le dinamiche interne di un azienda che necessiti di un magazzino. Nello specifico abbiamo immaginato un contesto con 3 attori principali:
-il magazziniere, ovvero colui che si occupa di gestire le merci in entrata e in uscita, l'amministratore, che si occupa di gestire i prezzi e le esportazioni fiscali, e infine il contabile,
-che si occupa di gestire i documenti contabili. L'applicazione è destinata all'ottimizzazione logistica all'interno di un magazzino merci e deve operare in un contesto puramente locale (offline).
-Abbiamo valutato tale scelta in modo tale che 	da rispondere a specifici vincoli ambientali e di sicurezza dell'infrastruttura ospitante, la quale potrebbe presentare zone prive di connettività
-internet stabile o politiche aziendali restrittive riguardo all'esposizione di dati sensibili all'esterno della rete aziendale.
-
-I vincoli tecnologici imposti prevedono:
-\begin{itemize}
-	\item \textbf{Ambiente di esecuzione}: Non ci sono requisiti di compatibilità specifici. Il software deve poter essere fruibile da un qualsiasi sistema operativo desktop moderno
-	\item \textbf{Archiviazione dati}: Utilizzo di un sistema di gestione di basi di dati incorporato (embedded), identificato in MySQL (???).
-	\item \textbf{Interfaccia}: Sviluppo di un'interfaccia grafica leggera e reattiva che non richieda risorse hardware elevate per l'esecuzione (???).
-\end{itemize}
-
-\subsection{Requisiti Funzionali}
-I requisiti funzionali descrivono in modo dettagliato le azioni che il sistema deve consentire e i servizi che deve offrire all'utente finale. Nel contesto del gestionale di magazzino, si
-identificano le seguenti macro-funzionalità:
-\begin{itemize}
-	\item Il login dei vari attori con permessi diversi. Abbiamo valutato di inserire una forma di sicurezza basata su passfrase in caso l'utente si sia dimenticato della propria password
-	\item Il magazziniere deve poter vedere sia le merci in entrata che quelle in uscita
-	\item Il magazziniere deve poter inserire le merci in entrata e in uscita, modificare o anche solo visionare le giacenze
-	\item Il magazziniere deve poter produrre facilmente un DDT (documento di trasporto) per ogni merce in uscita. Allo stesso tempo l'ordine passa dallo stato "Non evaso" a "Evaso" (lo reistriamo???)
-	\item Il magazziniere deve poter controllare un reso (sia come elenco sia nel dettaglio)
-	\item Il contabile deve poter visionare sia come elenco che nel dettaglio gli ordini ricevuti, deve poterli filtrare per evasi e non evasi e deve poter generare una fattura
-	\item Il contabile deve poter essere in grado di modificare i prezzi di vendita e di acquisto
-	\item Il contabile deve poter visualizzare e gestire ogni reso. Se necessario, deve poter generare una nota di credito
-	\item L'amministratore deve poter visionare le merci in magazzino e i relativi prezzi, deve poter produrre e/o controllare le fatture e deve poter gestire i resi
-\end{itemize}
-
-\subsection{Requisiti Non Funzionali}
-I requisiti non funzionali definiscono le caratteristiche qualitative del sistema e i limiti entro i quali deve operare per garantire standard elevati di affidabilità, sicurezza e usabilità. Di
-seguito proponiamo un elenco di requisiti non funzionali specifici e relativi ai funzionali sopra descritti:
-\begin{itemize}
-	\item Il sistema riceve un ordine sottoforma di elenco con: Id ordine, ordinante, Id oggetto, quantità oggetto richiesto, data ordine, ordine evaso o non evaso
-	\item Il sistema deve strutturare la giacenza degli oggetti presenti nel magazzino. Deve poterli catalogare in funzione delle categorie: Id oggetto, nome oggetto, quantità, prezzo di vendita,
-	      gruppi di filtraggio, attivo o non attivo. Il sistema deve inoltre poter eliminare un oggetto
-	\item Il sistema deve poter generare un DDT con le informazioni del cliente relative a: dati cliente, trasportatore, merci e quantità. Inoltre il sistema cambia lo stato dell'ordine da
-	      "Non evaso" a "Evaso"
-	\item Il sistema deve modificare le quantità di un oggetto presente in magazzino di cui sia stato fatto un reso
-	\item Il sistema deve generare un documento di vendita con i dati del cliente e le quantità degli ordini. La fattura deve essere registrata con progressivo (numero???) e anno e deve essere
-	      conservata
-	\item Il sistema deve calcolare automaticamente il prezzo di vendita di un oggetto in funzione del prezzo di acquisto x la quantità richiesta. Il sistema deve poter dare il valore totale
-	      corrente del magazzino
-	\item Il sistema deve poter fornire i dati della fattura in maniera automatica estrapolandoli da database. Deve, inoltre, permettere la modifica manuale
-	\item Il sistema deve poter mostrare i dati su un reso effettuato e deve mostrare se è stato elaborato o meno
-	\item Il sistema deve poter stampare i report per merci nel magazzino e relativo valore, le fatture emesse e i resi effettuati ad uso esclusivo dell'utente con permessi di amministratore
-\end{itemize}
-
-?????
-\subsection{Requisiti Misurabili (Metriche)}
-Gli obiettivi qualitativi espressi in modo vago devono essere convertiti in metriche oggettive, quantificabili e verificabili in fase di collaudo:
-\begin{itemize}
-	\item \textbf{Tempo di risposta alla scansione}: A seguito della lettura di un codice a barre tramite lettore ottico, il sistema deve completare la decodifica, effettuare l'aggiornamento della
-	      giacenza nel database locale e aggiornare l'interfaccia grafica in un tempo inferiore a 0.5 secondi per il 95\% delle operazioni, ipotizzando una base dati contenente fino a 50.000 articoli
-	      distinti.
-	\item \textbf{Efficienza della reportistica}: La generazione di un report annuale completo dell'inventario, comprensivo di valorizzazione economica totale del magazzino, non deve richiedere
-	      più di 3 secondi di elaborazione CPU.
-	\item \textbf{Impronta di memorizzazione}: L'eseguibile dell'applicazione e le sei dipendenze non devono occupare più di 200 MB di spazio su disco rigido all'atto dell'installazione.
-	      L'incremento del file di database deve mantenersi lineare, stimato in meno di 10 MB ogni 10.000 transazioni registrate storicamente.
-\end{itemize}
-
-\subsection{Livelli di Requisiti}
-La formulazione dei requisiti viene strutturata secondo due distinte prospettive per garantire l'allineamento tra le necessità del business e l'implementazione tecnica:
-\begin{itemize}
-	\item \textbf{Lato utente}: L'operatore del magazzino deve ricevere una notifica visiva immediata e persistente (es. un banner rosso o un'icona di avviso accanto all'articolo) non appena
-	      la disponibilità fisica di un determinato prodotto scende al di sotto della sua soglia minima di sicurezza preimpostata, al fine di prevenire situazioni di stock-out.
-	\item \textbf{Lato sistema}: La logica di back-end deve agganciarsi al modulo delle transazioni del database. Ad ogni operazione di \textit{Scarico}, il sistema esegue una query di verifica
-	      sulla tabella \texttt{Articoli}; se il valore del campo \texttt{quantita\_attuale} risulta inferiore al valore del campo \texttt{soglia\_minima}, il sistema deve impostare un flag booleano
-	      interno (\texttt{stato\_sotto\_soglia = true}) e scatenare un evento software asincrono. Tale evento verrà intercettato dal componente della View per attivare dinamicamente l'allarme visivo
-	      sull'interfaccia utente.
-\end{itemize}
-
-\section{Artefatti di Pianificazione Agili (Scrum)}???
-
-\subsection{Backlog}
-L'elenco ordinato dei requisiti tecnici e funzionali necessari alla realizzazione del sistema unito alle user stories generate in fase di sviluppo comprende:
-\begin{enumerate}
-	\item Configurazione dell'architettura software di base, dell'ambiente di sviluppo e della connessione al database MySQL.
-	\item Definizione dello schema logico della base dati (creazione delle tabelle \texttt{Articoli}, \texttt{Movimenti}, \texttt{Utenti}, \texttt{Fornitori}).
-	\item Sviluppo delle interfacce grafiche e delle funzioni CRUD per la gestione dell'Anagrafica Articoli.
-	\item Implementazione del modulo di movimentazione (logica e maschere per le operazioni di Carico e Scarico).
-	\item Integrazione software per l'acquisizione dell'input da lettore di codici a barre tramite emulazione tastiera.
-	\item Sviluppo del sottosistema di controllo e notifica visiva per gli articoli sotto la soglia minima di scorta.
-	\item Progettazione ed implementazione del motore di reportistica ed esportazione dati in formato PDF e CSV.
-	\item Sviluppo del modulo di autenticazione locale e gestione dei permessi basata sui ruoli (RBAC).
-	\item Implementazione delle routine software per l'esecuzione del backup automatico e del ripristino del database.
-\end{enumerate}
-
-\subsection{User Stories}
-Le storie riflettono i bisogni concreti degli attori del sistema scritti secondo la formula standard del framework Scrum:
-\begin{quote}
-	«Come \textit{magazziniere}, voglio \textit{poter scansionare il codice a barre di un articolo in arrivo tramite il lettore ottico}, per \textit{aggiornare la quantità in giacenza nel sistema in modo rapido, automatizzato e senza il rischio di commettere errori manuali di digitazione}».
-\end{quote}
-
-?????
-
-\subsection{Criteri di Accettazione}
-I criteri di accettazione definiscono i vincoli formali affinché la User Story sopra citata possa essere considerata completata ("Done"):
-\begin{itemize}
-	\item \textbf{Criterio 1}: Il sistema deve riconoscere e decodificare correttamente e senza latenza i codici a barre conformi allo standard internazionale EAN-13.
-	\item \textbf{Criterio 2}: Al momento della scansione riuscita all'interno della schermata di carico, i dati identificativi dell'articolo devono comparire istantaneamente nei campi visivi e la relativa giacenza nel database deve essere incrementata automaticamente di una unità (o del valore impostato nel moltiplicatore di input).
-	\item \textbf{Criterio 3}: Qualora il codice a barre scansionato non trovi corrispondenza all'interno della tabella \texttt{Articoli}, il sistema deve inibire il salvataggio automatico, emettere un feedback acustico di errore ed aprire una finestra pop-up contestuale che consenta all'operatore di inserire l'articolo ex-novo in anagrafica o annullare l'operazione in corso.
-\end{itemize}
-
-\section{Documentazione Tecnica e di Progetto}
-Questo capitolo delinea le scelte architetturali interne del software e i criteri di progettazione volti a prevenire il debito tecnico e garantire la manutenibilità a lungo termine.
-
-\subsection{Decisioni Progettuali}
-La scelta strategica di utilizzare SQLite come motore di database principale risponde direttamente al vincolo di esecuzione locale e portabilità. A differenza di architetture client-server, SQLite compila l'intera base dati in un singolo file binario residente nella cartella dell'applicazione. Questa decisione riduce a zero i prerequisiti di installazione sulle macchine client, non richiede l'attivazione di demoni o servizi di rete che consumano risorse in background, e semplifica drasticamente le procedure di manutenzione: l'intero sistema può essere spostato o salvato tramite una semplice operazione di copia del file di database.
-
-\subsection{Documentazione Mirata (Back-end)}
-Il codice sorgente dell'applicazione adotta rigorosamente il pattern architetturale \textbf{Model-View-Controller (MVC)}, strutturando le dipendenze in modo unidirezionale per evitare accoppiamenti forti:
-\begin{itemize}
-	\item \textbf{Model (Modello)}: Comprende le classi rappresentanti le entità di dominio (\texttt{Articolo}, \texttt{Movimento}, \texttt{Utente}) e lo strato dei Data Access Object (DAO). Le classi DAO incapsulano la totalità delle istruzioni SQL, gestendo l'apertura e la chiusura delle connessioni al file SQLite e garantendo l'isolamento della persistenza.
-	\item \textbf{Controller (Controllore)}: Costituisce il nucleo della logica di business (business logic). Si occupa di validare i dati di input, coordinare i flussi operativi, calcolare le valorizzazioni inventariali e invocare i DAO appropriati. Il Controller non conosce i dettagli dell'interfaccia grafica.
-	\item \textbf{View (Vista)}: Costituita dai componenti dell'interfaccia grafica utente (GUI). Ha il solo compito di renderizzare i dati inviati dal Controller e catturare gli input fisici (tastiera, mouse, scanner) per inoltrarli al rispettivo Controllore, senza eseguire alcuna query diretta o calcolo computazionale sui dati.
-\end{itemize}
-
-\subsection{Progettazione dei Test}
-Al fine di garantire la robustezza logica del software rispetto a input errati o anomalie operative, viene definita una suite di test di unità (Unit Testing). Il test cardine per la sicurezza del magazzino è focalizzato sulla prevenzione delle giacenze negative:
-\begin{quote}
-	\textit{Scenario di test}: Supponendo che un articolo registrato in anagrafica disponga di una quantità fisica in giacenza pari a 5 unità, se viene invocata la funzione di business \texttt{registraScarico()} richiedendo l'uscita di 6 unità, il sistema deve intercettare preventivamente l'incoerenza, bloccare l'esecuzione della transazione sul database tramite un'operazione di \texttt{ROLLBACK} e sollevare un'eccezione software personalizzata di tipo \texttt{GiacenzaInsufficienteException}. L'interfaccia utente dovrà catturare tale eccezione per visualizzare un messaggio di errore bloccante, impedendo che i dati di magazzino assumano valori negativi incongruenti.
-\end{quote}
-
-\section{Documentazione di Processo (es. Modello Waterfall)}
-Nei contesti di sviluppo tradizionali o regolamentati, la produzione documentale iniziale costituisce il cardine per la tracciabilità delle scelte progettuali e la stipula del contratto operativo con gli stakeholder.
-
-\subsection{Documentazione iniziale (Forte)}
-La documentazione redatta prima della fase di codifica assume un valore vincolante e strutturato per allineare i team di sviluppo e le figure non tecniche della committenza. Essa è costituita da:
-\begin{enumerate}
-	\item \textbf{Diagramma Entità-Relazione (ER)}: Lo schema concettuale e logico dettagliato che definisce le tabelle del database, descrivendo i primi tipi di dato di ciascun attributo, le chiavi primarie, le chiavi esterne e i vincoli di integrità referenziale (es. la cancellazione a cascata dei movimenti al variare di un articolo, se ammessa, o il blocco restrittivo).
-	\item \textbf{Wireframe e Storyboard delle Interfacce}: Documentazione visiva statica che mappa l'esatta disposizione dei componenti grafici (campi di testo, pulsanti, griglie dati) di ogni schermata dell'applicativo, descrivendo le transizioni logiche da una finestra all'altra a seguito di eventi utente.
-	\item \textbf{Specifica dei Requisiti di Sistema}: Elenco dei requisiti hardware e software minimi richiesti sulla macchina ospitante per garantire l'esecuzione corretta dell'applicazione (es. architettura CPU x86/x64 da almeno 1.6 GHz, 4 GB di RAM libera, 500 MB di spazio disponibile su disco a stato solido, e la versione specifica del framework di runtime o della Java Virtual Machine/.NET CLR).
-\end{enumerate}
-Questo patrimonio informativo garantisce la possibilità di condurre audit formali sulla qualità del software, facilita l'onboarding di nuovi sviluppatori nel team e protegge il progetto da derive dei requisiti (scope creep).
-
->>>>>>> fed9eb83da34408c2912ef58ffcf630e72570a90
 \end{document}
