@@ -22,13 +22,13 @@
 
 \section*{Storico delle Versioni}
 \begin{center}
-\begin{tabular}{llll}
-\toprule
-\textbf{Versione} & \textbf{Data} & \textbf{Descrizione} & \textbf{Autore} \\
-\midrule
-v1.0 & 26/05/2026 & Strutturazione iniziale, analisi requisiti e allineamento UML & Gruppo 11 \\
-\bottomrule
-\end{tabular}
+    \begin{tabular}{llll}
+        \toprule
+        \textbf{Versione} & \textbf{Data} & \textbf{Descrizione}                                          & \textbf{Autore} \\
+        \midrule
+        v1.0              & 26/05/2026    & Strutturazione iniziale, analisi requisiti e allineamento UML & Gruppo 11       \\
+        \bottomrule
+    \end{tabular}
 \end{center}
 
 \newpage
@@ -61,41 +61,41 @@ L'applicazione opera in un contesto puramente locale (offline). Questa scelta ri
 
 \subsection{Requisiti Funzionali (RF)}
 \begin{longtable}{p{0.15\textwidth} p{0.6\textwidth} p{0.15\textwidth}}
-\caption{Requisiti Funzionali} \\
-\toprule
-\textbf{ID} & \textbf{Descrizione} & \textbf{Priorità} \\
-\midrule
-RF-01 & Login degli utenti tramite username e password basato su ruoli (RBAC). & Alta \\
-RF-02 & Blocco automatico dell'account utente a seguito di 3 tentativi di login falliti. & Alta \\
-RF-03 & Recupero della password utente tramite verifica di una domanda di sicurezza preimpostata. & Media \\
-RF-04 & Visualizzazione, inserimento e modifica dei dati anagrafici dei prodotti e delle categorie. & Alta \\
-RF-05 & Consultazione in tempo reale dell'elenco delle giacenze di magazzino. & Alta \\
-RF-06 & Registrazione di un nuovo Ordine di Entrata e aggiornamento automatico incrementale delle giacenze. & Alta \\
-RF-07 & Registrazione di un nuovo Ordine di Uscita e decremento automatico delle giacenze dei prodotti coinvolti. & Alta \\
-RF-08 & Generazione automatica di un DDT per ogni Ordine di Uscita evaso. & Alta \\
-RF-09 & Passaggio automatico dello stato dell'Ordine di Uscita da "Confermato" a "Evaso" alla creazione del DDT. & Alta \\
-RF-10 & Notifica visiva immediata per i prodotti la cui giacenza scende sotto la soglia minima di sicurezza. & Media \\
-RF-11 & Consultazione e gestione dei resi della merce con relativo ripristino delle quantità in giacenza. & Media \\
-RF-12 & Visualizzazione e filtraggio degli ordini ricevuti (evasi e non evasi) da parte del contabile. & Alta \\
-RF-13 & Generazione e conservazione di fatture di vendita e note di credito con numerazione progressiva annuale. & Alta \\
-RF-14 & Modifica manuale dei listini dei prezzi di vendita e di acquisto dei prodotti. & Media \\
-RF-15 & Integrazione software per l'acquisizione rapida dei codici a barre dei prodotti tramite lettore ottico. & Media \\
-\bottomrule
+    \caption{Requisiti Funzionali}                                                                                                              \\
+    \toprule
+    \textbf{ID} & \textbf{Descrizione}                                                                                      & \textbf{Priorità} \\
+    \midrule
+    RF-01       & Login degli utenti tramite username e password basato su ruoli (RBAC).                                    & Alta              \\
+    RF-02       & Blocco automatico dell'account utente a seguito di 3 tentativi di login falliti.                          & Alta              \\
+    RF-03       & Recupero della password utente tramite verifica di una domanda di sicurezza preimpostata.                 & Media             \\
+    RF-04       & Visualizzazione, inserimento e modifica dei dati anagrafici dei prodotti e delle categorie.               & Alta              \\
+    RF-05       & Consultazione in tempo reale dell'elenco delle giacenze di magazzino.                                     & Alta              \\
+    RF-06       & Registrazione di un nuovo Ordine di Entrata e aggiornamento automatico incrementale delle giacenze.       & Alta              \\
+    RF-07       & Registrazione di un nuovo Ordine di Uscita e decremento automatico delle giacenze dei prodotti coinvolti. & Alta              \\
+    RF-08       & Generazione automatica di un DDT per ogni Ordine di Uscita evaso.                                         & Alta              \\
+    RF-09       & Passaggio automatico dello stato dell'Ordine di Uscita da "Confermato" a "Evaso" alla creazione del DDT.  & Alta              \\
+    RF-10       & Notifica visiva immediata per i prodotti la cui giacenza scende sotto la soglia minima di sicurezza.      & Media             \\
+    RF-11       & Consultazione e gestione dei resi della merce con relativo ripristino delle quantità in giacenza.         & Media             \\
+    RF-12       & Visualizzazione e filtraggio degli ordini ricevuti (evasi e non evasi) da parte del contabile.            & Alta              \\
+    RF-13       & Generazione e conservazione di fatture di vendita e note di credito con numerazione progressiva annuale.  & Alta              \\
+    RF-14       & Modifica manuale dei listini dei prezzi di vendita e di acquisto dei prodotti.                            & Media             \\
+    RF-15       & Integrazione software per l'acquisizione rapida dei codici a barre dei prodotti tramite lettore ottico.   & Media             \\
+    \bottomrule
 \end{longtable}
 
 \subsection{Requisiti Non Funzionali (RNF)}
 \begin{longtable}{p{0.15\textwidth} p{0.25\textwidth} p{0.45\textwidth}}
-\caption{Requisiti Non Funzionali} \\
-\toprule
-\textbf{ID} & \textbf{Categoria} & \textbf{Descrizione} \\
-\midrule
-RNF-01 & Prestazioni & Il tempo di risposta alla scansione di un codice a barre deve essere inferiore a 0.5s per il 95\% delle operazioni. \\
-RNF-02 & Prestazioni & La generazione di un report annuale dell'inventario non deve richiedere più di 3s di elaborazione CPU. \\
-RNF-03 & Portabilità & Funzionamento garantito in modalità offline su qualsiasi sistema operativo desktop moderno. \\
-RNF-04 & Sicurezza & Dati archiviati interamente in locale senza alcuna esposizione o transito all'esterno della rete aziendale. \\
-RNF-05 & Archiviazione & Utilizzo di un database embedded SQLite, memorizzato in un singolo file binario locale. \\
-RNF-06 & Usabilità & Interfaccia grafica (GUI) leggera, reattiva e ottimizzata per hardware a risorse limitate. \\
-\bottomrule
+    \caption{Requisiti Non Funzionali}                                                                                                                     \\
+    \toprule
+    \textbf{ID} & \textbf{Categoria} & \textbf{Descrizione}                                                                                                \\
+    \midrule
+    RNF-01      & Prestazioni        & Il tempo di risposta alla scansione di un codice a barre deve essere inferiore a 0.5s per il 95\% delle operazioni. \\
+    RNF-02      & Prestazioni        & La generazione di un report annuale dell'inventario non deve richiedere più di 3s di elaborazione CPU.              \\
+    RNF-03      & Portabilità        & Funzionamento garantito in modalità offline su qualsiasi sistema operativo desktop moderno.                         \\
+    RNF-04      & Sicurezza          & Dati archiviati interamente in locale senza alcuna esposizione o transito all'esterno della rete aziendale.         \\
+    RNF-05      & Archiviazione      & Utilizzo di un database embedded SQLite, memorizzato in un singolo file binario locale.                             \\
+    RNF-06      & Usabilità          & Interfaccia grafica (GUI) leggera, reattiva e ottimizzata per hardware a risorse limitate.                          \\
+    \bottomrule
 \end{longtable}
 
 \subsection{Analisi dei Casi d'Uso}
@@ -103,7 +103,7 @@ Il sistema è documentato tramite diagrammi dei casi d'uso che mappano le intera
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UseCaseDiagram.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UseCaseDiagram.png}
     \caption{Diagramma dei Casi d'Uso Generale}
 \end{figure}
 
@@ -116,7 +116,7 @@ Il dominio dell'applicazione è incentrato sulle entità fondamentali per il tra
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/DomainModel.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/DomainModel.png}
     \caption{Modello del Dominio}
 \end{figure}
 
@@ -125,7 +125,7 @@ La struttura interna del codice segue rigorosamente lo schema delle classi defin
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\textwidth]{../out/ClassDiagram.png}
+    \includegraphics[width=0.9\textwidth]{./img/png-uml/ClassDiagram.png}
     \caption{Diagramma delle Classi}
 \end{figure}
 
@@ -134,97 +134,97 @@ I flussi di interazione dinamica tra i componenti della View, della logica di co
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC1_Login_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC1_Login_SD.png}
     \caption{Diagramma di Sequenza: Login e Recupero Password (UC1)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC1_Login_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC1_Login_AD.png}
     \caption{Diagramma di Attività: Login e Recupero Password (UC1)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC2_VisualizzaOrdini_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC2_VisualizzaOrdini_SD.png}
     \caption{Diagramma di Sequenza: Visualizzazione Ordini (UC2)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC2_VisualizzaOrdini_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC2_VisualizzaOrdini_AD.png}
     \caption{Diagramma di Attività: Visualizzazione Ordini (UC2)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC3_GestioneGiacenze_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC3_GestioneGiacenze_SD.png}
     \caption{Diagramma di Sequenza: Gestione Giacenza (UC3)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC3_GestioneGiacenze_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC3_GestioneGiacenze_AD.png}
     \caption{Diagramma di Attività: Gestione Giacenza (UC3)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC4_GeneraDDT_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC4_GeneraDDT_SD.png}
     \caption{Diagramma di Sequenza: Generazione DDT (UC4)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC4_GeneraDDT_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC4_GeneraDDT_AD.png}
     \caption{Diagramma di Attività: Generazione DDT (UC4)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC5_Resi_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC5_Resi_SD.png}
     \caption{Diagramma di Sequenza: Resi (UC5)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC5_Resi_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC5_Resi_AD.png}
     \caption{Diagramma di Attività: Resi (UC5)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC6_ContabileOrdini_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC6_ContabileOrdini_SD.png}
     \caption{Diagramma di Sequenza: Contabile Ordini (UC6)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC6_ContabileOrdini_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC6_ContabileOrdini_AD.png}
     \caption{Diagramma di Attività: Contabile Ordini (UC6)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC7_ContabilePrezzi_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC7_ContabilePrezzi_SD.png}
     \caption{Diagramma di Sequenza: Contabile Prezzi (UC7)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC7_ContabilePrezzi_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC7_ContabilePrezzi_AD.png}
     \caption{Diagramma di Attività: Contabile Prezzi (UC7)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC8_Amministratore_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC8_Amministratore_SD.png}
     \caption{Diagramma di Sequenza: Amministratore (UC8)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{../out/UC8_Amministratore_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC8_Amministratore_AD.png}
     \caption{Diagramma di Attività: Amministratore (UC8)}
 \end{figure}
 
@@ -232,14 +232,14 @@ I flussi di interazione dinamica tra i componenti della View, della logica di co
 \subsection{Backlog}
 L'elenco ordinato e prioritizzato dei requisiti tecnici necessari al completamento del primo ciclo di sviluppo comprende:
 \begin{enumerate}
-	\item Configurazione dell'architettura software di base, dell'ambiente di sviluppo locale e della connessione al file SQLite.
-	\item Definizione dello schema logico della base dati tramite script SQL (creazione delle tabelle \texttt{Utente}, \texttt{Prodotto}, \texttt{Categoria}, \texttt{Giacenza}, \texttt{OrdineEntrata}, \texttt{OrdineUscita}, \texttt{RigaOrdineEntrata}, \texttt{RigaOrdineUscita}, \texttt{DDT}).
-	\item Sviluppo delle interfacce grafiche e delle funzioni CRUD per la gestione dell'Anagrafica Prodotti e Categorie.
-	\item Implementazione del modulo di movimentazione (logica e maschere per la compilazione di \texttt{OrdineEntrata} e \texttt{OrdineUscita}).
-	\item Integrazione software per l'acquisizione dell'input da lettore di codici a barre tramite emulazione tastiera.
-	\item Sviluppo del sottosistema di controllo e notifica visiva per i prodotti sotto la soglia minima inseriti in \texttt{Giacenza}.
-	\item Progettazione ed implementazione del motore di reportistica ed esportazione dell'inventario in formato PDF e CSV.
-	\item Sviluppo del modulo di autenticazione locale e gestione dei permessi basata sui ruoli tramite \texttt{AuthService}.
+    \item Configurazione dell'architettura software di base, dell'ambiente di sviluppo locale e della connessione al file SQLite.
+    \item Definizione dello schema logico della base dati tramite script SQL (creazione delle tabelle \texttt{Utente}, \texttt{Prodotto}, \texttt{Categoria}, \texttt{Giacenza}, \texttt{OrdineEntrata}, \texttt{OrdineUscita}, \texttt{RigaOrdineEntrata}, \texttt{RigaOrdineUscita}, \texttt{DDT}).
+    \item Sviluppo delle interfacce grafiche e delle funzioni CRUD per la gestione dell'Anagrafica Prodotti e Categorie.
+    \item Implementazione del modulo di movimentazione (logica e maschere per la compilazione di \texttt{OrdineEntrata} e \texttt{OrdineUscita}).
+    \item Integrazione software per l'acquisizione dell'input da lettore di codici a barre tramite emulazione tastiera.
+    \item Sviluppo del sottosistema di controllo e notifica visiva per i prodotti sotto la soglia minima inseriti in \texttt{Giacenza}.
+    \item Progettazione ed implementazione del motore di reportistica ed esportazione dell'inventario in formato PDF e CSV.
+    \item Sviluppo del modulo di autenticazione locale e gestione dei permessi basata sui ruoli tramite \texttt{AuthService}.
 \end{enumerate}
 
 \subsection{User Stories}
@@ -266,9 +266,9 @@ Le storie riflettono i bisogni concreti degli attori scritti secondo gli standar
 \subsection{Criteri di Accettazione}
 Vengono definiti i vincoli formali affinché la User Story \textbf{US-01} possa essere considerata completata ("Done"):
 \begin{itemize}
-	\item \textbf{Criterio 1}: Il sistema deve riconoscere e decodificare correttamente e senza latenza i codici a barre conformi allo standard internazionale EAN-13.
-	\item \textbf{Criterio 2}: Al momento della scansione riuscita all'interno della schermata di carico, i dati identificativi del prodotto devono comparire istantaneamente nei campi visivi e la relativa quantità nella tabella \texttt{Giacenza} deve essere incrementata automaticamente nel database.
-	\item \textbf{Criterio 3}: Qualora il codice a barre scansionato non trovi corrispondenza all'interno della tabella \texttt{Prodotto}, il sistema deve inibire il salvataggio automatico, emettere un feedback acustico di errore ed aprire una finestra pop-up contestuale che consenta all'operatore di inserire il prodotto ex-novo in anagrafica o annullare l'operazione.
+    \item \textbf{Criterio 1}: Il sistema deve riconoscere e decodificare correttamente e senza latenza i codici a barre conformi allo standard internazionale EAN-13.
+    \item \textbf{Criterio 2}: Al momento della scansione riuscita all'interno della schermata di carico, i dati identificativi del prodotto devono comparire istantaneamente nei campi visivi e la relativa quantità nella tabella \texttt{Giacenza} deve essere incrementata automaticamente nel database.
+    \item \textbf{Criterio 3}: Qualora il codice a barre scansionato non trovi corrispondenza all'interno della tabella \texttt{Prodotto}, il sistema deve inibire il salvataggio automatico, emettere un feedback acustico di errore ed aprire una finestra pop-up contestuale che consenta all'operatore di inserire il prodotto ex-novo in anagrafica o annullare l'operazione.
 \end{itemize}
 
 \section{Strategia di Verifica e Validazione}
@@ -278,9 +278,9 @@ Il piano prevede una suite di test di unità (Unit Testing) sistematici eseguiti
 \subsection{Casi di Test (Test Cases)}
 \textbf{TC-01}: Tentativo di scarico merce con quantità richiesta superiore alla giacenza fisica attuale.
 \begin{itemize}
-	\item \textbf{Scenario}: Un prodotto registrato in anagrafica dispone di una quantità fisica in \texttt{Giacenza} pari a 5 unità. Viene inserito un \texttt{OrdineUscita} con una \texttt{RigaOrdineUscita} richiedente l'uscita di 6 unità del medesimo prodotto.
-	\item \textbf{Input}: Invocazione della funzione di business \texttt{registraScarico()} con quantità = 6.
-	\item \textbf{Risultato Atteso}: Il sistema deve intercettare preventivamente l'incoerenza prima di modificare i dati, bloccare l'esecuzione della transazione sul database SQLite tramite un'operazione di \texttt{ROLLBACK} e sollevare un'eccezione software personalizzata di tipo \texttt{GiacenzaInsufficienteException}. L'interfaccia utente cattura l'eccezione e mostra un messaggio di errore bloccante, impedendo che i dati assumano valori negativi incongruenti.
+    \item \textbf{Scenario}: Un prodotto registrato in anagrafica dispone di una quantità fisica in \texttt{Giacenza} pari a 5 unità. Viene inserito un \texttt{OrdineUscita} con una \texttt{RigaOrdineUscita} richiedente l'uscita di 6 unità del medesimo prodotto.
+    \item \textbf{Input}: Invocazione della funzione di business \texttt{registraScarico()} con quantità = 6.
+    \item \textbf{Risultato Atteso}: Il sistema deve intercettare preventivamente l'incoerenza prima di modificare i dati, bloccare l'esecuzione della transazione sul database SQLite tramite un'operazione di \texttt{ROLLBACK} e sollevare un'eccezione software personalizzata di tipo \texttt{GiacenzaInsufficienteException}. L'interfaccia utente cattura l'eccezione e mostra un messaggio di errore bloccante, impedendo che i dati assumano valori negativi incongruenti.
 \end{itemize}
 
 \end{document}
