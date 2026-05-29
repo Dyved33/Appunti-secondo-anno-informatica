@@ -68,6 +68,7 @@ In informatica teorica, un **linguaggio è definito come un insieme di parole**.
 * **Linguaggi Infiniti:** Il problema sorge quando cerchiamo di descrivere linguaggi con infinite parole.
 
 Il **Teorema di Cantor** ci pone un limite matematico insuperabile: non esiste una funzione iniettiva dall'insieme delle parti $\mathcal{P}(\Sigma^{*})$ all'insieme delle parole $\Sigma^{*}$. Di conseguenza, non è possibile associare a *ciascun* linguaggio possibile una parola univoca (la sua "descrizione") che lo caratterizzi in modo perfetto. In altre parole, non possiamo inventare una "parola descrittiva" univoca per tutti i possibili linguaggi infiniti esistenti (linguaggio infinito non può essere descritto da una descrizione finita).
+
 > [!NOTE] L'approccio Informatico
 > Nonostante il Teorema di Cantor, in informatica non abbiamo bisogno di descrivere *tutti* i linguaggi infiniti. È comunque possibile fornire **descrizioni finite** per *alcuni* linguaggi infiniti che ci sono particolarmente utili. Ad esempio, possiamo usare una regola descrittiva semplice come "tutte le parole sull'alfabeto $\{a,b\}$ di lunghezza dispari", oppure la notazione formale $\{a^{n}b^{n}|n\ge0\}$.
 
@@ -103,6 +104,7 @@ Per poter costruire delle regole rigorose, dobbiamo prima definire matematicamen
 3.  Non c'è alcun limite alla lunghezza della lista.
 
 Per istruire una macchina, dobbiamo usare dei **segnaposto** (come i termini "nome" o "frase") ed eseguire sostituzioni meccaniche secondo regole predefinite. 
+
 > [!IMPORTANT] Il Problema delle Regole Globali vs Locali
 > Un primo tentativo di creare queste regole umane includerebbe una direttiva del tipo: "prima di terminare, se sono presenti virgole, l'ultima va sostituita con la congiunzione e".
 > Questa regola, tuttavia, è anomala rispetto alle altre: impone di analizzare l'intera frase simultaneamente per trovare "l'ultima virgola". Un calcolatore preferisce invece **regole di sostituzione rigorose e puramente locali**, dove un simbolo viene sostituito ciecamente a prescindere dal contesto globale.
@@ -110,11 +112,13 @@ Per istruire una macchina, dobbiamo usare dei **segnaposto** (come i termini "no
 **La Soluzione Formale: Ricorsione e Segnaposto:** La soluzione "informatica" parte sempre da un segnaposto iniziale (es. `frase`) e procede sostituendolo finché non rimangono solo parole e punteggiatura reali. 
 1. **Regole di Base:** Il segnaposto $\langle nome \rangle$ può essere sostituito da Aldo, Bianca o Carlo.
 2. **Inizio:** $\langle frase \rangle$ può diventare un singolo $\langle nome \rangle$ oppure il blocco $\langle lista Nomi \rangle \langle fineLista \rangle$.
-3.  **Il Motore dell'Infinito (Ricorsione):** $\langle lista Nomi \rangle$ può essere sostituito da $\langle nome \rangle$ oppure da $\langle nome \rangle, \langle lista Nomi \rangle$. 
+3. **Il Motore dell'Infinito (Ricorsione):** $\langle lista Nomi \rangle$ può essere sostituito da $\langle nome \rangle$ oppure da $\langle nome \rangle, \langle lista Nomi \rangle$. 
+
 > [!EXAMPLE] Come si genera l'infinito
     > Contenendo se stessa nella parte destra dell'assegnazione, può essere applicata all'infinito per aggiungere quante virgole e quanti nomi desideriamo, creando una lunghezza illimitata a partire da una singola regola.
 
-4.  **Chiusura:** Il blocco $\langle nome \rangle \langle fine Lista \rangle$ si sostituisce rigorosamente con $e \langle nome \rangle$. Questo trucco garantisce che, alla fine del processo meccanico, l'ultimo elemento sia sempre preceduto dalla 'e' e non dalla virgola. 
+4. **Chiusura:** Il blocco $\langle nome \rangle \langle fine Lista \rangle$ si sostituisce rigorosamente con $e \langle nome \rangle$. Questo trucco garantisce che, alla fine del processo meccanico, l'ultimo elemento sia sempre preceduto dalla 'e' e non dalla virgola. 
+
 Ci si arresta solo quando i segnaposto non compaiono più. <u>Il concetto chiave è che un linguaggio di complessità e lunghezza infinita può essere generato meccanicamente e senza ambiguità tramite un set ristretto di regole di sostituzione locali</u>.
 
 **Grammatiche a Struttura di Frase (Formalizzazione):** Le regole di sostituzione viste nell'esempio vengono astratte nel concetto matematico di **Grammatica a Struttura di Frase**, formalmente definita come una quadrupla $G=\langle V,\Sigma,P,S\rangle$:
@@ -187,6 +191,7 @@ Capire se una parola appartiene a un linguaggio (ricognizione) è molto importan
  - *Input:* una grammatica (linguaggio) $G = (V, \Sigma, P,S)$ e una parola *w* $\in$ $\Sigma^*$
  - *Output:* SI se w $\in$ $L(G)$, NO altrimenti.
 2. **Problema di parsing (come è stata generata la parola?):** Prende come input una grammatica, una parola del linguaggio generato, e vuole trovare una derivazione della parola, cioè una sequenza di forme sentenziali ognuna conseguenza diretta della precedente, in maniera tale che partendo dal simbolo iniziale si ottenga la nostra parola.
+ 
  - *Input:* una grammatica (linguaggio) $G = (V, \Sigma, P,S)$ e una parola *w* $\in$ $L(G)$
  - *Output:* una derivazione *S*  => $\alpha_1$ => $\alpha_2$ => ... => $\alpha_n$ => *w* di *w* in *G*
 
@@ -199,12 +204,14 @@ La strategia è quindi quella di classificare (**gerarchia di Chomsky**) le nost
 Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più complessi ai più semplici)
 
 **Linguaggi di tipo 0:** 
-*Definizione:* le grammatiche a struttura di frase (in base alle loro regolo possono scrivere intere frasi e non solo singoli caratteri) si dicono anche *grammatiche di tipo 0*. I linguaggi generati da grammatiche di tipo 0 si dicono *linguaggi di tipo 0* oppure *linguaggi ricorsivamente numerabili*. Fanno parte di questo livello le grammatiche a struttura di frase. Queste grammatiche hanno la massima espressività possibile: <u>se io ho una procedura effettiva infinita che mi genera una lista di parole, quella lista di parole è un linguaggio di tipo 0.</u>
+
+*Definizione:* le grammatiche a struttura di frase (in base alle loro regole possono scrivere intere frasi e non solo singoli caratteri) si dicono anche *grammatiche di tipo 0*. I linguaggi generati da grammatiche di tipo 0 si dicono *linguaggi di tipo 0* oppure *linguaggi ricorsivamente numerabili*. Fanno parte di questo livello le grammatiche a struttura di frase. Queste grammatiche hanno la massima espressività possibile: <u>se io ho una procedura effettiva infinita che mi genera una lista di parole, quella lista di parole è un linguaggio di tipo 0.</u>
 
 > [!example] 
 > ![[Screenshot From 2026-03-05 10-15-42.png|300]]
 
 **Linguaggi di tipo 1 (grammatiche sensibili al contesto / contestuali):**
+
 *Definizione:* una grammatica a struttura di frase si dice sensibile al contesto se le produzioni hanno la forma: $\alpha_1X\alpha_2 \to \alpha_1\beta\alpha_2$, con $X \in N$, $\alpha_1, \alpha_2, \beta \in V^*$ , $\beta \neq \epsilon$.  Ciò significa che le produzioni di queste grammatiche hanno il lato sinistra che contiene una variabile, mentre il lato destra si ottiene sostituendo quella variabile con una parola qualsiasi purché non vuota. Quindi mentre prima potevamo sostituire una parola con una parola, qui possiamo sostituire solo una lettera all'interno di una parola con una parola, che per di più non deve essere vuota (posso sostituire una variabile solo se è contenuta in un  contesto). I linguaggi generati da grammatiche di tipo *q* si dicono *linguaggi di tipo 1*  o anche *sensibili al contesto*.  A differenza dei linguaggi di tipo 0, per questo tipo di linguaggi esistono algoritmi che risolvono i problemi di parsing e ricognizione, ma sono molto costosi.
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
@@ -220,7 +227,8 @@ Divide le grammatiche e i linguaggi generati da esse in 4 tipi (dai più comples
 > ![[Screenshot From 2026-03-05 10-22-40.png|300]]
 
 **Grammatiche monotone (sempre di tipo 1):**
-*Definizione:* una grammatica si dice *monotona* se tutte le produzioni hanno la forma: $\alpha \to \beta$ con $|\alpha| \leq |\beta|$ . Cioè una grammatica in cui tutte le produzioni hanno il lato destra che ha lunghezza maggiore o uguale a quella del lato sinistra. Quindi non c'è più l'obbligo di sostituire singole variabili, ma c'è la sola regola che il lato destra non può essere più corto di quello sinistra. Inoltre: 
+
+*Definizione:* una grammatica si dice *monotona* se tutte le produzioni hanno la forma: $\alpha \to \beta$ con $|\alpha| \leq |\beta|$. Cioè una grammatica in cui tutte le produzioni hanno il lato destra che ha lunghezza maggiore o uguale a quella del lato sinistra. Quindi non c'è più l'obbligo di sostituire singole variabili, ma c'è la sola regola che il lato destra non può essere più corto di quello sinistra. Inoltre: 
 - Le grammatiche sensibili al contesto sono monotone, perché in esse si sostituisce (all'interno del contesto) una variabile con qualcosa che non è vuoto, quindi quello che otterremo sarà qualcosa di più lungo o al massimo della stessa lunghezza di quello che già abbiamo.
 - Non tutte le grammatiche monotone sono sensibili al contesto
 - Ogni grammatica monotona è equivalente a una grammatica sensibile al contesto (che genera lo stesso linguaggio)
@@ -241,7 +249,9 @@ I linguaggi di tipo 2 costituiscono una sottoclasse propria dei linguaggi di tip
 Gli algoritmi di ricognizione e parsing per le grammatiche di tipo 2 si comportano abbastanza bene, alcuni sono moderatamente efficienti . La maggior parte dei linguaggi di programmazione sono generati da una grammatica non contestuale.
 
 **Linguaggi di tipo 3 Grammatiche regolari):** 
+
 *Definizione:* una grammatica a struttura di frase si dice *regolare* o di *tipo 3* se le produzioni hanno la forma $X \to aY$ oppure $X \to a$, con $X,Y \in N$, $a \in \Sigma$. Dunque Le produzioni hanno una forma ancora più semplice: a sinistra sempre una variabile, come nelle grammatiche di tipo 2, ma a destra ho un terminale da solo o un terminale seguito da una variabile. I linguaggi generati da grammatiche di tipo 3 si dicono *linguaggi di tipo 3* o anche *regolari*. I linguaggi di tipo 3 costituiscono una sottoclasse dei linguaggi di tipo 2 perché le produzioni a sinistra hanno una singola variabile. Quindi un linguaggio generato da una grammatica di tipo 3, è anche un linguaggio generato da una grammatica di tipo 2. Anche in questo caso, però, ci sono linguaggi di tipo 2 che non sono linguaggi di tipo 3.
+
 > [!example]
 > ![[Pasted image 20260305103801.png|300]]
 
@@ -260,6 +270,7 @@ Terminata la lettura del nastro, in base allo stato raggiunto (se è uno stato a
 - $\delta$: $Q \times \Sigma \to Q$ è la funzione di transizione  = legge con cui i nostri stati cambiano in base ad uno stato precedente e alla lettera scritta sul nastro
 - $q_0 \in Q$ è lo stato iniziale
 - $F \subseteq Q$ è l'insieme degli stati finiti = se al termine della computazione, il dispositivo si trova in uno stato che è compreso nell'insieme degli stati finali, la parola viene accettata
+
 > [!example] ![[Screenshot From 2026-03-05 21-44-54.png|300]]
 
 **Funzione di transizione estesa:** La funzione $\delta$ , affinché non lavori solo con le coppie *stato-lettera* ma anche con le coppie *stato-parola*, si estende a $\hat{\delta}$: $Q \times \Sigma^* \to Q$ ponendo:
@@ -267,6 +278,7 @@ Terminata la lettura del nastro, in base allo stato raggiunto (se è uno stato a
 - $\hat{\delta}(q,va) = \delta(\hat{\delta}(q,v),a)$, $\forall q \in Q$, $v \in \Sigma^*$, $a \in \Sigma$
 
 Per ogni $q \in Q, u, v \in \Sigma^*$,  si ha $\hat{\delta}(q,uv) = \hat{\delta}(\hat{\delta}(q,u),v)$  
+
 > [!example] ![[Screenshot From 2026-03-05 21-47-18.png|300]]
 
 **Linguaggio accettato:**
@@ -277,6 +289,7 @@ Per ogni $q \in Q, u, v \in \Sigma^*$,  si ha $\hat{\delta}(q,uv) = \hat{\delta}
 - Le frecce sono le triple ($q, a, \delta (q, a)$) con $q \in Q , a \in \Sigma$ 
 - Lo stato iniziale è denotato da una freccia entrante
 - Gli stati finali sono identificati dal bordo doppio
+
 > [!example] ![[Screenshot From 2026-03-05 21-53-02.png|300]]
 
 - Per ogni stato $q$ e ogni lettera $a$ c'è esattamente una freccia con etichetta $a$ che esce da $q$
@@ -289,12 +302,13 @@ Per ogni $q \in Q, u, v \in \Sigma^*$,  si ha $\hat{\delta}(q,uv) = \hat{\delta}
 > - ![[Screenshot From 2026-03-06 10-06-39.png|300]]
 ### Automi a stati finiti non deterministici
 Abbiamo detto che un automa è rappresentato da un grafo e che per ogni stato $q$ e ogni lettera $a$ esiste esattamente un arco uscente da $q$ con etichetta $a$. Le parole accettate da $A$ sono le etichette dei cammini dallo stato iniziale a uno stato finale.
-Se da questa definizione togliessi l'aspetto degli archi (cioè che da ogni vertice può uscire un solo arco) otterrei: una maggiore libertà nella progettazione ma avrei più difficoltà a verificare se una parola è accettata o meno. La soluzione a ciò è un modello non-deterministico che mi permette di fare una conversione automatica al modello deterministico.  Il modello non-deterministico:
+Se da questa definizione togliessi l'aspetto degli archi (cioè che da ogni vertice può uscire un solo arco per ogni etichetta possibile) otterrei: una maggiore libertà nella progettazione ma avrei più difficoltà a verificare se una parola è accettata o meno. La soluzione a ciò è un modello non-deterministico che mi permette di fare una conversione automatica al modello deterministico. Il modello non-deterministico:
 - A ogni passo il dispositivo esegue una fra le transizioni possibili (purché esista)
 - L'input è accettato se almeno una delle possibili computazioni ha successo (termina in uno stato finale)
 - L'input è rifiutato se tutte le possibili computazioni falliscono (terminano in uno stato non finale o prima che il nastro sia esaurito)
 
-**Sintesi:** Possiamo definire Automi a Stati finiti non Deterministici, dei meccanismi che non hanno la restrizione dei modelli deterministici: un meccanismo che può assumere un numero predefinito di configurazioni interne, che ha un nastro di input, ma che ad ogni passo non esegue più una sola transizione ben determinata ma dispone di un ventaglio di possibilità e può quindi eseguire varie transizioni (o nessuna). L'input viene accettato se tra le tante computazioni possibili c'è n'è almeno una che termina in uno stato finale. Quindi una parola viene rifiutata se tutte le computazioni terminano in uno stato non finale o terminano prima che il nastro sia esaurito. 
+> [!info] **Sintesi:** 
+> Possiamo definire Automi a Stati finiti non Deterministici, dei meccanismi che non hanno la restrizione dei modelli deterministici: un meccanismo che può assumere un numero predefinito di configurazioni interne, che ha un nastro di input, ma che ad ogni passo non esegue più una sola transizione ben determinata ma dispone di un ventaglio di possibilità e può quindi eseguire varie transizioni (o nessuna). L'input viene accettato se tra le tante computazioni possibili c'è n'è almeno una che termina in uno stato finale. Quindi una parola viene rifiutata se tutte le computazioni terminano in uno stato non finale o terminano prima che il nastro sia esaurito. 
 
 *Definizione:* un automa a stati finiti non deterministico è una quintupla $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ dove:
 - Q è l'insieme degli stati
@@ -310,9 +324,10 @@ In sostanza vuol dire che nel grafo, nel quale non c'è più il limite al numero
 - Gli stati finali sono identificati dal doppio bordo
 
 Ci si convince facilmente a questo punto che:
-- Una parola *w* può essere etichetta di molti cammini uscenti dallo stato iniziale, o anche nessuno
-- La parola *w* è accettata $\iff$ c'è un cammino dallo stato iniziale a uno stato finale con etichetta *w*
-- Questo non esclude però che vi possano essere altri cammini con etichetta *w* che partono dallo stato iniziale e terminano in uno stato non finale
+- Una parola $w$ può essere etichetta di molti cammini uscenti dallo stato iniziale, o anche nessuno
+- La parola $w$ è accettata $\iff$ c'è un cammino dallo stato iniziale a uno stato finale con etichetta $w$
+- Questo non esclude però che vi possano essere altri cammini con etichetta $w$ che partono dallo stato iniziale e terminano in uno stato non finale
+
 > [!example] 
 > ![[Screenshot From 2026-03-06 11-03-22.png|300]]
 > ![[Screenshot From 2026-03-06 11-03-35.png|300]]
@@ -321,9 +336,11 @@ Ci si convince facilmente a questo punto che:
 > Questa computazione non è accettata perché non finisce in uno stato finale, ma questo non significa che la parola non sia accettata perché possono esserci altre computazioni (come la verde) che terminano in uno stato finale
 
 Apparentemente questo tipo di progettazione non ci da nessun vantaggio, perché le computazioni da fare diventerebbero troppe. Supponiamo infatti di avere 2 cammini possibili per ogni scelta, e dovessimo leggere una parola di lunghezza 10, questo vorrebbe dire che dovremmo fare 210 computazioni. Proviamo però a ragionare come segue: se mi trovo in q0 e il mio input è $a$, posso andare o in q0 o in q1, ecc… Se mi trovo in q1 e l'input è $b$, andrò in q2,… Quindi ad ogni passo, in base alla colonna che avevo al passo precedente, e alla lettera di input, produco una colonna nuova. Questo procedimento è praticamente uguale a quello di un automa a stati deterministico, perché in base alla configurazione del mio dispositivo e alla lettera di input, determina la configurazione successiva. In questo caso la differenza è che abbiamo delle colonnine di stati.
+
 > [!example] ![[Pasted image 20260306110859.png|300]]
 
-**Teorema:** Sia $A$ un automa a stati finiti non deterministico, esiste effettivamente un equivalente automa a stati finiti deterministico $A'$ tale che $L (A) = L (A')$, cioè esiste l'automa deterministico e l'algoritmo per costruire questo automa a partire dall'automa non deterministico. Quindi, prima andremo a disegnare l'automa a stati non deterministico (prima immagine con più percorsi in verde e rosso), cosa che risulta molto più facile rispetto al crearne uno deterministico, e poi sapremo che esiste l'algoritmo in grado di trasformare quel grafo nel grafo di un automa a stati deterministico (seconda immagine con colonne). 
+**Teorema:** Sia $A$ un automa a stati finiti non deterministico, esiste effettivamente un equivalente automa a stati finiti deterministico $A'$ tale che $L (A) = L (A')$, cioè esiste l'automa deterministico e l'algoritmo per costruire questo automa a partire dall'automa non deterministico. Quindi, prima andremo a disegnare l'automa a stati finiti non deterministico (prima immagine con più percorsi in verde e rosso), cosa che risulta molto più facile rispetto al crearne uno deterministico, e poi sapremo che esiste l'algoritmo in grado di trasformare quel grafo nel grafo di un automa a stati finiti deterministico (seconda immagine con colonne). 
+
 *Dimostrazione:* Gli stati dell'automa deterministico registreranno l'insieme gli stati raggiungibili dalle computazioni dell'automa non deterministico sul medesimo input $\rightarrow$ Accetto se fra questi ce n'è uno finale
 
 **Costruzione:** Sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ l'automa non deterministico. Definisco l'automa deterministico $A' = \langle Q', \Sigma, \delta', s_0, F' \rangle$ come segue: 
@@ -339,10 +356,10 @@ Apparentemente questo tipo di progettazione non ci da nessun vantaggio, perché 
 - $w \ \text{è accettata da} \ A'$
 $\implies L(A) = L(A')$ 
 
-Come abbiamo accennato precedentemente, però, sarebbero presenti troppi stati da controllare (se $Q=n$, allora $Q'=2^n$). Per fortuna <u>non tutti questi stati sono necessari: possiamo definire uno stato necessario/accessibile come un cammino nel grafo dell'automa che, dallo stato iniziale, mi porta a $q$. Tutti gli altri stati si dicono inaccessibili.</u>
+Come abbiamo accennato precedentemente, però, sarebbero presenti troppi stati da controllare (se $Q=n$, allora $Q'=2^n$). Per fortuna <u>non tutti questi stati sono necessari: possiamo definire uno stato necessario/accessibile come un cammino nel grafo dell'automa che, dallo stato iniziale, mi porta a q. Tutti gli altri stati si dicono inaccessibili.</u>
 
-*Definizione:* sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ un automa a stati finiti deterministico. Uno stato $q \in Q$ si dice *accessibile* se $q = \hat{\delta}(q_0,w)$ per qualche $w \in \Sigma^*$.
-Se io elimino tutti questi stati inaccessibili e restringo la funzione di transizione (delta cappello) solo agli stati accessibili, ottengo un automa con un numero di stati più piccolo, equivalente a quello di partenza, che accetta lo stesso linguaggio di quello di partenza.
+*Definizione:* sia $A = \langle Q, \Sigma, \delta, q_0, F \rangle$ un automa a stati finiti deterministico. Uno stato $q \in Q$ si dice *accessibile* se $q = \hat{\delta}(q_0,w)$ per qualche $w \in \Sigma^*$. Se io elimino tutti questi stati inaccessibili e restringo la funzione di transizione (delta cappello) solo agli stati accessibili, ottengo un automa con un numero di stati più piccolo, equivalente a quello di partenza, che accetta lo stesso linguaggio di quello di partenza.
+
 > [!example] 
 > ![[Screenshot From 2026-03-06 11-26-56.png|300]] 
 > 
@@ -354,6 +371,7 @@ Se io elimino tutti questi stati inaccessibili e restringo la funzione di transi
 3. Calcolo il valore della funzione di transizione sulla coppia stato-lettera: $s= \delta'(r, a)$; Una volta calcolato ho due possibilità: o lo stato è già nella lista degli stati, oppure no.   
 4. Se $s$ non è nella lista degli stati allora lo aggiungo alla lista degli stati. 
 5. Se $s$ contiene uno stato finale di $A$, aggiungo $s$ alla lista degli stati finali. 
+
 > [!example] 
 > ![[Screenshot From 2026-03-06 11-32-20.png|300]]
 > ![[Screenshot From 2026-03-06 11-32-32.png|300]]
@@ -364,7 +382,7 @@ Se io elimino tutti questi stati inaccessibili e restringo la funzione di transi
 > [!info] Caso difficile:
 > ![[Pasted image 20260308174311.png|300]]
 ### Automa a stati finiti non deterministico con epsilon-transizioni
-Un automa a stati finiti non deterministico con $\epsilon$-transizioni è una quintupla $A = \langle Q,\Sigma, \delta, q_0, F \rangle$, dove $Q,\Sigma, q_0, F$ sono come nell'automa deterministico, mentre la funzione $\delta: Q \times (\Sigma \cup \{\epsilon\}) \rightarrow \wp(Q)$ è la funzione di transizione, che ora non è definita solo sulle coppie *stato-lettera*, ma anche sulle coppie *stato-parolaVuota*, e restituisce un insieme di stati (potrebbe essere anche vuoto). Questo modello mi permette di saltare da uno stato all'altro senza leggere il nastro di input (anche per questo modello c'è un algoritmo che mi permette di passare da un automa di questo tipo ad un automa a stati finiti deterministico). Una parola $w \in \Sigma^*$ è *accettata* da $A$ se esistono $n\geq 0$, $a_1,...,a_n \in \Sigma \cup \{\epsilon\}$ e $q_1,..q_n \in Q$ tali che $w = a_1a_2...a_n$, $q_i \in \delta(q_{i-1},a_i)$, $1 \leq i \leq n$, $q_n \in F$ . In altre parole la parola è accettata dall'automa se esiste un cammino dallo stato iniziale a uno finale nel grafo con etichetta $w$, e se $w$ può essere scritta come una sequenza di lettere e parole vuote. L'insieme delle parole accettate da $A$ si dice *linguaggio accettato (o riconosciuto)* da $A$ e si denota con $L(A)$.
+Un automa a stati finiti non deterministico con $\epsilon$-transizioni è una quintupla $A = \langle Q,\Sigma, \delta, q_0, F \rangle$, dove $Q,\Sigma, q_0, F$ sono come nell'automa deterministico, mentre la funzione $\delta: Q \times (\Sigma \cup \{\epsilon\}) \rightarrow \wp(Q)$ è la funzione di transizione, che ora non è definita solo sulle coppie *stato-lettera*, ma anche sulle coppie *stato-parolaVuota*, e restituisce un insieme di stati (potrebbe essere anche vuoto). <u>Questo modello mi permette di saltare da uno stato all'altro senza leggere il nastro di input</u> (anche per questo modello c'è un algoritmo che mi permette di passare da un automa di questo tipo ad un automa a stati finiti deterministico). Una parola $w \in \Sigma^*$ è *accettata* da $A$ se esistono $n\geq 0$, $a_1,...,a_n \in \Sigma \cup \{\epsilon\}$ e $q_1,..q_n \in Q$ tali che $w = a_1a_2...a_n$, $q_i \in \delta(q_{i-1},a_i)$, $1 \leq i \leq n$, $q_n \in F$ . In altre parole la parola è accettata dall'automa se esiste un cammino dallo stato iniziale a uno finale nel grafo con etichetta $w$, e se $w$ può essere scritta come una sequenza di lettere e parole vuote. L'insieme delle parole accettate da $A$ si dice *linguaggio accettato (o riconosciuto)* da $A$ e si denota con $L(A)$.
 
 **Grafo dell'automa:** A ogni automa non deterministico con $\epsilon$-transizioni $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ associamo un grafo diretto con frecce etichettate:
 - I vertici sono gli stati
@@ -373,15 +391,16 @@ Un automa a stati finiti non deterministico con $\epsilon$-transizioni è una qu
 - Gli stati finali sono identificati dal bordo doppio
 
 Ci si convince facilmente a questo punto che:
-- Una parola *w* può essere etichetta di molti cammini uscenti dallo stato iniziale, o anche nessuno
-- La parola *w* è accettata $\iff$ c'è un cammino dallo stato iniziale a uno stato finale con etichetta *w*
-- Questo non esclude però che vi possano essere altri cammini con etichetta *w* che partono dallo stato iniziale e terminano in uno stato non finale
+- Una parola $w$ può essere etichetta di molti cammini uscenti dallo stato iniziale, o anche nessuno
+- La parola $w$ è accettata $\iff$ c'è un cammino dallo stato iniziale a uno stato finale con etichetta $w$
+- Questo non esclude però che vi possano essere altri cammini con etichetta $w$ che partono dallo stato iniziale e terminano in uno stato non finale
+
 > [!example] ![[Screenshot From 2026-03-12 10-16-28.png|300]]
 > Nota che tra le colonne ora appare anche $\epsilon$, cosa che prima non era contemplata
 
 **Teorema:** Sia $A$ un automa a stati finiti non deterministico con $\epsilon$-transizioni. Esiste effettivamente un automa a stati finiti deterministico $A'$ tale che $L(A) = L(A')$ (accetta lo stesso linguaggio)
 
-*Dimostrazione:* Gli stati dell'automa deterministico registreranno l'insieme degli stati raggiungibili dalle computazioni dell'automa non deterministico sul medesimo input. Accetto la parola se fra questi ce uno finale
+*Dimostrazione:* Gli stati dell'automa deterministico registreranno l'insieme degli stati raggiungibili dalle computazioni dell'automa non deterministico sul medesimo input. Accetto la parola se fra questi ce ne è uno finale
 
 **$\epsilon$-chiusura:** Se però con l'automa a stati finiti non deterministico le nostre computazioni si limitavano alla potenza-numero-di-lettere della parola, ora teoricamente posso avere anche infinite $\epsilon-$transizioni (la concatenazione di un miliardo di $\epsilon$, è sempre una parola vuota). Quindi bisogna utilizzare una tecnica per trattare queste $\epsilon-$transizioni: la $\epsilon-$chiusura di uno stato. 
 
@@ -389,7 +408,8 @@ Ci si convince facilmente a questo punto che:
 - $q \in C_{\epsilon}(q)$
 - Per ogni $p \in C_{\epsilon}(q)$, $\delta(p,\epsilon) \subseteq C_{\epsilon}(q)$
 
-La $\epsilon$-chiusura di un insieme di stati $S \subseteq Q$ è l'unione delle $\epsilon$ chiusure dei singoli stati di $S: C_{\epsilon}(S) = \bigcup\limits_{q \in S} C_{\epsilon}(q)$.  In altre parole la $\epsilon-$chiusura di uno stato è l'insieme degli stati che da questo si possono raggiungere utilizzando solo $\epsilon-$transizioni (questo insieme deve contenere lo stato stesso).
+La $\epsilon$-chiusura di un insieme di stati $S \subseteq Q$ è l'unione delle $\epsilon$-chiusure dei singoli stati di $S: C_{\epsilon}(S) = \bigcup\limits_{q \in S} C_{\epsilon}(q)$. In altre parole la $\epsilon-$chiusura di uno stato è l'insieme degli stati che da questo si possono raggiungere utilizzando solo $\epsilon-$transizioni (questo insieme deve contenere lo stato stesso).
+
 > [!example] ![[Screenshot From 2026-03-12 10-31-58.png|300]]
 > - $C_{\epsilon}(q_0)$ deve contenere $q_3$ perché con $\epsilon$-transizioni vado in $q_3$
 > - $C_{\epsilon}(\{q_0,q_1\})$ è la $\epsilon$-chiusura della coppia di stati $q_0,q_1$ che si ottiene facendo l'unione delle chiusure dei due stati
@@ -397,6 +417,7 @@ La $\epsilon$-chiusura di un insieme di stati $S \subseteq Q$ è l'unione delle 
 **Calcolo della $\epsilon$-chiusura:**
 - *Input*: un automa non deterministico con $\epsilon$-transizioni $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ e uno stato $q \in Q$
 - *Output*: la $\epsilon$ -chiusura di $q$
+
 ```
 R <- (q) // inizialmente la lista contiene solo lo stato q
 p <- puntatore al primo elemento di R
@@ -406,13 +427,14 @@ Prendiamo tutti gli elementi che si ottengono partendo dal primo elemento della 
 	 p <- successivo(p) // passo all'elemento successivo
 return R
 ```
+
 > [!example] ![[Screenshot From 2026-03-12 10-35-50.png|300]]
 
 **Costruzione:** Sia $A = \langle Q,\Sigma, \delta, q_0, F \rangle$ l'automa non deterministico con $\epsilon$-transizioni, definisco l'automa deterministico $A' = \langle Q',\Sigma, \delta', q_0, F' \rangle$ come segue:
 - L'insieme degli stati è l'insieme $Q' = \wp(Q)$ costituito dai sottoinsiemi di $Q$ (cioè uno stato di $A'$  è un insieme di stati di $A$ )
-- Lo stato iniziale è $s_0 = C_{\epsilon}(q_0)$ (stato iniziale è una $\epsilon$ -chiusura, quindi non si tratta più di un singleton, ma di un insieme di stati)
+- Lo stato iniziale è $s_0 = C_{\epsilon}(q_0)$ (stato iniziale è una $\epsilon$-chiusura, quindi non si tratta più di un singleton, ma di un insieme di stati)
 - Gli stati finali sono tutti i sottoinsiemi di Q che contengono almeno un elemento di $F$, cioè: $F' = \{s \in \wp(Q) | s \cap F \neq \emptyset\}$ (sottoinsiemi che contengono almeno uno stato finale dell' $A$ precedente)
-- La funzione di transizione è $\delta'(s,a): C_{\epsilon}(\bigcup\limits_{p \in s} \delta(p,a))$, $s \in \wp(Q)$, $a \in \Sigma$ (insieme di tutti quegli stati che posso raggiungere in $A$ partendo da uno qualunque degli stati di $s$ e poi seguendo la freccia con etichetta a, e poi tute le frecce che voglio con etichetta $\epsilon$)
+- La funzione di transizione è $\delta'(s,a): C_{\epsilon}(\bigcup\limits_{p \in s} \delta(p,a))$, $s \in \wp(Q)$, $a \in \Sigma$ (insieme di tutti quegli stati che posso raggiungere in $A$ partendo da uno qualunque degli stati di $s$ e poi seguendo la freccia con etichetta $a$, e poi tute le frecce che voglio con etichetta $\epsilon$)
 
 *Dimostrazione:* Per ogni $w \in \Sigma^*$ risulta che $\hat{\delta'}(s_0,w) = \{q \in Q |$ nel grafo di $A$  c'è un cammino da $q_0$ a $q$ con etichetta $w$ $\}$. Pertanto sono equivalenti:
 - $w$ è accettata da $A$
@@ -461,7 +483,7 @@ La teoria dei linguaggi formali può essere vista come l'arte di rappresentare d
 
 *Osservazione:* unione, concatenazione e chiusura di Kleene sono dette operazioni regolari
 
-Quindi, i linguaggi finiti li sappiamo definire facendo una semplice lista delle parole; con questi linguaggi finiti posso poi fare le operazioni di unione e concatenazione ed ottenere nuovi linguaggi finiti, e con la chiusura di Kleene ottengo nuovi linguaggi infiniti. Con questi linguaggi infiniti posso fare altre operazioni di unione e concatenazione, ottenendo altri linguaggi sempre più complessi. Questo vuol dire che posso scrivere la definizione dei linguaggi infiniti semplicemente indicando le operazioni che eseguo per ottenerli: ovvero le espressioni regolari. <u>Le espressioni sono parole che costruisco partendo dalle lettere dell'alfabeto e dal simbolo ∅, seguendo le regole.</u> Rappresentano quindi una sequenza di operazioni fatte a partire dall'alfabeto iniziale. 
+Quindi, i linguaggi finiti li sappiamo definire facendo una semplice lista delle parole; con questi linguaggi finiti posso poi fare le operazioni di unione e concatenazione ed ottenere nuovi linguaggi finiti, e con la chiusura di Kleene ottengo nuovi linguaggi infiniti. Con questi linguaggi infiniti posso fare altre operazioni di unione e concatenazione, ottenendo altri linguaggi sempre più complessi. Questo vuol dire che posso scrivere la definizione dei linguaggi infiniti semplicemente indicando le operazioni che eseguo per ottenerli: ovvero le espressioni regolari. <u>Le espressioni sono parole che costruisco partendo dalle lettere dell'alfabeto e dal simbolo ∅, seguendo le regole.</u> Rappresentano quindi una sequenza di operazioni fatte a partire dall'alfabeto iniziale.  
 
 > [!info] 
 > - $\emptyset =$ **linguaggio vuoto**, cioè non contiene nessuna parola
@@ -490,6 +512,7 @@ Perché se due linguaggi sono denotati da espressioni regolari, la loro unione s
 - Chiusura di Kleene
 - Concatenazione
 - Somma
+
 > [!example] 
 > - $a+b$: espressione regolare che denota il linguaggio composto dalle due parole a e b (**unione**)
 > - $(a+b)^*$: **chiusura di Kleene**, tutte le concatenazioni di parole che appartengono all'insieme a, b. Cioè tutte le concatenazioni di lettere a, b . In sostanza è l'insieme delle parole sull'alfabeto (a, b) 
@@ -542,6 +565,7 @@ Costruiamo $A = \langle Q,\Sigma,\delta, i, \{f\}\rangle$ come segue:
 - Le frecce del grafo di $A$ sono le frecce dei grafi di $A_1$ e $A_2$ e, inoltre, $(i,\epsilon,i_1), (i,\epsilon,i_2), (f_1,\epsilon, f), (f_2,\epsilon, f)$
 
 Allora $A$ accetta il linguaggio denotato da $(E+F)$
+
 > [!example] ![[Screenshot From 2026-03-13 11-13-32.png|300]]
 
  <div style="display: flex; align-items: flex-start; gap: 20px;">
@@ -641,10 +665,10 @@ Tutti che attraversano solo stati di indice $\leq k-1$
   <img src="Pasted image 20260319174122.png" width="300">
 </div>
 
-**Passo induttivo:** ora dobbiamo trovare l'espressione $E_{ijk}$, cioè l'espressione per il linguaggio costituito dalle etichette di tutti i cammini delle forme precederti. Innanzitutto facciamo  l'unione dei cammini del primo punto con i cammini del secondo punto. I cammini del secondo gruppo saranno a loro volta riportati come la concatenazione del primo segmento con i segmenti intermedi (concatenazione di 0 o più coppie di un espressione utilizzando la chiusura di Kleene) e l'ultimo segmento. In sostanza le espressioni regolari $E_{ijk}$ che denotano i linguaggi $L_{ijk}$ devono soddisfare le relazioni ricorsive $E_{ijk} = E_{ijk−1} + (E_{ikk−1})(Ek k k−1)(E_{kjk−1}), \ 1 \leq k < i, j \leq n$ (la prima parte contiene tutti i cammini che NON usano $q_k$, mentre la seconda parte contiene tutti i cammini che usano $q_k$ ALMENO una volta). Un'espressione regolare di $L(A)$ è data dalla somma delle $E_{1jn}$ con $q_j$ stato finale. In questo mode è possibile calcolare tutte le espressioni regolari, compresa $E_{n-1 \ n \ n-2}$ che denota il linguaggio accettato dall'automa (esempio nelle slide 8-11)
+**Passo induttivo:** ora dobbiamo trovare l'espressione $E_{ijk}$, cioè l'espressione per il linguaggio costituito dalle etichette di tutti i cammini delle forme precederti. Innanzitutto facciamo l'unione dei cammini del primo punto con i cammini del secondo punto. I cammini del secondo gruppo saranno a loro volta riportati come la concatenazione del primo segmento con i segmenti intermedi (concatenazione di 0 o più coppie di un espressione utilizzando la chiusura di Kleene) e l'ultimo segmento. In sostanza le espressioni regolari $E_{ijk}$ che denotano i linguaggi $L_{ijk}$ devono soddisfare le relazioni ricorsive $E_{ijk} = E_{ijk−1} + (E_{ikk−1})(Ek k k−1)(E_{kjk−1}), \ 1 \leq k < i, j \leq n$ (la prima parte contiene tutti i cammini che NON usano $q_k$, mentre la seconda parte contiene tutti i cammini che usano $q_k$ ALMENO una volta). Un'espressione regolare di $L(A)$ è data dalla somma delle $E_{1jn}$ con $q_j$ stato finale. In questo mode è possibile calcolare tutte le espressioni regolari, compresa $E_{n-1 \ n \ n-2}$ che denota il linguaggio accettato dall'automa (esempio nelle slide 8-11)
 
 **Regola pratica:** Per fare tutto ciò utilizzeremo il <u>Metodo di eliminazione degli stati</u> partendo dal nostro automa. Questo corrisponde ad un grafo sulle cui etichette delle frecce ci sono espressioni particolari che possono essere o lettere, o $\epsilon$ o somma di lettere.
-1. ci riduciamo al caso in cui:
+1. Ci riduciamo al caso in cui:
 	- $A$ ha un unico stato finale 
 	- Nel grafo di $A$ non ci sono frecce che entrano nello stato iniziale, ne frecce che escono dallo stato finale
 2. Sostituiamo le etichette multiple con la loro somma (cioè se ci sono più frecce tra due stati, uniscile con +)
@@ -713,7 +737,7 @@ Due parole sono uguali per un linguaggio se aggiungendo lo stesso suffisso a des
 **Equivalenza di Nerode:**
 *Definizione:* sia $L$ un linguaggio sull'alfabeto $\Sigma$. L'equivalenza di Nerode associata al linguaggio $L$ è la relazione $N_L$ definita in $\Sigma^*$ da: $u \ N_L \ v$ se per ogni $y \in \Sigma^*$*, $uy \in L \iff vy \in L$. Cioè, $u \ N_L \ v$ se $u$ e $v$ sono equivalenti e se hanno gli stessi completamenti a destra per entrare in $L$. 
 
-Quindi diciamo che due parole sono equivalenti se le parole che mi permettono di completare la prima ($u$, a destra) dentro una parola di $L$, sono esattamente le stesse che mi permettono di completare $v$ in una parola di $L$. Questo teorema ci da una caratterizzazione vera e propria dei linguaggi regolari in forma algebrica: un linguaggio è regolare se lo posso ottenere come unione di classi di una congruenza destra di indice finito.
+Quindi diciamo che due parole sono equivalenti se le parole che mi permettono di completare la prima ($u$, a destra) dentro una parola di $L$, sono esattamente le stesse che mi permettono di completare $v$ in una parola di $L$. Questo teorema ci da una caratterizzazione vera e propria dei linguaggi regolari in forma algebrica: <u>un linguaggio è regolare se lo posso ottenere come unione di classi di una congruenza destra di indice finito.</u>
 
 $N_L$ è la relazione che identifica precisamente gli stati dell'automa minimo:
 - Due parole stanno nella stessa classe se portano allo stesso "stato logico" rispetto a $L$
@@ -798,7 +822,7 @@ Dimostrazione circolare per dimostrare che le 3 condizioni suddette siano equiva
 *Proposizione:* Sia $L$ un linguaggio regolare. L'automa di Nerode di $L$ è un automa deterministico che accetta $L$ col minimo numero di stati possibile. 
 
 Il punto finale è il seguente:
-- ogni stato di un DFA corrisponde, in sostanza, a una classe di parole indistinguibili;
+- ogni stato di un DFA corrisponde, a una classe di parole indistinguibili;
 - Nerode identifica proprio queste classi;
 - quindi il numero minimo di stati possibili è proprio il numero delle classi di $N_L$​
 
@@ -828,7 +852,7 @@ Per questo l'automa di Nerode è il **minimo**.
 
 **Costruzione dell'automa di Nerode:** dato un'automa a stati finiti deterministico $A = \langle Q, \Sigma, \delta, q_0, f \rangle$, costruire un'automa deterministico equivalente ad $A$ col minimo numero di stati:
 - Possiamo ridurci al caso in cui tutti gli stati siano accessibili
-- Gli stati dell'automa di Nerode sono le classi di $N_L ...$
+- Gli stati dell'automa di Nerode sono le classi di $N_L$
 - Ma anche unione di insiemi $L_q$ con $q \in Q$ (cf. Dimostrazione del th di Nerode $ii) \implies iii)$)
 - Insomma la partizione di $\Sigma^*$ nelle classi di $N_L$ induce una partizione di $Q$
 - Tale partizione gode delle seguenti 3 proprietà:
@@ -1038,7 +1062,7 @@ Troviamo il più lungo prefisso $u$ di $w$ accettato da $A_D$ e il più piccolo 
 
 **Teorema:** un linguaggio è regolare se e soltanto se è generato da una grammatica di tipo 3
 
-*Osservazione:* data $G$, si può effettivamente costruire un automa  a stati finiti che accetta il linguaggio generato da $G$. Viceversa, dato un automa a stati finiti $A$, si può effettivamente costruire una grammatica di tipo 3 che genera il linguaggio accettato da $A$
+*Osservazione:* data $G$, si può effettivamente costruire un automa a stati finiti che accetta il linguaggio generato da $G$. Viceversa, dato un automa a stati finiti $A$, si può effettivamente costruire una grammatica di tipo 3 che genera il linguaggio accettato da $A$
 
 Sia $G = \langle V,\Sigma,P,S \rangle$ una grammatica di tipo 3, per semplicità supponiamo che non abbia la produzione $S \rightarrow \epsilon$. Costruiamo l'automa non deterministico A come segue:
 - Gli stati sono le variabili della grammatica G e la parola vuota
@@ -1248,7 +1272,7 @@ Procediamo per induzione sul numero dei nodi dell'albero.
 
 > [!info] In altre parole:
 > 1. all'inizio prendo l'insieme di tutte le
-> variabili che producono 𝜀.
+> variabili che producono $\epsilon$.
 > 2. Poi costruisco un altro insieme in cui
 > oltre a queste variabili, aggiungo tutte
 > quelle produzioni che hanno un lato destra
@@ -1322,7 +1346,7 @@ Procediamo per induzione sul numero dei nodi dell'albero.
 > $T_1$ è l'insieme delle coppie $X,Y$ per cui $Y$ si deriva da $X$ in un passo, $T_2$ in al massimo due passi, $T_3$ in al massimo tre passi e $T_n$ in al massimo $2n-1$ passi. Quindi il procedimento è abbastanza veloce perché la lunghezza massima sarà il numero delle variabili.
 
 *Osservazioni:* 
-- $T_n$ contiene le coppie di variabili $(X,Y)$ tali che $X \implies *Y$ in al più $2^{n-1}$ passi; 
+- $T_n$ contiene le coppie di variabili $(X,Y)$ tali che $X \implies ^*Y$ in al più $2^{n-1}$ passi; 
 - $T_1 \subseteq T_2 \subseteq ... \subseteq T_n \subseteq ... \subseteq N \times N$  
 - Pertanto, per qualche $n, T_n = T_{n-1} = T$. $T = \{(X,Y) \in N \ times N | X \implies *T\}$ 
 - si ha $A \implies *B$ se e solo se c'è un cammino da $A$ a $B$ nel grafo $(N, E)$ con insieme di archi $E = (X,Y) \in N \times N | X → Y \ \text{in P} \}$ 
@@ -1336,7 +1360,7 @@ Procediamo per induzione sul numero dei nodi dell'albero.
 
 **Variabili improduttive e variabili inaccessibili:** 
 
-*Definizione:* Sia $G = \langle V, \Sigma, P, S \rangle$  una grammatica non contestuale. Una variabile $X$ si dice **produttiva** se esiste $w \in \Sigma^*$ tale che $X \implies *w$, **improduttiva** altrimenti. Una variabile $X$ si dice **accessibile** se compare in qualche forma sentenziale, **inaccessibile** altrimenti.
+*Definizione:* Sia $G = \langle V, \Sigma, P, S \rangle$  una grammatica non contestuale. Una variabile $X$ si dice **produttiva** se esiste $w \in \Sigma^*$ tale che $X \implies ^*w$, **improduttiva** altrimenti. Una variabile $X$ si dice **accessibile** se compare in qualche forma sentenziale, **inaccessibile** altrimenti.
 
 > [!example ]
 > Sia $G$ la grammatica con $N = \{N, X, Y, Z\}$, $\Sigma = \{a,b\}$ e con le produzioni: $S → aXa |aa, X → bSb | Y , Z → a$.
@@ -1371,7 +1395,7 @@ L'algoritmo per le variabili produttive prende in input una grammatica non conte
 - $K_0 = \{S\}$
 - $K_n = K_{n-1} \cup \{$variabili che compaiono nei lati destri delle produzioni delle $X \in K_{n-1} \}, n \geq 1$
 
-In altre parole creiamo un insieme di variabili ($K_n$) e gli aggiungiamo $S$ che sappiamo essere accessibile. Poi aggiungeremo tutte le variabili che compaiono nei lati destra delle produzioni di $S$. In seguito aggiungeremo tutte le variabili che hanno nel lato sinistra delle variabili che sappiamo già essere  accessibili. Ripetiamo il procedimento finché l'insieme non smette di crescere.
+In altre parole creiamo un insieme di variabili ($K_n$) e gli aggiungiamo $S$ che sappiamo essere accessibile. Poi aggiungeremo tutte le variabili che compaiono nei lati destri delle produzioni di $S$. In seguito aggiungeremo tutte le variabili che hanno nel lato sinistro delle variabili che sappiamo già essere  accessibili. Ripetiamo il procedimento finché l'insieme non smette di crescere.
 
 *Osservazioni:*
 - $K_n$ contiene le variabili che compaiono nelle forme sentenziali derivabili in $n$ passi dal simbolo iniziale
@@ -1427,7 +1451,7 @@ L'algoritmo per le variabili accessibili prende in input una grammatica non cont
 
 *Procedura:* 
 1. Eliminare le $\epsilon$-produzioni e produzioni unarie; restano solo produzioni $X → a$ con $X \in N$ e $a \in \Sigma$ e produzioni $X → \gamma$ con $|\gamma| \geq 2$
-2. Ridursi al caso $\gamma \in N^*$ (caso in cui $\gamma$ contiene solo variabili): per ogni terminale $a$ che compare, non da solo, in qualche lato destro
+2. Ridursi al caso $\gamma \in N^*$ (caso in cui $\gamma$ contiene solo variabili). Per ogni terminale $a$ che compare, non da solo, in qualche lato destro
 	- Introduco una nuova variabile $A$ e una nuova produzione $A → a$
 	- Sostituisco tutte le occorrenze di $a$ nei lati destri delle produzioni con $A$ (salvo che a non sia l'intero lato destro)
 
@@ -1446,7 +1470,7 @@ Restano solo produzioni $X → a$ con $X \in N$ e $a \in \Sigma$ e produzioni $X
 
 *Definizione:* una grammatica non contestuale $G$ si dice in forma normale di Greibach se ha solo produzioni dei tipi:
 - $X → a\gamma$, con $a \in \Sigma$ e $\gamma \in N^*$
-- $S → \epsilon$, ma solo a condizione che $A$ non compaia nei lati destri delle produzioni
+- $S → \epsilon$, ma solo a condizione che $S$ non compaia nei lati destri delle produzioni
 
 > [!example]
 > La grammatica con le produzioni $S → aSB|aB, B → b$ è in forma normale di Greibach. Genera $L = \{a^nb^n|n>0\}$
@@ -1560,8 +1584,7 @@ per ogni $k \geq 0$
 </div>
 
 ### Parsing top-down 
-In genere l'operazione di parsing richiede un tempo notevole $O(n^3)$ e non è accettabile nel caso dovessimo
-fare la compilazione di un programma molto complesso (perché come sappiamo, raramente un programma non presenta errori alla prima compilazione, quindi dovremmo fare più tentativi e di conseguenza effettuare la compilazione e il parsing più volte). Il problema di parsing ha come input una grammatica $G = \langle V,\Sigma,P,S \rangle$ e una parola $w \in L(G)$ e in output una derivazione $S \implies \alpha_1 \implies \alpha_2 \implies … \alpha_n \implies w$ di $w \in G$ (o equivalentemente un albero di derivazione)
+In genere l'operazione di parsing richiede un tempo notevole $O(n^3)$ e non è accettabile nel caso dovessimo fare la compilazione di un programma molto complesso (perché come sappiamo, raramente un programma non presenta errori alla prima compilazione, quindi dovremmo fare più tentativi e di conseguenza effettuare la compilazione e il parsing più volte). Il problema di parsing ha come input una grammatica $G = \langle V,\Sigma,P,S \rangle$ e una parola $w \in L(G)$ e in output una derivazione $S \implies \alpha_1 \implies \alpha_2 \implies … \alpha_n \implies w$ di $w \in G$ (o equivalentemente un albero di derivazione)
 
 *Osservazione:* a ogni derivazione corrisponde un albero di derivazione, ma a un albero di derivazione possono corrispondere più derivazioni 
 
@@ -1572,7 +1595,7 @@ fare la compilazione di un programma molto complesso (perché come sappiamo, rar
 
 *Definizione:* sia $G = \langle V,\Sigma,P,S \rangle$ una grammatica non contestuale e $\alpha,\beta \in V$. Scriveremo $\alpha \implies_L\beta$ se $\beta$ si ottiene da $\alpha$ sostituendo la variabile più a sinistra con il lato destro di una sua produzione. Una derivazione sinistra di una parola $w$ è una sequenza $S = \alpha_0 \xrightarrow[L]{} \alpha_1 \xrightarrow[L]{} … \xrightarrow[L]{} \alpha_n = w$ (con '=' rappresenta una conseguenza e '=>' rappresenta una derivazione)
 
-*Proposizione:* c'è una corrispondenza biunivoca tra le derivazioni sinistre di una parola $w$ e gli alberi di derivazione associati a $w$. Ogni albero di derivazione corrisponde ad una e una sola derivazione sinistra e viceversa. Inoltre, se ho una derivazione sinistra, per costruire l'albero in realtà mi basta ricordare le produzioni che ho utilizzato, perché la variabile che ho sostituito già la so, è quella più a sinistra.
+*Proposizione:* c'è una corrispondenza biunivoca tra le derivazioni sinistre di una parola $w$ e gli alberi di derivazione associati a $w$. <u>Ogni albero di derivazione corrisponde ad una e una sola derivazione sinistra e viceversa</u>. Inoltre, se ho una derivazione sinistra, per costruire l'albero in realtà mi basta ricordare le produzioni che ho utilizzato, perché la variabile che ho sostituito già la so, è quella più a sinistra.
 
 *Corollario:* data una grammatica non contestuale $G$, ogni parola di $L(G)$ si ottiene dal simbolo iniziale $S$ con una derivazione sinistra. Questo perché le parole si ottengono con una derivazione, alla derivazione corrisponde un albero, e all'albero corrisponde una derivazione sinistra.
 
@@ -1591,13 +1614,12 @@ E anziché il parsing di $w \in \Sigma^*$ farò il parsing di $w$#. Quindi il ca
   <img src="Pasted image 20260501130606.png" width="300">
 </div>
 
-Abbiamo l'input che dobbiamo derivare dal simbolo iniziale, quindi passo passo esaminiamo il nostro input
-da sinistra verso destra e iniziamo a costruire la derivazione dall'alto in basso del nostro albero di derivazione. Ad ogni passo avremo una parte di input già analizzato (quello alla sinistra delle tabelline dell'esempio precedente), l'analisi (ciò che avevamo derivato dal nostro simbolo iniziale che faceva match con quello di sopra), a destra abbiamo l'input ancora non analizzato, e sotto quello che ci avanzava dal quale dovevamo derivare la parte superiore (chiamata predizione). Le regole di questo procedimento sono:
+Abbiamo l'input che dobbiamo derivare dal simbolo iniziale, quindi passo passo esaminiamo il nostro input da sinistra verso destra e iniziamo a costruire la derivazione dall'alto in basso del nostro albero di derivazione. Ad ogni passo avremo una parte di input già analizzato (quello alla sinistra delle tabelline dell'esempio precedente), l'analisi (ciò che avevamo derivato dal nostro simbolo iniziale che faceva match con quello di sopra), a destra abbiamo l'input ancora non analizzato, e sotto quello che ci avanzava dal quale dovevamo derivare la parte superiore (chiamata predizione). Le regole di questo procedimento sono:
 - Esaminiamo sempre il simbolo più a sinistra della predizione
 - Se è una variale, dobbiamo fare una predizione: va sostituito con uno dei suoi lati destri
 - Se è un terminale, deve coincidere con la prima lettera dell'input da analizzare (simbolo di **look-ahead**). In caso affermativo, viene spostato nel lato 'analisi'; in caso negativo, l'esecuzione fallisce.
 
-Il fallimento non significa che non possiamo fare il parsing della parola, ma solo che la predizione che abbiamo fatto è sbagliata e che quindi dobbiamo tornare indietro e farne un'altra.
+<u>Il fallimento non significa che non possiamo fare il parsing della parola, ma solo che la predizione che abbiamo fatto è sbagliata e che quindi dobbiamo tornare indietro e farne un'altra.</u>
 
 *Osservazione:* la predizione ha una gestione LIFO
 
@@ -1623,12 +1645,11 @@ Il fallimento non significa che non possiamo fare il parsing della parola, ma so
 > 
 > ![[Pasted image 20260501130947.png|300]]
 
-*Osservazione:* il metodo fallisce se $X \implies^* X\alpha$ per qualche $X \in N, \alpha \in V$ (*recursione destra* = da una
-variabile posso derivare una forma sentenziale che comincia con la variabile stessa). Questo comporta che nella parte destra della nostra tabella non ci saranno mai solo terminali come prima lettera, e di conseguenza dovremo ripetere all'infinito gli stessi passaggi.
+*Osservazione:* <u>il metodo fallisce</u> se $X \implies^* X\alpha$ per qualche $X \in N, \alpha \in V$ (*recursione destra* = da una variabile posso derivare una forma sentenziale che comincia con la variabile stessa). Questo comporta che nella parte destra della nostra tabella non ci saranno mai solo terminali come prima lettera, e di conseguenza dovremo ripetere all'infinito gli stessi passaggi.
 
 *Proposizione:* ogni grammatica non contestuale è equivalente a una grammatica priva di recursione destra. Per esempio, le grammatiche in forma normale di Greibach sono prive di recursione destra
 
-**Backtracking:**
+**Backtracking (esplorazione in profondità):**
 
 *Osservazione:* La ricerca in ampiezza richiede molta memoria. In qualche caso può essere preferibile la ricerca in profondità.
 
@@ -1684,15 +1705,13 @@ Un **automa a pila** è un modello astratto di macchina (un automa a stati finit
 *Osservazione:* Modello non deterministico
 
 > [!example]
-> Sia $Q = \{q_0,f\}, \Sigma = \{a,b\}, \Gamma = \{Z_0, A\}, F =\{f\}$ e $\delta$ è data da:
-> 
 > ![[Pasted image 20260507123330.png|300]]
 
 *Definizione:* una configurazione interna dell'automa a pila $A$ è una coppia $(q,\gamma) \in Q \times \Gamma^*$. Istante per istante, la configurazione interna = stato + contenuto della pila
 
 Se leggendo una lettera $a$ sul nastro di input l'automa può passare dalla configurazione $(q, \alpha)$ alla configurazione $(q ' , \alpha' )$, allora scriveremo $(q, \alpha) \overset{a}{\models} (q ' , \alpha' )$. Similmente, se l'automa può passare dalla configurazione $(q, \alpha)$ alla configurazione $(q ' , \alpha' )$ con una $\epsilon-$transizione, allora scriveremo $(q, \alpha) \overset{\epsilon}{\models}(q ' , \alpha' )$
 
-*Definizione:* siano $(q,\alpha)$ e $(q',\alpha')$ due configurazioni interne e $a \in \Sigma \cup \{\epsilon\}$. Si ha $(q, \alpha) \overset{a}{\models} (q ' , \alpha' )$, se $\alpha = X\gamma, \alpha' = \beta\gamma$, $q \xrightarrow[]{a,\frac{X}{\beta}} q'$. Se $w = a_1a_2 ... a_n (a_1, ... , a_n \in \Sigma \cup {\epsilon})$ e $(q,\alpha) \overset{a_1} (q_1, \alpha1) \overset{a_2} ... \overset{a_n} (qn , \alpha_n ) = (q ' , \alpha' )$ allora scriveremo sinteticamente $(q, \alpha) \overset{w}{\models} (q ' , \alpha' )$
+*Definizione:* siano $(q,\alpha)$ e $(q',\alpha')$ due configurazioni interne e $a \in \Sigma \cup \{\epsilon\}$. Si ha $(q, \alpha) \overset{a}{\models} (q ' , \alpha' )$, se $\alpha = X\gamma, \alpha' = \beta\gamma$, $q \xrightarrow[]{a,\frac{X}{\beta}} q'$. Se $w = a_1a_2 ... a_n (a_1, ... , a_n \ \in \Sigma \cup {\epsilon})$ e $(q,\alpha) \overset{\Rightarrow{a_1}} (q_1, \alpha1) \overset{\Rightarrow{a_2}} ... \overset{\Rightarrow{a_n}} (qn , \alpha_n ) = (q ' , \alpha' )$ allora scriveremo sinteticamente $(q, \alpha) \overset{w}{\models} (q ' , \alpha' )$
 
 *Osservazione:* Si ha $(q, \alpha) \overset{w}{\models} (q ' , \alpha' )$ se esiste una computazione che, leggendo $w$ sul nastro di input, porta l'automa dalla configurazione interna $(q, \alpha)$ alla configurazione interna $(q ' , \alpha' )$
 
@@ -1711,7 +1730,7 @@ Se leggendo una lettera $a$ sul nastro di input l'automa può passare dalla conf
 > ![[Pasted image 20260507113340.png|300]]
 
 > [!example]
-> Problema: Realizzare un automa a pila che accetti per pila vuota le palindrome pari sull'alfabeto \Sigma = {a, b}.
+> Problema: Realizzare un automa a pila che accetti per pila vuota le palindrome pari sull'alfabeto $\Sigma = \{a, b\}$.
 >
 > Strategia:
 > 1. copiare nella pila la prima metà dell'input
@@ -1742,7 +1761,7 @@ Se leggendo una lettera $a$ sul nastro di input l'automa può passare dalla conf
 
 **Automi a pila deterministici:** 
 
-*Definizione:* Un automa a pila $A = \langle Q, \Sigma, \Gamma, \delta, q_0, Z_0, F \rangle$ è deterministico se per ogni $q \in Q, a \in \Sigma, Z \in \Gamma$ l'insieme $\delta(q, a, Z) \cup \delta(q, \epsilon, Z)$ contiene al più un elemento. Un linguaggio accettato per stato finale da un automa a pila deterministico si dirà deterministico. 
+*Definizione:* Un automa a pila $A = \langle Q, \Sigma, \Gamma, \delta, q_0, Z_0, F \rangle$ è deterministico se per ogni $q \in Q, a \in \Sigma, Z \in \Gamma$, l'insieme $\delta(q, a, Z) \cup \delta(q, \epsilon, Z)$ contiene al più un elemento (cioè quando per ogni combinazione di stato corrente, simbolo in input e simbolo in cima alla pila, le transizioni possibili sono uniche e non conflittuali). Un linguaggio accettato per stato finale da un automa a pila deterministico si dirà deterministico. 
 
 > [!example]
 > Il linguaggio delle palindrome sull'alfabeto $\Sigma = \{a, b, c\}$ che contengono una sola occorrenza della lettera $c$ è deterministico. Il linguaggio delle palindrome sull'alfabeto $\Sigma = \{a, b\}$ è non-deterministico. 
