@@ -1950,7 +1950,7 @@ Si verifica che $L_P (A) = L_P (A' )$.
 **La funzione FIRST:**
 
 *Definizione:* sia $G = \langle V, \Sigma, P,S \rangle$ una grammatica non contestuale priva di $\epsilon-$produzioni, la funzione FIRST: $V^+ → \wp(\Sigma)$ è definita da $$ FIRST(\alpha) = \{a \in \Sigma | \alpha \overset{*}{\Rightarrow} a\beta, \beta \in V^*\}, \alpha \in V^*$$
-In altri termini $FIRST(\alpha)$ è l'insieme dei terminali che possono comparire come prima ,lettera di una conseguenza di $\alpha$ 
+In altri termini $FIRST(\alpha)$ è l'insieme dei terminali che possono comparire come prima lettera di una conseguenza di $\alpha$ 
 
 *Problema:* cerchiamo una derivazione sinistra di $w$: $S$# = $\alpha_0 \underset{L}{\Rightarrow} \alpha_1 \underset{L}{\Rightarrow} \alpha_2 \underset{L}{\Rightarrow} … \underset{L}{\Rightarrow} \alpha_n = w$#. Fissato $i = 0,… n-1$, si avrà:$\alpha_i = uX\beta, \alpha_{i+1} = u\gamma\beta, X→ \gamma$ in $P$ con $u \in \Sigma^*, X \in N$ e $\beta \in V^*$, e anche $w$# = $uv, \gamma\beta \underset{L}{\overset{*}{\Rightarrow}} v, v \in (\Sigma \cup \{$#$\})^*$. Sia $a$ la prima lettera di $v$, allora si deve avere $a \in FIRST(\gamma)$ 
 
@@ -2078,7 +2078,7 @@ Se faccio l’intersezione non è detto che mi venga fuori un linguaggio non- co
   </div>
 </div>
 
-**Linguaggio di Dick:** Il linguaggio di Dick $D_n$ è il linguaggio sull'alfabeto $\Sigma_n = \{a_1, a_2, … , a_n , b_1, b_2,…, b_n \}$. generato dalla grammatica con le produzioni $S → a_iSb_iS , i = 1, 2, . . . n , S → \epsilon$ (non contestuale)
+**Linguaggio di Dick:** Il linguaggio di Dick $D_n$ è il linguaggio sull'alfabeto $\Sigma_n = \{a_1, a_2, … , a_n , b_1, b_2,…, b_n \}$, generato dalla grammatica con le produzioni $S → a_iSb_iS , i = 1, 2, . . . n , S → \epsilon$ (non contestuale)
 
 *Equivalentemente:* sequenze di parentesi ben bilanciate 
 
@@ -2096,7 +2096,7 @@ Accettato dall'automa a pila deterministico
 - $f (\epsilon) = \{\epsilon\}$: la parola vuota vale la parola vuota
 - $f (a_1 · · · a_n ) = f (a_1)· · · f (a_n )$, per ogni $a_1,… , a_n \in \Sigma, n > 0$: una parola che è la concatenazione dei n lettere, l'immagine si trova anche concatenando l'imagine delle lettere
 
-Cioè è una funzione che definita sull'alfabeto $\Sigma$ mi restituisce parole sull'alfabeto $\Gamma$ 
+Cioè è una funzione che definita sull'alfabeto $\Sigma$ mi restituisce parole sull'alfabeto $\Gamma$ (sostituisce un simbolo con una stringa)
 
 *Osservazione:* Un morfismo è completamente determinato dalle immagini delle lettere. 
 
@@ -2116,4 +2116,5 @@ Cioè è una funzione che definita sull'alfabeto $\Sigma$ mi restituisce parole 
 > [!example] 
 > Sia $D_2$ il linguaggio di Dick sull'alfabeto $\Sigma_2 = \{a_1, a_2, b_1, b_2\}, R = (a_1 + a_2)^* (b_1 + b_2)^*$ e $f : \Sigma^*_2 → \{a, b\}^*$ il morfismo definito da $$f (a_1) = f (b_1) = a, f (a_2) = f (b_2) = b$$ Allora $$f (D_2 \cap R)$$ è l'insieme delle palindrome pari sull'alfabeto $\Gamma$. 
 
-*Teorema (Chomsky, Schützenberger):* Un linguaggio $L$ è non contestuale se e soltanto se esistono un intero $k > 0$, un linguaggio regolare $R$ e un morfismo $f$ tali che $$L = f (D_k \cap R)$$
+*Teorema (Chomsky-Schützenberger):* Un linguaggio $L$ è non contestuale se e soltanto se esistono un intero $k > 0$, un linguaggio regolare $R$ e un morfismo $f$ tali che $$L = f (D_k \cap R)$$ 
+con $D_k$ un linguaggio di Dick di parentesi bilanciate al quale impongo vincoli regolari ($R$) e di cui trasformi i simboli con un morfismo ($f$) 
