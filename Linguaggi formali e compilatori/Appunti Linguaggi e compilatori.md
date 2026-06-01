@@ -1761,7 +1761,7 @@ Se leggendo una lettera $a$ sul nastro di input l'automa può passare dalla conf
 
 **Automi a pila deterministici:** 
 
-*Definizione:* Un automa a pila $A = \langle Q, \Sigma, \Gamma, \delta, q_0, Z_0, F \rangle$ è deterministico se per ogni $q \in Q, a \in \Sigma, Z \in \Gamma$, l'insieme $\delta(q, a, Z) \cup \delta(q, \epsilon, Z)$ contiene al più un elemento (cioè quando per ogni combinazione di stato corrente, simbolo in input e simbolo in cima alla pila, le transizioni possibili sono uniche e non conflittuali). Un linguaggio accettato per stato finale da un automa a pila deterministico si dirà deterministico. 
+*Definizione:* Un automa a pila $A = \langle Q, \Sigma, \Gamma, \delta, q_0, Z_0, F \rangle$ è deterministico se per ogni $q \in Q, a \in \Sigma, Z \in \Gamma$, l'insieme $\delta(q, a, Z) \cup \delta(q, \epsilon, Z)$ contiene al più un elemento (cioè <u>quando per ogni combinazione di stato corrente, simbolo in input e simbolo in cima alla pila, le transizioni possibili sono uniche e non conflittuali</u>). Un linguaggio accettato per stato finale da un automa a pila deterministico si dirà deterministico. 
 
 > [!example]
 > Il linguaggio delle palindrome sull'alfabeto $\Sigma = \{a, b, c\}$ che contengono una sola occorrenza della lettera $c$ è deterministico. Il linguaggio delle palindrome sull'alfabeto $\Sigma = \{a, b\}$ è non-deterministico. 
