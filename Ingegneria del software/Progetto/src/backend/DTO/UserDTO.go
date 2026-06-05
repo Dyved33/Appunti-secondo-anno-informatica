@@ -1,2 +1,2 @@
 package DTO
-import ("fmt")
+import ("fmt", "backend/domain")

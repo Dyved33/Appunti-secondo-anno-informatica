@@ -907,6 +907,7 @@ L'automa minimo di $L$ si ottiene nel modo seguente:
   <img src="Pasted image 20260326102153.png" width="300">
 </div>
 ### Lemma di iterazione (proprietà dei linguaggi regolari)
+
 **Lemma:** sia $L$ un linguaggio regolare. Esiste un intero n tale che ogni parola $w \in L$ di lunghezza $|w| \geq n$ si può fattorizzare $w = xyz$ con $y \neq \epsilon$ e $xy^mz \in L$ per ogni $m \geq 0$. In altri termini se $L$ è un linguaggio regolare, in ogni parola di $L$ abbastanza lunga si può trovare un fattore non vuoto che può essere iterato (*pumped*) senza uscire dal linguaggio. Pertanto se un linguaggio non ha questa proprietà non può essere regolare. Ci sono, però, linguaggi che hanno questa proprietà e non sono regolari
 
 > [!tip] In altre parole:

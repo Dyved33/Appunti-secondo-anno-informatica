@@ -1,5 +1,5 @@
 package Model
-import ("fmt")
+import ("fmt", "backend/domain")
 
 struct UserModel {
 	ID int
