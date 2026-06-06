@@ -107,8 +107,8 @@ Le **opzioni** iniziano tipicamente con il carattere `-` e modificano il comport
 | **`rmdir`**    | Rimuove cartelle, a condizione che siano **strettamente vuote** (altrimenti genera un errore).                           |
 | **`ln`**       | Crea collegamenti a file o directory.                                                                                    |
 | **`pwd`**      | Visualizza la directory corrente in cui ci si trova.                                                                     |
-| **`df`**       | Elenca i filesystem attualmente montati.                                                                                |
-| **`cat`**      | Visualizza per intero il contenuto di un file testo.                                                                     |
+| **`df`**       | Elenca i filesystem attualmente montati.                                                                                 |
+| **`cat`**      | Visualizza per intero il contenuto di un file di testo.                                                                  |
 | **`realpath`** | Visualizza il path assoluto "risolto" (molto utile per calcolare la vera destinazione di link o riferimenti relativi).   |
 | **`file`**     | Ritorna il tipo reale di un file (testo, binario, pdf) in maniera totalmente indipendente dall'estensione nominale.      |
 | **`tail`**     | Visualizza le ultime "n" linee di un file.                                                                               |
@@ -126,8 +126,9 @@ Le **opzioni** iniziano tipicamente con il carattere `-` e modificano il comport
 **Opzioni più Comuni per CANCELLARE o COPIARE Cartelle:** `rm -r cartella`: Rimuove ricorsivamente una cartella e tutto il ramo di file/cartelle non vuote in essa contenute.
 * `cp -ar dir1 dir2`: Copia ricorsivamente (`-r`) tutto l'albero sottostante `dir1` dentro `dir2`, preservando (`-a`) gli attributi originari dei file come la data di modifica.
 
- **Differenza nella creazione dei Link (`ln`):** **Hard Link** (`ln pippo link1`): Crea una vera e propria copia che occupa spazio fisico sul disco. Se il file originario "pippo" viene cancellato, il file "link1" e il suo contenuto rimangono inalterati.
-* **Symbolic Link** (`ln -s pippo link1`): Crea un collegamento simbolico (occupazione minimale su disco). "link1" contiene solo una stringa col percorso di "pippo". Se il file "pippo" originario viene cancellato, "link1" diventa semplicemente un collegamento non valido o rotto.
+ **Differenza nella creazione dei Link (`ln`):** 
+ - **Hard Link** (`ln pippo link1`): Crea una vera e propria copia che occupa spazio fisico sul disco. Se il file originario "pippo" viene cancellato, il file "link1" e il suo contenuto rimangono inalterati.
+ - **Symbolic Link** (`ln -s pippo link1`): Crea un collegamento simbolico (occupazione minimale su disco). "link1" contiene solo una stringa col percorso di "pippo". Se il file "pippo" originario viene cancellato, "link1" diventa semplicemente un collegamento non valido o rotto.
 
 **Ottenere Aiuto e Documentazione:** Per imparare le funzioni e le opzioni dei comandi, ci sono diverse utility fondamentali:
 * **`man <nome_comando>`**: Apre il manuale in linea completo del comando specificato.
@@ -180,7 +181,7 @@ Per cambiare proprietario e permessi:
 **Parametri Chmod**:
  - *-R* = esegue il comando ricorsivamente
  - *mode* = nuova maschera dei permessi. Questa non è una parola chiave ma serve a capire come impostare i permessi e può essere scritto in 2 modi diversi
-   1. *mode simbolico* = chmod (chi) (operatore) (permessi) file. Si riferiscono a: **chi può cambiare i permessi** (u user, g group, o others, a all), gli **operatori** (+ aggiunge, - toglie, = imposta esattamente) e ai **permessi** (r read, w write, x execute).
+   1. *mode simbolico* = chmod (chi) (operatore) (permessi file). Si riferiscono a: **chi può cambiare i permessi** (u = user, g = group, o = others, a all), gli **operatori** (+ aggiunge, - toglie, = imposta esattamente) e ai **permessi** (r = read, w = write, x = execute).
 
 > [!example] 
 > - chmod u+x file.sh => Aggiungi il permesso di esecuzione al proprietario
@@ -210,9 +211,9 @@ Per cambiare proprietario e permessi:
 > - cambia solo gruppo: chown :gruppo file
 > - cambia entrambi: chown utente:gruppo file
 ### System call, wrappers e accesso ai file
-Le system calls sono l'interfaccia per il programmatore ai servizi del sistema operativo (chiamata diretta al sistema). Vi si accede generalmente attraverso un API/linguaggi che la supportino. Ce ne sono vari tipi (accesso ai file, gestione di processi, IPC, semafori,...) e richiedono un "cambio di contesto": da *kernel mode* a *user mode* e viceversa.
-- Kernel mode = accesso senza limitazioni alle risorse HW/SW del sistema (memoria, dispositivi I/O, registri, codice del SO,...). Un errore in kernel mode può provocare un arresto del sistema
-- User mode = accesso limitato alle risorse di sistema (es. Memoria). Un errore in user mode può provocare il blocco del solo processo utente
+<u>Le system calls sono l'interfaccia per il programmatore ai servizi del sistema operativo (chiamata diretta al sistema)</u>. Vi si accede generalmente attraverso un API/linguaggi che la supportino. Ce ne sono vari tipi (accesso ai file, gestione di processi, IPC, semafori,...) e richiedono un "cambio di contesto": da *kernel mode* a *user mode* e viceversa.
+- **Kernel mode** = accesso senza limitazioni alle risorse HW/SW del sistema (memoria, dispositivi I/O, registri, codice del SO,...). Un errore in kernel mode può provocare un arresto del sistema
+- **User mode** = accesso limitato alle risorse di sistema (es. Memoria). Un errore in user mode può provocare il blocco del solo processo utente
 
 Quando si passa da un mode ad un altro il SO cambia il contesto di esecuzione del processore. Ciò implica un certo consumo di risorse di sistema (tempo di CPU, salvataggio e ripristino del processo e del contesto precedente,...)
 
@@ -244,7 +245,7 @@ Le system calls sono invocate non direttamente ma tramite funzioni *wrappers* de
 | Nome    | Cosa fa                           |
 | ------- | --------------------------------- |
 | `mkdir` | Crea una directory                |
-| 'rmdir' | Cancella una directory (se vuota) |
+| `rmdir` | Cancella una directory (se vuota) |
 | `chdir` | Cambia la directory corrente      |
 **Open:** ` #include <unistd.h> int open(const char *pathname, int flags, mode_t mode)`
 - Apre il file specificato da *pathname*
@@ -264,8 +265,8 @@ Questa system call ha due valori di ritorno possibili:
 > [!info] 
 > - il file offset è la posizione corrente dentro al file, alla quale il prossimo read o write avverrà (è simile ad un cursore dentro al file)
 > - di default il puntatore (file offset) nel file è posizionato all'inizio (a meno che non si specifichi O_APPEND)
-> - i file aperti andrebbero chiusi prima di terminare il programma con `#include int close(int fd)`, dove fd è il file descriptor ritornato da open () 
-> - l'apertura di un file crea una nuova entry nella tabella di sistema dei file aperti. Quando un file descriptor viene duplicato (con dup2 o simili), questo si riferisce alla stessa *open file description* del descrittore del file originale $\implies$  i due file descriptors condividono lo stesso *file offset* e le stesse *file status flags*
+> - i file aperti andrebbero chiusi prima di terminare il programma con `#include int close(int fd)`, dove fd è il file descriptor ritornato da `open()` 
+> - l'apertura di un file crea una nuova entry nella tabella di sistema dei file aperti. Quando un file descriptor viene duplicato (con `dup2` o simili), questo si riferisce alla stessa *open file description* del descrittore del file originale $\implies$  i due file descriptors condividono lo stesso *file offset* e le stesse *file status flags*
 > - su Linux si può usare l'operazione kcmp (2) KCMP_FILE per testare se due file descriptors si riferiscono alla stessa open file description
  
 > [!tip] 
@@ -273,7 +274,7 @@ Questa system call ha due valori di ritorno possibili:
 > - con `strace -c ls` posso vedere le system call attive e alcuni dati che le riguardano: percentuale del tempo totale con cui il kernel è stato dentro alla syscall, tempo totale speso in quel tipo di syscall, media per ogni call, numero di volte che la syscall è stata eseguita, quante syscall hanno ritornato un errore, nome della syscall
 > - **buffering** = in generale il buffer è una certa quantità di memoria che deve essere riempita prima che accada una qualche chiamata o azione specifica (ad esempio se scrivo una stringa questa potrebbe non essere visualizzata subito perché la memoria buffer non è ancora piena). Esistono 3 tipi di buffer: interattivo (buffer si svuota quando appare `\n`), di pipe o di file (buffer si svuota solo quando la memoria predisposta è piena) e l'assenza di buffer (ogni carattere fa si che la memoria buffer si svuoti subito)
 
-> [!info] fd = è un intero piccolo che il  SO usa per identificare un file aperto dentro ad un processo (non mi riferisco più a file. txt, ma al valore assunto da fd. )
+> [!info] fd = è un intero piccolo che il  SO usa per identificare un file aperto dentro ad un processo (non mi riferisco più a file. txt, ma al valore assunto da fd)
 > - 0 = stdin
 > - 1 = stdout
 > - 2 = stderr
@@ -287,9 +288,9 @@ Questa system call ha due valori di ritorno possibili:
 | `man 2 open`   | Mostra la pagina del manuale per la system call *open* |
 | `man 3 stdio`  | Funzioni I/O                                           |
 
-**write:** `ssize_t write(int fd, const void *buf, size_t count);` <u>Scrive i primi count (numero di byte da scrivere) byte contenuti in buf (puntatore alla memoria che contiene i dati da scrivere) nel file aperto identificato da fd </u>(file descriptor ritornato da open(2)). Ritorna il numero di byte scritti (che può anche essere inferiore a count se, per esempio, il device di scrittura si è riempito) o -1 in caso di errore (se errno settata). 
+**write:** `ssize_t write(int fd, const void *buf, size_t count);` <u>Scrive i primi #count (numero di byte da scrivere) byte contenuti in buf (puntatore alla memoria che contiene i dati da scrivere) nel file aperto identificato da fd </u>(file descriptor ritornato da open(2)). Ritorna il numero di byte scritti (che può anche essere inferiore a count se, per esempio, il device di scrittura si è riempito) o -1 in caso di errore (se errno settata). 
 
-**read:** `ssize_t read(int fd, void *buf, size_t count);` <u>Legge count (numero massimo di byte da leggere) byte dal file identificato da fd (file descriptor ritornato da open(2)) e li memorizza in buf (buffer dove mette i dati letti)</u>. Ritorna il numero di byte letti (che può anche essere inferiore a count se c'erano a disposizione nel device di lettura meno byte) o -1 in caso di errore (errno settata). Il valore di ritorno 0 significa EOF (end of file).
+**read:** `ssize_t read(int fd, void *buf, size_t count);` <u>Legge #count (numero massimo di byte da leggere) byte dal file identificato da fd (file descriptor ritornato da open(2)) e li memorizza in buf (buffer dove mette i dati letti)</u>. Ritorna il numero di byte letti (che può anche essere inferiore a count se c'erano a disposizione nel device di lettura meno byte) o -1 in caso di errore (errno settata). Il valore di ritorno 0 significa EOF (end of file).
 
 > [!info] le operazioni di lettura/scrittura sono eseguite a partire dalla posizione corrente (puntatore, cursore o file offset) nel file
 
@@ -303,6 +304,7 @@ Ritorna la nuova posizione (distanza in byte) da inizio file o -1 in caso di err
 **dup, dup 2**: `int dup(int oldfd);` `int dup2(int oldfd, int newfd);` 
 - dup() torna una copia di oldfd usando il primo file descriptor libero 
 - dup2() torna una copia di oldfd ma usa newfd come file descriptor copia. 
+
 N.B.: Se c'era già un file aperto con descrittore pari a newfd viene chiuso 
 - dopo la duplicazione i due file descriptor possono essere usati indifferentemente, ma si riferiscono alla stessa entry nella tabella di sistema che elenca i file aperti e quindi, per esempio, condividono la posizione corrente nel file (se viene modificata tramite uno dei due la modifica vale anche per l'altro) 
 - Ritornano il nuovo file descriptor copia, o -1 in caso di errore (errno settata)
@@ -486,7 +488,7 @@ Nel secondo caso, premendo una seconda volta, viene mostrata la lista delle scel
 | `cat 4> /tmp/my.txt /etc/hosts`             | /etc/hosts $\rightarrow$cat $\rightarrow$ terminale  <br>fd 4 $\rightarrow$ file vuoto                                                 | `4> /tmp/my.txt` apre fd 4 (inutile per cat) e `cat /etc/hosts` legge il file e stampa su stdout (quindi il file.txt resta vuoto e il contenuto dell'argomento viene stampato a terminale)                                                                                                                                             |
 | `cat 4> /tmp/my.txt /etc/hosts 1>&4`        | /etc/hosts $\rightarrow$ cat $\rightarrow$ stdout (1) $\rightarrow$ fd 4 $\rightarrow$ file                                            | `4> /tmp/my.txt` apre fd 4 e `1>&4` duplica il flusso stdout in fd 4 (quindi l'output di `cat /etc/hosts` va nel file). In sostanza non avrò output a schermo ma `/tmp/my.txt` conterrà `/etc/hosts`                                                                                                                                   |
 | `cat 3< /etc/hosts 4>/tmp/my.txt 1>&4 0<&3` | /etc/hosts $\rightarrow$ fd 3 $\rightarrow$ stdin $\rightarrow$ cat $\rightarrow$ stdout $\rightarrow$ fd 4 $\rightarrow$ /tmp/my. Txt | `3< /etc/hosts` apre il file in lettura su fd 3, `4> /tmp/my.txt` apre il file in scrittura su fd 4, `0<&3` duplica stdin su fd 3 e `1>&4` duplica stdout su fd 4. In sostanza il comando legge (stdin) da `/etc/hosts` e scrive (stdout) su `/tmp/my.txt` (è come fare una copia del file). Equivale a `cat /etc/hosts > /tmp/my.txt` |
-> [!info] Il comando `cat` legge sempre e solo da stdin (fd 0)
+> [!info] Il comando `cat` legge sempre e solo da stdin (fd 0) e scrive sempre e solo su stdout (fd 1)
 
 > [!tip] Nota bene:
 > - un comando come `<` fa si che la shell apra il file usando il pathname, ottenga così il pathname e lo colleghi a stdin (fd 0). Quindi si usa un file esterno che viene aperto nel momento dell'esecuzione del comando
@@ -616,6 +618,11 @@ int main()
 	return 0;
 }
 ```
+
+<div style="display: flex; justify-content: center;">
+  <img src="Pasted image 20260605185108.png" width="300">
+</div>
+
 **PID e PPID:** `include <unistd.h> pid_t getpid(void); pid_t getppid(void)`
 
 - getpid() torna il process ID
@@ -627,15 +634,15 @@ Queste due funzioni hanno sempre successo
 
 **wait () e waitPID():** `#include <sys/wait.h> pid_t wait(int *wstatus); pid_t waitpid(pid_t pid, int *wstatus, int options)`
 
-- *wait()* sospende il chiamante finché un *child* termina
-- *waitpid()* sospende il chiamante finché un *child* cambia stato (terminato; stoppato da un *signal*; ha ripreso dopo un *signal*), dipende da *options*
+- `wait()` sospende il chiamante finché un *child* termina
+- `waitpid()` sospende il chiamante finché un *child* cambia stato (terminato; stoppato da un *signal*; ha ripreso dopo un *signal*), dipende da *options*
 
-Permettono di rilasciare le risorse assegnate al *child*. Se un *child* termina e una *wait* non viene eseguita il *child* rimane nello stato di *zombie* (*man wait(2)*). Questi metodi ritornano il PID del processo il cui stato è cambiato (*waitpid()* può tornare 0 in certe circostanze) oppure -1 in caso di errore. Se un/il *child* è terminato/ha già cambiato stato tornano immediatamente. Tra i valori che possiamo dare a PID ci sono i seguenti:
+Permettono di rilasciare le risorse assegnate al *child*. Se un *child* termina e una *wait* non viene eseguita il *child* rimane nello stato di *zombie* (*man wait(2)*). Questi metodi ritornano il PID del processo il cui stato è cambiato (`waitpid()` può tornare 0 in certe circostanze) oppure -1 in caso di errore. Tra i valori che possiamo dare a PID ci sono i seguenti:
 - -1: attende per un cambiamento di stato di uno qualsiasi dei child
 - >0: attende per un cambiamento di stato del child il cui process ID è uguale a PID
 - Etc
 
-*waitpid(-1, &wstatus, 0)* è equivalente a *wait(&wstatus)*. Se *&wstatus* non è NULL riceve informazioni sul *child*. Queste informazioni possono essere evinte con delle macro:
+`waitpid(-1, &wstatus, 0)` è equivalente a `wait(&wstatus)`. Se `&wstatus` non è NULL riceve informazioni sul *child*. Queste informazioni possono essere evinte con delle macro:
 - WIFEXITED(wstatus) torna true se il child è terminato normalmente (exit() o return) 
 - WEXITSTATUS(wstatus) ritorna il codice di uscita del child 
 - Etc. (man 2 wait)
@@ -715,10 +722,10 @@ Si referenziano con $NOME e si può utilizzare anche la notazione ${NOME} che è
 - `set` o `env` per visualizzare l'environment. set mostra tutte le variabili e funzioni definite nella shell. set permette anche di settare gli attributi (opzioni) che regolano il funzionamento della BASH
 
 **Variabili d'ambiente predefinite:** 
-- PATH: contiene una lista di directory, separate da ':', in cui la BASH cerca i comandi da eseguire (se non viene specificato un path per essi) 
-- HOSTNAME: nome host del sistema 
-- USER: nome dell'utente 
-- PWD: directory corrente
+- `PATH`: contiene una lista di directory, separate da ':', in cui la BASH cerca i comandi da eseguire (se non viene specificato un path per essi) 
+- `HOSTNAME`: nome host del sistema 
+- `USER`: nome dell'utente 
+- `PWD`: directory corrente
 
 ```C
 // Prima riga = quale interprete deve interpretare i comandi: shabang
@@ -773,7 +780,7 @@ exit $RET
 
 > [!attention] Nei file bash (e nella shell in generale), non bisogna mettere spazi attorno al segno di uguale quando si definisce una variabile perché **bash usa gli spazi per separare i comandi dai loro argomenti** (nome variabile verrebbe interpretato come nome di un comando da eseguire e `=` e il `valore` della variabile verrebbero interpretati come argomenti di questo comando)
 
-**Script e il suo contenuto:** uno script è un file di testo che conditene comandi per la shell. Se eseguito la shell esegue i comandi contenuti. Viene usato per automatizzare operazioni senza dover sempre ripetere la scrittura dei comandi che le eseguono
+**Script e il suo contenuto:** uno script è un file di testo che contiene comandi per la shell. Se eseguito la shell esegue i comandi contenuti. Viene usato per automatizzare operazioni senza dover sempre ripetere la scrittura dei comandi che le eseguono
 
 > [!example]
 > bash:~$ cat sc1.sh
@@ -790,7 +797,9 @@ Per eseguire uno script posso:
 - lo script è eseguito in una subshell 
 - `source sc1.sh` (o . sc1.sh) che fa un'altra cosa: "legge" lo script e ne esegue i comandi all'interno della shell corrente
 
-La *shabang line* è la prima riga dello script ,indica l'interprete dei comandi contenuti: `#!/bin/bash`. Il carattere `#` è usato in generale per inserire commenti nel codice dello script
+La *shabang line* è la prima riga dello script ,indica l'interprete dei comandi contenuti: `#!/bin/bash`. 
+
+Il carattere `#` è usato in generale per inserire commenti nel codice dello script
 
 Quando si parla di variabili, come in qualsiasi linguaggio di programmazione, si tratta di coppie NOME - VALORE. Non sono tipizzate e non ammettono dichiarazione, si definiscono assegnando un valore:es. VAR 1=“Waiting…”, VAR 2=10. Una volta definite si referenziano anteponendo un $ prima del nome: es. echo `$VAR1`, `VAR2=$VAR1`
 
@@ -850,7 +859,7 @@ Inoltre il quoting con singolo apice preserva il significato letterale dei carat
 `#include <unistd.h>`
 
 - Rimpiazzano il processo chiamante con un nuovo processo 
-- Chiamano la sottostante execve(2) 
+- Chiamano la sottostante `execve(2) `
 - Il primo argomento è il nome del file da eseguire
 
 Se non c'è errore non ritornano nulla, -1 in caso di errore (errno settata)
@@ -870,15 +879,15 @@ Dopo il prefisso "exec" posso mettere:
 Se non c'è errore non ritornano nulla, -1 in caso di errore (errno settata)
 
 **_ exit(2):** `#include void _exit(int status);`
-- Termina il chiamante "immediately"
+- Termina il chiamante immediatamente
 - I file descriptors sono chiusi
 - Il parent ID di eventuali child diventa init (o il più vicino "subreaper process"...)
 
 Non c'è ritorno, ma il processo parent può ottenere il byte meno significativo di status (status & 0xFF) con wait(2)
 
-**_ exit(2) vs exit(3):** `#include void exit(int status);`
+**exit(3):** `#include void exit(int status);`
 - Termina il chiamante
-- *Exit(3)* fa tutto ciò che fa *_ exit(2)*, ma inoltre:
+- `exit(3)` fa tutto ciò che fa *_ exit(2)*, ma inoltre:
 	- Chiama eventuali funzioni registrate con *atexit(3)* e *on_exit(3)*
 	- Esegue il flush dei buffer di I/O relativi alle funzioni di libreria C per l'I/O (stdio(3)streams) e chiude i relativi stream
 - Lo standard C definisce EXIT_SUCCESS e EXIT_FAILURE (per portabilità) come valori di uscita
@@ -1227,7 +1236,7 @@ int main()
 > - `&` (background):  va posto dopo un comando e esegue quest‘ultimo in modo asincrono, consentendo alla shell di continuare immediatamente senza attendere il completamento del processo (ATTENZIONE! NON legge eventuali input da terminale come password) 
 
 ### Bash scripting
-**`-if`:** 
+**`if`:** 
 > [!example] 
 > ```
 > if grep -q Bash file 
@@ -1345,9 +1354,9 @@ esac
 ```
 
 **Iterazioni:** 
-- `while test-commands; do commands; done`>: Permane nel ciclo finché il valore di ritorno dei test-commands è 0. `while` torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi
-- `until test-commands; do commands; done`: Permane nel ciclo finché il valore di ritorno dei test-commands è diverso 0. `until` torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi 
-- `for i [in words … ]; do commands; done`: Per ogni stringa presente nell’espansione di words esegue commands. Ad ogni ciclo `$i` contiene la stringa corrente. `for` torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi. Se la clausola in non è specificata `for` considera le stringhe derivanti dall'espansione di `$@` 
+- `while test-commands; do <commands>; done`>: Permane nel ciclo finché il valore di ritorno dei test-commands è 0. `while` torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi
+- `until test-commands; do <commands>; done`: Permane nel ciclo finché il valore di ritorno dei test-commands è diverso 0. `until` torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi 
+- `for i [in words … ]; do <commands>; done`: Per ogni stringa presente nell’espansione di words esegue commands. Ad ogni ciclo `$i` contiene la stringa corrente. `for` torna il valore di ritorno dell'ultimo comando eseguito o 0 se non sono stati eseguiti comandi. Se la clausola in non è specificata `for` considera le stringhe derivanti dall'espansione di `$@` 
 - `for (( expr1; expr2; expr3 )); do commands; done`: Sintassi C-like. 
 
 > [!example] 

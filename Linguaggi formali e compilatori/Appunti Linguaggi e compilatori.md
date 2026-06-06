@@ -1851,7 +1851,7 @@ Lo sappiamo già fare perché abbiamo già visto il parsing predittivo che non �
 
 **Costruzione dell'automa:** 
 
-*Proposizione:* ogni linguaggio non contestuale p accettato per pila vuota da un automa pila con un solo stato
+*Proposizione:* ogni linguaggio non contestuale è accettato per pila vuota da un automa pila con un solo stato
 
 *Dimostrazione:* sia $L = L(G)$ con $G = \langle V, \Sigma, P, S \rangle$. Costruiamo $A$ con un solo stato e
 - Alfabeto di input $\Sigma$
