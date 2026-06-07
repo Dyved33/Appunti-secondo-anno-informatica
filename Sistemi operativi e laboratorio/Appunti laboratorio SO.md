@@ -942,11 +942,11 @@ int main()
 - Message queue
 - Etc
 
-Le pipe sono di solito unidirezionali (in certi sistemi sono bidirezionali come in Windows), sono uno dei primi meccanismi di IPC e sono disponibili praticamente su tutti i sistemi. Connettono due o più processi tramite un canale di comunicazione. Hanno un'estremità per la lettura (*read end*) ed una per la scrittura (*write end*). Sono caratterizzate da comunicazione non strutturata (*byte stream*), cioè **le pipe trasmettono un flusso continuo di byte grezzi senza alcuna informazione di controllo, formattazione o metadati** associati al contenuto dei dati stessi
+Le pipe sono di solito unidirezionali (in certi sistemi sono bidirezionali come in Windows), sono uno dei primi meccanismi di IPC e sono disponibili praticamente su tutti i sistemi. Connettono due o più processi tramite un canale di comunicazione. Hanno un'estremità per la lettura (*read end*) ed una per la scrittura (*write end*). Sono caratterizzate da comunicazione non strutturata (*byte stream*), cioè <u>le pipe trasmettono un flusso continuo di byte grezzi senza alcuna informazione di controllo, formattazione o metadati</u> associati al contenuto dei dati stessi
 
 Ne esistono 2 tipi:
 1. Senza nome (*unnamed*): sono crate con la system call `pipe()`, i processi comunicanti condividono file descriptor per la lettura e la scrittura (`fork(2)`). Solo tra processi imparentati (padre-figlio)
-2. Con nome (*named o FIFO*): sono un file speciale (type `p` in `ls -l`) visibile nel filesystem (ma non occupano né implicano operazioni in esso).
+2. Con nome (*named o FIFO*): sono un file speciale (type `p` in `ls -l`) visibile nel filesystem (ma non occupano spazio né implicano operazioni in esso).
 
 > [!info] Una volta create (ed aperte) si usano allo stesso modo
 > "The only difference between pipes and FIFOs is the manner in which they are created and opened. Once these tasks have been accomplished, I/O on pipes and FIFOs has exactly the same semantics" (man 7 pipe)
@@ -972,15 +972,15 @@ Possono essere trattate come qualsiasi file (SC per l'I/O) e sono visibili quind
 | `man 1 mkfifo`          | Per il manuale sul comando unix che crea una named pipe nella shell (visibile nel filesystem)                     |
 **Creazione di una pipe unnamed:** `#include int pipefd[2]; if (pipe(pipefd) == -1) { perror("pipe"); exit(EXIT_FAILURE); }`
 Crea la pipe e apre le due estremità:
-- `pipefd[0]` file descriptor per la read end della pipe 
-- `pipefd[1]` file descriptor per la write end della pipe 
+- `pipefd[0]` file descriptor per la read-end della pipe 
+- `pipefd[1]` file descriptor per la write-end della pipe 
 - `Ritorno : 0` se tutto ok. -1 per errore (errno settata)
 
 Creata la pipe è possibile leggere e scrivere dati, per es.: con `read()` e `write()`. Una sequenza tipica di utilizzo è:
 - il parent crea la pipe (pipe()) 
 - il parent crea un child (fork()). I file descriptor ritornati dalla pipe() sono duplicati nel child 
-- lo scrivente chiude il fd di lettura* 
-- il lettore chiude il fd di scrittura* 
+- lo scrivente chiude il fd di lettura 
+- il lettore chiude il fd di scrittura 
 - i processi comunicano con read() e write() 
 - al termine entrambi chiudono il fd utilizzato
 
@@ -1020,10 +1020,10 @@ Non sono possibili operazioni di seek (no lseek(2)). Di default il flag `O_NONBL
 
 **Pipe- scrittura:** `ret = write(fdw, buffer, size)` (vedi man 7 pipe (paragrafo PIPE_BUF) per maggiori dettagli)
 - I dati sono scritti nella pipe sequenzialmente
-- Se la pipe è piena ulteriori write(2) si bloccheranno (o falliranno se `O_NONBLOCK` è settato) 
+- Se la pipe è piena ulteriori `write(2)` si bloccheranno (o falliranno se `O_NONBLOCK` è settato) 
 - POSIX stabilisce che le `write(2)` di ampiezza minore di `PIPE_BUF` sono garantite essere atomiche (ma possono essere bloccanti se la pipe è piena) 
 - Stabilisce anche che `PIPE_BUF` deve essere almeno 512 byte
-- se tutti i descrittori di lettura sono stati chiusi una write provoca l’invio di un segnale `SIGPIPE` al processo: 
+- se tutti i descrittori di lettura sono stati chiusi (se non c'è più un fd dal quale leggo le informazioni) una write provoca l’invio di un segnale `SIGPIPE` al processo: 
 	- se `SIGPIPE` è gestito da un handler o ignorato: write ritorna -1 con errno settato a `EPIPE` 
 	- se `SIGPIPE` non è gestito: la gestione di default provoca la terminazione del processo 
 
@@ -1664,7 +1664,7 @@ Per assegnare il valore di ritorno ad una variabile arbitraria dobbiamo utilizza
 > some result
 > ```
 ### Threads
-**Posix threads:** sono parti di uno stesso programma eseguite contemporaneamente e schedulate indipendentemente l'una dall'altra. In altre parole sono "più tracce di esecuzione concorrenti in un singolo processo". Un singolo processo può "contenere" più threads. Questi condividono la memoria globale (data and heap) ma ognuno ha il proprio stack. Non è un'implementazione, ma uno standard. Sono implementati in molti SO, ma con delle differenze (vengono definiti una serie di interfacce come funzioni, file header per la programmazione di threads). Sono conosciuti come POSIX Threads o Pthreads 
+**Posix threads:** sono parti di uno stesso programma eseguite contemporaneamente e schedulate indipendentemente l'una dall'altra. In altre parole sono "più tracce di esecuzione concorrenti in un singolo processo". Un singolo processo può "contenere" più thread. Questi condividono la memoria globale (data and heap) ma ognuno ha il proprio stack. Non è un'implementazione, ma uno standard. Sono implementati in molti SO, ma con delle differenze (vengono definiti una serie di interfacce come funzioni, file header per la programmazione di threads). Sono conosciuti come POSIX Threads o Pthreads 
 
 > [!info] `man 7 pthreads`
 
@@ -1829,6 +1829,7 @@ Riguarda il problema della concorrenza.
 // Esempio tratto dall’IA: 
 #include <stdio.h> 
 #include <pthread.h>
+
 int counter = 0; // variabile condivisa 
 
 void *worker(void *arg) { 
@@ -2081,7 +2082,7 @@ struct timespec {
 > ts.tv_sec += 8; // imposta un timeout di 8 secondi sem_timedwait(&sem, &ts); /* decrementa il semaforo ma non attende più di 8 secondi */ 
 > ```
 
-**Incremento (operazione di post):** `#include <semaphore.h> int sem_post(sem_t *sem);` •
+**Incremento (operazione di post):** `#include <semaphore.h> int sem_post(sem_t *sem);` 
 - incrementa il valore di un semaforo (sia esso unnamed o named) 
 - di conseguenza il valore del semaforo diventa positivo ed un eventuale processo in attesa su sem_wait() viene «risvegliato» 
 
@@ -2223,7 +2224,7 @@ Tipi di signal:
 - Linux supporta anche i POSIX Real-Time Signals 
 - definiti negli standard POSIX.1-1990 e POSIX.1- 2001 
 
-I signal sono una forma di IPC limitata, nel senso che non contengono ulteriore informazione (il dato scambiato è il signal stesso), Real-Time a parte. Sono simili ad "interrupt software" o a notifiche asincrone, che vengono inviati ad un processo (od a un thread) al verificarsi di un evento. Gli standard hanno un significato intrinseco. In altre parole un signal è una notifica asincrona che il sistema (o un altro processo) invia a un processo/thread per dirgli: “è successo qualcosa”. Non trasporta dati (quasi mai), è solo un **evento**.
+I signal sono una forma di IPC limitata, nel senso che non contengono ulteriore informazione (il dato scambiato è il signal stesso), Real-Time a parte. Sono simili ad "interrupt software" o a notifiche asincrone, che vengono inviati ad un processo (od a un thread) al verificarsi di un evento. Gli standard hanno un significato intrinseco. In altre parole <u>un signal è una notifica asincrona che il sistema (o un altro processo) invia a un processo/thread per dirgli: “è successo qualcosa”</u>. Non trasporta dati (quasi mai), è solo un **evento**.
 
 > [!quote]
 > «un meccanismo asincrono di notifica di eventi tra kernel e processi, che induce una variazione di flusso o di flusso di controllo nel processo destinatario» 
@@ -2237,7 +2238,7 @@ La gestione può essere varia: il processo termina, viene sospeso, viene eseguit
 > [!info]
 > Signals: gestioni di default (da `man 7 signal`) 
 
-**Signal dispositions:** In ogni processo ogni signal ha una **disposition** corrente che determina come il processo stesso si comporta se il signal viene ricevuto (cioè “cosa faccio se arriva questo segnale?“). Se non diversamente specificato, tale disposition è quella di default ed è una delle seguenti: 
+**Signal dispositions:** In ogni processo ogni signal ha una **disposition corrente** che determina come il processo stesso si comporta se il signal viene ricevuto (cioè “cosa faccio se arriva questo segnale?“). Se non diversamente specificato, tale disposition è quella di default ed è una delle seguenti: 
 - `Term:` Default action is to terminate the process. 
 - `Ign`: Default action is to ignore the signal. 
 - `Core:` Default action is to terminate the process and dump core (see `core(5)`). 
@@ -2267,7 +2268,7 @@ Un handler è: una funzione chiamata in modo asincrono, in un momento imprevedib
 Un handler è una funzione definita dal programmatore che il sistema invoca in maniera asincrona (*callback*) alla ricezione del signal (il processo/programmatore non sa se e quando sarà invocata). Le disposition sono duplicate da `fork(2)` nel child. Dopo `execve(2)` le disposition che prevedono un handler sono resettate al default, quelle che prevedono di ignorare rimangono inalterate
 
 **Chi li invia:** I signal possono essere inviati:
-- dal sistema operativo, per comunicare al processo/thread che si è verificato un certo evento (es.: SIGPIPE, cfr la lezione sulle PIPE) 
+- dal sistema operativo, per comunicare al processo/thread che si è verificato un certo evento (es.: SIGPIPE) 
 - dall'utente da terminale premendo certi tasti: 
 	- `Ctrl+C`: `SIGINT` 
 	- `Ctrl+Z`: `SIGTSTP` 
@@ -2298,7 +2299,7 @@ speed 38400 baud; rows 46; columns 173; line = 0; intr = ^C; quit = ^\; erase = 
 - process-directed: 
 	- inviati all'intero processo 
 	- per esempio generati dal kernel per motivi diversi da un'eccezione hardware; o perché inviato con `kill()` o `sigqueue()` 
-	- ricevuti da uno dei thread che non li bloccano. Se più di uno è il kernel che sceglie a quale thread destinarli 
+	- ricevuti da uno dei thread che non li bloccano. Se sono ricevuti da più di uno è il kernel che sceglie a quale thread destinarli 
 - thread-directed: 
 	- inviati al thread 
 	- per esempio perché generati da una specifica istruzione del linguaggio macchina che ha provocato un'eccezione hardware (per es.: segmentation fault, etc.); o inviati con `pthread_kill(), tgkill()`
@@ -2327,8 +2328,8 @@ struct sigaction {
 
 `SIGKILL` e `SIGSTOP` non possono essere gestiti, ignorati o bloccati 
 
-> [!info] 
-> N.B.: non assegnare contemporaneamente sa_handler e sa_sigaction (in certe architetture la struct è oggetto di union). In questa sede non parliamo di sa_sigaction. Per maggiori informazioni vedere `man sigaction(2)` 
+> [!info] N.B.
+> Non assegnare contemporaneamente sa_handler e sa_sigaction (in certe architetture la struct è oggetto di union). In questa sede non parliamo di sa_sigaction. Per maggiori informazioni vedere `man sigaction(2)` 
 
 **Registrare Signal Handlers: `sigaction()`:** 
 
@@ -2353,7 +2354,7 @@ struct sigaction {
 	- rimuove il signal dalla lista dei pendenti 
 	- salva lo stato del processo/thread da interrompere (i registri, etc.) 
 - l'handler viene eseguito in user-mode 
-- quando l'handler ritorna lo stato del processo/thread viene ripristinato 
+- quando l'handler ritorna, lo stato del processo/thread viene ripristinato 
 - il processo/thread che ha ricevuto il signal continua la sua esecuzione 
 
 > [!info] Nota: 
@@ -2430,7 +2431,7 @@ Astrazione software per la comunicazione attraverso API standard e condivisa:
 - networking socket layer user interface 
 - "uniform interface between the user process and the network protocol stacks in the kernel" (man 7 socket) 
 
-Comunicazione IPC anche attraverso una rete: scambio di pacchetti di dati ed altre operazioni. Esistono diversi communication domain, che stabiliscono la "protocol family" (`man 7 socket`), e diversi tipi di socket, che stabiliscono la modalità di comunicazione nello scambio di dati. Sono stati introdotti nel 1983 in Unix BSD 4.2. Le system calls per i socket sono più complesse rispetto, per esempio, alle pipe; le operazioni realizzate da `mkfifo(3)` ed `open(2)` per le named pipe sono divise tra più system call 
+<u>Comunicazione IPC anche attraverso una rete: scambio di pacchetti di dati ed altre operazioni</u>. Esistono diversi communication domain, che stabiliscono la "protocol family" (`man 7 socket`), e diversi tipi di socket, che stabiliscono la modalità di comunicazione nello scambio di dati. Sono stati introdotti nel 1983 in Unix BSD 4.2. Le system calls per i socket sono più complesse rispetto, per esempio, alle pipe; le operazioni realizzate da `mkfifo(3)` ed `open(2)` per le named pipe sono divise tra più system call 
 
 **Socket domains (`man 2 socket`):**  
 
@@ -2746,7 +2747,7 @@ int ftruncate(int fd, off_t length);
 void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
 ``` 
 
-- in generale mappa file o device nello spazio di indirizzamento virtuale del chiamante. Nel nostro caso mappa (anche) shared memory 
+- in generale mappa file o device nello spazio di indirizzamento virtuale del chiamante. Nel nostro caso mappa (anche) shared memory (cioè collega la shared memory allo spazio di indirizzi del processo)
 - torna un puntatore all'area mappata 
 - `addr`: indirizzo iniziale nello spazio di indirizzamento per la mappatura. Se NULL, sceglie il kernel dove mappare (più portabile) 
 - `length`: lunghezza dell'area mappata 
