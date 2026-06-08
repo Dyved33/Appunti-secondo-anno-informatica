@@ -1817,7 +1817,7 @@ Inoltre ciò avviene se e solo se l'automa $A_0$ col medesimo input raggiunge un
 Tale classe è inclusa strettamente nella classe dei linguaggi deterministici. 
 
 > [!example]
-> Il linguaggio $\{a n b m | n \geq m \geq 0\}$ è accettato per stato finale dall'automa a pila deterministico 
+> Il linguaggio $\{a^n b^m | n \geq m \geq 0\}$ è accettato per stato finale dall'automa a pila deterministico 
 > 
 > ![[Pasted image 20260507230112.png|300]]
 > 

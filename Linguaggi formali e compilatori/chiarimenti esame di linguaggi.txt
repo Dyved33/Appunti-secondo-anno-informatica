@@ -1,0 +1,126 @@
+  ### 1. Il Problema dell'Analisi Lessicale
+  
+  L'obiettivo dello scanner (analizzatore lessicale) è leggere una sequenza di caratteri (il codice sorgente) e suddividerla in lessemi associati a determinati token. Ciascun token è     
+  definito da un'espressione regolare Eⱼ (con j = 1,…,n).
+  I problemi principali da risolvere sono due:
+  
+  1. Trovare il prefisso più lungo (il lessema più lungo possibile) che corrisponde a una delle espressioni regolari (regola del longest match).
+  2. Risolvere i conflitti di priorità: se un lessema corrisponde a più espressioni regolari (ad esempio la stringa  if  che corrisponde sia al token della parola chiave  if  sia a un    
+  identificatore generico), si sceglie l'espressione regolare con priorità maggiore (ossia con l'indice j più piccolo).
+  ──────
+  ### 2. Costruzione dell'Automa Non Deterministico (NFA)
+  
+  Per prima cosa si costruisce un automa a stati finiti non deterministico (NFA) globale, combinando gli NFA dei singoli token:
+  
+  • Per ogni espressione regolare Eⱼ (associata a un token), viene costruito un NFA Aⱼ con stato iniziale iⱼ e stato finale fⱼ.
+  • Si uniscono tutti questi automi in un unico grande automa A introducendo un nuovo stato iniziale comune i₀.
+  • Si aggiungono delle ε-transizioni (transizioni spontanee senza consumare caratteri) dallo stato i₀ verso gli stati iniziali iⱼ di ciascun singolo automa.
+  • Nota importante: a differenza della classica costruzione di Kleene per l'unione di linguaggi, non si uniscono gli stati finali fⱼ in un unico stato finale. Gli stati finali rimangono 
+  distinti per consentire all'automa di identificare quale specifica espressione regolare Eⱼ ha accettato la stringa.
+  ──────
+  ### 3. Determinizzazione dell'Automa (DFA)
+  
+  L'NFA così ottenuto viene convertito in un Automa Deterministico (DFA)
+  
+    A
+     D
+  
+  tramite l'algoritmo di costruzione dei sottoinsiemi.
+  
+  • Ogni stato del DFA corrisponde a un sottoinsieme di stati dell'NFA originale.
+  • Uno stato del DFA è considerato "accettante" se al suo interno contiene almeno uno stato finale fⱼ di uno dei singoli automi.
+  • Nel DFA è presente anche lo stato vuoto emptyset, che funge da stato pozzo (in cui l'automa entra quando la stringa letta non può più corrispondere ad alcun token).
+  ──────
+  ### 4. Algoritmo di Riconoscimento del Token
+  
+  Durante l'esecuzione, lo scanner simula il DFA sui caratteri in input partendo dal puntatore corrente ( start ):
+  
+  1. Avanza carattere per carattere nel testo, transitando da uno stato del DFA al successivo.
+  2. Memorizzazione del percorso: lo scanner tiene traccia dell'ultimo stato accettante attraversato e della posizione corrispondente nel testo.
+  3. Arresto: quando il DFA entra nello stato pozzo emptyset (segno che nessun ulteriore carattere può estendere il lessema corrente in modo valido), la scansione si ferma.
+  4. Scelta del Token:
+      • Si prende l'ultimo stato accettante visitato prima di entrare nel pozzo (questo garantisce il riconoscimento del prefisso più lungo).
+      • Se questo stato del DFA contiene più di uno stato finale dell'NFA (ad esempio {f₂,f₅}), significa che il lessema è valido per più token. Lo scanner risolve il conflitto           
+      selezionando l'indice j più piccolo (priorità massima, es. f₂).
+      • Il puntatore di lettura viene riportato alla fine di questo prefisso più lungo e il token corrispondente viene restituito al parser.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+### 1. Differenza tra Automa a Pila Deterministico e Non Deterministico                                                                                                                  
+                                                                                                                                                                                           
+  Un automa a pila (PDA) è un modello di calcolo composto da un controllo a stati finiti, un nastro di input e uno stack (pila). La differenza tra la versione deterministica e quella non 
+  deterministica riguarda le scelte di transizione disponibili:                                                                                                                            
+                                                                                                                                                                                           
+  • Determinismo (PDA Deterministico):                                                                                                                                                     
+  Un automa è deterministico se per ogni combinazione di stato corrente (q), simbolo in input (a o transizione spontanea ε) e simbolo in cima alla pila (Z), esiste al più una sola mossa  
+  possibile. In formula:                                                                                                                                                                   
+                                                                                                                                                                                           
+    δ(q,a,Z) ∪ δ(q,ε,Z)  contiene al più un elemento                                                                                                                                       
+                                                                                                                                                                                           
+  Questo significa che non ci sono mai conflitti (ad esempio, non puoi scegliere se fare una mossa ε o leggere un carattere dello stesso tipo con la stessa cima della pila).              
+                                                                                                                                                                                           
+  • Non Determinismo (PDA Non Deterministico):                                                                                                                                             
+  L'automa può avere molteplici transizioni possibili per la stessa configurazione. Ad esempio, può scegliere autonomamente e "indovinare" quando smettere di inserire elementi in pila e  
+  iniziare a fare il pop (come nel caso del riconoscimento delle palindrome generiche wwᴿ, dove il punto medio non è marcato).                                                             
+  • Differenza di Potere Computazionale:                                                                                                                                                   
+  A differenza degli automi a stati finiti (dove DFA e NFA riconoscono la stessa classe di linguaggi, ovvero i regolari), negli automi a pila il non-determinismo aggiunge potenza:        
+      • La classe dei linguaggi accettati da PDA deterministici (linguaggi deterministici) è un sottoinsieme stretto di quelli non deterministici.                                         
+      • Ad esempio, il linguaggio delle palindrome pari con un centro marcato (wcwᴿ) è deterministico, mentre quello senza centro marcato (wwᴿ) richiede il non-determinismo.              
+  • Metodi di Accettazione:                                                                                                                                                                
+      • Nei PDA non deterministici, accettare per pila vuota, per stato finale o per entrambi definisce la stessa identica classe di linguaggi (i non contestuali).                        
+      • Nei PDA deterministici, l'accettazione per pila vuota è strettamente meno potente dell'accettazione per stato finale. Ad esempio, il linguaggio {aⁿbᵐ|n ≥ m ≥ 0} è deterministico  
+      per stato finale, ma non può essere accettato per pila vuota da alcun PDA deterministico.                                                                                            
+                                                                                                                                                                                           
+  ──────                                                                                                                                                                                   
+  ### 2. Dal Teorema di Caratterizzazione fino alla Fine del File                                                                                                                          
+                                                                                                                                                                                           
+  A partire dalla sezione del Appunti Linguaggi e compilatori.md fino alla conclusione del documento, vengono spiegati i seguenti concetti chiave:                                                            
+  
+  #### A. Equivalenza tra Grammatiche e Automi a Pila
+  
+  Il teorema dimostra che un linguaggio è non contestuale (di tipo 2) se e solo se è riconosciuto da un automa a pila. La dispensa mostra come passare da un modello all'altro:            
+  
+  1. Da grammatica ad automa: Data una grammatica G, si costruisce un automa a pila con un solo stato che mima le derivazioni sinistre (sostituendo le variabili in cima alla pila con i   
+  rispettivi lati destri delle produzioni).
+  2. Da automa a grammatica: Si mostra come un automa a pila con un solo stato possa essere convertito in una grammatica equivalente.
+  3. Eliminazione degli stati: Viene dimostrato che qualsiasi automa a pila con più stati può essere convertito in un automa equivalente con un solo stato, salvando lo stato corrente     
+  direttamente all'interno delle tuple che compongono i simboli della pila.
+  
+  #### B. Parsing Top-Down Deterministico e Grammatiche LL(1)
+  
+  Viene spiegato come rendere deterministico il parsing sintattico (top-down) attraverso le tabelle di parsing:
+  
+  • FIRST(α): L'insieme di simboli terminali che possono comparire come prima lettera di una parola derivata da α.
+  • FOLLOW(X): L'insieme di simboli terminali che possono apparire immediatamente a destra di una variabile X in una qualsiasi derivazione.
+  • Grammatiche LL(1): Sono le grammatiche non contestuali per le quali è possibile costruire una tabella di parsing senza conflitti (ogni casella della tabella contiene al massimo una   
+  produzione). Questo garantisce che il parsing sia deterministico.
+      • Se non ci sono ε-produzioni: FIRST (α) ∩ FIRST (γ) = emptyset per ogni alternativa X → α|γ.
+      • Se ci sono ε-produzioni: Si aggiunge il controllo per cui l'insieme FOLLOW (X) non deve sovrapporsi ai simboli di prima lettura dei lati destri alternativi.
+  
+
+  #### C. Proprietà di Chiusura dei Linguaggi Non Contestuali
+  
+  Il file elenca rispetto a quali operazioni questa classe di linguaggi è chiusa:
+  
+  • Chiusi per Operazioni Regolari: L'unione (L₁ ∪ L₂), la concatenazione (L₁L₂) e la chiusura di Kleene (
+  
+     *
+    L
+  
+  ) di linguaggi non contestuali producono sempre un linguaggio non contestuale.
+  
+  • NON Chiusi per Intersezione e Complemento: L'intersezione di due linguaggi non contestuali può non essere non contestuale (es. {aⁿbⁿcᵐ} ∩ {aᵐbⁿcⁿ} = {aⁿbⁿcⁿ}, che non è non           
+  contestuale).
+  • Intersezione con un Regolare: Se si interseca un linguaggio non contestuale con uno regolare, il risultato è garantito essere non contestuale (si dimostra facendo lavorare in         
+  parallelo un automa a stati finiti e un automa a pila).
+  • Morfismi: I linguaggi non contestuali sono chiusi per morfismi (funzioni che sostituiscono simboli con stringhe).
+  
+  #### D. Teorema di Chomsky-Schützenberger (Rappresentazione)
+  
+  Introduce il Linguaggio di Dyck (Dₖ), che rappresenta il linguaggio delle parentesi ben bilanciate (con k tipi di parentesi).
+  Il teorema afferma che ogni linguaggio non contestuale L può essere espresso come:
+  
+    L = f(Dₖ ∩ R)
+  
+  dove Dₖ è un linguaggio di Dyck, R è un linguaggio regolare (che fa da "filtro" sulle sequenze di parentesi) e f è un morfismo (che mappa le parentesi nei simboli del linguaggio        
+  finale). In sostanza, qualsiasi linguaggio non contestuale ha una struttura intrinseca basata su parentesi bilanciate.*
+
