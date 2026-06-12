@@ -51,7 +51,7 @@ int main()
                 }
 
                 // scrive i byte del comando nel socket del client verso l'esecutore. Se ritorna -1 c'è un errore di rete
-                if (send(fd_client, buffer, strlen(buffer), 0) == -1)
+                if (write(fd_client, buffer, strlen(buffer)) == -1)
                 {
                     perror("Errore nell'invio del comando");
                     iRet = EXIT_FAILURE;
@@ -65,9 +65,9 @@ int main()
                     break;
                 }
 
-                // siccome la funzione recv è bloccante (a meno di usare la flag MSG_DONTWAIT), ho bisogno di sapere quanti byte aspettarmi prima di ricevere l'output
+                // siccome la funzione read è bloccante, ho bisogno di sapere quanti byte aspettarmi prima di ricevere l'output
                 int out_size = 0;
-                ssize_t bytes_recv = recv(fd_client, &out_size, sizeof(out_size), 0);
+                ssize_t bytes_recv = read(fd_client, &out_size, sizeof(out_size));
                 if (bytes_recv <= 0)
                 {
                     printf("Connessione chiusa dall'esecutore remoto.\n");
@@ -80,21 +80,14 @@ int main()
                     continue;
                 }
 
-                // qui si riceve l'output effettivo del comando (dato che non so la dimensione effettiva della risposta uso un ciclo per ricevere tutti i byte attesi)
+                // qui si riceve l'output effettivo del comando (usando un buffer statico invece di malloc)
                 if (out_size > 0)
                 {
-                    char *response = malloc(out_size + 1);//+1 mi serve per il carattere \0
-                    if (response == NULL)
-                    {
-                        perror("Errore allocazione memoria per risposta");
-                        iRet = EXIT_FAILURE;
-                        break;
-                    }
-
+                    char response[65536];
                     int total_received = 0;
                     while (total_received < out_size)
                     {
-                        int n = recv(fd_client, response + total_received, out_size - total_received, 0);
+                        int n = read(fd_client, response + total_received, out_size - total_received);
                         //riceve i byte dell'output del comando e li memorizza in response partendo dall'indirizzo response + total_received per evitare di sovrascrivere i dati già ricevuti. Il terzo parametro mi indica quanti byte ancora devo ricevere 
                         if (n <= 0)
                         {
@@ -106,7 +99,6 @@ int main()
                     
                     response[total_received] = '\0';//chiudo la stringa 
                     printf("%s", response);
-                    free(response);//evito memory leak
                 }
                 else
                 {

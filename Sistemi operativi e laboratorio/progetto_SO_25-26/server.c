@@ -32,7 +32,7 @@ void remove_child_pid(pid_t pid)
 void handle_sigchld(int sig)
 {
     (void)sig;
-    int saved_errno = errno; // CONTROLLA CHE SERVA EFFETTIVAMENTE (di salvare lo stato di errno per ripristinarlo alla fine)
+    int saved_errno = errno; // salvo errno all'inizio dell'handler per evitare che venga sovrascritto dalle chiamate di sistema all'interno dell'handler stesso (come waitpid) che potrebbero modificare il valore di errno, causando comportamenti imprevisti nel codice che ha generato il segnale
     pid_t pid;
     while ((pid = waitpid(-1, NULL, WNOHANG)) > 0) // -1 indica "attendi qualsiasi figlio", WNOHANG indica di non bloccare se non ci sono figli terminati, ma restituire 0
     {
@@ -65,7 +65,7 @@ int main()
     struct sigaction sa_chld;
     memset(&sa_chld, 0, sizeof(sa_chld));
     sa_chld.sa_handler = handle_sigchld;
-    sa_chld.sa_flags = SA_RESTART; // indica al sistema operativo di riavviare automaticamente alcune chiamate di sistema bloccanti (come la  accept) se vengono interrotte dall'arrivo di questo segnale
+    sa_chld.sa_flags = SA_RESTART; // indica al sistema operativo di riavviare automaticamente alcune chiamate di sistema bloccanti (come la accept) se vengono interrotte dall'arrivo di questo segnale
     sigaction(SIGCHLD, &sa_chld, NULL);
 
     if ((fd_server = socket(iDomain, SOCK_STREAM, 0)) != -1)
@@ -96,7 +96,7 @@ int main()
                         sigemptyset(&block_mask);
                         sigaddset(&block_mask, SIGCHLD);
                         sigprocmask(SIG_BLOCK, &block_mask, &old_mask);
-                        // DA CAPIRE SE QUESTA PARTE RELATIVA ALLA GESTIONE DEI CHILDREN SERVA EFFETTIVAMENTE
+                        
                         if (child_count >= MAX_CLIENTS)
                         {
                             printf("Raggiunto il numero massimo di client connessi (%d).\n", MAX_CLIENTS);

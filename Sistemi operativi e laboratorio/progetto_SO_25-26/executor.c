@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
         memset(command, 0, sizeof(command)); // pulisce il buffer del comando
 
         // attendecomando dal client
-        ssize_t bytes_read = recv(client_fd, command, sizeof(command) - 1, 0);
+        ssize_t bytes_read = read(client_fd, command, sizeof(command) - 1);
 
         if (bytes_read <= 0) // se il client chiude la connessione o si verifica un errore, termina
         {
@@ -132,19 +132,19 @@ int main(int argc, char *argv[])
 
             // invia prima la dimensione dell'output (come int) al client
             int out_size = (int)total_bytes;
-            send(client_fd, &out_size, sizeof(out_size), 0);
+            write(client_fd, &out_size, sizeof(out_size));
 
             // invia l'output effettivo al client
             if (out_size > 0)
             {
-                send(client_fd, output_buffer, out_size, 0);
+                write(client_fd, output_buffer, out_size);
             }
         }
         else
         {
             perror("Errore fork esecutore");
             int err_size = -1;
-            send(client_fd, &err_size, sizeof(err_size), 0);
+            write(client_fd, &err_size, sizeof(err_size));
         }
     }
 
