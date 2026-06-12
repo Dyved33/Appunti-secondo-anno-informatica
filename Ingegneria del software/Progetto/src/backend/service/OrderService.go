@@ -1,0 +1,285 @@
+package Service
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"gialosai/backend/domain"
+	"gialosai/backend/repository"
+	"time"
+)
+
+type OrderService struct {
+	OrderRepo   *Repository.OrderRepository
+	ProductRepo *Repository.ProductRepository
+	Tx          *Repository.TransactionHelper
+}
+
+func NewOrderService(orderRepo *Repository.OrderRepository, prodRepo *Repository.ProductRepository, tx *Repository.TransactionHelper) *OrderService {
+	return &OrderService{OrderRepo: orderRepo, ProductRepo: prodRepo, Tx: tx}
+}
+
+// ─────────────────────────────────────────────
+// ORDINI ENTRATA
+// ─────────────────────────────────────────────
+
+func (s *OrderService) ConfirmOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error {
+	o.Data = time.Now()
+	o.Stato = domain.StatoEvaso
+
+	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
+		// 1. Save entry order
+		err := s.OrderRepo.CreateOrdineEntrata(txCtx, o)
+		if err != nil {
+			return err
+		}
+
+		// 2. Increment stock
+		for _, r := range o.Righe {
+			err = s.ProductRepo.UpdateGiacenza(txCtx, r.ProdottoID, r.Quantita)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+}
+
+// ─────────────────────────────────────────────
+// ORDINI USCITA
+// ─────────────────────────────────────────────
+
+func (s *OrderService) ConfirmOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
+	o.Data = time.Now()
+	o.Stato = domain.StatoConfermato // initial state before evasion via DDT
+
+	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
+		// 1. Verify and decrement stock
+		for _, r := range o.Righe {
+			g, err := s.ProductRepo.GetGiacenza(txCtx, r.ProdottoID)
+			if err != nil {
+				return err
+			}
+			if g.Quantita < r.Quantita {
+				p, errP := s.ProductRepo.GetByID(txCtx, r.ProdottoID)
+				name := "Articolo"
+				if errP == nil {
+					name = p.Nome
+				}
+				return domain.NewGiacenzaInsufficienteError(r.ProdottoID, name, g.Quantita, r.Quantita)
+			}
+
+			// Decrement
+			err = s.ProductRepo.UpdateGiacenza(txCtx, r.ProdottoID, -r.Quantita)
+			if err != nil {
+				return err
+			}
+		}
+
+		// 2. Save order
+		return s.OrderRepo.CreateOrdineUscita(txCtx, o)
+	})
+}
+
+func (s *OrderService) GetOrdiniUscitaNonEvasi(ctx context.Context) ([]domain.OrdineUscita, error) {
+	return s.OrderRepo.GetOrdiniUscitaByStato(ctx, domain.StatoConfermato)
+}
+
+func (s *OrderService) GetOrdiniUscita(ctx context.Context) ([]domain.OrdineUscita, error) {
+	return s.OrderRepo.GetOrdiniUscita(ctx)
+}
+
+func (s *OrderService) GetOrdiniUscitaByStato(ctx context.Context, stato domain.StatoOrdine) ([]domain.OrdineUscita, error) {
+	return s.OrderRepo.GetOrdiniUscitaByStato(ctx, stato)
+}
+
+func (s *OrderService) GetDettaglioOrdineUscita(ctx context.Context, id int) (*domain.OrdineUscita, error) {
+	return s.OrderRepo.GetOrdineUscitaByID(ctx, id)
+}
+
+// ─────────────────────────────────────────────
+// GENERAZIONE DDT
+// ─────────────────────────────────────────────
+
+func (s *OrderService) GeneraDDT(ctx context.Context, orderID int, mittente, destinatario string) (*domain.DDT, error) {
+	var ddt *domain.DDT
+
+	err := s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
+		o, err := s.OrderRepo.GetOrdineUscitaByID(txCtx, orderID)
+		if err != nil {
+			return err
+		}
+
+		if o.Stato == domain.StatoEvaso {
+			return domain.ErrDDTGiaGenerato
+		}
+
+		// Create DDT object
+		d := &domain.DDT{
+			Numero:         fmt.Sprintf("DDT-%d-%04d", time.Now().Year(), o.ID),
+			OrdineUscitaID: o.ID,
+			Data:           time.Now(),
+			Mittente:       mittente,
+			Destinatario:   destinatario,
+			PathPDF:        fmt.Sprintf("./output/pdf/ddt_%d.pdf", o.ID),
+		}
+
+		err = s.OrderRepo.CreateDDT(txCtx, d)
+		if err != nil {
+			return err
+		}
+
+		// Change status to Evaso
+		o.Stato = domain.StatoEvaso
+		o.DDTID = &d.ID
+		err = s.OrderRepo.UpdateOrdineUscita(txCtx, o)
+		if err != nil {
+			return err
+		}
+
+		ddt = d
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	return ddt, nil
+}
+
+// ─────────────────────────────────────────────
+// GESTIONE RESI
+// ─────────────────────────────────────────────
+
+func (s *OrderService) CreateReso(ctx context.Context, r *domain.Reso) error {
+	r.Data = time.Now()
+	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
+		// Verify the order exists and is EVASO
+		o, err := s.OrderRepo.GetOrdineUscitaByID(txCtx, r.OrdineUscitaID)
+		if err != nil {
+			return err
+		}
+		if o.Stato != domain.StatoEvaso {
+			return errors.New("il reso può essere registrato solo per ordini evasi")
+		}
+
+		return s.OrderRepo.CreateReso(txCtx, r, "da_verificare")
+	})
+}
+
+func (s *OrderService) VerifyReso(ctx context.Context, resoID int) error {
+	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
+		re, stato, err := s.OrderRepo.GetResoByID(txCtx, resoID)
+		if err != nil {
+			return err
+		}
+		if stato != "da_verificare" {
+			return errors.New("il reso è già stato elaborato")
+		}
+
+		// Increment physical stock
+		err = s.ProductRepo.UpdateGiacenza(txCtx, re.ProdottoID, re.Quantita)
+		if err != nil {
+			return err
+		}
+
+		return s.OrderRepo.UpdateResoStato(txCtx, resoID, "verificato")
+	})
+}
+
+func (s *OrderService) ApproveReso(ctx context.Context, resoID int) error {
+	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
+		_, stato, err := s.OrderRepo.GetResoByID(txCtx, resoID)
+		if err != nil {
+			return err
+		}
+		if stato != "verificato" {
+			return errors.New("il reso deve essere prima verificato fisicamente")
+		}
+		return s.OrderRepo.UpdateResoStato(txCtx, resoID, "approvato")
+	})
+}
+
+func (s *OrderService) RifiutaReso(ctx context.Context, resoID int) error {
+	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
+		re, stato, err := s.OrderRepo.GetResoByID(txCtx, resoID)
+		if err != nil {
+			return err
+		}
+		if stato != "verificato" {
+			return errors.New("reso non verificato o già processato")
+		}
+
+		// Rollback physical stock since it was not approved
+		err = s.ProductRepo.UpdateGiacenza(txCtx, re.ProdottoID, -re.Quantita)
+		if err != nil {
+			return err
+		}
+
+		return s.OrderRepo.UpdateResoStato(txCtx, resoID, "rifiutato")
+	})
+}
+
+func (s *OrderService) GetResi(ctx context.Context) ([]map[string]interface{}, error) {
+	return s.OrderRepo.GetAllResi(ctx)
+}
+
+// ─────────────────────────────────────────────
+// GESTIONE FATTURE
+// ─────────────────────────────────────────────
+
+func (s *OrderService) GeneraFattura(ctx context.Context, orderID int) (*domain.Fattura, error) {
+	var fat *domain.Fattura
+
+	err := s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
+		o, err := s.OrderRepo.GetOrdineUscitaByID(txCtx, orderID)
+		if err != nil {
+			return err
+		}
+		if o.Stato != domain.StatoEvaso {
+			return errors.New("impossibile emettere fattura per un ordine non ancora evaso")
+		}
+
+		// Calculate total invoice value
+		var imponibile float64
+		for _, r := range o.Righe {
+			imponibile += float64(r.Quantita) * r.PrezzoUnitario
+		}
+		iva := imponibile * 0.22 // 22% IVA standard
+		totale := imponibile + iva
+
+		f := &domain.Fattura{
+			Numero:         fmt.Sprintf("FAT-%d-%04d", time.Now().Year(), o.ID),
+			Anno:           time.Now().Year(),
+			Tipo:           domain.TipoFatturaVendita,
+			OrdineUscitaID: o.ID,
+			Imponibile:     imponibile,
+			IVA:            iva,
+			Totale:         totale,
+			Data:           time.Now(),
+			PathPDF:        fmt.Sprintf("./output/pdf/fattura_%d.pdf", o.ID),
+		}
+
+		err = s.OrderRepo.CreateFattura(txCtx, f)
+		if err != nil {
+			return err
+		}
+		fat = f
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	return fat, nil
+}
+
+func (s *OrderService) GetFatture(ctx context.Context) ([]domain.Fattura, error) {
+	return s.OrderRepo.GetAllFatture(ctx)
+}
+
+func (s *OrderService) DeleteFattura(ctx context.Context, id int) error {
+	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
+		return s.OrderRepo.DeleteFattura(txCtx, id)
+	})
+}

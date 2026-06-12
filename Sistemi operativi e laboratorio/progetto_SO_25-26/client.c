@@ -80,10 +80,16 @@ int main()
                     continue;
                 }
 
-                // qui si riceve l'output effettivo del comando (usando un buffer statico invece di malloc)
+                // qui si riceve l'output effettivo del comando 
                 if (out_size > 0)
                 {
-                    char response[65536];
+                    char *response = malloc(out_size + 1);
+                    if (response == NULL)
+                    {
+                        perror("Errore nell'allocazione della memoria");
+                        iRet = EXIT_FAILURE;
+                        break;
+                    }
                     int total_received = 0;
                     while (total_received < out_size)
                     {
@@ -91,7 +97,7 @@ int main()
                         //riceve i byte dell'output del comando e li memorizza in response partendo dall'indirizzo response + total_received per evitare di sovrascrivere i dati già ricevuti. Il terzo parametro mi indica quanti byte ancora devo ricevere 
                         if (n <= 0)
                         {
-                            printf("Connessione interrotta durante la ricezione dell'output.\n");
+                            printf("Connessione interrotta durante la ricezione dell'output \n");
                             break;
                         }
                         total_received += n;
@@ -99,6 +105,7 @@ int main()
                     
                     response[total_received] = '\0';//chiudo la stringa 
                     printf("%s", response);
+                    free(response);
                 }
                 else
                 {
