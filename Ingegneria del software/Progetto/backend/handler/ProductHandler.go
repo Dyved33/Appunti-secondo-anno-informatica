@@ -2,6 +2,7 @@ package Handler
 
 import (
 	"context"
+	"strings"
 	"gialosai/backend/DTO"
 	"gialosai/backend/domain"
 	"gialosai/backend/service"
@@ -69,6 +70,7 @@ func (h *ProductHandler) GetProducts(ctx context.Context) ([]DTO.ProductOutputDT
 }
 
 func (h *ProductHandler) GetProductByBarcode(ctx context.Context, barcode string) (DTO.ProductOutputDTO, error) {
+	barcode = strings.TrimSpace(barcode)
 	p, err := h.Service.GetProductByBarcode(ctx, barcode)
 	if err != nil {
 		return DTO.ProductOutputDTO{}, err
@@ -112,4 +114,12 @@ func (h *ProductHandler) UpdatePrices(ctx context.Context, id int, input DTO.Pri
 
 func (h *ProductHandler) GetInventoryValue(ctx context.Context) (int, float64, error) {
 	return h.Service.GetValoreMagazzino(ctx)
+}
+
+func (h *ProductHandler) GetInventoryReport(ctx context.Context) (*domain.InventoryReport, error) {
+	return h.Service.GetInventarioReport(ctx)
+}
+
+func (h *ProductHandler) GetLowStockProducts(ctx context.Context) ([]domain.InventoryItem, error) {
+	return h.Service.GetProdottiSottoSoglia(ctx)
 }

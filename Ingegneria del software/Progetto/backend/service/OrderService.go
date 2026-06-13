@@ -25,7 +25,7 @@ func NewOrderService(orderRepo *Repository.OrderRepository, prodRepo *Repository
 
 func (s *OrderService) ConfirmOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error {
 	o.Data = time.Now()
-	o.Stato = domain.StatoEvaso
+	o.Stato = domain.StatoConfermato
 
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
 		// 1. Save entry order
@@ -114,9 +114,14 @@ func (s *OrderService) GeneraDDT(ctx context.Context, orderID int, mittente, des
 			return domain.ErrDDTGiaGenerato
 		}
 
+		progressive, err := s.OrderRepo.CountDDTByYear(txCtx, time.Now().Year())
+		if err != nil {
+			return err
+		}
+
 		// Create DDT object
 		d := &domain.DDT{
-			Numero:         fmt.Sprintf("DDT-%d-%04d", time.Now().Year(), o.ID),
+			Numero:         fmt.Sprintf("%s-%d-%04d", domain.PrefissoDDT, time.Now().Year(), progressive+1),
 			OrdineUscitaID: o.ID,
 			Data:           time.Now(),
 			Mittente:       mittente,
@@ -240,6 +245,11 @@ func (s *OrderService) GeneraFattura(ctx context.Context, orderID int) (*domain.
 			return errors.New("impossibile emettere fattura per un ordine non ancora evaso")
 		}
 
+		progressive, err := s.OrderRepo.CountFattureByYearAndType(txCtx, time.Now().Year(), domain.TipoFatturaVendita)
+		if err != nil {
+			return err
+		}
+
 		// Calculate total invoice value
 		var imponibile float64
 		for _, r := range o.Righe {
@@ -249,7 +259,7 @@ func (s *OrderService) GeneraFattura(ctx context.Context, orderID int) (*domain.
 		totale := imponibile + iva
 
 		f := &domain.Fattura{
-			Numero:         fmt.Sprintf("FAT-%d-%04d", time.Now().Year(), o.ID),
+			Numero:         fmt.Sprintf("%s-%d-%04d", domain.PrefissoFattura, time.Now().Year(), progressive+1),
 			Anno:           time.Now().Year(),
 			Tipo:           domain.TipoFatturaVendita,
 			OrdineUscitaID: o.ID,
@@ -274,8 +284,73 @@ func (s *OrderService) GeneraFattura(ctx context.Context, orderID int) (*domain.
 	return fat, nil
 }
 
+func (s *OrderService) GeneraNotaCredito(ctx context.Context, orderID int) (*domain.Fattura, error) {
+	var notaCredito *domain.Fattura
+
+	err := s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
+		o, err := s.OrderRepo.GetOrdineUscitaByID(txCtx, orderID)
+		if err != nil {
+			return err
+		}
+		if o.Stato != domain.StatoEvaso {
+			return errors.New("impossibile emettere nota di credito per un ordine non ancora evaso")
+		}
+
+		progressive, err := s.OrderRepo.CountFattureByYearAndType(txCtx, time.Now().Year(), domain.TipoNotaCredito)
+		if err != nil {
+			return err
+		}
+
+		var imponibile float64
+		for _, r := range o.Righe {
+			imponibile += float64(r.Quantita) * r.PrezzoUnitario
+		}
+		iva := imponibile * 0.22
+		totale := imponibile + iva
+
+		f := &domain.Fattura{
+			Numero:         fmt.Sprintf("%s-%d-%04d", domain.PrefissoNotaCredito, time.Now().Year(), progressive+1),
+			Anno:           time.Now().Year(),
+			Tipo:           domain.TipoNotaCredito,
+			OrdineUscitaID: o.ID,
+			Imponibile:     imponibile,
+			IVA:            iva,
+			Totale:         totale,
+			Data:           time.Now(),
+			PathPDF:        fmt.Sprintf("./output/pdf/nota_credito_%d.pdf", o.ID),
+		}
+
+		err = s.OrderRepo.CreateFattura(txCtx, f)
+		if err != nil {
+			return err
+		}
+		notaCredito = f
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	return notaCredito, nil
+}
+
 func (s *OrderService) GetFatture(ctx context.Context) ([]domain.Fattura, error) {
 	return s.OrderRepo.GetAllFatture(ctx)
+}
+
+func (s *OrderService) GetNoteCredito(ctx context.Context) ([]domain.Fattura, error) {
+	all, err := s.OrderRepo.GetAllFatture(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var noteCredito []domain.Fattura
+	for _, fattura := range all {
+		if fattura.Tipo == domain.TipoNotaCredito {
+			noteCredito = append(noteCredito, fattura)
+		}
+	}
+	return noteCredito, nil
 }
 
 func (s *OrderService) DeleteFattura(ctx context.Context, id int) error {

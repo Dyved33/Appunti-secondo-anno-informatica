@@ -141,26 +141,80 @@ func (h *OrderHandler) RejectReturn(ctx context.Context, resoID int) error {
 	return h.Service.RifiutaReso(ctx, resoID)
 }
 
-func (h *OrderHandler) IssueInvoice(ctx context.Context, orderID int) (DTO.OrderOutputDTO, error) {
+func (h *OrderHandler) IssueInvoice(ctx context.Context, orderID int) (DTO.FatturaOutputDTO, error) {
 	f, err := h.Service.GeneraFattura(ctx, orderID)
 	if err != nil {
-		return DTO.OrderOutputDTO{}, err
+		return DTO.FatturaOutputDTO{}, err
 	}
 
-	// Fetch order details
-	o, err := h.Service.GetDettaglioOrdineUscita(ctx, f.OrdineUscitaID)
-	if err != nil {
-		return DTO.OrderOutputDTO{}, err
-	}
-
-	return DTO.OrderOutputDTO{
-		ID:          o.ID,
-		Numero:      o.Numero,
-		Cliente:     o.Cliente,
-		Data:        o.Data,
-		Stato:       string(o.Stato),
-		Note:        o.Note,
-		CreatedByID: o.CreatedByID,
-		DDTID:       o.DDTID,
+	return DTO.FatturaOutputDTO{
+		ID:             f.ID,
+		Numero:         f.Numero,
+		Tipo:           string(f.Tipo),
+		OrdineUscitaID: f.OrdineUscitaID,
+		Imponibile:     f.Imponibile,
+		IVA:            f.IVA,
+		Totale:         f.Totale,
+		Data:           f.Data,
+		PathPDF:        f.PathPDF,
 	}, nil
+}
+
+func (h *OrderHandler) IssueCreditNote(ctx context.Context, orderID int) (DTO.FatturaOutputDTO, error) {
+	f, err := h.Service.GeneraNotaCredito(ctx, orderID)
+	if err != nil {
+		return DTO.FatturaOutputDTO{}, err
+	}
+
+	return DTO.FatturaOutputDTO{
+		ID:             f.ID,
+		Numero:         f.Numero,
+		Tipo:           string(f.Tipo),
+		OrdineUscitaID: f.OrdineUscitaID,
+		Imponibile:     f.Imponibile,
+		IVA:            f.IVA,
+		Totale:         f.Totale,
+		Data:           f.Data,
+		PathPDF:        f.PathPDF,
+	}, nil
+}
+
+func (h *OrderHandler) GetInvoices(ctx context.Context) ([]DTO.FatturaOutputDTO, error) {
+	fatture, err := h.Service.GetFatture(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]DTO.FatturaOutputDTO, 0, len(fatture))
+	for _, f := range fatture {
+		result = append(result, fatturaToDTO(f))
+	}
+	return result, nil
+}
+
+func (h *OrderHandler) GetCreditNotes(ctx context.Context) ([]DTO.FatturaOutputDTO, error) {
+	fatture, err := h.Service.GetNoteCredito(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]DTO.FatturaOutputDTO, 0, len(fatture))
+	for _, f := range fatture {
+		result = append(result, fatturaToDTO(f))
+	}
+	return result, nil
+}
+
+func fatturaToDTO(f domain.Fattura) DTO.FatturaOutputDTO {
+	return DTO.FatturaOutputDTO{
+		ID:             f.ID,
+		Numero:         f.Numero,
+		Tipo:           string(f.Tipo),
+		OrdineUscitaID: f.OrdineUscitaID,
+		Imponibile:     f.Imponibile,
+		IVA:            f.IVA,
+		Totale:         f.Totale,
+		Data:           f.Data,
+		PathPDF:        f.PathPDF,
+	}
 }

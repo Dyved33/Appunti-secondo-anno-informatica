@@ -52,6 +52,18 @@ type DDTOutputDTO struct {
 	PathPDF        string    `json:"path_pdf"`
 }
 
+type FatturaOutputDTO struct {
+	ID             int       `json:"id"`
+	Numero         string    `json:"numero"`
+	Tipo           string    `json:"tipo"`
+	OrdineUscitaID int       `json:"ordine_uscita_id"`
+	Imponibile     float64   `json:"imponibile"`
+	IVA            float64   `json:"iva"`
+	Totale         float64   `json:"totale"`
+	Data           time.Time `json:"data"`
+	PathPDF        string    `json:"path_pdf"`
+}
+
 type ResoInputDTO struct {
 	OrdineUscitaID int    `json:"ordine_uscita_id"`
 	ProdottoID     int    `json:"prodotto_id"`

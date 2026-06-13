@@ -21,6 +21,10 @@ var (
 	// non corrisponde ad alcun prodotto in anagrafica (RF-15, criterio 3).
 	ErrProdottoNonTrovato = errors.New("prodotto non trovato")
 
+	// ErrCategoriaNonTrovata è restituito quando una categoria richiesta
+	// non esiste più nel database.
+	ErrCategoriaNonTrovata = errors.New("categoria non trovata")
+
 	// ErrAccountBloccato è restituito quando l'utente ha superato
 	// il numero massimo di tentativi di login falliti (RF-02).
 	ErrAccountBloccato = errors.New("account bloccato")
@@ -106,6 +110,11 @@ func IsGiacenzaInsufficient(err error) bool {
 // IsNotFound è un helper per il caso barcode non trovato (RF-15, criterio 3).
 func IsNotFound(err error) bool {
 	return errors.Is(err, ErrProdottoNonTrovato)
+}
+
+// IsCategoryNotFound è un helper per il caso categoria assente.
+func IsCategoryNotFound(err error) bool {
+	return errors.Is(err, ErrCategoriaNonTrovata)
 }
 
 // IsPermissionDenied è un helper per i controlli RBAC nei controller (RF-01).

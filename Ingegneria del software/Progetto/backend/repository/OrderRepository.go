@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"gialosai/backend/domain"
 	"time"
 )
@@ -235,6 +236,16 @@ func (r *OrderRepository) CreateDDT(ctx context.Context, d *domain.DDT) error {
 	return nil
 }
 
+func (r *OrderRepository) CountDDTByYear(ctx context.Context, year int) (int, error) {
+	exec := GetExecutor(ctx, r.DB)
+	pattern := fmt.Sprintf("DDT-%d-%%", year)
+	var count int
+	if err := exec.QueryRowContext(ctx, `SELECT COUNT(*) FROM DDT WHERE numero LIKE ?`, pattern).Scan(&count); err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
 func (r *OrderRepository) GetDDTByOrdineUscita(ctx context.Context, orderID int) (*domain.DDT, error) {
 	exec := GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, ordine_uscita_id, data, mittente, destinatario, path_pdf FROM DDT WHERE ordine_uscita_id = ?`
@@ -266,6 +277,15 @@ func (r *OrderRepository) CreateFattura(ctx context.Context, f *domain.Fattura) 
 		f.ID = int(id)
 	}
 	return nil
+}
+
+func (r *OrderRepository) CountFattureByYearAndType(ctx context.Context, year int, tipo domain.TipoFattura) (int, error) {
+	exec := GetExecutor(ctx, r.DB)
+	var count int
+	if err := exec.QueryRowContext(ctx, `SELECT COUNT(*) FROM Fatture WHERE anno = ? AND tipo = ?`, year, string(tipo)).Scan(&count); err != nil {
+		return 0, err
+	}
+	return count, nil
 }
 
 func (r *OrderRepository) GetAllFatture(ctx context.Context) ([]domain.Fattura, error) {

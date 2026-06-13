@@ -1,10 +1,3 @@
-// Package domain contiene tutte le entità del dominio dell'applicazione.
-// È l'equivalente Go di un file header C: ogni package del progetto
-// lo importa per accedere ai tipi condivisi.
-//
-// Entità mappate dal Domain Model (Domain_model.puml):
-// Utente, Prodotto, Categoria, Giacenza, OrdineEntrata,
-// OrdineUscita, RigaOrdineEntrata, RigaOrdineUscita, DDT.
 package domain
 
 import "time"
