@@ -104,7 +104,7 @@ int main()
                     }
                     
                     response[total_received] = '\0';//chiudo la stringa 
-                    printf("%s", response);
+                    printf("%s\n", response);
                     free(response);
                 }
                 else

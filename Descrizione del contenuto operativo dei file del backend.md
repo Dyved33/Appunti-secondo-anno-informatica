@@ -8,8 +8,9 @@ Contiene i file di configurazione con:
 4. Struttura del contenuto di un inventario. Si tratta di un paio di strutture che vanno a descrivere o l'inventario di uno specifico prodotto o l'inventario di tutto il magazzino (mi servono per restituire tali informazioni al "frontend" tramite json)
 5. Verifica che una determinata stringa sia un barcode (così vengono rifiutati i codici solo apparentemente validi)
 
+Da qui in poi un elemento fondamentale sarà il context. Si tratta di una libreria che ho importato per utilizzarla per mandare (ed eliminare) le richieste verso il database che (in ogni caso) si troverà nel server
 ### Contenuto del folder repository:
-
+L'elemento centrale è il file db.go. Al suo interno vi sono: un interfaccia con tutte le funzioni necessarie a gestire il context, due funzioni che permettono alle funzioni che accettano un QueryExecutor di funzionare sia con transazioni che senza, senza dover cambiare il codice che le utilizza. Per transazioni si intende un blocco di operazioni che devono essere eseguite tutte insieme o nessuna, garantendo l'integrità dei dati. Ad esempio, se si sta creando un ordine e si devono inserire sia l'ordine che le righe dell'ordine, si può utilizzare una transazione per assicurarsi che entrambi gli inserimenti avvengano correttamente o che nessuno dei due venga inserito in caso di errore. Infine 
 
 ### Contenuto del folder handler:
 

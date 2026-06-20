@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     {
         memset(command, 0, sizeof(command)); // pulisce il buffer del comando
 
-        // attendecomando dal client
+        // attende comando dal client
         ssize_t bytes_read = read(client_fd, command, sizeof(command) - 1);
 
         if (bytes_read <= 0) // se il client chiude la connessione o si verifica un errore, termina

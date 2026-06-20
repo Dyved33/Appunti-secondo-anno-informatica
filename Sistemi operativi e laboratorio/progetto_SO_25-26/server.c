@@ -91,7 +91,7 @@ int main()
                     {
                         printf("Connessione avvenuta...\n");
 
-                        // Blocchiamo temporaneamente SIGCHLD per evitare race conditions sull'array children
+                        // blocchiamo temporaneamente SIGCHLD per evitare race conditions sull'array children
                         sigset_t block_mask, old_mask;
                         sigemptyset(&block_mask);
                         sigaddset(&block_mask, SIGCHLD);
@@ -101,13 +101,14 @@ int main()
                         {
                             printf("Raggiunto il numero massimo di client connessi (%d).\n", MAX_CLIENTS);
                             close(fd_new);
-                            sigprocmask(SIG_SETMASK, &old_mask, NULL); // SE TOGLI IL RESTO RICORDATI DI PUNTI COME QUESTO
+                            sigprocmask(SIG_SETMASK, &old_mask, NULL); 
+                            // ripristina la maschera dei segnali prima di continuare (per non lasciare SIGCHLD bloccato se non si accettano nuovi client)
                             continue;
                         }
 
                         pid_t pid = fork();
                         if (pid == 0)
-                        { // Processo figlio
+                        { // processo figlio
 
                             sigprocmask(SIG_SETMASK, &old_mask, NULL); // ripristina i segnali di default/ignora appropriati per il figlio
 
@@ -122,12 +123,13 @@ int main()
                             _exit(EXIT_FAILURE);
                         }
                         else if (pid > 0)
-                        { // Processo padre (server)
+                        { // processo padre (server)
 
                             printf("Processo figlio esecutore creato, pid = %d\n", pid);
                             children[child_count++] = pid;
                             close(fd_new); // Il padre non usa il socket del client
-                            sigprocmask(SIG_SETMASK, &old_mask, NULL);// CONTROLLA CHE SERVA EFFETTIVAMENTE (di ripristinare la maschera dei segnali dopo aver modificato l'array dei figli)    
+                            sigprocmask(SIG_SETMASK, &old_mask, NULL);
+                            // ripristina la maschera dei segnali per il padre (per non lasciare SIGCHLD bloccato dopo aver accettato un client)    
                         }
                         else
                         {

@@ -1210,7 +1210,7 @@ void controller () {
 </div>
 
 **Categorie di risorse:** 
-1. *Risorse riutilizzabili:* utilizzabili da un processo alla volta e non vengono distrutte dal loro utilizzo (una volta finito il processo vengono restituite). Per esempio sono processore, canali I/O, memoria, files, semafori
+1. *Risorse riutilizzabili:* utilizzabili da un processo alla volta e n+on vengono distrutte dal loro utilizzo (una volta finito il processo vengono restituite). Per esempio sono processore, canali I/O, memoria, files, semafori
 2. *Risorse consumabili:* possono essere create (prodotte) e distrutte (consumate), come le interruzioni, i segnali, i messaggi, i dati in buffer ecc…
 
 > [!example] Esempio risorse riutilizzabili: 
