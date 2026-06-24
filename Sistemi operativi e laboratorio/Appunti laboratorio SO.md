@@ -1821,7 +1821,7 @@ Le risorse allocate per un thread joinable sono rilasciate solo se un altro thre
 Riguarda il problema della concorrenza. 
 
 > [!quote] Dalle slide del Prof. Carpi:  
-> "Si verifica quando più processi o threads leggono e scrivono dati in modo che il risultato finale dipende dall’ordine di esecuzione delle istruzioni dei processi"> 
+> "Si verifica quando più processi o threads leggono e scrivono dati in modo che il risultato finale dipende dall’ordine di esecuzione delle istruzioni dei processi"
 
 **Sezione critica:** porzione di codice eseguita da più threads/processi per la quale il risultato delle esecuzioni concorrenti dipende dalla sequenza con cui i threads/processi accedono a questa sezione di codice (e il risultato può non essere quello desiderato...). In questo caso si dice che la sezione critica contiene una race condition 
 
@@ -2349,7 +2349,7 @@ struct sigaction {
 > [!quote] da `man 7 signal`: 
 > "Whenever there is a transition from kernel-mode to user-mode execution (e.g., on return from a system call or scheduling of a thread onto the CPU), the kernel checks whether there is a pending 1 unblocked 2 signal for which the process has established a signal handler. If there is such a pending signal, the following steps occur:"
 
-**Passi per l'esecuzione dell'handler:** Steps:
+**Passi per l'esecuzione dell'handler:** 
 - il kernel esegue operazioni preparatorie per l'esecuzione dell'handler: 
 	- rimuove il signal dalla lista dei pendenti 
 	- salva lo stato del processo/thread da interrompere (i registri, etc.) 

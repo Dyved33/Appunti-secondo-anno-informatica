@@ -1,21 +1,22 @@
-package Service
+package order
 
 import (
 	"context"
 	"errors"
 	"fmt"
+	"gialosai/backend/db"
 	"gialosai/backend/domain"
-	"gialosai/backend/repository"
+	"gialosai/backend/product"
 	"time"
 )
 
 type OrderService struct {
-	OrderRepo   *Repository.OrderRepository
-	ProductRepo *Repository.ProductRepository
-	Tx          *Repository.TransactionHelper
+	OrderRepo   *OrderRepository
+	ProductRepo *product.Repository
+	Tx          *db.TransactionHelper
 }
 
-func NewOrderService(orderRepo *Repository.OrderRepository, prodRepo *Repository.ProductRepository, tx *Repository.TransactionHelper) *OrderService {
+func NewOrderService(orderRepo *OrderRepository, prodRepo *product.Repository, tx *db.TransactionHelper) *OrderService {
 	return &OrderService{OrderRepo: orderRepo, ProductRepo: prodRepo, Tx: tx}
 }
 

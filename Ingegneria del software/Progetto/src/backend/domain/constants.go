@@ -1,5 +1,7 @@
 package domain
 
+import "fmt"
+
 // ─────────────────────────────────────────────
 // RUOLI — RF-01 (RBAC)
 // ─────────────────────────────────────────────
@@ -101,13 +103,16 @@ const (
 )
 
 // ─────────────────────────────────────────────
-// PERCORSI FILE — RNF-04, RNF-05
+// CONFIGURAZIONE DATABASE E PERCORSI FILE
 // ─────────────────────────────────────────────
 
 const (
-	// DBPath è il percorso del file SQLite locale (RNF-05: single-file embedded DB).
-	// Tutto rimane in locale, nessun dato esposto all'esterno (RNF-04).
-	DBPath = "./data/magazzino.db"
+	// DefaultMySQLHost/Port/Name definiscono i valori base per il database del server.
+	// Le credenziali possono essere passate separatamente quando si costruisce la DSN.
+	DefaultMySQLHost = "127.0.0.1"
+	DefaultMySQLPort = 3306
+	DefaultMySQLName = "gialosai"
+	DefaultMySQLParams = "parseTime=true&loc=Local&charset=utf8mb4"
 
 	// OutputPDFDir è la cartella in cui vengono salvati DDT e fatture generati.
 	OutputPDFDir = "./output/pdf"
@@ -115,3 +120,9 @@ const (
 	// OutputCSVDir è la cartella per i report CSV dell'inventario.
 	OutputCSVDir = "./output/csv"
 )
+
+// BuildMySQLDSN costruisce la stringa di connessione per MySQL.
+// Il server può usare questo helper passando utente e password letti dalla propria configurazione.
+func BuildMySQLDSN(user, password string) string {
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s", user, password, DefaultMySQLHost, DefaultMySQLPort, DefaultMySQLName, DefaultMySQLParams)
+}

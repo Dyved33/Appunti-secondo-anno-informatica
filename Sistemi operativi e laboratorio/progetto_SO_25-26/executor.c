@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
             // qualsiasi output del comando non andrà a video, ma entrerà nella pipe
             dup2(pipefd[1], STDOUT_FILENO); // ridireziona lo Standard Output del comando nel descrittore di scrittura della pipe
             dup2(pipefd[1], STDERR_FILENO); // fa lo stesso per lo Standard Error
-            close(pipefd[1]);               // chìiude il vecchio descrittore dato che è stato duplicato
+            close(pipefd[1]);               // chiude il vecchio descrittore dato che è stato duplicato
 
             // ripristina i comportamenti di default per i segnali (così che l'eseguibile richiamato possa reagire correttamente a eventuali segnali)
             struct sigaction sa_default;
