@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"gialosai/backend/db"
 	"gialosai/backend/domain"
 	"time"
 )

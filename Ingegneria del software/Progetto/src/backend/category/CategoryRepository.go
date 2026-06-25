@@ -4,23 +4,18 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"gialosai/backend/db"
 	"gialosai/backend/domain"
 )
 
-// Repository incapsula tutte le operazioni di persistenza relative alle categorie.
-// Comunica direttamente con il database MySQL attraverso il QueryExecutor fornito dal layer db.
 type Repository struct {
 	DB *sql.DB
 }
 
-// NewRepository crea una nuova istanza del repository per le categorie.
 func NewRepository(database *sql.DB) *Repository {
 	return &Repository{DB: database}
 }
 
-// Create inserisce una nuova categoria nel database.
-// Assegna automaticamente l'ID generato dal database all'oggetto Categoria passato.
+// Create inserisce una nuova categoria nel database
 func (r *Repository) Create(ctx context.Context, c *domain.Categoria) error {
 	exec := db.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Categorie (nome, descrizione) VALUES (?, ?)`
@@ -36,8 +31,7 @@ func (r *Repository) Create(ctx context.Context, c *domain.Categoria) error {
 	return nil
 }
 
-// GetAll recupera tutte le categorie dal database, ordinate per nome.
-// Restituisce una slice di Categoria o un errore se la query fallisce.
+// GetAll recupera tutte le categorie dal database, ordinate per nome
 func (r *Repository) GetAll(ctx context.Context) ([]domain.Categoria, error) {
 	exec := db.GetExecutor(ctx, r.DB)
 	rows, err := exec.QueryContext(ctx, `SELECT id, nome, descrizione FROM Categorie ORDER BY nome`)
@@ -57,8 +51,7 @@ func (r *Repository) GetAll(ctx context.Context) ([]domain.Categoria, error) {
 	return categories, nil
 }
 
-// GetByID recupera una singola categoria dal database usando il suo ID.
-// Restituisce l'oggetto Categoria se trovato, altrimenti un errore di categoria non trovata.
+// GetByID recupera una singola categoria dal database usando il suo ID
 func (r *Repository) GetByID(ctx context.Context, id int) (*domain.Categoria, error) {
 	exec := db.GetExecutor(ctx, r.DB)
 	var c domain.Categoria
@@ -72,16 +65,14 @@ func (r *Repository) GetByID(ctx context.Context, id int) (*domain.Categoria, er
 	return &c, nil
 }
 
-// Update modifica i dati di una categoria esistente nel database.
-// Aggiorna il nome e la descrizione sulla base dell'ID della categoria.
+// Update modifica i dati di una categoria esistente nel database
 func (r *Repository) Update(ctx context.Context, c *domain.Categoria) error {
 	exec := db.GetExecutor(ctx, r.DB)
 	_, err := exec.ExecContext(ctx, `UPDATE Categorie SET nome = ?, descrizione = ? WHERE id = ?`, c.Nome, c.Descrizione, c.ID)
 	return err
 }
 
-// Delete rimuove una categoria dal database usando il suo ID.
-// Nota: Il database deve gestire i vincoli di integrità referenziale per i prodotti associati.
+// Delete rimuove una categoria dal database usando il suo ID
 func (r *Repository) Delete(ctx context.Context, id int) error {
 	exec := db.GetExecutor(ctx, r.DB)
 	_, err := exec.ExecContext(ctx, `DELETE FROM Categorie WHERE id = ?`, id)

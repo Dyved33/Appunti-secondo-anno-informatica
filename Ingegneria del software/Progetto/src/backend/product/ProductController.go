@@ -6,13 +6,11 @@ import (
 	"gialosai/backend/domain"
 )
 
-// Controller rappresenta il layer di controllo/handler per le operazioni su prodotti.
-// Trasla le richieste in ingresso (DTO) alle chiamate al Service e formatta le risposte.
 type Controller struct {
 	Service *Service
 }
 
-// NewController crea una nuova istanza del controller per i prodotti.
+
 func NewController(svc *Service) *Controller {
 	return &Controller{Service: svc}
 }

@@ -4,24 +4,19 @@ import (
 	"context"
 	"strings"
 	"time"
-	"gialosai/backend/db"
 	"gialosai/backend/domain"
 )
 
-// Service contiene la logica di business per la gestione dei prodotti e dell'inventario.
-// Si interfaccia con il Repository per l'accesso ai dati e gestisce le regole di dominio.
 type Service struct {
 	Repo *Repository
 	Tx   *db.TransactionHelper
 }
 
-// NewService crea una nuova istanza del service per i prodotti.
 func NewService(repo *Repository, tx *db.TransactionHelper) *Service {
 	return &Service{Repo: repo, Tx: tx}
 }
 
-// CreateProduct crea un nuovo prodotto nel sistema.
-// Valida il barcode (EAN-13) e persiste il prodotto nel database entro una transazione.
+// CreateProduct crea un nuovo prodotto nel sistema
 func (s *Service) CreateProduct(ctx context.Context, p *domain.Prodotto) error {
 	// Trimma e valida il barcode
 	p.Barcode = strings.TrimSpace(p.Barcode)
@@ -34,8 +29,7 @@ func (s *Service) CreateProduct(ctx context.Context, p *domain.Prodotto) error {
 	})
 }
 
-// UpdateProduct modifica un prodotto esistente nel sistema.
-// Valida il barcode (EAN-13) e persiste le modifiche nel database entro una transazione.
+// UpdateProduct modifica un prodotto esistente nel sistema
 func (s *Service) UpdateProduct(ctx context.Context, p *domain.Prodotto) error {
 	// Trimma e valida il barcode
 	p.Barcode = strings.TrimSpace(p.Barcode)
@@ -47,8 +41,7 @@ func (s *Service) UpdateProduct(ctx context.Context, p *domain.Prodotto) error {
 	})
 }
 
-// DeleteProduct rimuove un prodotto dal sistema.
-// Nota: La giacenza associata viene eliminata automaticamente dal repository.
+// DeleteProduct rimuove un prodotto dal sistema. Nota: La giacenza associata viene eliminata automaticamente dal repository
 func (s *Service) DeleteProduct(ctx context.Context, id int) error {
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
 		return s.Repo.Delete(txCtx, id)
@@ -65,8 +58,7 @@ func (s *Service) GetProductByID(ctx context.Context, id int) (*domain.Prodotto,
 	return s.Repo.GetByID(ctx, id)
 }
 
-// GetProductByBarcode recupera un prodotto dal sistema usando il suo barcode (EAN-13).
-// Valida il barcode prima di effettuare la ricerca.
+// GetProductByBarcode recupera un prodotto dal sistema usando il suo barcode (EAN-13). Valida il barcode prima di effettuare la ricerca.
 func (s *Service) GetProductByBarcode(ctx context.Context, barcode string) (*domain.Prodotto, error) {
 	barcode = strings.TrimSpace(barcode)
 	if !domain.IsValidEAN13(barcode) {
@@ -75,8 +67,7 @@ func (s *Service) GetProductByBarcode(ctx context.Context, barcode string) (*dom
 	return s.Repo.GetByBarcode(ctx, barcode)
 }
 
-// UpdateListinoPrices aggiorna i prezzi di acquisto e vendita di un prodotto.
-// Viene utilizzato dal contabile per modificare il listino prezzi.
+// UpdateListinoPrices aggiorna i prezzi di acquisto e vendita di un prodotto
 func (s *Service) UpdateListinoPrices(ctx context.Context, productID int, acqPrice, vendPrice float64) error {
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
 		p, err := s.Repo.GetByID(txCtx, productID)
@@ -89,8 +80,7 @@ func (s *Service) UpdateListinoPrices(ctx context.Context, productID int, acqPri
 	})
 }
 
-// GetInventarioReport costruisce un riepilogo completo dello stato del magazzino.
-// Include informazioni su quantità, valori totali e articoli sotto soglia.
+// GetInventarioReport costruisce un riepilogo completo dello stato del magazzino
 func (s *Service) GetInventarioReport(ctx context.Context) (*domain.InventoryReport, error) {
 	// Recupera tutti i prodotti
 	products, err := s.Repo.GetAll(ctx)

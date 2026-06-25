@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"gialosai/backend/db"
 	"gialosai/backend/domain"
 	"gialosai/backend/product"
 	"time"
@@ -29,13 +28,13 @@ func (s *OrderService) ConfirmOrdineEntrata(ctx context.Context, o *domain.Ordin
 	o.Stato = domain.StatoConfermato
 
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
-		// 1. Save entry order
+		// salva l'ordine di entrata
 		err := s.OrderRepo.CreateOrdineEntrata(txCtx, o)
 		if err != nil {
 			return err
 		}
 
-		// 2. Increment stock
+		// aggiorna la giacenza dei prodotti in entrata
 		for _, r := range o.Righe {
 			err = s.ProductRepo.UpdateGiacenza(txCtx, r.ProdottoID, r.Quantita)
 			if err != nil {
@@ -52,10 +51,10 @@ func (s *OrderService) ConfirmOrdineEntrata(ctx context.Context, o *domain.Ordin
 
 func (s *OrderService) ConfirmOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
 	o.Data = time.Now()
-	o.Stato = domain.StatoConfermato // initial state before evasion via DDT
+	o.Stato = domain.StatoConfermato // stato iniziale dell'ordine di uscita
 
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
-		// 1. Verify and decrement stock
+		// verifica la giacenza dei prodotti in uscita e decrementa la giacenza
 		for _, r := range o.Righe {
 			g, err := s.ProductRepo.GetGiacenza(txCtx, r.ProdottoID)
 			if err != nil {
@@ -70,14 +69,14 @@ func (s *OrderService) ConfirmOrdineUscita(ctx context.Context, o *domain.Ordine
 				return domain.NewGiacenzaInsufficienteError(r.ProdottoID, name, g.Quantita, r.Quantita)
 			}
 
-			// Decrement
+			// decrementa la giacenza del prodotto
 			err = s.ProductRepo.UpdateGiacenza(txCtx, r.ProdottoID, -r.Quantita)
 			if err != nil {
 				return err
 			}
 		}
 
-		// 2. Save order
+		// salva l'ordine di uscita
 		return s.OrderRepo.CreateOrdineUscita(txCtx, o)
 	})
 }
@@ -120,7 +119,7 @@ func (s *OrderService) GeneraDDT(ctx context.Context, orderID int, mittente, des
 			return err
 		}
 
-		// Create DDT object
+		// crea il DDT
 		d := &domain.DDT{
 			Numero:         fmt.Sprintf("%s-%d-%04d", domain.PrefissoDDT, time.Now().Year(), progressive+1),
 			OrdineUscitaID: o.ID,
@@ -135,7 +134,7 @@ func (s *OrderService) GeneraDDT(ctx context.Context, orderID int, mittente, des
 			return err
 		}
 
-		// Change status to Evaso
+		// cambia lo stato dell'ordine a EVASO e associa il DDT
 		o.Stato = domain.StatoEvaso
 		o.DDTID = &d.ID
 		err = s.OrderRepo.UpdateOrdineUscita(txCtx, o)
@@ -160,7 +159,7 @@ func (s *OrderService) GeneraDDT(ctx context.Context, orderID int, mittente, des
 func (s *OrderService) CreateReso(ctx context.Context, r *domain.Reso) error {
 	r.Data = time.Now()
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
-		// Verify the order exists and is EVASO
+		// verifica che l'ordine di uscita sia evaso prima di permettere il reso
 		o, err := s.OrderRepo.GetOrdineUscitaByID(txCtx, r.OrdineUscitaID)
 		if err != nil {
 			return err
@@ -183,7 +182,7 @@ func (s *OrderService) VerifyReso(ctx context.Context, resoID int) error {
 			return errors.New("il reso è già stato elaborato")
 		}
 
-		// Increment physical stock
+		// incrementa la giacenza del prodotto reso
 		err = s.ProductRepo.UpdateGiacenza(txCtx, re.ProdottoID, re.Quantita)
 		if err != nil {
 			return err
@@ -216,7 +215,7 @@ func (s *OrderService) RifiutaReso(ctx context.Context, resoID int) error {
 			return errors.New("reso non verificato o già processato")
 		}
 
-		// Rollback physical stock since it was not approved
+		// Rollback della giacenza del prodotto reso
 		err = s.ProductRepo.UpdateGiacenza(txCtx, re.ProdottoID, -re.Quantita)
 		if err != nil {
 			return err
@@ -251,7 +250,7 @@ func (s *OrderService) GeneraFattura(ctx context.Context, orderID int) (*domain.
 			return err
 		}
 
-		// Calculate total invoice value
+		// calcola imponibile, IVA e totale
 		var imponibile float64
 		for _, r := range o.Righe {
 			imponibile += float64(r.Quantita) * r.PrezzoUnitario

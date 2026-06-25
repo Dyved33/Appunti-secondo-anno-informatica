@@ -4,24 +4,19 @@ import (
 	"context"
 	"errors"
 	"strings"
-	"gialosai/backend/db"
 	"gialosai/backend/domain"
 )
 
-// Service contiene la logica di business per la gestione delle categorie.
-// Si interfaccia con il Repository per l'accesso ai dati e gestisce le regole di dominio.
 type Service struct {
 	Repo *Repository
 	Tx   *db.TransactionHelper
 }
 
-// NewService crea una nuova istanza del service per le categorie.
 func NewService(repo *Repository, tx *db.TransactionHelper) *Service {
 	return &Service{Repo: repo, Tx: tx}
 }
 
-// CreateCategory crea una nuova categoria nel sistema.
-// Valida che il nome non sia vuoto, trimma gli spazi e persiste nel database entro una transazione.
+// CreateCategory crea una nuova categoria nel sistema
 func (s *Service) CreateCategory(ctx context.Context, c *domain.Categoria) error {
 	// Trim dei spazi dal nome
 	c.Nome = strings.TrimSpace(c.Nome)
@@ -35,20 +30,17 @@ func (s *Service) CreateCategory(ctx context.Context, c *domain.Categoria) error
 	})
 }
 
-// GetCategories recupera tutte le categorie disponibili nel sistema.
-// Restituisce una slice di categorie ordinate alfabeticamente per nome.
+// GetCategories recupera tutte le categorie disponibili nel sistema
 func (s *Service) GetCategories(ctx context.Context) ([]domain.Categoria, error) {
 	return s.Repo.GetAll(ctx)
 }
 
-// GetCategoryByID recupera una singola categoria dal sistema usando il suo ID.
-// Restituisce un errore se la categoria non esiste.
+// GetCategoryByID recupera una singola categoria dal sistema usando il suo ID
 func (s *Service) GetCategoryByID(ctx context.Context, id int) (*domain.Categoria, error) {
 	return s.Repo.GetByID(ctx, id)
 }
 
-// UpdateCategory modifica una categoria esistente nel sistema.
-// Valida che il nome non sia vuoto e persiste le modifiche nel database entro una transazione.
+// UpdateCategory modifica una categoria esistente nel sistema
 func (s *Service) UpdateCategory(ctx context.Context, c *domain.Categoria) error {
 	// Trim dei spazi dal nome
 	c.Nome = strings.TrimSpace(c.Nome)
@@ -62,8 +54,7 @@ func (s *Service) UpdateCategory(ctx context.Context, c *domain.Categoria) error
 	})
 }
 
-// DeleteCategory rimuove una categoria dal sistema.
-// Restituisce un errore se l'operazione fallisce nel database.
+// DeleteCategory rimuove una categoria dal sistema
 func (s *Service) DeleteCategory(ctx context.Context, id int) error {
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
 		return s.Repo.Delete(txCtx, id)

@@ -4,18 +4,15 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"gialosai/backend/db"
 	"gialosai/backend/domain"
 	"time"
 )
 
-// Repository incapsula tutte le operazioni di persistenza relative ai prodotti e alle giacenze.
-// Comunica direttamente con il database MySQL attraverso il QueryExecutor fornito dal layer db.
 type Repository struct {
 	DB *sql.DB
 }
 
-// NewRepository crea una nuova istanza del repository per i prodotti.
+
 func NewRepository(database *sql.DB) *Repository {
 	return &Repository{DB: database}
 }
@@ -26,30 +23,37 @@ func (r *Repository) GetAll(ctx context.Context) ([]domain.Prodotto, error) {
 	query := `SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id, p.prezzo_acquisto, p.prezzo_vendita, p.soglia_minima,
 	                 c.nome, c.descrizione
 	          FROM Prodotti p
-	          LEFT JOIN Categorie c ON p.categoria_id = c.id`
+	          LEFT JOIN Categorie c 
+			  ON p.categoria_id = c.id`
 
 	rows, err := exec.QueryContext(ctx, query)
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer rows.Close()// la presenza di defer indica che viene ritardata la chiusura delle righe in attesa della terminazione della funzione 
 
-	var products []domain.Prodotto
-	for rows.Next() {
+	// questo codice serve a leggere tutte le righe restituira dalla query e trasformarle in una slice di oggetti Prodotto
+	var products []domain.Prodotto// vettore vuoto di prodotti
+	for rows.Next() {// passa alla riga successiva e se questa esiste restituisce true, altrimenti false
 		var p domain.Prodotto
+
+		//tipi speciali quando una colonna SQL può contenere NULL
 		var catID sql.NullInt64
 		var catNome, catDesc sql.NullString
-		err := rows.Scan(
+
+		err := rows.Scan(// scan copia i valori della riga corrente nelle variabili passate 
 			&p.ID, &p.Codice, &p.Barcode, &p.Nome, &p.Descrizione, &catID, &p.PrezzoAcq, &p.PrezzoVend, &p.SogliaMin,
 			&catNome, &catDesc,
 		)
 		if err != nil {
 			return nil, err
 		}
+
 		// Popola i dati della categoria se presenti
 		if catID.Valid {
-			p.CategoriaID = int(catID.Int64)
-			p.Categoria = &domain.Categoria{
+			p.CategoriaID = int(catID.Int64)// int64 -> int
+
+			p.Categoria = &domain.Categoria{// crea un nuovo oggetto Categoria e lo assegna al campo Categoria del prodotto
 				ID:          p.CategoriaID,
 				Nome:        catNome.String,
 				Descrizione: catDesc.String,
@@ -66,12 +70,15 @@ func (r *Repository) GetByID(ctx context.Context, id int) (*domain.Prodotto, err
 	query := `SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id, p.prezzo_acquisto, p.prezzo_vendita, p.soglia_minima,
 	                 c.nome, c.descrizione
 	          FROM Prodotti p
-	          LEFT JOIN Categorie c ON p.categoria_id = c.id
+	          LEFT JOIN Categorie c 
+			  ON p.categoria_id = c.id
 	          WHERE p.id = ?`
 
 	var p domain.Prodotto
+
 	var catID sql.NullInt64
 	var catNome, catDesc sql.NullString
+
 	err := exec.QueryRowContext(ctx, query, id).Scan(
 		&p.ID, &p.Codice, &p.Barcode, &p.Nome, &p.Descrizione, &catID, &p.PrezzoAcq, &p.PrezzoVend, &p.SogliaMin,
 		&catNome, &catDesc,
@@ -82,7 +89,7 @@ func (r *Repository) GetByID(ctx context.Context, id int) (*domain.Prodotto, err
 		}
 		return nil, err
 	}
-	// Popola i dati della categoria se presenti
+
 	if catID.Valid {
 		p.CategoriaID = int(catID.Int64)
 		p.Categoria = &domain.Categoria{
@@ -152,8 +159,7 @@ func (r *Repository) Delete(ctx context.Context, id int) error {
 	return err
 }
 
-// GetGiacenza recupera la giacenza di un prodotto dal database.
-// Se la giacenza non esiste, restituisce una giacenza vuota (quantità 0).
+// GetGiacenza recupera la giacenza di un prodotto dal database. Se la giacenza non esiste, restituisce una giacenza vuota (quantità 0).
 func (r *Repository) GetGiacenza(ctx context.Context, prodID int) (*domain.Giacenza, error) {
 	exec := db.GetExecutor(ctx, r.DB)
 	query := `SELECT id, prodotto_id, quantita, updated_at FROM Giacenze WHERE prodotto_id = ?`
@@ -168,8 +174,7 @@ func (r *Repository) GetGiacenza(ctx context.Context, prodID int) (*domain.Giace
 	return &g, nil
 }
 
-// UpdateGiacenza modifica la giacenza di un prodotto aggiungendo o sottraendo una quantità (delta).
-// Usa ON DUPLICATE KEY UPDATE per garantire l'idempotenza dell'operazione in MySQL.
+// UpdateGiacenza modifica la giacenza di un prodotto aggiungendo o sottraendo una quantità 
 func (r *Repository) UpdateGiacenza(ctx context.Context, prodID int, delta int) error {
 	exec := db.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Giacenze (prodotto_id, quantita, updated_at) VALUES (?, ?, ?)

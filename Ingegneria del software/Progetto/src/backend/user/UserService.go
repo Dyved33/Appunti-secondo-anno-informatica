@@ -2,13 +2,11 @@ package user
 
 import (
 	"context"
-	"gialosai/backend/db"
 	"gialosai/backend/domain"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Service contiene la logica di business per la gestione degli utenti.
-// Si interfaccia con il Repository per l'accesso ai dati e gestisce le regole di dominio.
+// la struct Service serve a richiamare le funzioni del Repository e a gestire la logica di business relativa agli utenti
 type Service struct {
 	Repo *Repository
 	Tx   *db.TransactionHelper
@@ -19,8 +17,7 @@ func NewService(repo *Repository, tx *db.TransactionHelper) *Service {
 	return &Service{Repo: repo, Tx: tx}
 }
 
-// Login verifica le credenziali di un utente e gestisce il meccanismo di blocco dopo 3 tentativi falliti.
-// Se il login ha successo, ripristina i tentativi falliti. Se fallisce ripetutamente, blocca l'account.
+// Login verifica le credenziali di un utente e gestisce il meccanismo di blocco dopo 3 tentativi falliti. Se il login ha successo, ripristina i tentativi falliti, se fallisce ripetutamente, blocca l'account.
 func (s *Service) Login(ctx context.Context, username, password string) (*domain.Utente, error) {
 	var user *domain.Utente
 	var loginErr error
@@ -79,7 +76,6 @@ func (s *Service) Login(ctx context.Context, username, password string) (*domain
 }
 
 // GetSecurityQuestion recupera la domanda di sicurezza associata a un utente.
-// Viene utilizzata nel flusso di recupero della password.
 func (s *Service) GetSecurityQuestion(ctx context.Context, username string) (string, error) {
 	u, err := s.Repo.GetByUsername(ctx, username)
 	if err != nil {
@@ -89,11 +85,10 @@ func (s *Service) GetSecurityQuestion(ctx context.Context, username string) (str
 }
 
 // VerifySecurityAnswerAndResetPassword verifica la risposta alla domanda di sicurezza e, se corretta, resetta la password.
-// Se la risposta è sbagliata, restituisce un errore senza modificare lo stato dell'account.
 func (s *Service) VerifySecurityAnswerAndResetPassword(ctx context.Context, username, answer, newPassword string) error {
 	// Esegue l'intera operazione in una transazione per coerenza
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
-		// Recupera l'utente
+
 		u, err := s.Repo.GetByUsername(txCtx, username)
 		if err != nil {
 			return err
