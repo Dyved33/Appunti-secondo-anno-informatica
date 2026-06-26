@@ -9,11 +9,11 @@ import (
 // la struct Service serve a richiamare le funzioni del Repository e a gestire la logica di business relativa agli utenti
 type Service struct {
 	Repo *Repository
-	Tx   *db.TransactionHelper
+	Tx   *domain.TransactionHelper
 }
 
 // NewService crea una nuova istanza del service per gli utenti.
-func NewService(repo *Repository, tx *db.TransactionHelper) *Service {
+func NewService(repo *Repository, tx *domain.TransactionHelper) *Service {
 	return &Service{Repo: repo, Tx: tx}
 }
 

@@ -9,10 +9,10 @@ import (
 
 type Service struct {
 	Repo *Repository
-	Tx   *db.TransactionHelper
+	Tx   *domain.TransactionHelper
 }
 
-func NewService(repo *Repository, tx *db.TransactionHelper) *Service {
+func NewService(repo *Repository, tx *domain.TransactionHelper) *Service {
 	return &Service{Repo: repo, Tx: tx}
 }
 

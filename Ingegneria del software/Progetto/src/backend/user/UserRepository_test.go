@@ -4,72 +4,193 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"testing"
+	"time"
+
+	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"gialosai/backend/domain"
 )
 
-// questa struct serve per accedere al database e gestire le operazioni CRUD sugli utenti.
-type Repository struct {
-	DB *sql.DB
+// Query usata nei test: deve corrispondere a quella in Repository.GetByUsername.
+// sqlmock confronta per regex per default, quindi basta una sottostringa stabile.
+const getByUsernameQuery = `SELECT id, username, password_hash, ruolo, domanda_sicurezza, risposta_hash, tentativi_falliti, bloccato, created_at`
+
+func newMockRepo(t *testing.T) (*Repository, sqlmock.Sqlmock, func()) {
+	db, mock, err := sqlmock.New()
+	require.NoError(t, err)
+	repo := NewRepository(db)
+	return repo, mock, func() { db.Close() }
 }
 
-// NewRepository crea una nuova istanza del repository per gli utenti.
-func NewRepository(database *sql.DB) *Repository {
-	return &Repository{DB: database}
-}
+func TestGetByUsername(t *testing.T) {
+	now := time.Now()
 
-// GetByUsername recupera un utente dal database usando il suo username come chiave. Restituisce l'oggetto Utente se trovato, altrimenti un errore di credenziali errate.
-// è l'equivalente di Read in un CRUD convenzionale
-func (r *Repository) GetByUsername(ctx context.Context, username string) (*domain.Utente, error) {
-	exec := db.GetExecutor(ctx, r.DB) // serve per ottenere il corretto executor (DB o transazione) dal contesto
-	query := `SELECT id, username, password_hash, ruolo, domanda_sicurezza, risposta_hash, tentativi_falliti, bloccato, created_at 
-	          FROM Utenti WHERE username = ?`
+	tests := []struct {
+		name      string
+		username  string
+		mockSetup func(mock sqlmock.Sqlmock)
+		wantErr   error // se non nil, ci aspettiamo errors.Is(err, wantErr)
+		wantUser  bool
+	}{
+		{
+			name:     "utente trovato",
+			username: "mario",
+			mockSetup: func(mock sqlmock.Sqlmock) {
+				rows := sqlmock.NewRows([]string{
+					"id", "username", "password_hash", "ruolo",
+					"domanda_sicurezza", "risposta_hash", "tentativi_falliti",
+					"bloccato", "created_at",
+				}).AddRow(1, "mario", "hash123", "magazziniere", "Il tuo colore preferito?", "rispostaHash", 0, false, now)
 
-	var u domain.Utente // crea un'istanza vuota di Utente per popolare i dati dal database
-	var ruoloStr string
-	err := exec.QueryRowContext(ctx, query, username).Scan(
-		&u.ID, &u.Username, &u.PasswordHash, &ruoloStr,
-		&u.DomandaSicurezza, &u.RispostaHash, &u.TentativiFalliti,
-		&u.Bloccato, &u.CreatedAt,
-	)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, domain.ErrCredenzaliErrate
-		}
-		return nil, err
+				mock.ExpectQuery(getByUsernameQuery).
+					WithArgs("mario").
+					WillReturnRows(rows)
+			},
+			wantUser: true,
+		},
+		{
+			name:     "utente non trovato -> credenziali errate",
+			username: "inesistente",
+			mockSetup: func(mock sqlmock.Sqlmock) {
+				mock.ExpectQuery(getByUsernameQuery).
+					WithArgs("inesistente").
+					WillReturnError(sql.ErrNoRows)
+			},
+			wantErr: domain.ErrCredenzaliErrate,
+		},
+		{
+			name:     "errore generico del database viene propagato",
+			username: "mario",
+			mockSetup: func(mock sqlmock.Sqlmock) {
+				mock.ExpectQuery(getByUsernameQuery).
+					WithArgs("mario").
+					WillReturnError(errors.New("connessione al database persa"))
+			},
+			wantErr: errors.New("connessione al database persa"),
+		},
 	}
-	// Converte la stringa del ruolo nel tipo enum Ruolo
-	u.Ruolo = domain.Ruolo(ruoloStr)
-	return &u, nil
-}
 
-// Update modifica i dati di un utente esistente nel database
-func (r *Repository) Update(ctx context.Context, u *domain.Utente) error {
-	exec := db.GetExecutor(ctx, r.DB)
-	query := `UPDATE Utenti SET password_hash = ?, tentativi_falliti = ?, bloccato = ? WHERE id = ?`
-	_, err := exec.ExecContext(ctx, query, u.PasswordHash, u.TentativiFalliti, u.Bloccato, u.ID)
-	return err
-}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			repo, mock, closeDB := newMockRepo(t)
+			defer closeDB()
 
-// Create inserisce un nuovo utente nel database (assegna automaticamente l'ID generato dal database all'oggetto Utente passato)
-func (r *Repository) Create(ctx context.Context, u *domain.Utente) error {
-	exec := db.GetExecutor(ctx, r.DB)
-	query := `INSERT INTO Utenti (username, password_hash, ruolo, domanda_sicurezza, risposta_hash, tentativi_falliti, bloccato, created_at)
-	          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-	res, err := exec.ExecContext(ctx, query, u.Username, u.PasswordHash, string(u.Ruolo), u.DomandaSicurezza, u.RispostaHash, u.TentativiFalliti, u.Bloccato, u.CreatedAt)
-	if err != nil {
-		return err
+			tt.mockSetup(mock)
+
+			got, err := repo.GetByUsername(context.Background(), tt.username)
+
+			if tt.wantErr != nil {
+				require.Error(t, err)
+				if errors.Is(tt.wantErr, domain.ErrCredenzaliErrate) {
+					assert.ErrorIs(t, err, domain.ErrCredenzaliErrate)
+				}
+				assert.Nil(t, got)
+			} else {
+				require.NoError(t, err)
+			}
+
+			if tt.wantUser {
+				require.NotNil(t, got)
+				assert.Equal(t, tt.username, got.Username)
+				assert.Equal(t, domain.Ruolo("magazziniere"), got.Ruolo)
+			}
+
+			require.NoError(t, mock.ExpectationsWereMet())
+		})
 	}
-	// Recupera l'ID auto-generato dal database e lo assegna all'utente
-	id, err := res.LastInsertId()
-	if err == nil {
-		u.ID = int(id)
-	}
-	return nil
 }
 
-func(r *Repository) Delete(ctx context.Context, u *domain.Utente) error{
-	exec := db.GetExecutor(ctx, r.DB)
-	query := 'DELETE FROM Utenti WHERE id = ?'
-	_, err := exec.ExecContext(ctx, query, u.ID)
-	return err
+func TestUpdate(t *testing.T) {
+	tests := []struct {
+		name      string
+		mockSetup func(mock sqlmock.Sqlmock)
+		wantErr   bool
+	}{
+		{
+			name: "update riuscito",
+			mockSetup: func(mock sqlmock.Sqlmock) {
+				mock.ExpectExec(`UPDATE Utenti SET password_hash = \?, tentativi_falliti = \?, bloccato = \? WHERE id = \?`).
+					WithArgs("nuovoHash", 1, false, 42).
+					WillReturnResult(sqlmock.NewResult(0, 1))
+			},
+		},
+		{
+			name: "errore del database durante l'update",
+			mockSetup: func(mock sqlmock.Sqlmock) {
+				mock.ExpectExec(`UPDATE Utenti SET password_hash = \?, tentativi_falliti = \?, bloccato = \? WHERE id = \?`).
+					WithArgs("nuovoHash", 1, false, 42).
+					WillReturnError(errors.New("db irraggiungibile"))
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			repo, mock, closeDB := newMockRepo(t)
+			defer closeDB()
+
+			tt.mockSetup(mock)
+
+			u := &domain.Utente{
+				ID:               42,
+				PasswordHash:     "nuovoHash",
+				TentativiFalliti: 1,
+				Bloccato:         false,
+			}
+			err := repo.Update(context.Background(), u)
+
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+			require.NoError(t, mock.ExpectationsWereMet())
+		})
+	}
+}
+
+func TestCreate(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	require.NoError(t, err)
+	defer db.Close()
+	repo := NewRepository(db)
+
+	mock.ExpectExec(`INSERT INTO Utenti`).
+		WithArgs("giulia", "hash", "contabile", "domanda", "rispostaHash", 0, false, sqlmock.AnyArg()).
+		WillReturnResult(sqlmock.NewResult(7, 1))
+
+	u := &domain.Utente{
+		Username:         "giulia",
+		PasswordHash:     "hash",
+		Ruolo:            domain.Ruolo("contabile"),
+		DomandaSicurezza: "domanda",
+		RispostaHash:     "rispostaHash",
+		CreatedAt:        time.Now(),
+	}
+
+	err = repo.Create(context.Background(), u)
+	require.NoError(t, err)
+	assert.Equal(t, 7, u.ID, "l'ID auto-generato dovrebbe essere assegnato all'utente")
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
+func TestDelete(t *testing.T) {
+	// NB: richiede che la query in Repository.Delete usi backtick invece di apici
+	// singoli (vedi 00_PATCH_SUGGERITA.md), altrimenti il package non compila.
+	db, mock, err := sqlmock.New()
+	require.NoError(t, err)
+	defer db.Close()
+	repo := NewRepository(db)
+
+	mock.ExpectExec(`DELETE FROM Utenti WHERE id = \?`).
+		WithArgs(5).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	err = repo.Delete(context.Background(), &domain.Utente{ID: 5})
+	require.NoError(t, err)
+	require.NoError(t, mock.ExpectationsWereMet())
 }

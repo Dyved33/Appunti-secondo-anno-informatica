@@ -2,45 +2,136 @@ package user
 
 import (
 	"context"
+	"errors"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
+
+	"gialosai/backend/domain"
 )
 
-// Trasla le richieste in ingresso (DTO) alle chiamate al Service e formatta le risposte.
-type Controller struct {
-	Service *Service
+// mockUserServiceForController implementa l'interfaccia userService
+// (vedi 00_PATCH_SUGGERITA.md) per testare il Controller senza un vero Service.
+type mockUserServiceForController struct {
+	mock.Mock
 }
 
-// NewController crea una nuova istanza del controller per gli utenti.
-func NewController(svc *Service) *Controller {
-	return &Controller{Service: svc}
+func (m *mockUserServiceForController) Login(ctx context.Context, username, password string) (*domain.Utente, error) {
+	args := m.Called(ctx, username, password)
+	u, _ := args.Get(0).(*domain.Utente)
+	return u, args.Error(1)
 }
 
-// Serve per l'autenticazione di un utente, accetta una richiesta di login, chiama il Service e restituisce la risposta formattata.
-func (c *Controller) HandleLogin(ctx context.Context, req LoginRequestDTO) LoginResponseDTO {
-	u, err := c.Service.Login(ctx, req.Username, req.Password)
-	if err != nil {
-		return LoginResponseDTO{
-			Success:      false,
-			ErrorMessage: err.Error(),
-		}
+func (m *mockUserServiceForController) GetSecurityQuestion(ctx context.Context, username string) (string, error) {
+	args := m.Called(ctx, username)
+	return args.String(0), args.Error(1)
+}
+
+func (m *mockUserServiceForController) VerifySecurityAnswerAndResetPassword(ctx context.Context, username, answer, newPassword string) error {
+	args := m.Called(ctx, username, answer, newPassword)
+	return args.Error(0)
+}
+
+func TestController_HandleLogin(t *testing.T) {
+	tests := []struct {
+		name      string
+		req       LoginRequestDTO
+		mockSetup func(svc *mockUserServiceForController)
+		want      LoginResponseDTO
+	}{
+		{
+			name: "login riuscito mappa l'utente nella risposta",
+			req:  LoginRequestDTO{Username: "mario", Password: "passwordCorretta"},
+			mockSetup: func(svc *mockUserServiceForController) {
+				svc.On("Login", mock.Anything, "mario", "passwordCorretta").
+					Return(&domain.Utente{Username: "mario", Ruolo: domain.Ruolo("magazziniere")}, nil)
+			},
+			want: LoginResponseDTO{Success: true, Username: "mario", Ruolo: "magazziniere"},
+		},
+		{
+			name: "login fallito propaga il messaggio d'errore",
+			req:  LoginRequestDTO{Username: "mario", Password: "sbagliata"},
+			mockSetup: func(svc *mockUserServiceForController) {
+				svc.On("Login", mock.Anything, "mario", "sbagliata").
+					Return(nil, domain.ErrCredenzaliErrate)
+			},
+			want: LoginResponseDTO{Success: false, ErrorMessage: domain.ErrCredenzaliErrate.Error()},
+		},
 	}
 
-	return LoginResponseDTO{
-		Success:  true,
-		Username: u.Username,
-		Ruolo:    string(u.Ruolo),
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			svc := new(mockUserServiceForController)
+			tt.mockSetup(svc)
+
+			c := NewController(svc)
+			got := c.HandleLogin(context.Background(), tt.req)
+
+			assert.Equal(t, tt.want, got)
+			svc.AssertExpectations(t)
+		})
 	}
 }
 
-// HandleGetSecurityQuestion recupera la domanda di sicurezza per un utente.
-func (c *Controller) HandleGetSecurityQuestion(ctx context.Context, req RecoveryRequestDTO) (RecoveryResponseDTO, error) {
-	q, err := c.Service.GetSecurityQuestion(ctx, req.Username)
-	if err != nil {
-		return RecoveryResponseDTO{}, err
-	}
-	return RecoveryResponseDTO{DomandaSicurezza: q}, nil
+func TestController_HandleGetSecurityQuestion(t *testing.T) {
+	t.Run("restituisce la domanda di sicurezza", func(t *testing.T) {
+		svc := new(mockUserServiceForController)
+		svc.On("GetSecurityQuestion", mock.Anything, "mario").
+			Return("Il nome del tuo primo animale?", nil)
+
+		c := NewController(svc)
+		resp, err := c.HandleGetSecurityQuestion(context.Background(), RecoveryRequestDTO{Username: "mario"})
+
+		require.NoError(t, err)
+		assert.Equal(t, RecoveryResponseDTO{DomandaSicurezza: "Il nome del tuo primo animale?"}, resp)
+		svc.AssertExpectations(t)
+	})
+
+	t.Run("propaga l'errore se l'utente non esiste", func(t *testing.T) {
+		svc := new(mockUserServiceForController)
+		svc.On("GetSecurityQuestion", mock.Anything, "fantasma").
+			Return("", errors.New("utente non trovato"))
+
+		c := NewController(svc)
+		_, err := c.HandleGetSecurityQuestion(context.Background(), RecoveryRequestDTO{Username: "fantasma"})
+
+		require.Error(t, err)
+		svc.AssertExpectations(t)
+	})
 }
 
-// Chiama il Service che verifica la risposta e, se corretta, resetta la password.
-func (c *Controller) HandleResetPassword(ctx context.Context, req ResetPasswordRequestDTO) error {
-	return c.Service.VerifySecurityAnswerAndResetPassword(ctx, req.Username, req.Risposta, req.NewPassword)
+func TestController_HandleResetPassword(t *testing.T) {
+	t.Run("delega correttamente al service", func(t *testing.T) {
+		svc := new(mockUserServiceForController)
+		svc.On("VerifySecurityAnswerAndResetPassword", mock.Anything, "mario", "rispostaCorretta", "nuovaPassword").
+			Return(nil)
+
+		c := NewController(svc)
+		err := c.HandleResetPassword(context.Background(), ResetPasswordRequestDTO{
+			Username:    "mario",
+			Risposta:    "rispostaCorretta",
+			NewPassword: "nuovaPassword",
+		})
+
+		require.NoError(t, err)
+		svc.AssertExpectations(t)
+	})
+
+	t.Run("propaga l'errore in caso di risposta errata", func(t *testing.T) {
+		svc := new(mockUserServiceForController)
+		svc.On("VerifySecurityAnswerAndResetPassword", mock.Anything, "mario", "rispostaSbagliata", "nuovaPassword").
+			Return(domain.ErrRispostaSecretErrata)
+
+		c := NewController(svc)
+		err := c.HandleResetPassword(context.Background(), ResetPasswordRequestDTO{
+			Username:    "mario",
+			Risposta:    "rispostaSbagliata",
+			NewPassword: "nuovaPassword",
+		})
+
+		require.ErrorIs(t, err, domain.ErrRispostaSecretErrata)
+		svc.AssertExpectations(t)
+	})
 }

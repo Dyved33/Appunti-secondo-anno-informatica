@@ -20,7 +20,7 @@ func NewRepository(database *sql.DB) *Repository {
 // GetByUsername recupera un utente dal database usando il suo username come chiave. Restituisce l'oggetto Utente se trovato, altrimenti un errore di credenziali errate.
 // è l'equivalente di Read in un CRUD convenzionale
 func (r *Repository) GetByUsername(ctx context.Context, username string) (*domain.Utente, error) {
-	exec := db.GetExecutor(ctx, r.DB) // serve per ottenere il corretto executor (DB o transazione) dal contesto
+	exec := domain.GetExecutor(ctx, r.DB) // serve per ottenere il corretto executor (DB o transazione) dal contesto
 	query := `SELECT id, username, password_hash, ruolo, domanda_sicurezza, risposta_hash, tentativi_falliti, bloccato, created_at 
 	          FROM Utenti WHERE username = ?`
 
@@ -44,7 +44,7 @@ func (r *Repository) GetByUsername(ctx context.Context, username string) (*domai
 
 // Update modifica i dati di un utente esistente nel database
 func (r *Repository) Update(ctx context.Context, u *domain.Utente) error {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `UPDATE Utenti SET password_hash = ?, tentativi_falliti = ?, bloccato = ? WHERE id = ?`
 	_, err := exec.ExecContext(ctx, query, u.PasswordHash, u.TentativiFalliti, u.Bloccato, u.ID)
 	return err
@@ -52,7 +52,7 @@ func (r *Repository) Update(ctx context.Context, u *domain.Utente) error {
 
 // Create inserisce un nuovo utente nel database (assegna automaticamente l'ID generato dal database all'oggetto Utente passato)
 func (r *Repository) Create(ctx context.Context, u *domain.Utente) error {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Utenti (username, password_hash, ruolo, domanda_sicurezza, risposta_hash, tentativi_falliti, bloccato, created_at)
 	          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
 	res, err := exec.ExecContext(ctx, query, u.Username, u.PasswordHash, string(u.Ruolo), u.DomandaSicurezza, u.RispostaHash, u.TentativiFalliti, u.Bloccato, u.CreatedAt)
@@ -68,8 +68,8 @@ func (r *Repository) Create(ctx context.Context, u *domain.Utente) error {
 }
 
 func(r *Repository) Delete(ctx context.Context, u *domain.Utente) error{
-	exec := db.GetExecutor(ctx, r.DB)
-	query := 'DELETE FROM Utenti WHERE id = ?'
+	exec := domain.GetExecutor(ctx, r.DB)
+	query := `DELETE FROM Utenti WHERE id = ?`
 	_, err := exec.ExecContext(ctx, query, u.ID)
 	return err
 }

@@ -22,7 +22,7 @@ func NewOrderRepository(db *sql.DB) *OrderRepository {
 // ─────────────────────────────────────────────
 
 func (r *OrderRepository) CreateOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO OrdiniEntrata (numero, fornitore, data, stato, note, created_by)
 	          VALUES (?, ?, ?, ?, ?, ?)`
 	res, err := exec.ExecContext(ctx, query, o.Numero, o.Fornitore, o.Data, string(o.Stato), o.Note, o.CreatedByID)
@@ -51,7 +51,7 @@ func (r *OrderRepository) CreateOrdineEntrata(ctx context.Context, o *domain.Ord
 }
 
 func (r *OrderRepository) GetOrdineEntrataByID(ctx context.Context, id int) (*domain.OrdineEntrata, error) {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, fornitore, data, stato, note, created_by FROM OrdiniEntrata WHERE id = ?`
 	var o domain.OrdineEntrata
 	var statoStr string
@@ -88,7 +88,7 @@ func (r *OrderRepository) GetOrdineEntrataByID(ctx context.Context, id int) (*do
 // ─────────────────────────────────────────────
 
 func (r *OrderRepository) CreateOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO OrdiniUscita (numero, cliente, data, stato, note, created_by, ddt_id)
 	          VALUES (?, ?, ?, ?, ?, ?, ?)`
 	res, err := exec.ExecContext(ctx, query, o.Numero, o.Cliente, o.Data, string(o.Stato), o.Note, o.CreatedByID, o.DDTID)
@@ -117,7 +117,7 @@ func (r *OrderRepository) CreateOrdineUscita(ctx context.Context, o *domain.Ordi
 }
 
 func (r *OrderRepository) GetOrdineUscitaByID(ctx context.Context, id int) (*domain.OrdineUscita, error) {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, cliente, data, stato, note, created_by, ddt_id FROM OrdiniUscita WHERE id = ?`
 	var o domain.OrdineUscita
 	var statoStr string
@@ -155,7 +155,7 @@ func (r *OrderRepository) GetOrdineUscitaByID(ctx context.Context, id int) (*dom
 }
 
 func (r *OrderRepository) GetOrdiniUscita(ctx context.Context) ([]domain.OrdineUscita, error) {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, cliente, data, stato, note, created_by, ddt_id FROM OrdiniUscita`
 	rows, err := exec.QueryContext(ctx, query)
 	if err != nil {
@@ -183,7 +183,7 @@ func (r *OrderRepository) GetOrdiniUscita(ctx context.Context) ([]domain.OrdineU
 }
 
 func (r *OrderRepository) GetOrdiniUscitaByStato(ctx context.Context, stato domain.StatoOrdine) ([]domain.OrdineUscita, error) {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, cliente, data, stato, note, created_by, ddt_id FROM OrdiniUscita WHERE stato = ?`
 	rows, err := exec.QueryContext(ctx, query, string(stato))
 	if err != nil {
@@ -211,7 +211,7 @@ func (r *OrderRepository) GetOrdiniUscitaByStato(ctx context.Context, stato doma
 }
 
 func (r *OrderRepository) UpdateOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `UPDATE OrdiniUscita SET stato = ?, ddt_id = ? WHERE id = ?`
 	_, err := exec.ExecContext(ctx, query, string(o.Stato), o.DDTID, o.ID)
 	return err
@@ -222,7 +222,7 @@ func (r *OrderRepository) UpdateOrdineUscita(ctx context.Context, o *domain.Ordi
 // ─────────────────────────────────────────────
 
 func (r *OrderRepository) CreateDDT(ctx context.Context, d *domain.DDT) error {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO DDT (numero, ordine_uscita_id, data, mittente, destinatario, path_pdf)
 	          VALUES (?, ?, ?, ?, ?, ?)`
 	res, err := exec.ExecContext(ctx, query, d.Numero, d.OrdineUscitaID, d.Data, d.Mittente, d.Destinatario, d.PathPDF)
@@ -237,7 +237,7 @@ func (r *OrderRepository) CreateDDT(ctx context.Context, d *domain.DDT) error {
 }
 
 func (r *OrderRepository) CountDDTByYear(ctx context.Context, year int) (int, error) {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	pattern := fmt.Sprintf("DDT-%d-%%", year)
 	var count int
 	if err := exec.QueryRowContext(ctx, `SELECT COUNT(*) FROM DDT WHERE numero LIKE ?`, pattern).Scan(&count); err != nil {
@@ -247,7 +247,7 @@ func (r *OrderRepository) CountDDTByYear(ctx context.Context, year int) (int, er
 }
 
 func (r *OrderRepository) GetDDTByOrdineUscita(ctx context.Context, orderID int) (*domain.DDT, error) {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, ordine_uscita_id, data, mittente, destinatario, path_pdf FROM DDT WHERE ordine_uscita_id = ?`
 	var d domain.DDT
 	err := exec.QueryRowContext(ctx, query, orderID).Scan(&d.ID, &d.Numero, &d.OrdineUscitaID, &d.Data, &d.Mittente, &d.Destinatario, &d.PathPDF)
@@ -265,7 +265,7 @@ func (r *OrderRepository) GetDDTByOrdineUscita(ctx context.Context, orderID int)
 // ─────────────────────────────────────────────
 
 func (r *OrderRepository) CreateFattura(ctx context.Context, f *domain.Fattura) error {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Fatture (numero, anno, tipo, ordine_uscita_id, imponibile, iva, totale, data, path_pdf)
 	          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
 	res, err := exec.ExecContext(ctx, query, f.Numero, f.Anno, string(f.Tipo), f.OrdineUscitaID, f.Imponibile, f.IVA, f.Totale, f.Data, f.PathPDF)
@@ -280,7 +280,7 @@ func (r *OrderRepository) CreateFattura(ctx context.Context, f *domain.Fattura) 
 }
 
 func (r *OrderRepository) CountFattureByYearAndType(ctx context.Context, year int, tipo domain.TipoFattura) (int, error) {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	var count int
 	if err := exec.QueryRowContext(ctx, `SELECT COUNT(*) FROM Fatture WHERE anno = ? AND tipo = ?`, year, string(tipo)).Scan(&count); err != nil {
 		return 0, err
@@ -289,7 +289,7 @@ func (r *OrderRepository) CountFattureByYearAndType(ctx context.Context, year in
 }
 
 func (r *OrderRepository) GetAllFatture(ctx context.Context) ([]domain.Fattura, error) {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, anno, tipo, ordine_uscita_id, imponibile, iva, totale, data, path_pdf FROM Fatture`
 	rows, err := exec.QueryContext(ctx, query)
 	if err != nil {
@@ -312,7 +312,7 @@ func (r *OrderRepository) GetAllFatture(ctx context.Context) ([]domain.Fattura, 
 }
 
 func (r *OrderRepository) DeleteFattura(ctx context.Context, id int) error {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	_, err := exec.ExecContext(ctx, `DELETE FROM Fatture WHERE id = ?`, id)
 	return err
 }
@@ -322,7 +322,7 @@ func (r *OrderRepository) DeleteFattura(ctx context.Context, id int) error {
 // ─────────────────────────────────────────────
 
 func (r *OrderRepository) CreateReso(ctx context.Context, re *domain.Reso, stato string) error {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Resi (ordine_uscita_id, prodotto_id, quantita, motivo, stato, data, created_by)
 	          VALUES (?, ?, ?, ?, ?, ?, ?)`
 	res, err := exec.ExecContext(ctx, query, re.OrdineUscitaID, re.ProdottoID, re.Quantita, re.Motivo, stato, re.Data, re.CreatedByID)
@@ -337,7 +337,7 @@ func (r *OrderRepository) CreateReso(ctx context.Context, re *domain.Reso, stato
 }
 
 func (r *OrderRepository) GetResoByID(ctx context.Context, id int) (*domain.Reso, string, error) {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, ordine_uscita_id, prodotto_id, quantita, motivo, stato, data, created_by FROM Resi WHERE id = ?`
 	var re domain.Reso
 	var stato string
@@ -349,14 +349,14 @@ func (r *OrderRepository) GetResoByID(ctx context.Context, id int) (*domain.Reso
 }
 
 func (r *OrderRepository) UpdateResoStato(ctx context.Context, id int, stato string) error {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `UPDATE Resi SET stato = ? WHERE id = ?`
 	_, err := exec.ExecContext(ctx, query, stato, id)
 	return err
 }
 
 func (r *OrderRepository) GetAllResi(ctx context.Context) ([]map[string]interface{}, error) {
-	exec := db.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, ordine_uscita_id, prodotto_id, quantita, motivo, stato, data, created_by FROM Resi`
 	rows, err := exec.QueryContext(ctx, query)
 	if err != nil {

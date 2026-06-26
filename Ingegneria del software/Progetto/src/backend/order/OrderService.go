@@ -12,10 +12,10 @@ import (
 type OrderService struct {
 	OrderRepo   *OrderRepository
 	ProductRepo *product.Repository
-	Tx          *db.TransactionHelper
+	Tx          *domain.TransactionHelper
 }
 
-func NewOrderService(orderRepo *OrderRepository, prodRepo *product.Repository, tx *db.TransactionHelper) *OrderService {
+func NewOrderService(orderRepo *OrderRepository, prodRepo *product.Repository, tx *domain.TransactionHelper) *OrderService {
 	return &OrderService{OrderRepo: orderRepo, ProductRepo: prodRepo, Tx: tx}
 }
 
