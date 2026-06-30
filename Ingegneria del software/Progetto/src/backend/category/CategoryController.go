@@ -2,26 +2,34 @@ package category
 
 import (
 	"context"
-	"gialosai/backend/domain"
+	"github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/domain"
 )
 
-type Controller struct {
-	Service *Service
+type categoryService interface {
+	CategoryService_Create(ctx context.Context, c *domain.Categoria) error
+	CategoryService_GetAll(ctx context.Context) ([]domain.Categoria, error)
+	CategoryService_GetByID(ctx context.Context, id int) (*domain.Categoria, error)
+	CategoryService_Update(ctx context.Context, c *domain.Categoria) error
+	CategoryService_Delete(ctx context.Context, id int) error
 }
 
-func NewController(svc *Service) *Controller {
-	return &Controller{Service: svc}
+type CategoryController struct {
+	Service categoryService
+}
+
+func NewCategoryController(svc categoryService) *CategoryController {
+	return &CategoryController{Service: svc}
 }
 
 // CreateCategory gestisce la creazione di una nuova categoria
-func (c *Controller) CreateCategory(ctx context.Context, input CategoryInputDTO) (CategoryOutputDTO, error) {
+func (c *CategoryController) CategoryController_Create(ctx context.Context, input CategoryInputDTO) (CategoryOutputDTO, error) {
 	cat := &domain.Categoria{
 		Nome:        input.Nome,
 		Descrizione: input.Descrizione,
 	}
 
 	// Chiama il Service per creare la categoria
-	if err := c.Service.CreateCategory(ctx, cat); err != nil {
+	if err := c.Service.CategoryService_Create(ctx, cat); err != nil {
 		return CategoryOutputDTO{}, err
 	}
 
@@ -30,8 +38,8 @@ func (c *Controller) CreateCategory(ctx context.Context, input CategoryInputDTO)
 }
 
 // GetCategories recupera tutte le categorie disponibili nel sistema, restituisce una slice di DTO con i dati delle categorie.
-func (c *Controller) GetCategories(ctx context.Context) ([]CategoryOutputDTO, error) {
-	categories, err := c.Service.GetCategories(ctx)
+func (c *CategoryController) CategoryController_GetAll(ctx context.Context) ([]CategoryOutputDTO, error) {
+	categories, err := c.Service.CategoryService_GetAll(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -45,8 +53,8 @@ func (c *Controller) GetCategories(ctx context.Context) ([]CategoryOutputDTO, er
 }
 
 // GetCategoryByID recupera una singola categoria dal sistema, restituisce i dati della categoria in formato DTO.
-func (c *Controller) GetCategoryByID(ctx context.Context, id int) (CategoryOutputDTO, error) {
-	cat, err := c.Service.GetCategoryByID(ctx, id)
+func (c *CategoryController) CategoryController_GetByID(ctx context.Context, id int) (CategoryOutputDTO, error) {
+	cat, err := c.Service.CategoryService_GetByID(ctx, id)
 	if err != nil {
 		return CategoryOutputDTO{}, err
 	}
@@ -55,8 +63,8 @@ func (c *Controller) GetCategoryByID(ctx context.Context, id int) (CategoryOutpu
 }
 
 // UpdateCategory modifica una categoria esistente nel sistema, accetta l'ID della categoria e i dati di input (DTO) per l'aggiornamento.
-func (c *Controller) UpdateCategory(ctx context.Context, id int, input CategoryInputDTO) error {
-	return c.Service.UpdateCategory(ctx, &domain.Categoria{
+func (c *CategoryController) CategoryController_Update(ctx context.Context, id int, input CategoryInputDTO) error {
+	return c.Service.CategoryService_Update(ctx, &domain.Categoria{
 		ID:          id,
 		Nome:        input.Nome,
 		Descrizione: input.Descrizione,
@@ -64,6 +72,6 @@ func (c *Controller) UpdateCategory(ctx context.Context, id int, input CategoryI
 }
 
 // DeleteCategory rimuove una categoria dal sistema, accetta l'ID della categoria da eliminare.
-func (c *Controller) DeleteCategory(ctx context.Context, id int) error {
-	return c.Service.DeleteCategory(ctx, id)
+func (c *CategoryController) CategoryController_Delete(ctx context.Context, id int) error {
+	return c.Service.CategoryService_Delete(ctx, id)
 }

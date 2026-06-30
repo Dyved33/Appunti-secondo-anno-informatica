@@ -2,132 +2,250 @@ package product
 
 import (
 	"context"
-	"strings"
-	"gialosai/backend/domain"
+	"errors"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
+
+	"github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/domain"
 )
 
-type Controller struct {
-	Service *Service
+// mockProductServiceForController implementa l'interfaccia productService
+type mockProductServiceForController struct {
+	mock.Mock
 }
 
-
-func NewController(svc *Service) *Controller {
-	return &Controller{Service: svc}
+// ProductService_Create implements [productService].
+func (m *mockProductServiceForController) ProductService_Create(ctx context.Context, p *domain.Prodotto) error {
+	panic("unimplemented")
 }
 
-// AddProduct gestisce l'aggiunta di un nuovo prodotto al sistema.
-func (c *Controller) AddProduct(ctx context.Context, input ProductInputDTO) (ProductOutputDTO, error) {
-	p := &domain.Prodotto{
-		Codice:      input.Codice,
-		Barcode:     input.Barcode,
-		Nome:        input.Nome,
-		Descrizione: input.Descrizione,
-		CategoriaID: input.CategoriaID,
-		PrezzoAcq:   input.PrezzoAcq,
-		PrezzoVend:  input.PrezzoVend,
-		SogliaMin:   input.SogliaMin,
-	}
-
-	err := c.Service.CreateProduct(ctx, p)
-	if err != nil {
-		return ProductOutputDTO{}, err
-	}
-
-	return ProductOutputDTO{
-		ID:          p.ID,
-		Codice:      p.Codice,
-		Barcode:     p.Barcode,
-		Nome:        p.Nome,
-		Descrizione: p.Descrizione,
-		CategoriaID: p.CategoriaID,
-		PrezzoAcq:   p.PrezzoAcq,
-		PrezzoVend:  p.PrezzoVend,
-		SogliaMin:   p.SogliaMin,
-	}, nil
+// ProductService_Delete implements [productService].
+func (m *mockProductServiceForController) ProductService_Delete(ctx context.Context, id int) error {
+	panic("unimplemented")
 }
 
-// GetProducts recupera la lista di tutti i prodotti disponibili nel sistema.
-func (c *Controller) GetProducts(ctx context.Context) ([]ProductOutputDTO, error) {
-	list, err := c.Service.GetProducts(ctx)
-	if err != nil {
-		return nil, err
-	}
+// ProductService_GetByBarcode implements [productService].
+func (m *mockProductServiceForController) ProductService_GetByBarcode(ctx context.Context, barcode string) (*domain.Prodotto, error) {
+	panic("unimplemented")
+}
 
-	var dtoList []ProductOutputDTO
-	for _, p := range list {
-		dtoList = append(dtoList, ProductOutputDTO{
-			ID:          p.ID,
-			Codice:      p.Codice,
-			Barcode:     p.Barcode,
-			Nome:        p.Nome,
-			Descrizione: p.Descrizione,
-			CategoriaID: p.CategoriaID,
-			PrezzoAcq:   p.PrezzoAcq,
-			PrezzoVend:  p.PrezzoVend,
-			SogliaMin:   p.SogliaMin,
+// ProductService_Update implements [productService].
+func (m *mockProductServiceForController) ProductService_Update(ctx context.Context, p *domain.Prodotto) error {
+	panic("unimplemented")
+}
+
+func (m *mockProductServiceForController) ProductService_CreateProduct(ctx context.Context, p *domain.Prodotto) error {
+	args := m.Called(ctx, p)
+	if args.Get(0) == nil {
+		// simula l'assegnazione dell'ID da parte del repository, come farebbe il Service reale
+		p.ID = 1
+		return nil
+	}
+	return args.Error(0)
+}
+
+func (m *mockProductServiceForController) ProductService_GetProducts(ctx context.Context) ([]domain.Prodotto, error) {
+	args := m.Called(ctx)
+	list, _ := args.Get(0).([]domain.Prodotto)
+	return list, args.Error(1)
+}
+
+func (m *mockProductServiceForController) ProductService_GetProductByBarcode(ctx context.Context, barcode string) (*domain.Prodotto, error) {
+	args := m.Called(ctx, barcode)
+	p, _ := args.Get(0).(*domain.Prodotto)
+	return p, args.Error(1)
+}
+
+func (m *mockProductServiceForController) ProductService_UpdateProduct(ctx context.Context, p *domain.Prodotto) error {
+	args := m.Called(ctx, p)
+	return args.Error(0)
+}
+
+func (m *mockProductServiceForController) ProductService_DeleteProduct(ctx context.Context, id int) error {
+	args := m.Called(ctx, id)
+	return args.Error(0)
+}
+
+func (m *mockProductServiceForController) ProductService_UpdateListinoPrices(ctx context.Context, productID int, acqPrice, vendPrice float64) error {
+	args := m.Called(ctx, productID, acqPrice, vendPrice)
+	return args.Error(0)
+}
+
+func (m *mockProductServiceForController) ProductService_GetValoreMagazzino(ctx context.Context) (int, float64, error) {
+	args := m.Called(ctx)
+	return args.Int(0), args.Get(1).(float64), args.Error(2)
+}
+
+func (m *mockProductServiceForController) ProductService_GetInventarioReport(ctx context.Context) (*domain.InventoryReport, error) {
+	args := m.Called(ctx)
+	r, _ := args.Get(0).(*domain.InventoryReport)
+	return r, args.Error(1)
+}
+
+func (m *mockProductServiceForController) ProductService_GetProdottiSottoSoglia(ctx context.Context) ([]domain.InventoryItem, error) {
+	args := m.Called(ctx)
+	list, _ := args.Get(0).([]domain.InventoryItem)
+	return list, args.Error(1)
+}
+
+func TestProductController_AddProduct(t *testing.T) {
+	t.Run("mappa correttamente l'input nel domain object e il risultato nel DTO", func(t *testing.T) {
+		svc := new(mockProductServiceForController)
+		svc.On("ProductService_CreateProduct", mock.Anything, mock.MatchedBy(func(p *domain.Prodotto) bool {
+			return p.Nome == "Vite" && p.Barcode == "8001234567890" && p.CategoriaID == 3
+		})).Return(nil)
+
+		c := NewProductController(svc)
+		out, err := c.ProductController_AddProduct(context.Background(), ProductInputDTO{
+			Codice:      "P001",
+			Barcode:     "8001234567890",
+			Nome:        "Vite",
+			CategoriaID: 3,
+			PrezzoAcq:   0.1,
+			PrezzoVend:  0.25,
+			SogliaMin:   100,
 		})
-	}
-	return dtoList, nil
+
+		require.NoError(t, err)
+		assert.Equal(t, 1, out.ID) // assegnato dal mock per simulare il repository
+		assert.Equal(t, "Vite", out.Nome)
+		svc.AssertExpectations(t)
+	})
+
+	t.Run("propaga l'errore del service", func(t *testing.T) {
+		svc := new(mockProductServiceForController)
+		svc.On("ProductService_CreateProduct", mock.Anything, mock.Anything).Return(domain.ErrBarcodeNonValido)
+
+		c := NewProductController(svc)
+		_, err := c.ProductController_AddProduct(context.Background(), ProductInputDTO{Barcode: "non valido"})
+
+		require.ErrorIs(t, err, domain.ErrBarcodeNonValido)
+	})
 }
 
-// GetProductByBarcode recupera un prodotto dal sistema usando il suo barcode.
-func (c *Controller) GetProductByBarcode(ctx context.Context, barcode string) (ProductOutputDTO, error) {
-	barcode = strings.TrimSpace(barcode)
-	p, err := c.Service.GetProductByBarcode(ctx, barcode)
-	if err != nil {
-		return ProductOutputDTO{}, err
-	}
+func TestProductController_GetProducts(t *testing.T) {
+	svc := new(mockProductServiceForController)
+	svc.On("ProductService_GetProducts", mock.Anything).Return([]domain.Prodotto{
+		{ID: 1, Nome: "Vite"},
+		{ID: 2, Nome: "Bullone"},
+	}, nil)
 
-	return ProductOutputDTO{
-		ID:          p.ID,
-		Codice:      p.Codice,
-		Barcode:     p.Barcode,
-		Nome:        p.Nome,
-		Descrizione: p.Descrizione,
-		CategoriaID: p.CategoriaID,
-		PrezzoAcq:   p.PrezzoAcq,
-		PrezzoVend:  p.PrezzoVend,
-		SogliaMin:   p.SogliaMin,
-	}, nil
+	c := NewProductController(svc)
+	out, err := c.ProductController_GetProducts(context.Background())
+
+	require.NoError(t, err)
+	require.Len(t, out, 2)
+	assert.Equal(t, "Vite", out[0].Nome)
 }
 
-// EditProduct modifica un prodotto esistente nel sistema.
-func (c *Controller) EditProduct(ctx context.Context, id int, input ProductInputDTO) error {
-	p := &domain.Prodotto{
-		ID:          id,
-		Codice:      input.Codice,
-		Barcode:     input.Barcode,
-		Nome:        input.Nome,
-		Descrizione: input.Descrizione,
-		CategoriaID: input.CategoriaID,
-		PrezzoAcq:   input.PrezzoAcq,
-		PrezzoVend:  input.PrezzoVend,
-		SogliaMin:   input.SogliaMin,
-	}
-	return c.Service.UpdateProduct(ctx, p)
+func TestProductController_GetProductByBarcode(t *testing.T) {
+	t.Run("rimuove gli spazi prima di chiamare il service", func(t *testing.T) {
+		svc := new(mockProductServiceForController)
+		svc.On("ProductService_GetProductByBarcode", mock.Anything, "8001234567890").
+			Return(&domain.Prodotto{Nome: "Vite", Barcode: "8001234567890"}, nil)
+
+		c := NewProductController(svc)
+		out, err := c.ProductController_GetProductByBarcode(context.Background(), "  8001234567890  ")
+
+		require.NoError(t, err)
+		assert.Equal(t, "Vite", out.Nome)
+		svc.AssertExpectations(t)
+	})
+
+	t.Run("propaga l'errore prodotto non trovato", func(t *testing.T) {
+		svc := new(mockProductServiceForController)
+		svc.On("ProductService_GetProductByBarcode", mock.Anything, "8000000000000").
+			Return(nil, domain.ErrProdottoNonTrovato)
+
+		c := NewProductController(svc)
+		_, err := c.ProductController_GetProductByBarcode(context.Background(), "8000000000000")
+
+		require.ErrorIs(t, err, domain.ErrProdottoNonTrovato)
+	})
 }
 
-// RemoveProduct rimuove un prodotto dal sistema.
-func (c *Controller) RemoveProduct(ctx context.Context, id int) error {
-	return c.Service.DeleteProduct(ctx, id)
+func TestProductController_EditProduct(t *testing.T) {
+	svc := new(mockProductServiceForController)
+	svc.On("ProductService_UpdateProduct", mock.Anything, mock.MatchedBy(func(p *domain.Prodotto) bool {
+		return p.ID == 7 && p.Nome == "Vite aggiornata"
+	})).Return(nil)
+
+	c := NewProductController(svc)
+	err := c.ProductController_EditProduct(context.Background(), 7, ProductInputDTO{Nome: "Vite aggiornata"})
+
+	require.NoError(t, err)
+	svc.AssertExpectations(t)
 }
 
-// UpdatePrices modifica i prezzi di acquisto e vendita di un prodotto.
-func (c *Controller) UpdatePrices(ctx context.Context, id int, input PriceUpdateInputDTO) error {
-	return c.Service.UpdateListinoPrices(ctx, id, input.PrezzoAcq, input.PrezzoVend)
+func TestProductController_RemoveProduct(t *testing.T) {
+	svc := new(mockProductServiceForController)
+	svc.On("ProductService_DeleteProduct", mock.Anything, 4).Return(nil)
+
+	c := NewProductController(svc)
+	err := c.ProductController_RemoveProduct(context.Background(), 4)
+
+	require.NoError(t, err)
+	svc.AssertExpectations(t)
 }
 
-// GetInventoryValue restituisce un riepilogo sintetico del magazzino (quantità totale e valore totale).
-func (c *Controller) GetInventoryValue(ctx context.Context) (int, float64, error) {
-	return c.Service.GetValoreMagazzino(ctx)
+func TestProductController_UpdatePrices(t *testing.T) {
+	svc := new(mockProductServiceForController)
+	svc.On("ProductService_UpdateListinoPrices", mock.Anything, 1, 1.5, 3.0).Return(nil)
+
+	c := NewProductController(svc)
+	err := c.ProductController_UpdatePrices(context.Background(), 1, PriceUpdateInputDTO{PrezzoAcq: 1.5, PrezzoVend: 3.0})
+
+	require.NoError(t, err)
+	svc.AssertExpectations(t)
 }
 
-// GetInventoryReport restituisce il report completo dello stato del magazzino.
-func (c *Controller) GetInventoryReport(ctx context.Context) (*domain.InventoryReport, error) {
-	return c.Service.GetInventarioReport(ctx)
+func TestProductController_GetInventoryValue(t *testing.T) {
+	svc := new(mockProductServiceForController)
+	svc.On("ProductService_GetValoreMagazzino", mock.Anything).Return(150, 999.99, nil)
+
+	c := NewProductController(svc)
+	qty, value, err := c.ProductController_GetInventoryValue(context.Background())
+
+	require.NoError(t, err)
+	assert.Equal(t, 150, qty)
+	assert.Equal(t, 999.99, value)
 }
 
-// GetLowStockProducts restituisce l'elenco dei prodotti che sono sotto la soglia minima di giacenza.
-func (c *Controller) GetLowStockProducts(ctx context.Context) ([]domain.InventoryItem, error) {
-	return c.Service.GetProdottiSottoSoglia(ctx)
+func TestProductController_GetInventoryReport(t *testing.T) {
+	want := &domain.InventoryReport{TotaleQuantita: 10}
+	svc := new(mockProductServiceForController)
+	svc.On("ProductService_GetInventarioReport", mock.Anything).Return(want, nil)
+
+	c := NewProductController(svc)
+	got, err := c.ProductController_GetInventoryReport(context.Background())
+
+	require.NoError(t, err)
+	assert.Same(t, want, got)
+}
+
+func TestProductController_GetLowStockProducts(t *testing.T) {
+	svc := new(mockProductServiceForController)
+	svc.On("ProductService_GetProdottiSottoSoglia", mock.Anything).Return([]domain.InventoryItem{
+		{ProdottoID: 1, SottoSoglia: true},
+	}, nil)
+
+	c := NewProductController(svc)
+	got, err := c.ProductController_GetLowStockProducts(context.Background())
+
+	require.NoError(t, err)
+	require.Len(t, got, 1)
+	assert.True(t, got[0].SottoSoglia)
+}
+
+func TestProductController_GetLowStockProducts_PropagaErrore(t *testing.T) {
+	svc := new(mockProductServiceForController)
+	svc.On("ProductService_GetProdottiSottoSoglia", mock.Anything).Return(nil, errors.New("db down"))
+
+	c := NewProductController(svc)
+	_, err := c.ProductController_GetLowStockProducts(context.Background())
+
+	require.Error(t, err)
 }

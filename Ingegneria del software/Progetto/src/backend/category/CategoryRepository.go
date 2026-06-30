@@ -4,19 +4,19 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"gialosai/backend/domain"
+	"github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/domain"
 )
 
-type Repository struct {
+type CategoryRepository struct {
 	DB *sql.DB
 }
 
-func NewRepository(database *sql.DB) *Repository {
-	return &Repository{DB: database}
+func NewCategoryRepository(database *sql.DB) *CategoryRepository {
+	return &CategoryRepository{DB: database}
 }
 
 // Create inserisce una nuova categoria nel database
-func (r *Repository) Create(ctx context.Context, c *domain.Categoria) error {
+func (r *CategoryRepository) CategoryRepository_Create(ctx context.Context, c *domain.Categoria) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Categorie (nome, descrizione) VALUES (?, ?)`
 	res, err := exec.ExecContext(ctx, query, c.Nome, c.Descrizione)
@@ -32,7 +32,7 @@ func (r *Repository) Create(ctx context.Context, c *domain.Categoria) error {
 }
 
 // GetAll recupera tutte le categorie dal database, ordinate per nome
-func (r *Repository) GetAll(ctx context.Context) ([]domain.Categoria, error) {
+func (r *CategoryRepository) CategoryRepository_GetAll(ctx context.Context) ([]domain.Categoria, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	rows, err := exec.QueryContext(ctx, `SELECT id, nome, descrizione FROM Categorie ORDER BY nome`)
 	if err != nil {
@@ -52,7 +52,7 @@ func (r *Repository) GetAll(ctx context.Context) ([]domain.Categoria, error) {
 }
 
 // GetByID recupera una singola categoria dal database usando il suo ID
-func (r *Repository) GetByID(ctx context.Context, id int) (*domain.Categoria, error) {
+func (r *CategoryRepository) CategoryRepository_GetByID(ctx context.Context, id int) (*domain.Categoria, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	var c domain.Categoria
 	err := exec.QueryRowContext(ctx, `SELECT id, nome, descrizione FROM Categorie WHERE id = ?`, id).Scan(&c.ID, &c.Nome, &c.Descrizione)
@@ -66,14 +66,14 @@ func (r *Repository) GetByID(ctx context.Context, id int) (*domain.Categoria, er
 }
 
 // Update modifica i dati di una categoria esistente nel database
-func (r *Repository) Update(ctx context.Context, c *domain.Categoria) error {
+func (r *CategoryRepository) CategoryRepository_Update(ctx context.Context, c *domain.Categoria) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	_, err := exec.ExecContext(ctx, `UPDATE Categorie SET nome = ?, descrizione = ? WHERE id = ?`, c.Nome, c.Descrizione, c.ID)
 	return err
 }
 
 // Delete rimuove una categoria dal database usando il suo ID
-func (r *Repository) Delete(ctx context.Context, id int) error {
+func (r *CategoryRepository) CategoryRepository_Delete(ctx context.Context, id int) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	_, err := exec.ExecContext(ctx, `DELETE FROM Categorie WHERE id = ?`, id)
 	return err

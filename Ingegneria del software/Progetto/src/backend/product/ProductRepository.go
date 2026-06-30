@@ -4,21 +4,21 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"gialosai/backend/domain"
+	"github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/domain"
 	"time"
 )
 
-type Repository struct {
+type ProductRepository struct {
 	DB *sql.DB
 }
 
 
-func NewRepository(database *sql.DB) *Repository {
-	return &Repository{DB: database}
+func NewProductRepository(database *sql.DB) *ProductRepository {
+	return &ProductRepository{DB: database}
 }
 
 // GetAll recupera tutti i prodotti dal database con i dati delle categorie associate via LEFT JOIN.
-func (r *Repository) GetAll(ctx context.Context) ([]domain.Prodotto, error) {
+func (r *ProductRepository) ProductRepository_GetAll(ctx context.Context) ([]domain.Prodotto, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id, p.prezzo_acquisto, p.prezzo_vendita, p.soglia_minima,
 	                 c.nome, c.descrizione
@@ -65,7 +65,7 @@ func (r *Repository) GetAll(ctx context.Context) ([]domain.Prodotto, error) {
 }
 
 // GetByID recupera un singolo prodotto dal database usando il suo ID.
-func (r *Repository) GetByID(ctx context.Context, id int) (*domain.Prodotto, error) {
+func (r *ProductRepository) ProductRepository_GetByID(ctx context.Context, id int) (*domain.Prodotto, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id, p.prezzo_acquisto, p.prezzo_vendita, p.soglia_minima,
 	                 c.nome, c.descrizione
@@ -102,7 +102,7 @@ func (r *Repository) GetByID(ctx context.Context, id int) (*domain.Prodotto, err
 }
 
 // GetByBarcode recupera un prodotto dal database usando il suo barcode (EAN-13).
-func (r *Repository) GetByBarcode(ctx context.Context, barcode string) (*domain.Prodotto, error) {
+func (r *ProductRepository) ProductRepository_GetByBarcode(ctx context.Context, barcode string) (*domain.Prodotto, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id, p.prezzo_acquisto, p.prezzo_vendita, p.soglia_minima
 	          FROM Prodotti p WHERE p.barcode = ?`
@@ -121,7 +121,7 @@ func (r *Repository) GetByBarcode(ctx context.Context, barcode string) (*domain.
 }
 
 // Create inserisce un nuovo prodotto nel database e inizializza la giacenza a zero.
-func (r *Repository) Create(ctx context.Context, p *domain.Prodotto) error {
+func (r *ProductRepository) ProductRepository_Create(ctx context.Context, p *domain.Prodotto) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Prodotti (codice, barcode, nome, descrizione, categoria_id, prezzo_acquisto, prezzo_vendita, soglia_minima)
 	          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
@@ -141,7 +141,7 @@ func (r *Repository) Create(ctx context.Context, p *domain.Prodotto) error {
 }
 
 // Update modifica i dati di un prodotto esistente nel database.
-func (r *Repository) Update(ctx context.Context, p *domain.Prodotto) error {
+func (r *ProductRepository) ProductRepository_Update(ctx context.Context, p *domain.Prodotto) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `UPDATE Prodotti SET codice = ?, barcode = ?, nome = ?, descrizione = ?, categoria_id = ?, prezzo_acquisto = ?, prezzo_vendita = ?, soglia_minima = ?
 	          WHERE id = ?`
@@ -150,7 +150,7 @@ func (r *Repository) Update(ctx context.Context, p *domain.Prodotto) error {
 }
 
 // Delete rimuove un prodotto dal database e elimina anche la sua giacenza.
-func (r *Repository) Delete(ctx context.Context, id int) error {
+func (r *ProductRepository) ProductRepository_Delete(ctx context.Context, id int) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	// Elimina prima la giacenza associata
 	_, _ = exec.ExecContext(ctx, "DELETE FROM Giacenze WHERE prodotto_id = ?", id)
@@ -160,7 +160,7 @@ func (r *Repository) Delete(ctx context.Context, id int) error {
 }
 
 // GetGiacenza recupera la giacenza di un prodotto dal database. Se la giacenza non esiste, restituisce una giacenza vuota (quantità 0).
-func (r *Repository) GetGiacenza(ctx context.Context, prodID int) (*domain.Giacenza, error) {
+func (r *ProductRepository) ProductRepository_GetGiacenza(ctx context.Context, prodID int) (*domain.Giacenza, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, prodotto_id, quantita, updated_at FROM Giacenze WHERE prodotto_id = ?`
 	var g domain.Giacenza
@@ -175,7 +175,7 @@ func (r *Repository) GetGiacenza(ctx context.Context, prodID int) (*domain.Giace
 }
 
 // UpdateGiacenza modifica la giacenza di un prodotto aggiungendo o sottraendo una quantità 
-func (r *Repository) UpdateGiacenza(ctx context.Context, prodID int, delta int) error {
+func (r *ProductRepository) ProductRepository_UpdateGiacenza(ctx context.Context, prodID int, delta int) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Giacenze (prodotto_id, quantita, updated_at) VALUES (?, ?, ?)
 	          ON DUPLICATE KEY UPDATE quantita = quantita + VALUES(quantita), updated_at = VALUES(updated_at)`
@@ -184,7 +184,7 @@ func (r *Repository) UpdateGiacenza(ctx context.Context, prodID int, delta int) 
 }
 
 // GetAllGiacenze recupera tutte le giacenze dal database insieme al nome e alla soglia minima del prodotto.
-func (r *Repository) GetAllGiacenze(ctx context.Context) ([]domain.Giacenza, error) {
+func (r *ProductRepository) ProductRepository_GetAllGiacenze(ctx context.Context) ([]domain.Giacenza, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT g.id, g.prodotto_id, g.quantita, g.updated_at,
 	                 p.nome, p.soglia_minima

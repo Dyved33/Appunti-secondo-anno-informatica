@@ -4,22 +4,22 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"gialosai/backend/domain"
+	"github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/domain"
 )
 
 // questa struct serve per accedere al database e gestire le operazioni CRUD sugli utenti.
-type Repository struct {
+type UserRepository struct {
 	DB *sql.DB
 }
 
-// NewRepository crea una nuova istanza del repository per gli utenti.
-func NewRepository(database *sql.DB) *Repository {
-	return &Repository{DB: database}
+// NewUserRepository crea una nuova istanza del repository per gli utenti.
+func NewUserRepository(database *sql.DB) *UserRepository {
+	return &UserRepository{DB: database}
 }
 
 // GetByUsername recupera un utente dal database usando il suo username come chiave. Restituisce l'oggetto Utente se trovato, altrimenti un errore di credenziali errate.
 // è l'equivalente di Read in un CRUD convenzionale
-func (r *Repository) GetByUsername(ctx context.Context, username string) (*domain.Utente, error) {
+func (r *UserRepository) UserRepository_GetByUsername(ctx context.Context, username string) (*domain.Utente, error) {
 	exec := domain.GetExecutor(ctx, r.DB) // serve per ottenere il corretto executor (DB o transazione) dal contesto
 	query := `SELECT id, username, password_hash, ruolo, domanda_sicurezza, risposta_hash, tentativi_falliti, bloccato, created_at 
 	          FROM Utenti WHERE username = ?`
@@ -43,7 +43,7 @@ func (r *Repository) GetByUsername(ctx context.Context, username string) (*domai
 }
 
 // Update modifica i dati di un utente esistente nel database
-func (r *Repository) Update(ctx context.Context, u *domain.Utente) error {
+func (r *UserRepository) UserRepository_Update(ctx context.Context, u *domain.Utente) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `UPDATE Utenti SET password_hash = ?, tentativi_falliti = ?, bloccato = ? WHERE id = ?`
 	_, err := exec.ExecContext(ctx, query, u.PasswordHash, u.TentativiFalliti, u.Bloccato, u.ID)
@@ -51,7 +51,7 @@ func (r *Repository) Update(ctx context.Context, u *domain.Utente) error {
 }
 
 // Create inserisce un nuovo utente nel database (assegna automaticamente l'ID generato dal database all'oggetto Utente passato)
-func (r *Repository) Create(ctx context.Context, u *domain.Utente) error {
+func (r *UserRepository) UserRepository_Create(ctx context.Context, u *domain.Utente) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Utenti (username, password_hash, ruolo, domanda_sicurezza, risposta_hash, tentativi_falliti, bloccato, created_at)
 	          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
@@ -67,7 +67,7 @@ func (r *Repository) Create(ctx context.Context, u *domain.Utente) error {
 	return nil
 }
 
-func(r *Repository) Delete(ctx context.Context, u *domain.Utente) error{
+func(r *UserRepository) UserRepository_Delete(ctx context.Context, u *domain.Utente) error{
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `DELETE FROM Utenti WHERE id = ?`
 	_, err := exec.ExecContext(ctx, query, u.ID)

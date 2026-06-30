@@ -2,22 +2,41 @@ package product
 
 import (
 	"context"
+	"github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/domain"
 	"strings"
 	"time"
-	"gialosai/backend/domain"
 )
 
-type Service struct {
-	Repo *Repository
-	Tx   *domain.TransactionHelper
+type productRepository interface {
+	ProductRepository_GetAll(ctx context.Context) ([]domain.Prodotto, error)
+	ProductRepository_GetByID(ctx context.Context, id int) (*domain.Prodotto, error)
+	ProductRepository_GetByBarcode(ctx context.Context, barcode string) (*domain.Prodotto, error)
+	ProductRepository_Create(ctx context.Context, p *domain.Prodotto) error
+	ProductRepository_Update(ctx context.Context, p *domain.Prodotto) error
+	ProductRepository_Delete(ctx context.Context, id int) error
+	ProductRepository_GetAllGiacenze(ctx context.Context) ([]domain.Giacenza, error)
 }
 
-func NewService(repo *Repository, tx *domain.TransactionHelper) *Service {
-	return &Service{Repo: repo, Tx: tx}
+type transactionRunner interface {
+	WithinTransaction(ctx context.Context, fn func(ctx context.Context) error) error
+}
+
+type ProductService struct {
+	Repo productRepository
+	Tx   transactionRunner
+}
+
+// ProductService_GetProducts implements [productService].
+func (s *ProductService) ProductService_GetProducts(ctx context.Context) ([]domain.Prodotto, error) {
+	panic("unimplemented")
+}
+
+func NewProductService(repo productRepository, tx transactionRunner) *ProductService {
+	return &ProductService{Repo: repo, Tx: tx}
 }
 
 // CreateProduct crea un nuovo prodotto nel sistema
-func (s *Service) CreateProduct(ctx context.Context, p *domain.Prodotto) error {
+func (s *ProductService) ProductService_Create(ctx context.Context, p *domain.Prodotto) error {
 	// Trimma e valida il barcode
 	p.Barcode = strings.TrimSpace(p.Barcode)
 	if !domain.IsValidEAN13(p.Barcode) {
@@ -25,71 +44,71 @@ func (s *Service) CreateProduct(ctx context.Context, p *domain.Prodotto) error {
 	}
 
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
-		return s.Repo.Create(txCtx, p)
+		return s.Repo.ProductRepository_Create(txCtx, p)
 	})
 }
 
 // UpdateProduct modifica un prodotto esistente nel sistema
-func (s *Service) UpdateProduct(ctx context.Context, p *domain.Prodotto) error {
+func (s *ProductService) ProductService_Update(ctx context.Context, p *domain.Prodotto) error {
 	// Trimma e valida il barcode
 	p.Barcode = strings.TrimSpace(p.Barcode)
 	if !domain.IsValidEAN13(p.Barcode) {
 		return domain.ErrBarcodeNonValido
 	}
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
-		return s.Repo.Update(txCtx, p)
+		return s.Repo.ProductRepository_Update(txCtx, p)
 	})
 }
 
 // DeleteProduct rimuove un prodotto dal sistema. Nota: La giacenza associata viene eliminata automaticamente dal repository
-func (s *Service) DeleteProduct(ctx context.Context, id int) error {
+func (s *ProductService) ProductService_Delete(ctx context.Context, id int) error {
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
-		return s.Repo.Delete(txCtx, id)
+		return s.Repo.ProductRepository_Delete(txCtx, id)
 	})
 }
 
 // GetProducts recupera tutti i prodotti disponibili nel sistema.
-func (s *Service) GetProducts(ctx context.Context) ([]domain.Prodotto, error) {
-	return s.Repo.GetAll(ctx)
+func (s *ProductService) ProductService_GetAll(ctx context.Context) ([]domain.Prodotto, error) {
+	return s.Repo.ProductRepository_GetAll(ctx)
 }
 
 // GetProductByID recupera un singolo prodotto dal sistema usando il suo ID.
-func (s *Service) GetProductByID(ctx context.Context, id int) (*domain.Prodotto, error) {
-	return s.Repo.GetByID(ctx, id)
+func (s *ProductService) ProductService_GetByID(ctx context.Context, id int) (*domain.Prodotto, error) {
+	return s.Repo.ProductRepository_GetByID(ctx, id)
 }
 
 // GetProductByBarcode recupera un prodotto dal sistema usando il suo barcode (EAN-13). Valida il barcode prima di effettuare la ricerca.
-func (s *Service) GetProductByBarcode(ctx context.Context, barcode string) (*domain.Prodotto, error) {
+func (s *ProductService) ProductService_GetByBarcode(ctx context.Context, barcode string) (*domain.Prodotto, error) {
 	barcode = strings.TrimSpace(barcode)
 	if !domain.IsValidEAN13(barcode) {
 		return nil, domain.ErrBarcodeNonValido
 	}
-	return s.Repo.GetByBarcode(ctx, barcode)
+	return s.Repo.ProductRepository_GetByBarcode(ctx, barcode)
 }
 
 // UpdateListinoPrices aggiorna i prezzi di acquisto e vendita di un prodotto
-func (s *Service) UpdateListinoPrices(ctx context.Context, productID int, acqPrice, vendPrice float64) error {
+func (s *ProductService) ProductService_UpdateListinoPrices(ctx context.Context, productID int, acqPrice, vendPrice float64) error {
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
-		p, err := s.Repo.GetByID(txCtx, productID)
+		p, err := s.Repo.ProductRepository_GetByID(txCtx, productID)
 		if err != nil {
 			return err
 		}
 		p.PrezzoAcq = acqPrice
 		p.PrezzoVend = vendPrice
-		return s.Repo.Update(txCtx, p)
+		return s.Repo.ProductRepository_Update(txCtx, p)
 	})
 }
 
 // GetInventarioReport costruisce un riepilogo completo dello stato del magazzino
-func (s *Service) GetInventarioReport(ctx context.Context) (*domain.InventoryReport, error) {
+func (s *ProductService) ProductService_GetInventarioReport(ctx context.Context) (*domain.InventoryReport, error) {
 	// Recupera tutti i prodotti
-	products, err := s.Repo.GetAll(ctx)
+	products, err := s.Repo.ProductRepository_GetAll(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	// Recupera tutte le giacenze
-	giacenze, err := s.Repo.GetAllGiacenze(ctx)
+	giacenze, err := s.Repo.ProductRepository_GetAllGiacenze(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -142,8 +161,8 @@ func (s *Service) GetInventarioReport(ctx context.Context) (*domain.InventoryRep
 }
 
 // GetProdottiSottoSoglia restituisce solo gli articoli che richiedono attenzione perché sotto soglia minima.
-func (s *Service) GetProdottiSottoSoglia(ctx context.Context) ([]domain.InventoryItem, error) {
-	report, err := s.GetInventarioReport(ctx)
+func (s *ProductService) ProductService_GetProdottiSottoSoglia(ctx context.Context) ([]domain.InventoryItem, error) {
+	report, err := s.ProductService_GetInventarioReport(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -151,8 +170,8 @@ func (s *Service) GetProdottiSottoSoglia(ctx context.Context) ([]domain.Inventor
 }
 
 // GetValoreMagazzino restituisce un riepilogo sintetico del magazzino: quantità totale e valore totale.
-func (s *Service) GetValoreMagazzino(ctx context.Context) (int, float64, error) {
-	report, err := s.GetInventarioReport(ctx)
+func (s *ProductService) ProductService_GetValoreMagazzino(ctx context.Context) (int, float64, error) {
+	report, err := s.ProductService_GetInventarioReport(ctx)
 	if err != nil {
 		return 0, 0.0, err
 	}

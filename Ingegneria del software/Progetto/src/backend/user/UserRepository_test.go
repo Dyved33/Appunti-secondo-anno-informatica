@@ -11,21 +11,21 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"gialosai/backend/domain"
+	"github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/domain"
 )
 
 // Query usata nei test: deve corrispondere a quella in Repository.GetByUsername.
 // sqlmock confronta per regex per default, quindi basta una sottostringa stabile.
 const getByUsernameQuery = `SELECT id, username, password_hash, ruolo, domanda_sicurezza, risposta_hash, tentativi_falliti, bloccato, created_at`
 
-func newMockRepo(t *testing.T) (*Repository, sqlmock.Sqlmock, func()) {
+func newMockRepo(t *testing.T) (*UserRepository, sqlmock.Sqlmock, func()) {
 	db, mock, err := sqlmock.New()
 	require.NoError(t, err)
-	repo := NewRepository(db)
+	repo := NewUserRepository(db)
 	return repo, mock, func() { db.Close() }
 }
 
-func TestGetByUsername(t *testing.T) {
+func TestUserRepository_GetByUsername(t *testing.T) {
 	now := time.Now()
 
 	tests := []struct {
@@ -80,7 +80,7 @@ func TestGetByUsername(t *testing.T) {
 
 			tt.mockSetup(mock)
 
-			got, err := repo.GetByUsername(context.Background(), tt.username)
+			got, err := repo.UserRepository_GetByUsername(context.Background(), tt.username)
 
 			if tt.wantErr != nil {
 				require.Error(t, err)
@@ -103,7 +103,7 @@ func TestGetByUsername(t *testing.T) {
 	}
 }
 
-func TestUpdate(t *testing.T) {
+func TestUserRepository_Update(t *testing.T) {
 	tests := []struct {
 		name      string
 		mockSetup func(mock sqlmock.Sqlmock)
@@ -141,7 +141,7 @@ func TestUpdate(t *testing.T) {
 				TentativiFalliti: 1,
 				Bloccato:         false,
 			}
-			err := repo.Update(context.Background(), u)
+			err := repo.UserRepository_Update(context.Background(), u)
 
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -153,11 +153,11 @@ func TestUpdate(t *testing.T) {
 	}
 }
 
-func TestCreate(t *testing.T) {
+func TestUserRepository_Create(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	require.NoError(t, err)
 	defer db.Close()
-	repo := NewRepository(db)
+	repo := NewUserRepository(db)
 
 	mock.ExpectExec(`INSERT INTO Utenti`).
 		WithArgs("giulia", "hash", "contabile", "domanda", "rispostaHash", 0, false, sqlmock.AnyArg()).
@@ -172,25 +172,24 @@ func TestCreate(t *testing.T) {
 		CreatedAt:        time.Now(),
 	}
 
-	err = repo.Create(context.Background(), u)
+	err = repo.UserRepository_Create(context.Background(), u)
 	require.NoError(t, err)
 	assert.Equal(t, 7, u.ID, "l'ID auto-generato dovrebbe essere assegnato all'utente")
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 
-func TestDelete(t *testing.T) {
+func TestUserRepository_Delete(t *testing.T) {
 	// NB: richiede che la query in Repository.Delete usi backtick invece di apici
-	// singoli (vedi 00_PATCH_SUGGERITA.md), altrimenti il package non compila.
 	db, mock, err := sqlmock.New()
 	require.NoError(t, err)
 	defer db.Close()
-	repo := NewRepository(db)
+	repo := NewUserRepository(db)
 
 	mock.ExpectExec(`DELETE FROM Utenti WHERE id = \?`).
 		WithArgs(5).
 		WillReturnResult(sqlmock.NewResult(0, 1))
 
-	err = repo.Delete(context.Background(), &domain.Utente{ID: 5})
+	err = repo.UserRepository_Delete(context.Background(), &domain.Utente{ID: 5})
 	require.NoError(t, err)
 	require.NoError(t, mock.ExpectationsWereMet())
 }

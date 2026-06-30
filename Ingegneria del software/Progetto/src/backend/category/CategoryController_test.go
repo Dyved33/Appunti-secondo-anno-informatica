@@ -2,68 +2,161 @@ package category
 
 import (
 	"context"
-	"gialosai/backend/domain"
+	"errors"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
+
+	"github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/domain"
 )
 
-type Controller struct {
-	Service *Service
+// mockCategoryServiceForController implementa l'interfaccia categoryService
+type mockCategoryServiceForController struct {
+	mock.Mock
 }
 
-func NewController(svc *Service) *Controller {
-	return &Controller{Service: svc}
+// CreateCategory implements [categoryService].
+func (m *mockCategoryServiceForController) CategoryService_Create(ctx context.Context, c *domain.Categoria) error {
+	panic("unimplemented")
 }
 
-// CreateCategory gestisce la creazione di una nuova categoria
-func (c *Controller) CreateCategory(ctx context.Context, input CategoryInputDTO) (CategoryOutputDTO, error) {
-	cat := &domain.Categoria{
-		Nome:        input.Nome,
-		Descrizione: input.Descrizione,
-	}
-
-	// Chiama il Service per creare la categoria
-	if err := c.Service.CreateCategory(ctx, cat); err != nil {
-		return CategoryOutputDTO{}, err
-	}
-
-	// Formatta e restituisce il DTO di output
-	return CategoryOutputDTO{ID: cat.ID, Nome: cat.Nome, Descrizione: cat.Descrizione}, nil
+// DeleteCategory implements [categoryService].
+func (m *mockCategoryServiceForController) CategoryService_Delete(ctx context.Context, id int) error {
+	panic("unimplemented")
 }
 
-// GetCategories recupera tutte le categorie disponibili nel sistema, restituisce una slice di DTO con i dati delle categorie.
-func (c *Controller) GetCategories(ctx context.Context) ([]CategoryOutputDTO, error) {
-	categories, err := c.Service.GetCategories(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	// Trasforma i domain objects in DTO per la trasmissione al client
-	result := make([]CategoryOutputDTO, 0, len(categories))
-	for _, cat := range categories {
-		result = append(result, CategoryOutputDTO{ID: cat.ID, Nome: cat.Nome, Descrizione: cat.Descrizione})
-	}
-	return result, nil
+// GetCategories implements [categoryService].
+func (m *mockCategoryServiceForController) CategoryService_GetAll(ctx context.Context) ([]domain.Categoria, error) {
+	panic("unimplemented")
 }
 
-// GetCategoryByID recupera una singola categoria dal sistema, restituisce i dati della categoria in formato DTO.
-func (c *Controller) GetCategoryByID(ctx context.Context, id int) (CategoryOutputDTO, error) {
-	cat, err := c.Service.GetCategoryByID(ctx, id)
-	if err != nil {
-		return CategoryOutputDTO{}, err
-	}
-
-	return CategoryOutputDTO{ID: cat.ID, Nome: cat.Nome, Descrizione: cat.Descrizione}, nil
+// GetCategoryByID implements [categoryService].
+func (m *mockCategoryServiceForController) CategoryService_GetByID(ctx context.Context, id int) (*domain.Categoria, error) {
+	panic("unimplemented")
 }
 
-// UpdateCategory modifica una categoria esistente nel sistema, accetta l'ID della categoria e i dati di input (DTO) per l'aggiornamento.
-func (c *Controller) UpdateCategory(ctx context.Context, id int, input CategoryInputDTO) error {
-	return c.Service.UpdateCategory(ctx, &domain.Categoria{
-		ID:          id,
-		Nome:        input.Nome,
-		Descrizione: input.Descrizione,
+// UpdateCategory implements [categoryService].
+func (m *mockCategoryServiceForController) CategoryService_Update(ctx context.Context, c *domain.Categoria) error {
+	panic("unimplemented")
+}
+
+func (m *mockCategoryServiceForController) TestCategoryController_Create(ctx context.Context, c *domain.Categoria) error {
+	args := m.Called(ctx, c)
+	if args.Error(0) == nil {
+		c.ID = 1 // simula l'assegnazione dell'ID da parte del repository
+	}
+	return args.Error(0)
+}
+
+func (m *mockCategoryServiceForController) TestCategoryController_GetAll(ctx context.Context) ([]domain.Categoria, error) {
+	args := m.Called(ctx)
+	list, _ := args.Get(0).([]domain.Categoria)
+	return list, args.Error(1)
+}
+
+func (m *mockCategoryServiceForController) TestCategoryController_GetByID(ctx context.Context, id int) (*domain.Categoria, error) {
+	args := m.Called(ctx, id)
+	c, _ := args.Get(0).(*domain.Categoria)
+	return c, args.Error(1)
+}
+
+func (m *mockCategoryServiceForController) TestCategoryController_Update(ctx context.Context, c *domain.Categoria) error {
+	args := m.Called(ctx, c)
+	return args.Error(0)
+}
+
+func (m *mockCategoryServiceForController) TestCategoryController_Delete(ctx context.Context, id int) error {
+	args := m.Called(ctx, id)
+	return args.Error(0)
+}
+
+func TestCategoryController_Create(t *testing.T) {
+	t.Run("mappa l'input e il risultato nel DTO", func(t *testing.T) {
+		svc := new(mockCategoryServiceForController)
+		svc.On("TestCategoryController_Create", mock.Anything, mock.MatchedBy(func(c *domain.Categoria) bool {
+			return c.Nome == "Ferramenta" && c.Descrizione == "Minuteria metallica"
+		})).Return(nil)
+
+		c := NewCategoryController(svc)
+		out, err := c.CategoryController_Create(context.Background(), CategoryInputDTO{Nome: "Ferramenta", Descrizione: "Minuteria metallica"})
+
+		require.NoError(t, err)
+		assert.Equal(t, 1, out.ID)
+		assert.Equal(t, "Ferramenta", out.Nome)
+		svc.AssertExpectations(t)
+	})
+
+	t.Run("propaga l'errore del service", func(t *testing.T) {
+		svc := new(mockCategoryServiceForController)
+		svc.On("TestCategoryController_Create", mock.Anything, mock.Anything).Return(errors.New("nome vuoto"))
+
+		c := NewCategoryController(svc)
+		_, err := c.CategoryController_Create(context.Background(), CategoryInputDTO{Nome: "   "})
+
+		require.Error(t, err)
 	})
 }
 
-// DeleteCategory rimuove una categoria dal sistema, accetta l'ID della categoria da eliminare.
-func (c *Controller) DeleteCategory(ctx context.Context, id int) error {
-	return c.Service.DeleteCategory(ctx, id)
+func TestCategoryController_GetAll(t *testing.T) {
+	svc := new(mockCategoryServiceForController)
+	svc.On("TestCategoryController_GetAll", mock.Anything).Return([]domain.Categoria{
+		{ID: 1, Nome: "Elettronica"},
+		{ID: 2, Nome: "Ferramenta"},
+	}, nil)
+
+	c := NewCategoryController(svc)
+	out, err := c.CategoryController_GetAll(context.Background())
+
+	require.NoError(t, err)
+	require.Len(t, out, 2)
+	assert.Equal(t, "Elettronica", out[0].Nome)
+}
+
+func TestCategoryController_GetByID(t *testing.T) {
+	t.Run("categoria trovata", func(t *testing.T) {
+		svc := new(mockCategoryServiceForController)
+		svc.On("TestCategoryController_GetByID", mock.Anything, 1).Return(&domain.Categoria{ID: 1, Nome: "Elettronica"}, nil)
+
+		c := NewCategoryController(svc)
+		out, err := c.CategoryController_GetByID(context.Background(), 1)
+
+		require.NoError(t, err)
+		assert.Equal(t, "Elettronica", out.Nome)
+	})
+
+	t.Run("categoria non trovata propaga l'errore", func(t *testing.T) {
+		svc := new(mockCategoryServiceForController)
+		svc.On("TestCategoryController_GetByID", mock.Anything, 99).Return(nil, domain.ErrCategoriaNonTrovata)
+
+		c := NewCategoryController(svc)
+		_, err := c.CategoryController_GetByID(context.Background(), 99)
+
+		require.ErrorIs(t, err, domain.ErrCategoriaNonTrovata)
+	})
+}
+
+func TestCategoryController_Update(t *testing.T) {
+	svc := new(mockCategoryServiceForController)
+	svc.On("TestCategoryController_Update", mock.Anything, mock.MatchedBy(func(c *domain.Categoria) bool {
+		return c.ID == 5 && c.Nome == "Nuovo nome"
+	})).Return(nil)
+
+	c := NewCategoryController(svc)
+	err := c.CategoryController_Update(context.Background(), 5, CategoryInputDTO{Nome: "Nuovo nome"})
+
+	require.NoError(t, err)
+	svc.AssertExpectations(t)
+}
+
+func TestCategoryController_Delete(t *testing.T) {
+	svc := new(mockCategoryServiceForController)
+	svc.On("TestCategoryController_Delete", mock.Anything, 5).Return(nil)
+
+	c := NewCategoryController(svc)
+	err := c.CategoryController_Delete(context.Background(), 5)
+
+	require.NoError(t, err)
+	svc.AssertExpectations(t)
 }

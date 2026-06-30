@@ -1,7 +1,7 @@
 package domain_test // l'uso di _test evita dipendenze cicliche e garantisce di testare l'interfaccia pubblica                                                                         
                                                                                                                                                                                            
     import (                                                                                                                                                                               
-        "gialosai/backend/domain"                                                                                                                                                             
+        "github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/domain"                                                                                                                                                             
         "testing"                                                                                                                                                                             
     )                                                                                                                                                                                      
                                                                                                                                                                                            

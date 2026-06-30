@@ -2,21 +2,30 @@ package user
 
 import (
 	"context"
+	"github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/domain"
 )
 
-// Trasla le richieste in ingresso (DTO) alle chiamate al Service e formatta le risposte.
-type Controller struct {
-	Service *Service
+// userService è il sottoinsieme di UserService di cui Controller ha bisogno.
+// *UserService lo implementa già implicitamente.
+type userService interface {
+	UserRepository_Login(ctx context.Context, username, password string) (*domain.Utente, error)
+	UserRepository_GetSecurityQuestion(ctx context.Context, username string) (string, error)
+	UserRepository_VerifySecurityAnswerAndResetPassword(ctx context.Context, username, answer, newPassword string) error
 }
 
-// NewController crea una nuova istanza del controller per gli utenti.
-func NewController(svc *Service) *Controller {
-	return &Controller{Service: svc}
+// Trasla le richieste in ingresso (DTO) alle chiamate al Service e formatta le risposte.
+type UserController struct {
+	Service userService
+}
+
+// NewUserController crea una nuova istanza del controller per gli utenti.
+func NewUserController(svc userService) *UserController {
+	return &UserController{Service: svc}
 }
 
 // Serve per l'autenticazione di un utente, accetta una richiesta di login, chiama il Service e restituisce la risposta formattata.
-func (c *Controller) HandleLogin(ctx context.Context, req LoginRequestDTO) LoginResponseDTO {
-	u, err := c.Service.Login(ctx, req.Username, req.Password)
+func (c *UserController) UserController_Login(ctx context.Context, req LoginRequestDTO) LoginResponseDTO {
+	u, err := c.Service.UserRepository_Login(ctx, req.Username, req.Password)
 	if err != nil {
 		return LoginResponseDTO{
 			Success:      false,
@@ -32,8 +41,8 @@ func (c *Controller) HandleLogin(ctx context.Context, req LoginRequestDTO) Login
 }
 
 // HandleGetSecurityQuestion recupera la domanda di sicurezza per un utente.
-func (c *Controller) HandleGetSecurityQuestion(ctx context.Context, req RecoveryRequestDTO) (RecoveryResponseDTO, error) {
-	q, err := c.Service.GetSecurityQuestion(ctx, req.Username)
+func (c *UserController) UserController_GetSecurityQuestion(ctx context.Context, req RecoveryRequestDTO) (RecoveryResponseDTO, error) {
+	q, err := c.Service.UserRepository_GetSecurityQuestion(ctx, req.Username)
 	if err != nil {
 		return RecoveryResponseDTO{}, err
 	}
@@ -41,6 +50,6 @@ func (c *Controller) HandleGetSecurityQuestion(ctx context.Context, req Recovery
 }
 
 // Chiama il Service che verifica la risposta e, se corretta, resetta la password.
-func (c *Controller) HandleResetPassword(ctx context.Context, req ResetPasswordRequestDTO) error {
-	return c.Service.VerifySecurityAnswerAndResetPassword(ctx, req.Username, req.Risposta, req.NewPassword)
+func (c *UserController) UserController_ResetPassword(ctx context.Context, req ResetPasswordRequestDTO) error {
+	return c.Service.UserRepository_VerifySecurityAnswerAndResetPassword(ctx, req.Username, req.Risposta, req.NewPassword)
 }

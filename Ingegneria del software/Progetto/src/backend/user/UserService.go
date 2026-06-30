@@ -2,30 +2,59 @@ package user
 
 import (
 	"context"
-	"gialosai/backend/domain"
+	"github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/domain"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// la struct Service serve a richiamare le funzioni del Repository e a gestire la logica di business relativa agli utenti
-type Service struct {
-	Repo *Repository
-	Tx   *domain.TransactionHelper
+// userRepository è il sottoinsieme di Repository di cui Service ha bisogno.
+// *Repository lo implementa già implicitamente (stessi metodi, stesse firme).
+type userRepository interface {
+	UserRepository_GetByUsername(ctx context.Context, username string) (*domain.Utente, error)
+	UserRepository_Update(ctx context.Context, u *domain.Utente) error
+	UserRepository_Create(ctx context.Context, u *domain.Utente) error
+	UserRepository_Delete(ctx context.Context, u *domain.Utente) error
 }
 
-// NewService crea una nuova istanza del service per gli utenti.
-func NewService(repo *Repository, tx *domain.TransactionHelper) *Service {
-	return &Service{Repo: repo, Tx: tx}
+// transactionRunner è il sottoinsieme di domain.TransactionHelper di cui Service ha bisogno.
+type transactionRunner interface {
+	WithinTransaction(ctx context.Context, fn func(ctx context.Context) error) error
 }
 
-// Login verifica le credenziali di un utente e gestisce il meccanismo di blocco dopo 3 tentativi falliti. Se il login ha successo, ripristina i tentativi falliti, se fallisce ripetutamente, blocca l'account.
-func (s *Service) Login(ctx context.Context, username, password string) (*domain.Utente, error) {
+// la struct UserService serve a richiamare le funzioni del UserRepository e a gestire la logica di business relativa agli utenti
+type UserService struct {
+	Repo userRepository
+	Tx   transactionRunner
+}
+
+// UserRepository_GetSecurityQuestion implements [userService].
+func (s *UserService) UserRepository_GetSecurityQuestion(ctx context.Context, username string) (string, error) {
+	panic("unimplemented")
+}
+
+// UserRepository_Login implements [userService].
+func (s *UserService) UserRepository_Login(ctx context.Context, username string, password string) (*domain.Utente, error) {
+	panic("unimplemented")
+}
+
+// UserRepository_VerifySecurityAnswerAndResetPassword implements [userService].
+func (s *UserService) UserRepository_VerifySecurityAnswerAndResetPassword(ctx context.Context, username string, answer string, newPassword string) error {
+	panic("unimplemented")
+}
+
+// NewUserService crea una nuova istanza del service per gli utenti.
+func NewUserService(repo userRepository, tx transactionRunner) *UserService {
+	return &UserService{Repo: repo, Tx: tx}
+}
+
+// UserService_Login verifica le credenziali di un utente e gestisce il meccanismo di blocco dopo 3 tentativi falliti. Se il login ha successo, ripristina i tentativi falliti, se fallisce ripetutamente, blocca l'account.
+func (s *UserService) UserService_Login(ctx context.Context, username, password string) (*domain.Utente, error) {
 	var user *domain.Utente
 	var loginErr error
 
 	// Esegue tutte le operazioni di login entro una transazione per garantire la consistenza
 	err := s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
 		// Recupera l'utente dal database
-		u, err := s.Repo.GetByUsername(txCtx, username)
+		u, err := s.Repo.UserRepository_GetByUsername(txCtx, username)
 		if err != nil {
 			return err
 		}
@@ -33,7 +62,7 @@ func (s *Service) Login(ctx context.Context, username, password string) (*domain
 		// Controlla se l'account è già bloccato o se ha superato il limite di tentativi
 		if u.Bloccato || u.TentativiFalliti >= domain.MaxTentativiLogin {
 			u.Bloccato = true
-			_ = s.Repo.Update(txCtx, u)
+			_ = s.Repo.UserRepository_Update(txCtx, u)
 			return domain.ErrAccountBloccato
 		}
 
@@ -44,12 +73,12 @@ func (s *Service) Login(ctx context.Context, username, password string) (*domain
 			u.TentativiFalliti++
 			if u.TentativiFalliti >= domain.MaxTentativiLogin {
 				u.Bloccato = true
-				_ = s.Repo.Update(txCtx, u)
+				_ = s.Repo.UserRepository_Update(txCtx, u)
 				loginErr = domain.ErrAccountBloccato
 				return nil
 			}
 			// Persiste il nuovo contatore sul database
-			_ = s.Repo.Update(txCtx, u)
+			_ = s.Repo.UserRepository_Update(txCtx, u)
 			loginErr = domain.ErrCredenzaliErrate
 			return nil
 		}
@@ -57,7 +86,7 @@ func (s *Service) Login(ctx context.Context, username, password string) (*domain
 		// Login riuscito: resetta i tentativi falliti e sblocca l'account se era bloccato
 		u.TentativiFalliti = 0
 		u.Bloccato = false
-		err = s.Repo.Update(txCtx, u)
+		err = s.Repo.UserRepository_Update(txCtx, u)
 		if err != nil {
 			return err
 		}
@@ -76,8 +105,8 @@ func (s *Service) Login(ctx context.Context, username, password string) (*domain
 }
 
 // GetSecurityQuestion recupera la domanda di sicurezza associata a un utente.
-func (s *Service) GetSecurityQuestion(ctx context.Context, username string) (string, error) {
-	u, err := s.Repo.GetByUsername(ctx, username)
+func (s *UserService) UserService_GetSecurityQuestion(ctx context.Context, username string) (string, error) {
+	u, err := s.Repo.UserRepository_GetByUsername(ctx, username)
 	if err != nil {
 		return "", err
 	}
@@ -85,11 +114,11 @@ func (s *Service) GetSecurityQuestion(ctx context.Context, username string) (str
 }
 
 // VerifySecurityAnswerAndResetPassword verifica la risposta alla domanda di sicurezza e, se corretta, resetta la password.
-func (s *Service) VerifySecurityAnswerAndResetPassword(ctx context.Context, username, answer, newPassword string) error {
+func (s *UserService) UserService_VerifySecurityAnswerAndResetPassword(ctx context.Context, username, answer, newPassword string) error {
 	// Esegue l'intera operazione in una transazione per coerenza
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
 
-		u, err := s.Repo.GetByUsername(txCtx, username)
+		u, err := s.Repo.UserRepository_GetByUsername(txCtx, username)
 		if err != nil {
 			return err
 		}
@@ -110,6 +139,6 @@ func (s *Service) VerifySecurityAnswerAndResetPassword(ctx context.Context, user
 		u.PasswordHash = string(newHash)
 		u.TentativiFalliti = 0
 		u.Bloccato = false
-		return s.Repo.Update(txCtx, u)
+		return s.Repo.UserRepository_Update(txCtx, u)
 	})
 }

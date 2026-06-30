@@ -4,209 +4,222 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"gialosai/backend/domain"
+	"testing"
 	"time"
+
+	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/domain"
 )
 
-type Repository struct {
-	DB *sql.DB
+func newMockProductRepo(t *testing.T) (*ProductRepository, sqlmock.Sqlmock, func()) {
+	db, mock, err := sqlmock.New()
+	require.NoError(t, err)
+	return NewProductRepository(db), mock, func() { db.Close() }
 }
 
+func TestProductRepository_GetAll(t *testing.T) {
+	repo, mock, closeDB := newMockProductRepo(t)
+	defer closeDB()
 
-func NewRepository(database *sql.DB) *Repository {
-	return &Repository{DB: database}
+	rows := sqlmock.NewRows([]string{
+		"id", "codice", "barcode", "nome", "descrizione", "categoria_id",
+		"prezzo_acquisto", "prezzo_vendita", "soglia_minima", "cat_nome", "cat_descrizione",
+	}).
+		AddRow(1, "P001", "8001234567890", "Vite M6", "Vite a brugola", 10, 0.10, 0.25, 100, "Ferramenta", "Minuteria metallica").
+		AddRow(2, "P002", "8009876543210", "Bullone M8", "", nil, 0.20, 0.40, 50, nil, nil)
+
+	mock.ExpectQuery(`SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id`).
+		WillReturnRows(rows)
+
+	got, err := repo.ProductRepository_GetAll(context.Background())
+	require.NoError(t, err)
+	require.Len(t, got, 2)
+
+	assert.Equal(t, "Vite M6", got[0].Nome)
+	require.NotNil(t, got[0].Categoria, "il prodotto con categoria_id valido deve avere Categoria popolata")
+	assert.Equal(t, "Ferramenta", got[0].Categoria.Nome)
+
+	assert.Nil(t, got[1].Categoria, "il prodotto senza categoria (NULL) non deve avere Categoria popolata")
+	require.NoError(t, mock.ExpectationsWereMet())
 }
 
-// GetAll recupera tutti i prodotti dal database con i dati delle categorie associate via LEFT JOIN.
-func (r *Repository) GetAll(ctx context.Context) ([]domain.Prodotto, error) {
-	exec := db.GetExecutor(ctx, r.DB)
-	query := `SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id, p.prezzo_acquisto, p.prezzo_vendita, p.soglia_minima,
-	                 c.nome, c.descrizione
-	          FROM Prodotti p
-	          LEFT JOIN Categorie c 
-			  ON p.categoria_id = c.id`
-
-	rows, err := exec.QueryContext(ctx, query)
-	if err != nil {
-		return nil, err
+func TestProductRepository_GetByID(t *testing.T) {
+	tests := []struct {
+		name      string
+		id        int
+		mockSetup func(mock sqlmock.Sqlmock)
+		wantErr   error
+	}{
+		{
+			name: "prodotto trovato senza categoria",
+			id:   5,
+			mockSetup: func(mock sqlmock.Sqlmock) {
+				rows := sqlmock.NewRows([]string{
+					"id", "codice", "barcode", "nome", "descrizione", "categoria_id",
+					"prezzo_acquisto", "prezzo_vendita", "soglia_minima", "cat_nome", "cat_descrizione",
+				}).AddRow(5, "P005", "8005555555555", "Martello", "", nil, 5.0, 9.99, 10, nil, nil)
+				mock.ExpectQuery(`SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id`).
+					WithArgs(5).
+					WillReturnRows(rows)
+			},
+		},
+		{
+			name: "prodotto non trovato",
+			id:   999,
+			mockSetup: func(mock sqlmock.Sqlmock) {
+				mock.ExpectQuery(`SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id`).
+					WithArgs(999).
+					WillReturnError(sql.ErrNoRows)
+			},
+			wantErr: domain.ErrProdottoNonTrovato,
+		},
 	}
-	defer rows.Close()// la presenza di defer indica che viene ritardata la chiusura delle righe in attesa della terminazione della funzione 
 
-	// questo codice serve a leggere tutte le righe restituira dalla query e trasformarle in una slice di oggetti Prodotto
-	var products []domain.Prodotto// vettore vuoto di prodotti
-	for rows.Next() {// passa alla riga successiva e se questa esiste restituisce true, altrimenti false
-		var p domain.Prodotto
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			repo, mock, closeDB := newMockProductRepo(t)
+			defer closeDB()
+			tt.mockSetup(mock)
 
-		//tipi speciali quando una colonna SQL può contenere NULL
-		var catID sql.NullInt64
-		var catNome, catDesc sql.NullString
+			got, err := repo.ProductRepository_GetByID(context.Background(), tt.id)
 
-		err := rows.Scan(// scan copia i valori della riga corrente nelle variabili passate 
-			&p.ID, &p.Codice, &p.Barcode, &p.Nome, &p.Descrizione, &catID, &p.PrezzoAcq, &p.PrezzoVend, &p.SogliaMin,
-			&catNome, &catDesc,
-		)
-		if err != nil {
-			return nil, err
-		}
-
-		// Popola i dati della categoria se presenti
-		if catID.Valid {
-			p.CategoriaID = int(catID.Int64)// int64 -> int
-
-			p.Categoria = &domain.Categoria{// crea un nuovo oggetto Categoria e lo assegna al campo Categoria del prodotto
-				ID:          p.CategoriaID,
-				Nome:        catNome.String,
-				Descrizione: catDesc.String,
+			if tt.wantErr != nil {
+				require.ErrorIs(t, err, tt.wantErr)
+				assert.Nil(t, got)
+			} else {
+				require.NoError(t, err)
+				require.NotNil(t, got)
 			}
-		}
-		products = append(products, p)
+			require.NoError(t, mock.ExpectationsWereMet())
+		})
 	}
-	return products, nil
 }
 
-// GetByID recupera un singolo prodotto dal database usando il suo ID.
-func (r *Repository) GetByID(ctx context.Context, id int) (*domain.Prodotto, error) {
-	exec := db.GetExecutor(ctx, r.DB)
-	query := `SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id, p.prezzo_acquisto, p.prezzo_vendita, p.soglia_minima,
-	                 c.nome, c.descrizione
-	          FROM Prodotti p
-	          LEFT JOIN Categorie c 
-			  ON p.categoria_id = c.id
-	          WHERE p.id = ?`
+func TestProductRepository_GetByBarcode(t *testing.T) {
+	repo, mock, closeDB := newMockProductRepo(t)
+	defer closeDB()
 
-	var p domain.Prodotto
+	rows := sqlmock.NewRows([]string{
+		"id", "codice", "barcode", "nome", "descrizione", "categoria_id",
+		"prezzo_acquisto", "prezzo_vendita", "soglia_minima",
+	}).AddRow(1, "P001", "8001234567890", "Vite M6", "", 10, 0.10, 0.25, 100)
 
-	var catID sql.NullInt64
-	var catNome, catDesc sql.NullString
+	mock.ExpectQuery(`SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id, p.prezzo_acquisto, p.prezzo_vendita, p.soglia_minima\s+FROM Prodotti p WHERE p.barcode = \?`).
+		WithArgs("8001234567890").
+		WillReturnRows(rows)
 
-	err := exec.QueryRowContext(ctx, query, id).Scan(
-		&p.ID, &p.Codice, &p.Barcode, &p.Nome, &p.Descrizione, &catID, &p.PrezzoAcq, &p.PrezzoVend, &p.SogliaMin,
-		&catNome, &catDesc,
-	)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, domain.ErrProdottoNonTrovato
-		}
-		return nil, err
-	}
-
-	if catID.Valid {
-		p.CategoriaID = int(catID.Int64)
-		p.Categoria = &domain.Categoria{
-			ID:          p.CategoriaID,
-			Nome:        catNome.String,
-			Descrizione: catDesc.String,
-		}
-	}
-	return &p, nil
+	got, err := repo.ProductRepository_GetByBarcode(context.Background(), "8001234567890")
+	require.NoError(t, err)
+	assert.Equal(t, "Vite M6", got.Nome)
+	require.NoError(t, mock.ExpectationsWereMet())
 }
 
-// GetByBarcode recupera un prodotto dal database usando il suo barcode (EAN-13).
-func (r *Repository) GetByBarcode(ctx context.Context, barcode string) (*domain.Prodotto, error) {
-	exec := db.GetExecutor(ctx, r.DB)
-	query := `SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id, p.prezzo_acquisto, p.prezzo_vendita, p.soglia_minima
-	          FROM Prodotti p WHERE p.barcode = ?`
+func TestProductRepository_Create(t *testing.T) {
+	repo, mock, closeDB := newMockProductRepo(t)
+	defer closeDB()
 
-	var p domain.Prodotto
-	err := exec.QueryRowContext(ctx, query, barcode).Scan(
-		&p.ID, &p.Codice, &p.Barcode, &p.Nome, &p.Descrizione, &p.CategoriaID, &p.PrezzoAcq, &p.PrezzoVend, &p.SogliaMin,
-	)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, domain.ErrProdottoNonTrovato
-		}
-		return nil, err
+	mock.ExpectExec(`INSERT INTO Prodotti`).
+		WithArgs("P010", "8001112223334", "Chiave inglese", "", 0, 3.5, 7.0, 5).
+		WillReturnResult(sqlmock.NewResult(10, 1))
+	mock.ExpectExec(`INSERT INTO Giacenze \(prodotto_id, quantita, updated_at\) VALUES \(\?, 0, \?\)`).
+		WithArgs(10, sqlmock.AnyArg()).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	p := &domain.Prodotto{
+		Codice:     "P010",
+		Barcode:    "8001112223334",
+		Nome:       "Chiave inglese",
+		PrezzoAcq:  3.5,
+		PrezzoVend: 7.0,
+		SogliaMin:  5,
 	}
-	return &p, nil
+	err := repo.ProductRepository_Create(context.Background(), p)
+	require.NoError(t, err)
+	assert.Equal(t, 10, p.ID)
+	require.NoError(t, mock.ExpectationsWereMet())
 }
 
-// Create inserisce un nuovo prodotto nel database e inizializza la giacenza a zero.
-func (r *Repository) Create(ctx context.Context, p *domain.Prodotto) error {
-	exec := db.GetExecutor(ctx, r.DB)
-	query := `INSERT INTO Prodotti (codice, barcode, nome, descrizione, categoria_id, prezzo_acquisto, prezzo_vendita, soglia_minima)
-	          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-	res, err := exec.ExecContext(ctx, query, p.Codice, p.Barcode, p.Nome, p.Descrizione, p.CategoriaID, p.PrezzoAcq, p.PrezzoVend, p.SogliaMin)
-	if err != nil {
-		return err
-	}
-	id, err := res.LastInsertId()
-	if err == nil {
-		p.ID = int(id)
-	}
+func TestProductRepository_Delete(t *testing.T) {
+	repo, mock, closeDB := newMockProductRepo(t)
+	defer closeDB()
 
-	// Inizializza la giacenza a zero per il nuovo prodotto
-	queryG := `INSERT INTO Giacenze (prodotto_id, quantita, updated_at) VALUES (?, 0, ?)`
-	_, err = exec.ExecContext(ctx, queryG, p.ID, time.Now())
-	return err
+	mock.ExpectExec(`DELETE FROM Giacenze WHERE prodotto_id = \?`).
+		WithArgs(3).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+	mock.ExpectExec(`DELETE FROM Prodotti WHERE id = \?`).
+		WithArgs(3).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	err := repo.ProductRepository_Delete(context.Background(), 3)
+	require.NoError(t, err)
+	require.NoError(t, mock.ExpectationsWereMet())
 }
 
-// Update modifica i dati di un prodotto esistente nel database.
-func (r *Repository) Update(ctx context.Context, p *domain.Prodotto) error {
-	exec := db.GetExecutor(ctx, r.DB)
-	query := `UPDATE Prodotti SET codice = ?, barcode = ?, nome = ?, descrizione = ?, categoria_id = ?, prezzo_acquisto = ?, prezzo_vendita = ?, soglia_minima = ?
-	          WHERE id = ?`
-	_, err := exec.ExecContext(ctx, query, p.Codice, p.Barcode, p.Nome, p.Descrizione, p.CategoriaID, p.PrezzoAcq, p.PrezzoVend, p.SogliaMin, p.ID)
-	return err
+func TestProductRepository_GetGiacenza(t *testing.T) {
+	t.Run("giacenza esistente", func(t *testing.T) {
+		repo, mock, closeDB := newMockProductRepo(t)
+		defer closeDB()
+
+		rows := sqlmock.NewRows([]string{"id", "prodotto_id", "quantita", "updated_at"}).
+			AddRow(1, 7, 42, time.Now())
+		mock.ExpectQuery(`SELECT id, prodotto_id, quantita, updated_at FROM Giacenze WHERE prodotto_id = \?`).
+			WithArgs(7).
+			WillReturnRows(rows)
+
+		g, err := repo.ProductRepository_GetGiacenza(context.Background(), 7)
+		require.NoError(t, err)
+		assert.Equal(t, 42, g.Quantita)
+		require.NoError(t, mock.ExpectationsWereMet())
+	})
+
+	t.Run("giacenza assente restituisce quantita zero senza errore", func(t *testing.T) {
+		repo, mock, closeDB := newMockProductRepo(t)
+		defer closeDB()
+
+		mock.ExpectQuery(`SELECT id, prodotto_id, quantita, updated_at FROM Giacenze WHERE prodotto_id = \?`).
+			WithArgs(99).
+			WillReturnError(sql.ErrNoRows)
+
+		g, err := repo.ProductRepository_GetGiacenza(context.Background(), 99)
+		require.NoError(t, err)
+		require.NotNil(t, g)
+		assert.Equal(t, 0, g.Quantita)
+		assert.Equal(t, 99, g.ProdottoID)
+		require.NoError(t, mock.ExpectationsWereMet())
+	})
+
+	t.Run("errore generico del database viene propagato", func(t *testing.T) {
+		repo, mock, closeDB := newMockProductRepo(t)
+		defer closeDB()
+
+		mock.ExpectQuery(`SELECT id, prodotto_id, quantita, updated_at FROM Giacenze WHERE prodotto_id = \?`).
+			WithArgs(7).
+			WillReturnError(errors.New("db irraggiungibile"))
+
+		_, err := repo.ProductRepository_GetGiacenza(context.Background(), 7)
+		assert.Error(t, err)
+		require.NoError(t, mock.ExpectationsWereMet())
+	})
 }
 
-// Delete rimuove un prodotto dal database e elimina anche la sua giacenza.
-func (r *Repository) Delete(ctx context.Context, id int) error {
-	exec := db.GetExecutor(ctx, r.DB)
-	// Elimina prima la giacenza associata
-	_, _ = exec.ExecContext(ctx, "DELETE FROM Giacenze WHERE prodotto_id = ?", id)
-	query := `DELETE FROM Prodotti WHERE id = ?`
-	_, err := exec.ExecContext(ctx, query, id)
-	return err
-}
+func TestProductRepository_GetAllGiacenze(t *testing.T) {
+	repo, mock, closeDB := newMockProductRepo(t)
+	defer closeDB()
 
-// GetGiacenza recupera la giacenza di un prodotto dal database. Se la giacenza non esiste, restituisce una giacenza vuota (quantità 0).
-func (r *Repository) GetGiacenza(ctx context.Context, prodID int) (*domain.Giacenza, error) {
-	exec := db.GetExecutor(ctx, r.DB)
-	query := `SELECT id, prodotto_id, quantita, updated_at FROM Giacenze WHERE prodotto_id = ?`
-	var g domain.Giacenza
-	err := exec.QueryRowContext(ctx, query, prodID).Scan(&g.ID, &g.ProdottoID, &g.Quantita, &g.UpdatedAt)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return &domain.Giacenza{ProdottoID: prodID, Quantita: 0, UpdatedAt: time.Now()}, nil
-		}
-		return nil, err
-	}
-	return &g, nil
-}
+	rows := sqlmock.NewRows([]string{"id", "prodotto_id", "quantita", "updated_at", "nome", "soglia_minima"}).
+		AddRow(1, 1, 5, time.Now(), "Vite M6", 100).
+		AddRow(2, 2, 200, time.Now(), "Bullone M8", 50)
 
-// UpdateGiacenza modifica la giacenza di un prodotto aggiungendo o sottraendo una quantità 
-func (r *Repository) UpdateGiacenza(ctx context.Context, prodID int, delta int) error {
-	exec := db.GetExecutor(ctx, r.DB)
-	query := `INSERT INTO Giacenze (prodotto_id, quantita, updated_at) VALUES (?, ?, ?)
-	          ON DUPLICATE KEY UPDATE quantita = quantita + VALUES(quantita), updated_at = VALUES(updated_at)`
-	_, err := exec.ExecContext(ctx, query, prodID, delta, time.Now())
-	return err
-}
+	mock.ExpectQuery(`SELECT g.id, g.prodotto_id, g.quantita, g.updated_at`).
+		WillReturnRows(rows)
 
-// GetAllGiacenze recupera tutte le giacenze dal database insieme al nome e alla soglia minima del prodotto.
-func (r *Repository) GetAllGiacenze(ctx context.Context) ([]domain.Giacenza, error) {
-	exec := db.GetExecutor(ctx, r.DB)
-	query := `SELECT g.id, g.prodotto_id, g.quantita, g.updated_at,
-	                 p.nome, p.soglia_minima
-	          FROM Giacenze g
-	          JOIN Prodotti p ON g.prodotto_id = p.id`
-
-	rows, err := exec.QueryContext(ctx, query)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var list []domain.Giacenza
-	for rows.Next() {
-		var g domain.Giacenza
-		var p domain.Prodotto
-		err := rows.Scan(&g.ID, &g.ProdottoID, &g.Quantita, &g.UpdatedAt, &p.Nome, &p.SogliaMin)
-		if err != nil {
-			return nil, err
-		}
-		g.Prodotto = &p
-		list = append(list, g)
-	}
-	return list, nil
+	got, err := repo.ProductRepository_GetAllGiacenze(context.Background())
+	require.NoError(t, err)
+	require.Len(t, got, 2)
+	assert.Equal(t, "Vite M6", got[0].Prodotto.Nome)
+	assert.Equal(t, 100, got[0].Prodotto.SogliaMin)
+	require.NoError(t, mock.ExpectationsWereMet())
 }
