@@ -215,7 +215,7 @@ func TestUserService_VerifySecurityAnswerAndResetPassword(t *testing.T) {
 
 	t.Run("utente inesistente propaga l'errore del repository", func(t *testing.T) {
 		repo := new(mockUserRepository)
-		repo.On("GetByUsername", mock.Anything, "fantasma").Return(nil, errors.New("not found"))
+		repo.On("UserRepository_GetByUsername", mock.Anything, "fantasma").Return(nil, errors.New("not found"))
 
 		svc := NewUserService(repo, fakeTxRunner{})
 		err := svc.UserService_VerifySecurityAnswerAndResetPassword(context.Background(), "fantasma", "risposta", "nuovaPassword")

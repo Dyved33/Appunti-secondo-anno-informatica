@@ -1,0 +1,111 @@
+package auth
+
+import (
+	"context"
+	"errors"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
+	"github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/domain"
+)
+
+type mockUserService struct {
+	mock.Mock
+}
+
+func (m *mockUserService) UserService_Login(ctx context.Context, username, password string) (*domain.Utente, error) {
+	args := m.Called(ctx, username, password)
+	u, _ := args.Get(0).(*domain.Utente)
+	return u, args.Error(1)
+}
+
+type mockAuthService struct {
+	mock.Mock
+}
+
+func (m *mockAuthService) AuthService_Login(ctx context.Context, username, password string) (string, error) {
+	args := m.Called(ctx, username, password)
+	return args.String(0), args.Error(1)
+}
+
+func TestPasswordHashing(t *testing.T) {
+	password := "segretissimo"
+	hash, err := HashPassword(password)
+	require.NoError(t, err)
+	assert.NotEmpty(t, hash)
+
+	err = CheckPassword(hash, password)
+	assert.NoError(t, err)
+
+	err = CheckPassword(hash, "sbagliata")
+	assert.Error(t, err)
+}
+
+func TestJWTTokens(t *testing.T) {// testa sia la generazione che la validazione dei token JWT
+	userID := 42
+	username := "mario"
+
+	token, err := GenerateToken(userID, username)
+	require.NoError(t, err)
+	assert.NotEmpty(t, token)
+
+	claims, err := ValidateToken(token)
+	require.NoError(t, err)
+	assert.Equal(t, userID, claims.UserID)
+	assert.Equal(t, username, claims.Username)
+
+	_, err = ValidateToken("invalid-token")
+	assert.Error(t, err)
+}
+
+func TestAuthService_Login(t *testing.T) {
+	t.Run("login con successo restituisce token", func(t *testing.T) {
+		us := new(mockUserService)
+		us.On("UserService_Login", mock.Anything, "mario", "password").Return(&domain.Utente{ID: 42, Username: "mario"}, nil)
+
+		svc := NewAuthService(us)
+		token, err := svc.AuthService_Login(context.Background(), "mario", "password")
+
+		require.NoError(t, err)
+		assert.NotEmpty(t, token)
+		us.AssertExpectations(t)
+	})
+
+	t.Run("login fallito propaga errore", func(t *testing.T) {
+		us := new(mockUserService)
+		us.On("UserService_Login", mock.Anything, "mario", "sbagliata").Return(nil, errors.New("credenziali errate"))
+
+		svc := NewAuthService(us)
+		_, err := svc.AuthService_Login(context.Background(), "mario", "sbagliata")
+
+		assert.Error(t, err)
+		us.AssertExpectations(t)
+	})
+}
+
+func TestAuthController_Login(t *testing.T) {
+	t.Run("login con successo restituisce DTO con token", func(t *testing.T) {
+		as := new(mockAuthService)
+		as.On("AuthService_Login", mock.Anything, "mario", "password").Return("mock-token", nil)
+
+		c := NewAuthController(as)
+		res, err := c.AuthController_Login(context.Background(), LoginRequestDTO{Username: "mario", Password: "password"})
+
+		require.NoError(t, err)
+		assert.Equal(t, "mock-token", res.Token)
+		as.AssertExpectations(t)
+	})
+
+	t.Run("login fallito restituisce errore", func(t *testing.T) {
+		as := new(mockAuthService)
+		as.On("AuthService_Login", mock.Anything, "mario", "sbagliata").Return("", errors.New("auth error"))
+
+		c := NewAuthController(as)
+		_, err := c.AuthController_Login(context.Background(), LoginRequestDTO{Username: "mario", Password: "sbagliata"})
+
+		assert.Error(t, err)
+		as.AssertExpectations(t)
+	})
+}

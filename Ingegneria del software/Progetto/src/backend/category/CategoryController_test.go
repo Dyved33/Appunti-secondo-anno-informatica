@@ -17,32 +17,8 @@ type mockCategoryServiceForController struct {
 	mock.Mock
 }
 
-// CreateCategory implements [categoryService].
+// CategoryService_Create implements [categoryService].
 func (m *mockCategoryServiceForController) CategoryService_Create(ctx context.Context, c *domain.Categoria) error {
-	panic("unimplemented")
-}
-
-// DeleteCategory implements [categoryService].
-func (m *mockCategoryServiceForController) CategoryService_Delete(ctx context.Context, id int) error {
-	panic("unimplemented")
-}
-
-// GetCategories implements [categoryService].
-func (m *mockCategoryServiceForController) CategoryService_GetAll(ctx context.Context) ([]domain.Categoria, error) {
-	panic("unimplemented")
-}
-
-// GetCategoryByID implements [categoryService].
-func (m *mockCategoryServiceForController) CategoryService_GetByID(ctx context.Context, id int) (*domain.Categoria, error) {
-	panic("unimplemented")
-}
-
-// UpdateCategory implements [categoryService].
-func (m *mockCategoryServiceForController) CategoryService_Update(ctx context.Context, c *domain.Categoria) error {
-	panic("unimplemented")
-}
-
-func (m *mockCategoryServiceForController) TestCategoryController_Create(ctx context.Context, c *domain.Categoria) error {
 	args := m.Called(ctx, c)
 	if args.Error(0) == nil {
 		c.ID = 1 // simula l'assegnazione dell'ID da parte del repository
@@ -50,32 +26,36 @@ func (m *mockCategoryServiceForController) TestCategoryController_Create(ctx con
 	return args.Error(0)
 }
 
-func (m *mockCategoryServiceForController) TestCategoryController_GetAll(ctx context.Context) ([]domain.Categoria, error) {
+// CategoryService_Delete implements [categoryService].
+func (m *mockCategoryServiceForController) CategoryService_Delete(ctx context.Context, id int) error {
+	args := m.Called(ctx, id)
+	return args.Error(0)
+}
+
+// CategoryService_GetAll implements [categoryService].
+func (m *mockCategoryServiceForController) CategoryService_GetAll(ctx context.Context) ([]domain.Categoria, error) {
 	args := m.Called(ctx)
 	list, _ := args.Get(0).([]domain.Categoria)
 	return list, args.Error(1)
 }
 
-func (m *mockCategoryServiceForController) TestCategoryController_GetByID(ctx context.Context, id int) (*domain.Categoria, error) {
+// CategoryService_GetByID implements [categoryService].
+func (m *mockCategoryServiceForController) CategoryService_GetByID(ctx context.Context, id int) (*domain.Categoria, error) {
 	args := m.Called(ctx, id)
 	c, _ := args.Get(0).(*domain.Categoria)
 	return c, args.Error(1)
 }
 
-func (m *mockCategoryServiceForController) TestCategoryController_Update(ctx context.Context, c *domain.Categoria) error {
+// CategoryService_Update implements [categoryService].
+func (m *mockCategoryServiceForController) CategoryService_Update(ctx context.Context, c *domain.Categoria) error {
 	args := m.Called(ctx, c)
-	return args.Error(0)
-}
-
-func (m *mockCategoryServiceForController) TestCategoryController_Delete(ctx context.Context, id int) error {
-	args := m.Called(ctx, id)
 	return args.Error(0)
 }
 
 func TestCategoryController_Create(t *testing.T) {
 	t.Run("mappa l'input e il risultato nel DTO", func(t *testing.T) {
 		svc := new(mockCategoryServiceForController)
-		svc.On("TestCategoryController_Create", mock.Anything, mock.MatchedBy(func(c *domain.Categoria) bool {
+		svc.On("CategoryService_Create", mock.Anything, mock.MatchedBy(func(c *domain.Categoria) bool {
 			return c.Nome == "Ferramenta" && c.Descrizione == "Minuteria metallica"
 		})).Return(nil)
 
@@ -90,7 +70,7 @@ func TestCategoryController_Create(t *testing.T) {
 
 	t.Run("propaga l'errore del service", func(t *testing.T) {
 		svc := new(mockCategoryServiceForController)
-		svc.On("TestCategoryController_Create", mock.Anything, mock.Anything).Return(errors.New("nome vuoto"))
+		svc.On("CategoryService_Create", mock.Anything, mock.Anything).Return(errors.New("nome vuoto"))
 
 		c := NewCategoryController(svc)
 		_, err := c.CategoryController_Create(context.Background(), CategoryInputDTO{Nome: "   "})
@@ -101,7 +81,7 @@ func TestCategoryController_Create(t *testing.T) {
 
 func TestCategoryController_GetAll(t *testing.T) {
 	svc := new(mockCategoryServiceForController)
-	svc.On("TestCategoryController_GetAll", mock.Anything).Return([]domain.Categoria{
+	svc.On("CategoryService_GetAll", mock.Anything).Return([]domain.Categoria{
 		{ID: 1, Nome: "Elettronica"},
 		{ID: 2, Nome: "Ferramenta"},
 	}, nil)
@@ -117,7 +97,7 @@ func TestCategoryController_GetAll(t *testing.T) {
 func TestCategoryController_GetByID(t *testing.T) {
 	t.Run("categoria trovata", func(t *testing.T) {
 		svc := new(mockCategoryServiceForController)
-		svc.On("TestCategoryController_GetByID", mock.Anything, 1).Return(&domain.Categoria{ID: 1, Nome: "Elettronica"}, nil)
+		svc.On("CategoryService_GetByID", mock.Anything, 1).Return(&domain.Categoria{ID: 1, Nome: "Elettronica"}, nil)
 
 		c := NewCategoryController(svc)
 		out, err := c.CategoryController_GetByID(context.Background(), 1)
@@ -128,7 +108,7 @@ func TestCategoryController_GetByID(t *testing.T) {
 
 	t.Run("categoria non trovata propaga l'errore", func(t *testing.T) {
 		svc := new(mockCategoryServiceForController)
-		svc.On("TestCategoryController_GetByID", mock.Anything, 99).Return(nil, domain.ErrCategoriaNonTrovata)
+		svc.On("CategoryService_GetByID", mock.Anything, 99).Return(nil, domain.ErrCategoriaNonTrovata)
 
 		c := NewCategoryController(svc)
 		_, err := c.CategoryController_GetByID(context.Background(), 99)
@@ -139,7 +119,7 @@ func TestCategoryController_GetByID(t *testing.T) {
 
 func TestCategoryController_Update(t *testing.T) {
 	svc := new(mockCategoryServiceForController)
-	svc.On("TestCategoryController_Update", mock.Anything, mock.MatchedBy(func(c *domain.Categoria) bool {
+	svc.On("CategoryService_Update", mock.Anything, mock.MatchedBy(func(c *domain.Categoria) bool {
 		return c.ID == 5 && c.Nome == "Nuovo nome"
 	})).Return(nil)
 
@@ -152,7 +132,7 @@ func TestCategoryController_Update(t *testing.T) {
 
 func TestCategoryController_Delete(t *testing.T) {
 	svc := new(mockCategoryServiceForController)
-	svc.On("TestCategoryController_Delete", mock.Anything, 5).Return(nil)
+	svc.On("CategoryService_Delete", mock.Anything, 5).Return(nil)
 
 	c := NewCategoryController(svc)
 	err := c.CategoryController_Delete(context.Background(), 5)

@@ -16,13 +16,13 @@ import (
 	"github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/user"
 )
 
-func New(db *sql.DB) chi.Router {
+func NewRouter(db *sql.DB) chi.Router {
 	r := chi.NewRouter()
 
 	// --- Helper transazionale condiviso da tutti i service ---
-	tx := domain.NewTransactionHelper(db) // VERIFICA: nome esatto del costruttore in domain/db.go
+	tx := domain.NewTransactionHelper(db) 
 
-	// --- User + Auth ---
+	// --- User ---
 	userRepo := user.NewUserRepository(db)
 	userService := user.NewUserService(userRepo, tx)
 	userController := user.NewUserController(userService)
@@ -37,15 +37,15 @@ func New(db *sql.DB) chi.Router {
 
 	// --- Order ---
 	orderRepo := order.NewOrderRepository(db)
-	orderService := order.NewOrderService(orderRepo, productRepo, tx) // productRepo soddisfa productRepoForOrders
+	orderService := order.NewOrderService(orderRepo, productRepo, tx) 
 	orderController := order.NewOrderController(orderService)
 
-	// --- Category --- (richiede che CategoryService abbia i metodi rinominati: CreateCategory, GetCategories, GetCategoryByID, UpdateCategory, DeleteCategory)
+	// --- Category --- 
 	categoryRepo := category.NewCategoryRepository(db)
 	categoryService := category.NewCategoryService(categoryRepo, tx)
 	categoryController := category.NewCategoryController(categoryService)
 
-	_ = userController // usato solo per Login, non per rotte dirette al momento
+	_ = userController // usato solo per Login, non per rotte dirette 
 
 	// --- Rotta pubblica: login ---
 	r.Post("/api/v1/login", func(w http.ResponseWriter, req *http.Request) {

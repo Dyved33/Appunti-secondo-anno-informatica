@@ -12,132 +12,78 @@ import (
 	"github.com/tommasogarofani/ingsw_25-26_group-11/src/backend/domain"
 )
 
-// mockOrderServiceForController implementa l'interfaccia orderService
-// (vedi 01_PATCH_product_category_order.md).
+// mockOrderServiceForController implementa l'interfaccia orderService.
 type mockOrderServiceForController struct {
 	mock.Mock
 }
 
-// OrderService_ApproveReso implements [orderService].
-func (m *mockOrderServiceForController) OrderService_ApproveReso(ctx context.Context, resoID int) error {
-	panic("unimplemented")
-}
-
-// OrderService_ConfirmOrdineEntrata implements [orderService].
 func (m *mockOrderServiceForController) OrderService_ConfirmOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error {
-	panic("unimplemented")
+	args := m.Called(ctx, o)
+	return args.Error(0)
 }
 
-// OrderService_ConfirmOrdineUscita implements [orderService].
 func (m *mockOrderServiceForController) OrderService_ConfirmOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
-	panic("unimplemented")
+	args := m.Called(ctx, o)
+	return args.Error(0)
 }
 
-// OrderService_CreateReso implements [orderService].
-func (m *mockOrderServiceForController) OrderService_CreateReso(ctx context.Context, r *domain.Reso) error {
-	panic("unimplemented")
-}
-
-// OrderService_GeneraDDT implements [orderService].
-func (m *mockOrderServiceForController) OrderService_GeneraDDT(ctx context.Context, orderID int, mittente string, destinatario string) (*domain.DDT, error) {
-	panic("unimplemented")
-}
-
-// OrderService_GeneraFattura implements [orderService].
-func (m *mockOrderServiceForController) OrderService_GeneraFattura(ctx context.Context, orderID int) (*domain.Fattura, error) {
-	panic("unimplemented")
-}
-
-// OrderService_GeneraNotaCredito implements [orderService].
-func (m *mockOrderServiceForController) OrderService_GeneraNotaCredito(ctx context.Context, orderID int) (*domain.Fattura, error) {
-	panic("unimplemented")
-}
-
-// OrderService_GetFatture implements [orderService].
-func (m *mockOrderServiceForController) OrderService_GetFatture(ctx context.Context) ([]domain.Fattura, error) {
-	panic("unimplemented")
-}
-
-// OrderService_GetNoteCredito implements [orderService].
-func (m *mockOrderServiceForController) OrderService_GetNoteCredito(ctx context.Context) ([]domain.Fattura, error) {
-	panic("unimplemented")
-}
-
-// OrderService_GetOrdiniUscita implements [orderService].
 func (m *mockOrderServiceForController) OrderService_GetOrdiniUscita(ctx context.Context) ([]domain.OrdineUscita, error) {
-	panic("unimplemented")
-}
-
-// OrderService_GetOrdiniUscitaByStato implements [orderService].
-func (m *mockOrderServiceForController) OrderService_GetOrdiniUscitaByStato(ctx context.Context, stato domain.StatoOrdine) ([]domain.OrdineUscita, error) {
-	panic("unimplemented")
-}
-
-// OrderService_RifiutaReso implements [orderService].
-func (m *mockOrderServiceForController) OrderService_RifiutaReso(ctx context.Context, resoID int) error {
-	panic("unimplemented")
-}
-
-// OrderService_VerifyReso implements [orderService].
-func (m *mockOrderServiceForController) OrderService_VerifyReso(ctx context.Context, resoID int) error {
-	panic("unimplemented")
-}
-
-func (m *mockOrderServiceForController) ProductService_ConfirmOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error {
-	args := m.Called(ctx, o)
-	return args.Error(0)
-}
-func (m *mockOrderServiceForController) ProductService_ConfirmOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
-	args := m.Called(ctx, o)
-	return args.Error(0)
-}
-func (m *mockOrderServiceForController) ProductService_GetOrdiniUscita(ctx context.Context) ([]domain.OrdineUscita, error) {
 	args := m.Called(ctx)
 	list, _ := args.Get(0).([]domain.OrdineUscita)
 	return list, args.Error(1)
 }
-func (m *mockOrderServiceForController) ProductService_GetOrdiniUscitaByStato(ctx context.Context, stato domain.StatoOrdine) ([]domain.OrdineUscita, error) {
+
+func (m *mockOrderServiceForController) OrderService_GetOrdiniUscitaByStato(ctx context.Context, stato domain.StatoOrdine) ([]domain.OrdineUscita, error) {
 	args := m.Called(ctx, stato)
 	list, _ := args.Get(0).([]domain.OrdineUscita)
 	return list, args.Error(1)
 }
-func (m *mockOrderServiceForController) ProductService_GeneraDDT(ctx context.Context, orderID int, mittente, destinatario string) (*domain.DDT, error) {
+
+func (m *mockOrderServiceForController) OrderService_GeneraDDT(ctx context.Context, orderID int, mittente, destinatario string) (*domain.DDT, error) {
 	args := m.Called(ctx, orderID, mittente, destinatario)
 	d, _ := args.Get(0).(*domain.DDT)
 	return d, args.Error(1)
 }
-func (m *mockOrderServiceForController) ProductService_CreateReso(ctx context.Context, r *domain.Reso) error {
+
+func (m *mockOrderServiceForController) OrderService_CreateReso(ctx context.Context, r *domain.Reso) error {
 	args := m.Called(ctx, r)
 	return args.Error(0)
 }
-func (m *mockOrderServiceForController) ProductService_VerifyReso(ctx context.Context, resoID int) error {
+
+func (m *mockOrderServiceForController) OrderService_VerifyReso(ctx context.Context, resoID int) error {
 	args := m.Called(ctx, resoID)
 	return args.Error(0)
 }
-func (m *mockOrderServiceForController) ProductService_ApproveReso(ctx context.Context, resoID int) error {
+
+func (m *mockOrderServiceForController) OrderService_ApproveReso(ctx context.Context, resoID int) error {
 	args := m.Called(ctx, resoID)
 	return args.Error(0)
 }
-func (m *mockOrderServiceForController) ProductService_RifiutaReso(ctx context.Context, resoID int) error {
+
+func (m *mockOrderServiceForController) OrderService_RifiutaReso(ctx context.Context, resoID int) error {
 	args := m.Called(ctx, resoID)
 	return args.Error(0)
 }
-func (m *mockOrderServiceForController) ProductService_GeneraFattura(ctx context.Context, orderID int) (*domain.Fattura, error) {
+
+func (m *mockOrderServiceForController) OrderService_GeneraFattura(ctx context.Context, orderID int) (*domain.Fattura, error) {
 	args := m.Called(ctx, orderID)
 	f, _ := args.Get(0).(*domain.Fattura)
 	return f, args.Error(1)
 }
-func (m *mockOrderServiceForController) ProductService_GeneraNotaCredito(ctx context.Context, orderID int) (*domain.Fattura, error) {
+
+func (m *mockOrderServiceForController) OrderService_GeneraNotaCredito(ctx context.Context, orderID int) (*domain.Fattura, error) {
 	args := m.Called(ctx, orderID)
 	f, _ := args.Get(0).(*domain.Fattura)
 	return f, args.Error(1)
 }
-func (m *mockOrderServiceForController) ProductService_GetFatture(ctx context.Context) ([]domain.Fattura, error) {
+
+func (m *mockOrderServiceForController) OrderService_GetFatture(ctx context.Context) ([]domain.Fattura, error) {
 	args := m.Called(ctx)
 	list, _ := args.Get(0).([]domain.Fattura)
 	return list, args.Error(1)
 }
-func (m *mockOrderServiceForController) ProductService_GetNoteCredito(ctx context.Context) ([]domain.Fattura, error) {
+
+func (m *mockOrderServiceForController) OrderService_GetNoteCredito(ctx context.Context) ([]domain.Fattura, error) {
 	args := m.Called(ctx)
 	list, _ := args.Get(0).([]domain.Fattura)
 	return list, args.Error(1)
@@ -145,7 +91,7 @@ func (m *mockOrderServiceForController) ProductService_GetNoteCredito(ctx contex
 
 func TestOrderController_RegisterEntryOrder(t *testing.T) {
 	svc := new(mockOrderServiceForController)
-	svc.On("ProductService_ConfirmOrdineEntrata", mock.Anything, mock.MatchedBy(func(o *domain.OrdineEntrata) bool {
+	svc.On("OrderService_ConfirmOrdineEntrata", mock.Anything, mock.MatchedBy(func(o *domain.OrdineEntrata) bool {
 		return o.Numero == "OE-001" && o.Fornitore == "ACME Srl" && len(o.Righe) == 1 && o.Righe[0].ProdottoID == 5
 	})).Return(nil)
 
@@ -165,7 +111,7 @@ func TestOrderController_RegisterEntryOrder(t *testing.T) {
 func TestOrderController_RegisterExitOrder(t *testing.T) {
 	t.Run("mappa correttamente l'input nel domain object", func(t *testing.T) {
 		svc := new(mockOrderServiceForController)
-		svc.On("ProductService_ConfirmOrdineUscita", mock.Anything, mock.MatchedBy(func(o *domain.OrdineUscita) bool {
+		svc.On("OrderService_ConfirmOrdineUscita", mock.Anything, mock.MatchedBy(func(o *domain.OrdineUscita) bool {
 			return o.Numero == "OU-001" && o.Cliente == "Cliente Spa" && len(o.Righe) == 1
 		})).Return(nil)
 
@@ -184,7 +130,7 @@ func TestOrderController_RegisterExitOrder(t *testing.T) {
 
 	t.Run("propaga l'errore di giacenza insufficiente", func(t *testing.T) {
 		svc := new(mockOrderServiceForController)
-		svc.On("ProductService_ConfirmOrdineUscita", mock.Anything, mock.Anything).
+		svc.On("OrderService_ConfirmOrdineUscita", mock.Anything, mock.Anything).
 			Return(domain.NewGiacenzaInsufficienteError(5, "Vite M6", 3, 10))
 
 		c := NewOrderController(svc)
@@ -197,7 +143,7 @@ func TestOrderController_RegisterExitOrder(t *testing.T) {
 func TestOrderController_GetAll(t *testing.T) {
 	svc := new(mockOrderServiceForController)
 	ddtID := 7
-	svc.On("ProductService_GetOrdiniUscita", mock.Anything).Return([]domain.OrdineUscita{
+	svc.On("OrderService_GetOrdiniUscita", mock.Anything).Return([]domain.OrdineUscita{
 		{ID: 1, Numero: "OU-001", Cliente: "Cliente A", Stato: domain.StatoEvaso, DDTID: &ddtID},
 	}, nil)
 
@@ -213,7 +159,7 @@ func TestOrderController_GetAll(t *testing.T) {
 
 func TestOrderController_GetOrdersByStatus(t *testing.T) {
 	svc := new(mockOrderServiceForController)
-	svc.On("ProductService_GetOrdiniUscitaByStato", mock.Anything, domain.StatoOrdine("confermato")).
+	svc.On("OrderService_GetOrdiniUscitaByStato", mock.Anything, domain.StatoOrdine("confermato")).
 		Return([]domain.OrdineUscita{{ID: 1, Numero: "OU-001", Stato: domain.StatoOrdine("confermato")}}, nil)
 
 	c := NewOrderController(svc)
@@ -227,7 +173,7 @@ func TestOrderController_GetOrdersByStatus(t *testing.T) {
 func TestOrderController_IssueDDT(t *testing.T) {
 	t.Run("genera il DDT e lo mappa nel DTO", func(t *testing.T) {
 		svc := new(mockOrderServiceForController)
-		svc.On("ProductService_GeneraDDT", mock.Anything, 20, "Magazzino", "Cliente Spa").
+		svc.On("OrderService_GeneraDDT", mock.Anything, 20, "Magazzino", "Cliente Spa").
 			Return(&domain.DDT{ID: 5, Numero: "DDT-2026-0001", OrdineUscitaID: 20}, nil)
 
 		c := NewOrderController(svc)
@@ -239,7 +185,7 @@ func TestOrderController_IssueDDT(t *testing.T) {
 
 	t.Run("propaga l'errore se il DDT è già stato generato", func(t *testing.T) {
 		svc := new(mockOrderServiceForController)
-		svc.On("ProductService_GeneraDDT", mock.Anything, 20, "Magazzino", "Cliente Spa").
+		svc.On("OrderService_GeneraDDT", mock.Anything, 20, "Magazzino", "Cliente Spa").
 			Return(nil, domain.ErrDDTGiaGenerato)
 
 		c := NewOrderController(svc)
@@ -251,7 +197,7 @@ func TestOrderController_IssueDDT(t *testing.T) {
 
 func TestOrderController_CreateReturn(t *testing.T) {
 	svc := new(mockOrderServiceForController)
-	svc.On("ProductService_CreateReso", mock.Anything, mock.MatchedBy(func(r *domain.Reso) bool {
+	svc.On("OrderService_CreateReso", mock.Anything, mock.MatchedBy(func(r *domain.Reso) bool {
 		return r.OrdineUscitaID == 20 && r.ProdottoID == 5 && r.Quantita == 2 && r.Motivo == "Difettoso"
 	})).Return(nil)
 
@@ -366,5 +312,3 @@ func TestOrderController_GetCreditNotes(t *testing.T) {
 	require.Len(t, out, 1)
 	assert.Equal(t, "NC-2026-0001", out[0].Numero)
 }
-
-// il test di fatturaToDTO è superfluo perché la funzione è privata e viene già testata indirettamente nei test di IssueInvoice e GetInvoices.

@@ -1,0 +1,40 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: gialosai-db
+    restart: unless-stopped
+    ports:
+    - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: gialosai
+      MYSQL_USER: gialosai
+      MYSQL_PASSWORD: gialosai
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: gialosai-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_DSN: gialosai:gialosai@tcp(db:3306)/gialosai?parseTime=true&loc=Local&charset=utf8mb4
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../output:/app/output
+
+volumes:
+  mysql_data:

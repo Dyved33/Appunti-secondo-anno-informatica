@@ -17,31 +17,10 @@ type mockProductServiceForController struct {
 	mock.Mock
 }
 
-// ProductService_Create implements [productService].
 func (m *mockProductServiceForController) ProductService_Create(ctx context.Context, p *domain.Prodotto) error {
-	panic("unimplemented")
-}
-
-// ProductService_Delete implements [productService].
-func (m *mockProductServiceForController) ProductService_Delete(ctx context.Context, id int) error {
-	panic("unimplemented")
-}
-
-// ProductService_GetByBarcode implements [productService].
-func (m *mockProductServiceForController) ProductService_GetByBarcode(ctx context.Context, barcode string) (*domain.Prodotto, error) {
-	panic("unimplemented")
-}
-
-// ProductService_Update implements [productService].
-func (m *mockProductServiceForController) ProductService_Update(ctx context.Context, p *domain.Prodotto) error {
-	panic("unimplemented")
-}
-
-func (m *mockProductServiceForController) ProductService_CreateProduct(ctx context.Context, p *domain.Prodotto) error {
 	args := m.Called(ctx, p)
 	if args.Get(0) == nil {
-		// simula l'assegnazione dell'ID da parte del repository, come farebbe il Service reale
-		p.ID = 1
+		p.ID = 1 // simula l'assegnazione dell'ID da parte del repository
 		return nil
 	}
 	return args.Error(0)
@@ -53,18 +32,18 @@ func (m *mockProductServiceForController) ProductService_GetProducts(ctx context
 	return list, args.Error(1)
 }
 
-func (m *mockProductServiceForController) ProductService_GetProductByBarcode(ctx context.Context, barcode string) (*domain.Prodotto, error) {
+func (m *mockProductServiceForController) ProductService_GetByBarcode(ctx context.Context, barcode string) (*domain.Prodotto, error) {
 	args := m.Called(ctx, barcode)
 	p, _ := args.Get(0).(*domain.Prodotto)
 	return p, args.Error(1)
 }
 
-func (m *mockProductServiceForController) ProductService_UpdateProduct(ctx context.Context, p *domain.Prodotto) error {
+func (m *mockProductServiceForController) ProductService_Update(ctx context.Context, p *domain.Prodotto) error {
 	args := m.Called(ctx, p)
 	return args.Error(0)
 }
 
-func (m *mockProductServiceForController) ProductService_DeleteProduct(ctx context.Context, id int) error {
+func (m *mockProductServiceForController) ProductService_Delete(ctx context.Context, id int) error {
 	args := m.Called(ctx, id)
 	return args.Error(0)
 }
@@ -94,7 +73,7 @@ func (m *mockProductServiceForController) ProductService_GetProdottiSottoSoglia(
 func TestProductController_AddProduct(t *testing.T) {
 	t.Run("mappa correttamente l'input nel domain object e il risultato nel DTO", func(t *testing.T) {
 		svc := new(mockProductServiceForController)
-		svc.On("ProductService_CreateProduct", mock.Anything, mock.MatchedBy(func(p *domain.Prodotto) bool {
+		svc.On("ProductService_Create", mock.Anything, mock.MatchedBy(func(p *domain.Prodotto) bool {
 			return p.Nome == "Vite" && p.Barcode == "8001234567890" && p.CategoriaID == 3
 		})).Return(nil)
 
@@ -117,7 +96,7 @@ func TestProductController_AddProduct(t *testing.T) {
 
 	t.Run("propaga l'errore del service", func(t *testing.T) {
 		svc := new(mockProductServiceForController)
-		svc.On("ProductService_CreateProduct", mock.Anything, mock.Anything).Return(domain.ErrBarcodeNonValido)
+		svc.On("ProductService_Create", mock.Anything, mock.Anything).Return(domain.ErrBarcodeNonValido)
 
 		c := NewProductController(svc)
 		_, err := c.ProductController_AddProduct(context.Background(), ProductInputDTO{Barcode: "non valido"})
@@ -144,7 +123,7 @@ func TestProductController_GetProducts(t *testing.T) {
 func TestProductController_GetProductByBarcode(t *testing.T) {
 	t.Run("rimuove gli spazi prima di chiamare il service", func(t *testing.T) {
 		svc := new(mockProductServiceForController)
-		svc.On("ProductService_GetProductByBarcode", mock.Anything, "8001234567890").
+		svc.On("ProductService_GetByBarcode", mock.Anything, "8001234567890").
 			Return(&domain.Prodotto{Nome: "Vite", Barcode: "8001234567890"}, nil)
 
 		c := NewProductController(svc)
@@ -157,7 +136,7 @@ func TestProductController_GetProductByBarcode(t *testing.T) {
 
 	t.Run("propaga l'errore prodotto non trovato", func(t *testing.T) {
 		svc := new(mockProductServiceForController)
-		svc.On("ProductService_GetProductByBarcode", mock.Anything, "8000000000000").
+		svc.On("ProductService_GetByBarcode", mock.Anything, "8000000000000").
 			Return(nil, domain.ErrProdottoNonTrovato)
 
 		c := NewProductController(svc)
@@ -169,7 +148,7 @@ func TestProductController_GetProductByBarcode(t *testing.T) {
 
 func TestProductController_EditProduct(t *testing.T) {
 	svc := new(mockProductServiceForController)
-	svc.On("ProductService_UpdateProduct", mock.Anything, mock.MatchedBy(func(p *domain.Prodotto) bool {
+	svc.On("ProductService_Update", mock.Anything, mock.MatchedBy(func(p *domain.Prodotto) bool {
 		return p.ID == 7 && p.Nome == "Vite aggiornata"
 	})).Return(nil)
 
@@ -182,7 +161,7 @@ func TestProductController_EditProduct(t *testing.T) {
 
 func TestProductController_RemoveProduct(t *testing.T) {
 	svc := new(mockProductServiceForController)
-	svc.On("ProductService_DeleteProduct", mock.Anything, 4).Return(nil)
+	svc.On("ProductService_Delete", mock.Anything, 4).Return(nil)
 
 	c := NewProductController(svc)
 	err := c.ProductController_RemoveProduct(context.Background(), 4)

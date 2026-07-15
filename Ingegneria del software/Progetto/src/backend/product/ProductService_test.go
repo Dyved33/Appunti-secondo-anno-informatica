@@ -66,7 +66,7 @@ func (fakeTxRunner) WithinTransaction(ctx context.Context, fn func(ctx context.C
 	return fn(ctx)
 }
 
-const validEAN13 = "8001234567890" // barcode EAN-13 sintatticamente valido usato nei test
+const validEAN13 = "3614273613422" // barcode EAN-13 sintatticamente valido usato nei test
 
 func TestProductService_Create(t *testing.T) {
 	tests := []struct {
@@ -210,8 +210,8 @@ func TestProductService_GetInventarioReport(t *testing.T) {
 		{ProdottoID: 2, Quantita: 200}, // sopra soglia
 	}
 
-	repo.On("GetAll", mock.Anything).Return(products, nil)
-	repo.On("GetAllGiacenze", mock.Anything).Return(giacenze, nil)
+	repo.On("ProductRepository_GetAll", mock.Anything).Return(products, nil)
+	repo.On("ProductRepository_GetAllGiacenze", mock.Anything).Return(giacenze, nil)
 
 	svc := NewProductService(repo, fakeTxRunner{})
 	report, err := svc.ProductService_GetInventarioReport(context.Background())
@@ -231,7 +231,7 @@ func TestProductService_GetInventarioReport(t *testing.T) {
 func TestProductService_GetProdottiSottoSoglia(t *testing.T) {
 	t.Run("propaga l'errore del report", func(t *testing.T) {
 		repo := new(mockProductRepository)
-		repo.On("GetAll", mock.Anything).Return(nil, errors.New("db down"))
+		repo.On("ProductRepository_GetAll", mock.Anything).Return(nil, errors.New("db down"))
 
 		svc := NewProductService(repo, fakeTxRunner{})
 		_, err := svc.ProductService_GetProdottiSottoSoglia(context.Background())
@@ -241,10 +241,10 @@ func TestProductService_GetProdottiSottoSoglia(t *testing.T) {
 
 	t.Run("restituisce solo gli articoli sotto soglia", func(t *testing.T) {
 		repo := new(mockProductRepository)
-		repo.On("GetAll", mock.Anything).Return([]domain.Prodotto{
+		repo.On("ProductRepository_GetAll", mock.Anything).Return([]domain.Prodotto{
 			{ID: 1, SogliaMin: 100},
 		}, nil)
-		repo.On("GetAllGiacenze", mock.Anything).Return([]domain.Giacenza{
+		repo.On("ProductRepository_GetAllGiacenze", mock.Anything).Return([]domain.Giacenza{
 			{ProdottoID: 1, Quantita: 5, UpdatedAt: time.Now()},
 		}, nil)
 
@@ -259,10 +259,10 @@ func TestProductService_GetProdottiSottoSoglia(t *testing.T) {
 
 func TestProductService_GetValoreMagazzino(t *testing.T) {
 	repo := new(mockProductRepository)
-	repo.On("ProductService_GetAll", mock.Anything).Return([]domain.Prodotto{
+	repo.On("ProductRepository_GetAll", mock.Anything).Return([]domain.Prodotto{
 		{ID: 1, SogliaMin: 0, PrezzoVend: 2.0},
 	}, nil)
-	repo.On("ProductService_GetAllGiacenze", mock.Anything).Return([]domain.Giacenza{
+	repo.On("ProductRepository_GetAllGiacenze", mock.Anything).Return([]domain.Giacenza{
 		{ProdottoID: 1, Quantita: 10},
 	}, nil)
 
