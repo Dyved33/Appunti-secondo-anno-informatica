@@ -7,7 +7,7 @@ Costanti utili: g = 9,807 m/s², ε₀ = 8,854·10⁻¹² F/m, μ₀ = 4π·10�
 ---
 
 ## SIMULAZIONE 1
-
+<
 ### Problema 1 — Meccanica
 Due dischi di massa m₁ = 0,80 kg e m₂ = 1,4 kg sono collegati da un'asta rigida e leggera di lunghezza L = 0,45 m e ruotano su un piano orizzontale liscio attorno al loro centro di massa comune, con velocità angolare ω = 6,5 rad/s.
 

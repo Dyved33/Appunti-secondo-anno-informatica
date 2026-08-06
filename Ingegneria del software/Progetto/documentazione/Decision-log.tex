@@ -23,7 +23,7 @@
 
 % COPIARE E INCOLLARE QUESTO SCHEMA E MODIFICARLO PER INSERIRE UNA DECISIONE
 \begin{mdframed}
-    \section{INSERISCI ID (INSERISCI DATA)}
+    \section{INSERISCI ID}
 
     \subsection{DESCRIZIONE}
     Descrivi la decisione
@@ -40,20 +40,89 @@
 %----------------------------------------------------------------------------
 
 \begin{mdframed}
-    \section{DC-001 (05/06/26)}
+    \section{DC-001}
 
     \subsection{DESCRIZIONE}
-    Abbiamo deciso di optare per un Front-end di tipo TUI in quanto piu semplice rispetto ad una web-app
+    Abbiamo deciso di optare per un Front-end di tipo TUI (text-based user interface) in quanto piu semplice rispetto ad una web-app e più pratica e veloce da sviluppare e configurare nel contesto di una applicazione di tipo CLI (command line interface) come la nostra.
 
     \subsection{CONTESTO}
-    Dovevamo decidere se meglio un interfaccia grafica po qualcosa di piu semplice
+    In fase di strutturazione del progetto dovevamo decidere come sviluppare il front-end della nostra applicazione in quanto, in base a questa decisione, avremmo dovuto strutturare il resto del progetto. 
 
     \subsection{ALTERNATIVE}
-    web-app
+    Le alternative che sono state vagliate sono state:
+    \begin{itemize}
+        \item Front-end di tipo web-app: questa alternativa è stata scartata in quanto avrebbe richiesto più tempo e risorse per lo sviluppo e la configurazione, inoltre non si adattava bene al contesto di un'applicazione CLI come la nostra.
+        \item Front-end di tipo GUI (graphical user interface): questa alternativa è stata scartata in quanto avrebbe richiesto più tempo e risorse per lo sviluppo e la configurazione, inoltre non si adattava bene al contesto di un'applicazione CLI come la nostra.
+        \item Front-end di tipo TUI (text-based user interface): questa alternativa è stata scelta in quanto più semplice e veloce da sviluppare e configurare nel contesto di un'applicazione CLI come la nostra.
+    \end{itemize}
 
     \subsection{CONSEGUENZE}
-    L'interfaccia sarà piu semplice da configurare e creare
+    La scelta di una TUI ha come conseguenza quella di non poter fare affidamento su un framework di sviluppo web, ma ci permette di avere un front-end più semplice e veloce da sviluppare oltre che ad essere più adattabile
 \end{mdframed}
 
+\begin{mdframed}
+    \section{DC-002}
+
+    \subsection{DESCRIZIONE}
+    Abbiamo deciso di dividere la struttura logica dell'applicazione in base agli elementi fondamentali del progetto stesso, ovvero: \textit{utente}, \textit{prodotto}, \textit{ordine} e \textit{carrello}. 
+    In questo modo abbiamo deciso di creare un package per ogni elemento fondamentale del progetto, in modo da avere una struttura logica chiara e ben definita. 
+    All'interno di ciascun pacchetto si trovano il file di comunicazione con il database (repository), il file di gestione della logica dell'elemento (service), il file di caratterizzazione dei dati che vengono mandati e ricevuti dal front-end (DTO) e il file di gestione della logica del front-end (controller). In questo modo abbiamo deciso di avere una struttura logica chiara e ben definita, in cui ogni elemento fondamentale del progetto ha un proprio package dedicato.
+    A questa struttura abbiamo aggiunto un pacchetto con tutte le costanti, gli errori, i modelli e i metodi necessari per l'interazione con il database. 
+
+    \subsection{CONTESTO}
+    Per facilitare la comunicazione con il front-end e la modularità del progetto, dovevamo cercare di capire nel dettaglio le caratteristiche strutturali del progetto, in modo da poter creare una struttura logica chiara e ben definita. 
+
+    \subsection{ALTERNATIVE}
+    Le alternative che sono state vagliate sono state:
+    \begin{itemize}
+        \item Creare un package per ogni elemento fondamentale del progetto: questa alternativa è stata scelta in quanto permette di avere una struttura logica chiara e ben definita, in cui ogni elemento fondamentale del progetto ha un proprio package dedicato.
+        \item Creare un package per ogni funzionalità del progetto: questa alternativa è stata scartata in quanto avrebbe reso la struttura logica del progetto più complessa e meno chiara, in quanto le funzionalità del progetto sono strettamente legate agli elementi fondamentali del progetto. Inoltre, questa alternativa, ci avrebbe dato più difficoltà nella gestione dei test (in base al funzionamento di Go)
+    \end{itemize}
+
+    \subsection{CONSEGUENZE}
+    La conseguenza primaria di questa decisione è quella di avere una struttura logica chiara e ben definita. L'unico svantaggio che abbiamo rilevato è quello di non poter strutturare delle classi con metodi ricorrenti e riutilizzabili in quanto, in base al funzionamento di Go, non è possibile creare classi astratte. Tuttavia, abbiamo deciso di accettare questo svantaggio in quanto riteniamo che la chiarezza e la modularità del progetto siano più importanti.
+\end{mdframed}
+
+\begin{mdframed}
+    \section{DC-003}
+
+    \subsection{DESCRIZIONE}
+    Abbiamo deciso di utilizzare un router backend come API Gateway per gestire le richieste in entrata e in uscita, in modo da avere un punto di accesso unico per tutte le richieste e una gestione centralizzata delle stesse. 
+
+    \subsection{CONTESTO}
+    Uno dei principali problemi che abbiamo riscontrato durante lo sviluppo del progetto è stato quello di gestire le richieste in entrata e in uscita, in quanto il front-end e il back-end sono due entità separate e non comunicano direttamente tra loro. Per risolvere questo problema abbiamo deciso di utilizzare un router backend come API Gateway, in modo da avere un punto di accesso unico per tutte le richieste e una gestione centralizzata delle stesse.
+    In questa maniera riusciamo a separare in maniera netta e chiara la gestione delle rotte libere e quelle che richiedono l'autenticazione.
+
+    \subsection{ALTERNATIVE}
+    Le alternative che sono state vagliate sono state:
+    \begin{itemize}
+        \item Utilizzare un router backend come API Gateway: questa alternativa è stata scelta in quanto permette di avere un punto di accesso unico per tutte le richieste e una gestione centralizzata delle stesse. Inoltre, ci permette di separare in maniera netta e chiara la gestione delle rotte libere e quelle che richiedono l'autenticazione.
+        \item Utilizzare un router frontend come API Gateway: questa alternativa è stata scartata in quanto non permette di avere un punto di accesso unico per tutte le richieste e una gestione centralizzata delle stesse. Inoltre, non permette di separare in maniera netta e chiara la gestione delle rotte libere e quelle che richiedono l'autenticazione.
+        \item Utilizzare un BaaS (Backend as a Service) come API Gateway: questa alternativa è stata scartata in quanto non permette di avere un punto di accesso unico per tutte le richieste e una gestione centralizzata delle stesse. Inoltre, non permette di separare in maniera netta e chiara la gestione delle rotte libere e quelle che richiedono l'autenticazione.
+    \end{itemize}
+
+    \subsection{CONSEGUENZE}
+    La conseguenza di questa decisione è chiaramente quella di utilizzare una tecnologia di gestione molto datata (rispetto ad un BaaS per esempio), ma ci permette di essere molto più flessibili e di avere un controllo maggiore sulle richieste in entrata e in uscita. 
+\end{mdframed}
+
+\begin{mdframed}
+    \section{DC-004}
+
+    \subsection{DESCRIZIONE}
+    Abbiamo deciso di separare in autenticazione e in middleware la gestione (rispettivamente) della creazione di token di validazione e della validazione dei token stessi. 
+
+    \subsection{CONTESTO}
+    Siccome l'applicazione deve essere multiutente e dato che ogni utilizzatore si deve connettere ad un server, volendo evitare che per ogni interazione con il database (contenuto nel server) fosse necessaria una nuova autenticazione, abbiamo optato per l'utilizzo di token JWT (JSON Web Token). In questo modo, una volta che l'utente si è autenticato, il server gli fornisce un token JWT che dovrà essere inviato ad ogni richiesta successiva per poter accedere alle risorse protette.
+
+    \subsection{ALTERNATIVE}
+    Le alternative che sono state vagliate sono state:
+    \begin{itemize}
+        \item Fare in modo che l'admin, in ogni sessione di lavoro, conceda l'autorizzazione all'accesso ad ogni utente: questa alternativa è stata scartata in quanto non permette di limitare l'accesso alle risorse protette ed è sicuramente un metodo non efficiente.
+        \item Utilizzare un token JWT per ogni richiesta: questa alternativa è stata scelta in quanto permette di avere un controllo più granulare sulla validità dei token e di ridurre il rischio di abusi.
+    \end{itemize}
+
+    \subsection{CONSEGUENZE}
+    La conseguenza di questa decisione è quella di avere un controllo più granulare sulla validità dei token e di ridurre il rischio di abusi. Inoltre, ci permette di avere una gestione più semplice e chiara della validazione dei token, in quanto la logica è separata in due componenti distinte (autenticazione e middleware).    
+\end{mdframed}
 
 \end{document}

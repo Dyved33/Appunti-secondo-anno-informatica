@@ -1,0 +1,50 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{mdframed}
+
+\geometry{margin=2.5cm}
+
+\title{Change log}
+\author{Gruppo 11}
+\date{27 Maggio 2026}
+
+\begin{document}
+
+\maketitle
+
+\section*{Versionamento}
+
+\begin{longtable}{@{}p{2.2cm}p{11.8cm}@{}}
+\toprule
+\textbf{Versione} & \textbf{Contenuto sintetico} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Versione} & \textbf{Contenuto sintetico} \\
+\midrule
+\endhead
+
+v0.1.0 & Inizializzazione del repository, impostazione base della documentazione e prima organizzazione della struttura di progetto. \\
+v0.2.0 & Prima fase documentale con architettura, README e prime correzioni alla struttura dei file. \\
+v0.3.0 & Introduzione dei diagrammi UML e consolidamento della documentazione tecnica del dominio. \\
+v0.4.0 & Nascita del backend Go con entrypoint, cartelle iniziali e configurazione preliminare del database. \\
+v0.5.0 & Introduzione della struttura modulare per categorie, ordini, prodotti e utenti, con primi test dedicati. \\
+v0.6.0 & Aggiunta dell'autenticazione JWT, dei middleware e del routing backend. \\
+v0.7.0 & Rafforzamento dei test e rifinitura del main, con normalizzazione di nomi e struttura interna. \\
+v0.8.0 & Migrazione del database a MySQL e introduzione dei file di inizializzazione e configurazione. \\
+v0.9.0 & Refactor organizzativo della repository e allineamento della documentazione alla nuova struttura modulare. \\
+v1.0.0 & Containerizzazione completa con Docker e Docker Compose, inclusa l'ultima correzione della porta esposta per il servizio MySQL. \\
+\bottomrule
+\end{longtable}
+
+\end{document}
+

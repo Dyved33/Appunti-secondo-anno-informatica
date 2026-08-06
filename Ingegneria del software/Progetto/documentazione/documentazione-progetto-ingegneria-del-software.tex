@@ -273,14 +273,14 @@ Vengono definiti i vincoli formali affinché la User Story \textbf{US-01} possa 
 
 \section{Strategia di Verifica e Validazione}
 \subsection{Piano di Testing}
-Il piano prevede una suite di test di unità (Unit Testing) sistematici eseguiti sulla Business Logic tramite JUnit. I test sono focalizzati sulla verifica delle transazioni e sul rispetto dei vincoli di integrità del magazzino.
+Il piano prevede una suite di test di unità (Unit Testing) sistematici eseguiti sulla Business Logic tramite lo strumento standard di testing di Go (\texttt{go test}). I test sono focalizzati sulla verifica delle transazioni e sul rispetto dei vincoli di integrità del magazzino.
 
 \subsection{Casi di Test (Test Cases)}
 \textbf{TC-01}: Tentativo di scarico merce con quantità richiesta superiore alla giacenza fisica attuale.
 \begin{itemize}
     \item \textbf{Scenario}: Un prodotto registrato in anagrafica dispone di una quantità fisica in \texttt{Giacenza} pari a 5 unità. Viene inserito un \texttt{OrdineUscita} con una \texttt{RigaOrdineUscita} richiedente l'uscita di 6 unità del medesimo prodotto.
     \item \textbf{Input}: Invocazione della funzione di business \texttt{registraScarico()} con quantità = 6.
-    \item \textbf{Risultato Atteso}: Il sistema deve intercettare preventivamente l'incoerenza prima di modificare i dati, bloccare l'esecuzione della transazione sul database SQLite tramite un'operazione di \texttt{ROLLBACK} e sollevare un'eccezione software personalizzata di tipo \texttt{GiacenzaInsufficienteException}. L'interfaccia utente cattura l'eccezione e mostra un messaggio di errore bloccante, impedendo che i dati assumano valori negativi incongruenti.
+    \item \textbf{Risultato Atteso}: Il sistema deve intercettare preventivamente l'incoerenza prima di modificare i dati, bloccare l'esecuzione della transazione sul database SQLite tramite un'operazione di \texttt{ROLLBACK} e restituire un errore software personalizzato di tipo \texttt{GiacenzaInsufficienteError}. L'interfaccia utente cattura l'errore e mostra un messaggio di errore bloccante, impedendo che i dati assumano valori negativi incongruenti.
 \end{itemize}
 
 \end{document}

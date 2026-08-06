@@ -11,7 +11,7 @@ all: compile
 compile:
 	@echo "Compilazione del progetto in corso..."
 	@mkdir -p $(BIN_DIR)
-	go build -o $(BIN_DIR)/$(BINARY_NAME) $(SRC_DIR)/main.go
+	cd server && go build -o ../$(BIN_DIR)/$(BINARY_NAME) ./cmd/gialosai
 	@echo "Compilazione completata! Eseguibile generato in: $(BIN_DIR)/$(BINARY_NAME)"
 
 run: compile
@@ -20,7 +20,8 @@ run: compile
 
 test:
 	@echo "Esecuzione dei Test di Unità..."
-	go test -v ./...
+	cd client && go test -v ./...
+	cd server && go test -v ./...
 
 clean:
 	@echo "Pulizia in corso..."
