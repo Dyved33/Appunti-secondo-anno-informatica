@@ -8,13 +8,16 @@ import (
 )
 
 type productRepository interface {
-	ProductRepository_GetAll(ctx context.Context) ([]domain.Prodotto, error)
+	ProductRepository_GetAllProducts(ctx context.Context) ([]domain.Prodotto, error)
 	ProductRepository_GetByID(ctx context.Context, id int) (*domain.Prodotto, error)
 	ProductRepository_GetByBarcode(ctx context.Context, barcode string) (*domain.Prodotto, error)
 	ProductRepository_Create(ctx context.Context, p *domain.Prodotto) error
 	ProductRepository_Update(ctx context.Context, p *domain.Prodotto) error
 	ProductRepository_Delete(ctx context.Context, id int) error
+
 	ProductRepository_GetAllGiacenze(ctx context.Context) ([]domain.Giacenza, error)
+	ProductRepository_GetGiacenzaById(ctx context.Context, prodID int) (*domain.Giacenza, error)
+	ProductRepository_UpdateGiacenza(ctx context.Context, g *domain.Giacenza) error
 }
 
 type transactionRunner interface {
@@ -24,11 +27,6 @@ type transactionRunner interface {
 type ProductService struct {
 	Repo productRepository
 	Tx   transactionRunner
-}
-
-// ProductService_GetProducts implements [productService].
-func (s *ProductService) ProductService_GetProducts(ctx context.Context) ([]domain.Prodotto, error) {
-	return s.ProductService_GetAll(ctx)
 }
 
 func NewProductService(repo productRepository, tx transactionRunner) *ProductService {
@@ -68,8 +66,8 @@ func (s *ProductService) ProductService_Delete(ctx context.Context, id int) erro
 }
 
 // GetProducts recupera tutti i prodotti disponibili nel sistema.
-func (s *ProductService) ProductService_GetAll(ctx context.Context) ([]domain.Prodotto, error) {
-	return s.Repo.ProductRepository_GetAll(ctx)
+func (s *ProductService) ProductService_GetAllProducts(ctx context.Context) ([]domain.Prodotto, error) {
+	return s.Repo.ProductRepository_GetAllProducts(ctx)
 }
 
 // GetProductByID recupera un singolo prodotto dal sistema usando il suo ID.
@@ -86,6 +84,8 @@ func (s *ProductService) ProductService_GetByBarcode(ctx context.Context, barcod
 	return s.Repo.ProductRepository_GetByBarcode(ctx, barcode)
 }
 
+//==================================================
+
 // UpdateListinoPrices aggiorna i prezzi di acquisto e vendita di un prodotto
 func (s *ProductService) ProductService_UpdateListinoPrices(ctx context.Context, productID int, acqPrice, vendPrice float64) error {
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
@@ -100,9 +100,9 @@ func (s *ProductService) ProductService_UpdateListinoPrices(ctx context.Context,
 }
 
 // GetInventarioReport costruisce un riepilogo completo dello stato del magazzino
-func (s *ProductService) ProductService_GetInventarioReport(ctx context.Context) (*domain.InventoryReport, error) {
+func (s *ProductService) ProductService_GetAllGiacenze(ctx context.Context) (*domain.InventoryReport, error) {
 	// Recupera tutti i prodotti
-	products, err := s.Repo.ProductRepository_GetAll(ctx)
+	products, err := s.Repo.ProductRepository_GetAllProducts(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +162,7 @@ func (s *ProductService) ProductService_GetInventarioReport(ctx context.Context)
 
 // GetProdottiSottoSoglia restituisce solo gli articoli che richiedono attenzione perché sotto soglia minima.
 func (s *ProductService) ProductService_GetProdottiSottoSoglia(ctx context.Context) ([]domain.InventoryItem, error) {
-	report, err := s.ProductService_GetInventarioReport(ctx)
+	report, err := s.ProductService_GetAllGiacenze(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -171,10 +171,14 @@ func (s *ProductService) ProductService_GetProdottiSottoSoglia(ctx context.Conte
 
 // GetValoreMagazzino restituisce un riepilogo sintetico del magazzino: quantità totale e valore totale.
 func (s *ProductService) ProductService_GetValoreMagazzino(ctx context.Context) (int, float64, error) {
-	report, err := s.ProductService_GetInventarioReport(ctx)
+	report, err := s.ProductService_GetAllGiacenze(ctx)
 	if err != nil {
 		return 0, 0.0, err
 	}
 
 	return report.TotaleQuantita, report.ValoreTotale, nil
+}
+
+func (s *ProductService) ProductService_GetGiacenzaByID(ctx context.Context, productID int) (*domain.Giacenza, error) {
+	return s.Repo.ProductRepository_GetGiacenzaById(ctx, productID)
 }

@@ -33,10 +33,6 @@ var (
 	// non corrispondono a nessun utente attivo (RF-01).
 	ErrCredenzaliErrate = errors.New("credenziali errate")
 
-	// ErrRispostaSecretErrata è restituito durante il recupero password
-	// se la risposta alla domanda di sicurezza è sbagliata (RF-03).
-	ErrRispostaSecretErrata = errors.New("risposta alla domanda di sicurezza errata")
-
 	// ErrPermessoNegato è restituito quando un utente tenta di eseguire
 	// un'operazione non consentita dal suo ruolo (RF-01 RBAC).
 	ErrPermessoNegato = errors.New("permesso negato: ruolo insufficiente")

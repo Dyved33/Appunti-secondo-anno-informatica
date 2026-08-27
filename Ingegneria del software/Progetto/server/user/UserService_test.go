@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -131,6 +130,32 @@ func TestUserService_Login(t *testing.T) {
 			wantErr: domain.ErrCredenzaliErrate,
 			wantNil: true,
 		},
+		{
+			name:     "admin con password errata oltre la soglia non viene bloccato",
+			username: "admin",
+			password: "passwordSbagliata",
+			mockSetup: func(repo *mockUserRepository) {
+				u := &domain.Utente{ID: 1, Username: "admin", PasswordHash: correctHash, Ruolo: domain.RuoloAdmin, TentativiFalliti: domain.MaxTentativiLogin - 1, Bloccato: false}
+				repo.On("UserRepository_GetByUsername", mock.Anything, "admin").Return(u, nil)
+				repo.On("UserRepository_Update", mock.Anything, mock.MatchedBy(func(u *domain.Utente) bool {
+					return !u.Bloccato
+				})).Return(nil)
+			},
+			wantErr: domain.ErrCredenzaliErrate,
+			wantNil: true,
+		},
+		{
+			name:     "admin già bloccato può comunque effettuare il login",
+			username: "admin",
+			password: "passwordCorretta",
+			mockSetup: func(repo *mockUserRepository) {
+				u := &domain.Utente{ID: 1, Username: "admin", PasswordHash: correctHash, Ruolo: domain.RuoloAdmin, Bloccato: true, TentativiFalliti: 5}
+				repo.On("UserRepository_GetByUsername", mock.Anything, "admin").Return(u, nil)
+				repo.On("UserRepository_Update", mock.Anything, mock.MatchedBy(func(u *domain.Utente) bool {
+					return u.TentativiFalliti == 0 && !u.Bloccato
+				})).Return(nil)
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -154,73 +179,4 @@ func TestUserService_Login(t *testing.T) {
 			repo.AssertExpectations(t)
 		})
 	}
-}
-
-func TestUserService_GetSecurityQuestion(t *testing.T) {
-	t.Run("restituisce la domanda dell'utente", func(t *testing.T) {
-		repo := new(mockUserRepository)
-		repo.On("UserRepository_GetByUsername", mock.Anything, "mario").
-			Return(&domain.Utente{Username: "mario", DomandaSicurezza: "Il nome del tuo primo animale?"}, nil)
-
-		svc := NewUserService(repo, fakeTxRunner{})
-		q, err := svc.UserService_GetSecurityQuestion(context.Background(), "mario")
-
-		require.NoError(t, err)
-		assert.Equal(t, "Il nome del tuo primo animale?", q)
-		repo.AssertExpectations(t)
-	})
-
-	t.Run("propaga l'errore se l'utente non esiste", func(t *testing.T) {
-		repo := new(mockUserRepository)
-		repo.On("UserRepository_GetByUsername", mock.Anything, "fantasma").
-			Return(nil, domain.ErrCredenzaliErrate)
-
-		svc := NewUserService(repo, fakeTxRunner{})
-		_, err := svc.UserService_GetSecurityQuestion(context.Background(), "fantasma")
-
-		require.ErrorIs(t, err, domain.ErrCredenzaliErrate)
-		repo.AssertExpectations(t)
-	})
-}
-
-func TestUserService_VerifySecurityAnswerAndResetPassword(t *testing.T) {
-	answerHash := hashPassword(t, "rispostaCorretta")
-
-	t.Run("risposta corretta resetta la password e sblocca l'account", func(t *testing.T) {
-		repo := new(mockUserRepository)
-		u := &domain.Utente{ID: 1, Username: "mario", RispostaHash: answerHash, TentativiFalliti: 2, Bloccato: true}
-		repo.On("UserRepository_GetByUsername", mock.Anything, "mario").Return(u, nil)
-		repo.On("UserRepository_Update", mock.Anything, mock.MatchedBy(func(u *domain.Utente) bool {
-			return u.TentativiFalliti == 0 && !u.Bloccato && u.PasswordHash != ""
-		})).Return(nil)
-
-		svc := NewUserService(repo, fakeTxRunner{})
-		err := svc.UserService_VerifySecurityAnswerAndResetPassword(context.Background(), "mario", "rispostaCorretta", "nuovaPassword")
-
-		require.NoError(t, err)
-		repo.AssertExpectations(t)
-	})
-
-	t.Run("risposta errata restituisce ErrRispostaSecretErrata e non aggiorna nulla", func(t *testing.T) {
-		repo := new(mockUserRepository)
-		u := &domain.Utente{ID: 1, Username: "mario", RispostaHash: answerHash}
-		repo.On("UserRepository_GetByUsername", mock.Anything, "mario").Return(u, nil)
-
-		svc := NewUserService(repo, fakeTxRunner{})
-		err := svc.UserService_VerifySecurityAnswerAndResetPassword(context.Background(), "mario", "rispostaSbagliata", "nuovaPassword")
-
-		require.ErrorIs(t, err, domain.ErrRispostaSecretErrata)
-		repo.AssertNotCalled(t, "UserRepository_Update", mock.Anything, mock.Anything)
-	})
-
-	t.Run("utente inesistente propaga l'errore del repository", func(t *testing.T) {
-		repo := new(mockUserRepository)
-		repo.On("UserRepository_GetByUsername", mock.Anything, "fantasma").Return(nil, errors.New("not found"))
-
-		svc := NewUserService(repo, fakeTxRunner{})
-		err := svc.UserService_VerifySecurityAnswerAndResetPassword(context.Background(), "fantasma", "risposta", "nuovaPassword")
-
-		require.Error(t, err)
-		repo.AssertNotCalled(t, "UserRepository_Update", mock.Anything, mock.Anything)
-	})
 }

@@ -1,0 +1,8 @@
+<map id="UC1_Login_SD_map" name="UC1_Login_SD_map">
+<area shape="rect" id="id1" href="tentativiFalliti" title="tentativiFalliti" alt="" coords="35,437,55,450"/>
+<area shape="rect" id="id2" href="tentativiFalliti" title="tentativiFalliti" alt="" coords="109,363,139,375"/>
+<area shape="rect" id="id3" href="credenziali" title="credenziali" alt="" coords="99,223,136,236"/>
+<area shape="rect" id="id4" href="risposta" title="risposta" alt="" coords="35,929,73,942"/>
+<area shape="rect" id="id5" href="risposta" title="risposta" alt="" coords="109,738,159,751"/>
+<area shape="rect" id="id6" href="credenziali" title="credenziali" alt="" coords="25,298,89,310"/>
+</map>

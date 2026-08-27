@@ -26,27 +26,19 @@ type UserService struct {
 	Tx   transactionRunner
 }
 
-// UserRepository_GetSecurityQuestion implements [userService].
-func (s *UserService) UserRepository_GetSecurityQuestion(ctx context.Context, username string) (string, error) {
-	return s.UserService_GetSecurityQuestion(ctx, username)
-}
-
-// UserRepository_Login implements [userService].
-func (s *UserService) UserRepository_Login(ctx context.Context, username string, password string) (*domain.Utente, error) {
-	return s.UserService_Login(ctx, username, password)
-}
-
-// UserRepository_VerifySecurityAnswerAndResetPassword implements [userService].
-func (s *UserService) UserRepository_VerifySecurityAnswerAndResetPassword(ctx context.Context, username string, answer string, newPassword string) error {
-	return s.UserService_VerifySecurityAnswerAndResetPassword(ctx, username, answer, newPassword)
-}
-
 // NewUserService crea una nuova istanza del service per gli utenti.
 func NewUserService(repo userRepository, tx transactionRunner) *UserService {
 	return &UserService{Repo: repo, Tx: tx}
 }
 
-// UserService_Login verifica le credenziali di un utente e gestisce il meccanismo di blocco dopo 3 tentativi falliti. Se il login ha successo, ripristina i tentativi falliti, se fallisce ripetutamente, blocca l'account.
+// isAdminAccount indica se l'account è quello dell'amministratore principale
+// (username riservato) o ha ruolo amministrativo: questi account non vengono
+// mai bloccati automaticamente.
+func isAdminAccount(u *domain.Utente) bool {
+	return u.Username == domain.NomeUtenteAdmin || u.Ruolo.IsAdmin()
+}
+
+// UserService_Login verifica le credenziali di un utente e gestisce il meccanismo di blocco dopo 3 tentativi falliti. Se il login ha successo, ripristina i tentativi falliti, se fallisce ripetutamente, blocca l'account. L'account admin non viene mai bloccato.
 func (s *UserService) UserService_Login(ctx context.Context, username, password string) (*domain.Utente, error) {
 	var user *domain.Utente
 	var loginErr error
@@ -59,8 +51,11 @@ func (s *UserService) UserService_Login(ctx context.Context, username, password 
 			return err
 		}
 
-		// Controlla se l'account è già bloccato o se ha superato il limite di tentativi
-		if u.Bloccato || u.TentativiFalliti >= domain.MaxTentativiLogin {
+		admin := isAdminAccount(u)
+
+		// Controlla se l'account è già bloccato o se ha superato il limite di tentativi.
+		// Gli account amministratore non sono soggetti a blocco.
+		if !admin && (u.Bloccato || u.TentativiFalliti >= domain.MaxTentativiLogin) {
 			u.Bloccato = true
 			if err := s.Repo.UserRepository_Update(txCtx, u); err != nil {
  				return err
@@ -73,7 +68,7 @@ func (s *UserService) UserService_Login(ctx context.Context, username, password 
 		if err != nil {
 			// Password errata: incrementa il contatore dei tentativi falliti
 			u.TentativiFalliti++
-			if u.TentativiFalliti >= domain.MaxTentativiLogin {
+			if u.TentativiFalliti >= domain.MaxTentativiLogin && !admin {
 				u.Bloccato = true
 				if err := s.Repo.UserRepository_Update(txCtx, u); err != nil {
  					return err
@@ -108,43 +103,4 @@ func (s *UserService) UserService_Login(ctx context.Context, username, password 
 		return nil, loginErr
 	}
 	return user, nil
-}
-
-// GetSecurityQuestion recupera la domanda di sicurezza associata a un utente.
-func (s *UserService) UserService_GetSecurityQuestion(ctx context.Context, username string) (string, error) {
-	u, err := s.Repo.UserRepository_GetByUsername(ctx, username)
-	if err != nil {
-		return "", err
-	}
-	return u.DomandaSicurezza, nil
-}
-
-// VerifySecurityAnswerAndResetPassword verifica la risposta alla domanda di sicurezza e, se corretta, resetta la password.
-func (s *UserService) UserService_VerifySecurityAnswerAndResetPassword(ctx context.Context, username, answer, newPassword string) error {
-	// Esegue l'intera operazione in una transazione per coerenza
-	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
-
-		u, err := s.Repo.UserRepository_GetByUsername(txCtx, username)
-		if err != nil {
-			return err
-		}
-
-		// Verifica la risposta alla domanda di sicurezza usando bcrypt
-		err = bcrypt.CompareHashAndPassword([]byte(u.RispostaHash), []byte(answer))
-		if err != nil {
-			return domain.ErrRispostaSecretErrata
-		}
-
-		// Genera l'hash della nuova password
-		newHash, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
-		if err != nil {
-			return err
-		}
-
-		// Aggiorna l'utente: nuova password, nessun tentativo fallito, account sbloccato
-		u.PasswordHash = string(newHash)
-		u.TentativiFalliti = 0
-		u.Bloccato = false
-		return s.Repo.UserRepository_Update(txCtx, u)
-	})
 }

@@ -8,15 +8,13 @@ import "time"
 
 // Utente rappresenta un utente del sistema con ruolo RBAC.
 type Utente struct {
-	ID                int       `db:"id"`
-	Username          string    `db:"username"`
-	PasswordHash      string    `db:"password_hash"`        // bcrypt hash (x/crypto/bcrypt)
-	Ruolo             Ruolo     `db:"ruolo"`                // Magazziniere | Contabile | Amministratore
-	DomandaSicurezza  string    `db:"domanda_sicurezza"`    // RF-03
-	RispostaHash      string    `db:"risposta_hash"`        // bcrypt hash della risposta
-	TentativiFalliti  int       `db:"tentativi_falliti"`    // RF-02: blocco a 3
-	Bloccato          bool      `db:"bloccato"`             // RF-02
-	CreatedAt         time.Time `db:"created_at"`
+	ID               int       `db:"id"`
+	Username         string    `db:"username"`
+	PasswordHash     string    `db:"password_hash"`     // bcrypt hash (x/crypto/bcrypt)
+	Ruolo            Ruolo     `db:"ruolo"`             // Magazziniere | Contabile | Admin
+	TentativiFalliti int       `db:"tentativi_falliti"` // RF-02: blocco a 3
+	Bloccato         bool      `db:"bloccato"`          // RF-02
+	CreatedAt        time.Time `db:"created_at"`
 }
 
 // ─────────────────────────────────────────────
@@ -32,15 +30,15 @@ type Categoria struct {
 
 // Prodotto rappresenta l'anagrafica di un articolo a magazzino.
 type Prodotto struct {
-	ID          int     `db:"id"`
-	Codice      string  `db:"codice"`       // codice interno
-	Barcode     string  `db:"barcode"`      // EAN-13 — RF-15, US-02
-	Nome        string  `db:"nome"`
-	Descrizione string  `db:"descrizione"`
-	CategoriaID int     `db:"categoria_id"`
-	PrezzoAcq   float64 `db:"prezzo_acquisto"` // RF-14
-	PrezzoVend  float64 `db:"prezzo_vendita"`  // RF-14
-	SogliaMin   int     `db:"soglia_minima"`   // RF-10: notifica sotto soglia
+	ID          int        `db:"id"`
+	Codice      string     `db:"codice"`  // codice interno
+	Barcode     string     `db:"barcode"` // EAN-13 — RF-15, US-02
+	Nome        string     `db:"nome"`
+	Descrizione string     `db:"descrizione"`
+	CategoriaID int        `db:"categoria_id"`
+	PrezzoAcq   float64    `db:"prezzo_acquisto"` // RF-14
+	PrezzoVend  float64    `db:"prezzo_vendita"`  // RF-14
+	SogliaMin   int        `db:"soglia_minima"`   // RF-10: notifica sotto soglia
 	Categoria   *Categoria // join opzionale, non mappato su DB
 }
 
@@ -71,14 +69,14 @@ func (g *Giacenza) SottoSoglia() bool {
 
 // OrdineEntrata rappresenta un carico di merce in arrivo al magazzino.
 type OrdineEntrata struct {
-	ID          int                `db:"id"`
-	Numero      string             `db:"numero"`      // es. "ENT-2026-0042"
-	Fornitore   string             `db:"fornitore"`
-	Data        time.Time          `db:"data"`
-	Stato       StatoOrdine        `db:"stato"`
-	Note        string             `db:"note"`
-	CreatedByID int                `db:"created_by"`
-	Righe       []RigaOrdineEntrata // non mappata su DB, caricata dal DAO
+	ID          int                 `db:"id"`
+	DDTID       int                 `db:"ddt_id"`
+	Numero      string              `db:"numero"`
+	Fornitore   string              `db:"fornitore"`
+	Data        time.Time           `db:"data"`
+	Note        string              `db:"note"`
+	CreatedByID int                 `db:"created_by"`
+	Righe       []RigaOrdineEntrata // non mappata su DB
 }
 
 // RigaOrdineEntrata è una singola riga (prodotto + quantità) di un OrdineEntrata.
@@ -97,14 +95,14 @@ type RigaOrdineEntrata struct {
 
 // OrdineUscita rappresenta una spedizione o consegna di merce dal magazzino.
 type OrdineUscita struct {
-	ID          int               `db:"id"`
-	Numero      string            `db:"numero"`    // es. "USC-2026-0017"
-	Cliente     string            `db:"cliente"`
-	Data        time.Time         `db:"data"`
-	Stato       StatoOrdine       `db:"stato"`     // RF-09: Confermato → Evaso
-	Note        string            `db:"note"`
-	CreatedByID int               `db:"created_by"`
-	DDTID       *int              `db:"ddt_id"`    // FK al DDT generato (RF-08)
+	ID          int         `db:"id"`
+	Numero      string      `db:"numero"` // es. "USC-2026-0017"
+	Cliente     string      `db:"cliente"`
+	Data        time.Time   `db:"data"`
+	Stato       StatoOrdineUscita `db:"stato"` // RF-09: Confermato | Evaso | Annullato
+	Note        string      `db:"note"`
+	CreatedByID int         `db:"created_by"`
+	DDTID       *int        `db:"ddt_id"` // FK al DDT generato (RF-08)
 	Righe       []RigaOrdineUscita
 }
 
@@ -113,7 +111,7 @@ type RigaOrdineUscita struct {
 	ID             int     `db:"id"`
 	OrdineUscitaID int     `db:"ordine_uscita_id"`
 	ProdottoID     int     `db:"prodotto_id"`
-	Quantita       int     `db:"quantita"`     // TC-01: validato prima del ROLLBACK
+	Quantita       int     `db:"quantita"` // TC-01: validato prima del ROLLBACK
 	PrezzoUnitario float64 `db:"prezzo_unitario"`
 	Prodotto       *Prodotto
 }
@@ -125,12 +123,12 @@ type RigaOrdineUscita struct {
 // DDT (Documento di Trasporto) generato alla conferma di un OrdineUscita.
 type DDT struct {
 	ID             int       `db:"id"`
-	Numero         string    `db:"numero"`       // es. "DDT-2026-0017"
+	Numero         string    `db:"numero"` // es. "DDT-2026-0017"
 	OrdineUscitaID int       `db:"ordine_uscita_id"`
 	Data           time.Time `db:"data"`
 	Mittente       string    `db:"mittente"`
 	Destinatario   string    `db:"destinatario"`
-	PathPDF        string    `db:"path_pdf"`     // percorso file PDF generato
+	PathPDF        string    `db:"path_pdf"` // percorso file PDF generato
 	OrdineUscita   *OrdineUscita
 }
 
@@ -141,9 +139,9 @@ type DDT struct {
 // Fattura rappresenta un documento fiscale emesso per un ordine di uscita evaso.
 type Fattura struct {
 	ID             int         `db:"id"`
-	Numero         string      `db:"numero"`          // numerazione progressiva annuale — RF-13
+	Numero         string      `db:"numero"` // numerazione progressiva annuale — RF-13
 	Anno           int         `db:"anno"`
-	Tipo           TipoFattura `db:"tipo"`            // Fattura | NotaCredito
+	Tipo           TipoFattura `db:"tipo"` // Fattura | NotaCredito
 	OrdineUscitaID int         `db:"ordine_uscita_id"`
 	Imponibile     float64     `db:"imponibile"`
 	IVA            float64     `db:"iva"`
@@ -163,6 +161,7 @@ type Reso struct {
 	ProdottoID     int       `db:"prodotto_id"`
 	Quantita       int       `db:"quantita"`
 	Motivo         string    `db:"motivo"`
+	Stato          StatoReso `db:"stato"` //  Accettato | Rifiutato
 	Data           time.Time `db:"data"`
 	CreatedByID    int       `db:"created_by"`
 }

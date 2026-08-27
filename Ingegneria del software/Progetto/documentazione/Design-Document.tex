@@ -1,65 +1,543 @@
 \documentclass[a4paper,12pt]{article}
 
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage[italian]{babel}
-\usepackage{enumitem}
-\usepackage{geometry}
-\usepackage{hyperref}
-\usepackage{booktabs}
-\usepackage{graphicx}
-\usepackage{longtable}
+\usepackage{gialosai-style}
+\usepackage{listings}
 
-\geometry{margin=2.5cm}
-
-\title{Documentazione del design  \\ \large Gestionale Locale per la Gestione del Magazzino}
-\author{Gruppo 11}
-\date{27 Maggio 2026}
+\lstset{
+    language=Go,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{gialosaiAccent},
+    commentstyle=\color{gialosaiGray},
+    stringstyle=\color{gialosaiGreen},
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{gialosaiBorder},
+    backgroundcolor=\color{gialosaiLight},
+    numbers=left,
+    numberstyle=\tiny\color{gialosaiGray},
+    columns=fullflexible,
+    tabsize=4,
+    showstringspaces=false,
+}
 
 \begin{document}
 
-\maketitle
+\gialosaiTitlePage{Documento di Design}{25 Agosto 2026}{v2.0.0}
 
-\section{Contesto e Obbiettivi}
-Il progetto vuole creare uno strumento utilizzabile da un azienda per gestire dinamiche di magazzino , dinamiche di contabilita e di amministrazione.
+\newpage
+\tableofcontents
+\newpage
 
-\section{Non Obbiettivi}
+% ============================================================
+\section{Contesto, obiettivi e non obiettivi}
+% ============================================================
 
-Il sistema non intende affrontare la parte e-commerce cioè l'iserimento di ordini da parte del cliente finale.
+GiaLoSai \`{e} un sistema client--server per la gestione logistica interna di un'azienda: prodotti, categorie, giacenze, ordini di entrata e uscita, DDT, fatture, note di credito, resi e utenti con ruoli differenziati. Il backend \`{e} scritto in Go, espone API REST (Representational State Transfer) e persiste su MySQL 8 tramite Docker Compose. Il client \`{e} una TUI (Text-based User Interface) scritta in Go con il framework Bubble Tea.
 
-\section{Proposta}
+\gialosaiNote{Il progetto segue le best practice dei moderni strumenti CLI: come \texttt{docker} e \texttt{kubectl}, GiaLoSai separa il client leggero (TUI) dal backend, comunicando tramite API REST con autenticazione JWT (JSON Web Token). Il pattern \`{e} lo stesso utilizzato da \texttt{gh} (GitHub CLI) e \texttt{aws} CLI.}
 
-presenta la soluzione architetturale adottata, idealmente supportata da una singola figura riassuntiva.
-
+\subsection{Obiettivi}
 \begin{itemize}
-    \item \textbf{Front-end}: Go con Bubbletea per TUI
-    \item \textbf{Back-end}: Abbiamo scelto GO per la velocita di calcolo e l'affidabilità nel campo della sicurezza
-    \item \textbf{Database}: Utilizzaremo SQL lite per la semplicità di uso.
+    \item Gestire l'intero ciclo della merce: dall'anagrafica prodotti fino a DDT, fatture, note di credito e resi.
+    \item Fornire tre ruoli (magazziniere, contabile, admin) con funzionalità distinte.
+    \item Garantire atomicità delle operazioni multi-entità tramite transazioni MySQL.
+    \item Raggiungere un livello documentale e testuale adeguato a un progetto universitario.
 \end{itemize}
 
-\section{Alternative}
-
-elencano le opzioni valutate e i motivi per cui non sono state scelte.
-
+\subsection{Non obiettivi}
 \begin{itemize}
-    \item \textbf{Poi} si farà
+    \item Canale e-commerce o raccolta ordini dal cliente finale.
+    \item Generazione materiale di PDF o CSV: i percorsi sono registrati nei modelli ma non esiste un generatore.
+    \item Microservizi, orchestratori (Kubernetes) o distribuzione cloud.
+    \item Autenticazione OAuth2/OIDC o federazione SSO.
 \end{itemize}
 
-\section{Conseguenze}
+% ============================================================
+\section{Proposta architetturale}
+% ============================================================
 
-analizzano vantaggi, svantaggi e rischi introdotti dalla soluzione proposta.
+Il sistema combina gli stili \emph{client--server}, \emph{layered} e \emph{repository}. Il client TUI in Go è un processo separato dal backend e comunica con esso in HTTP/JSON. Il backend Go centralizza le regole applicative e accede a un repository dati MySQL condiviso. Non è un'architettura a microservizi: i package del server sono moduli di un singolo processo.
+
+\begin{verbatim}
++--------------+      HTTP/JSON       +----------------------+
+|  Client TUI  | -------------------- |   Backend REST Go    |
+|  Bubble Tea  |  Authorization:      |   chi router         |
+|  Lipgloss    |  Bearer <JWT>        |   +-- middleware      |
++--------------+                      |      +-- controller   |
+                                      |         +-- service   |
+                                      |            +-- repo   |
+                                      +-----------+-----------+
+                                                  |
+                                           +------+------+
+                                           |  MySQL 8    |
+                                           |  (Docker)   |
+                                           +-------------+
+\end{verbatim}
+
+\gialosaiNote{L'architettura segue lo stesso pattern di \texttt{docker}: un binario singolo che espone API HTTP, con un client TUI separato che interagisce con esso. Il modello ``backend + client separati'' è lo stesso utilizzato da \texttt{portainer}, \texttt{k9s} e \texttt{lazygit}.}
+
+La soluzione risponde a tre esigenze: separare l'esperienza utente dalla logica applicativa, concentrare la persistenza in un punto controllato e mantenere le regole di dominio testabili senza richiedere sempre risorse esterne.
+
+\subsection{Responsabilità dei layer}
+\begin{longtable}{p{0.18\textwidth}p{0.50\textwidth}p{0.22\textwidth}}
+\toprule
+\tableHeader \textbf{Layer} & \textbf{Responsabilità} & \textbf{Package} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Layer} & \textbf{Responsabilità} & \textbf{Package} \\
+\midrule
+\endhead
+Client TUI & Gestisce input, stato e rendering secondo Model--View--Update; navigazione multi-pagina con enum \texttt{iota}. & \texttt{client/ui/app} \\
+\midrule
+API Client & Traduce le operazioni TUI in chiamate HTTP REST; conserva JWT e ruolo in memoria. & \texttt{client/api} \\
+\midrule
+Router e middleware & Compone le dipendenze (\texttt{NewRouter}), espone 25 rotte \texttt{/api/v1}, separa login pubblico da rotte protette. & \texttt{server/router}, \texttt{server/middleware} \\
+\midrule
+Controller & Adattatore HTTP: decodifica DTO, chiama il service, codifica la risposta JSON. & \texttt{server/\{auth,user,product,category,order\}} \\
+\midrule
+Service & Regole di business, coordinamento transazionale, validazione. & \texttt{server/\{auth,user,product,category,order\}} \\
+\midrule
+Repository & Incapsula query SQL parametrizzate; è l'unico layer che conosce lo schema MySQL. & \texttt{server/\{auth,user,product,category,order\}} \\
+\midrule
+Domain & Entità, costanti, errori sentinella, validazione EAN-13, \texttt{TransactionHelper}. & \texttt{server/domain} \\
+\bottomrule
+\end{longtable}
+
+\subsection{Pattern e principi effettivamente applicati}
+
+Il modello è un'architettura a layer, non un MVC classico: i controller sono adattatori HTTP e la view è nel processo client separato.
 
 \begin{itemize}
-    \item \textbf{Poi} si farà
+    \item \textbf{Repository pattern}: ogni package di dominio ha un repository che incapsula l'accesso SQL. I service dipendono da interfacce ristrette (non dalle implementazioni concrete), coerentemente con \emph{Dependency Inversion} e \emph{Interface Segregation}. Ciò consente l'uso di mock (\texttt{go-sqlmock}) nei test. Questo pattern è lo stesso utilizzato da \texttt{database/sql} in Go e da progetti come \texttt{github.com/jmoiron/sqlx}.
+    \item \textbf{DTO (Data Transfer Object)}: le strutture di trasporto HTTP sono separate dalle entità del dominio. Ogni package ha i propri DTO (\texttt{AuthDTO}, \texttt{UserDto}, \texttt{ProductDto}, \texttt{OrderDto}, \texttt{CategoryDto}). Il pattern è lo stesso adottato da \texttt{docker} API e \texttt{kubernetes} API.
+    \item \textbf{Transaction-in-context}: \texttt{TransactionHelper.WithinTransaction} inserisce una transazione SQL nel \texttt{context.Context}; i repository la estraggono con \texttt{GetExecutor}. Il pattern è trasparente ai service e supporta nesting. Simile al pattern utilizzato da \texttt{sqlx} e \texttt{gorm}.
+    \item \textbf{Model--View--Update (MVU)}: il client TUI applica il pattern Elm su ogni pagina. Ogni package pagina espone \texttt{Init()}, \texttt{Update()} e \texttt{View()} come interfaccia Bubble Tea. Lo stesso pattern è utilizzato da \texttt{lazygit}, \texttt{k9s}, \texttt{btop} e \texttt{htop}.
+    \item \textbf{Sentinel errors}: \texttt{domain/errors.go} definisce errori sentinella (\texttt{ErrGiacenzaInsufficient}, \texttt{ErrAccountBloccato}, \texttt{ErrCredenzaliErrate}, ecc.) per il controllo degli flussi di errore nei service. Pattern standard in Go, utilizzato anche da \texttt{net/http} e \texttt{io}.
 \end{itemize}
 
-\section{Piano di Adozione}
+Non vengono dichiarati Strategy, Factory, Observer o Adapter come pattern di progetto, poiché il codice non contiene collaboratori intercambiabili o punti di estensione che ne giustifichino l'attribuzione.
 
-descrive come e quando la soluzione viene introdotta, se è prevista una migrazione o un’evoluzione graduale.
+% ============================================================
+\section{Struttura dei package}
+% ============================================================
+
+Il progetto è organizzato in due moduli Go indipendenti (\texttt{client/go.mod} e \texttt{server/go.mod}), ciascuno con le proprie dipendenze.
+
+\subsection{Server}
+
+\begin{verbatim}
+server/
++-- cmd/gialosai/        # Entry point (main.go)
++-- router/              # Composizione dipendenze e rotte REST
+|   +-- Router.go        # NewRouter(db): 25 endpoint
+|   +-- Router_test.go
+|   +-- integration_test.go
++-- middleware/           # Autenticazione HTTP
+|   +-- AuthMiddleware.go # Verifica JWT + sessione DB
+|   +-- AuthMiddleware_test.go
++-- domain/              # Modello comune
+|   +-- models.go        # 12 entita (Utente, Prodotto, OrdineUscita, DDT, ...)
+|   +-- constants.go     # Ruoli, stati, soglie, prefissi documenti
+|   +-- errors.go        # 12 errori sentinella
+|   +-- db.go            # TransactionHelper, QueryExecutor
+|   +-- validation.go    # IsValidEAN13
+|   +-- reports.go       # InventoryItem, InventoryReport
++-- auth/                # Login, JWT, sessioni
+|   +-- AuthController.go
+|   +-- AuthService.go
+|   +-- AuthJWT.go       # HS256, hash SHA-256 del token
+|   +-- AuthPassword.go  # bcrypt (cost 10)
+|   +-- AuthDTO.go
+|   +-- SessionRepository.go
++-- user/                # CRUD utenti, blocco account
++-- product/             # Catalogo prodotti, giacenze, report
++-- category/            # CRUD categorie
++-- order/               # Ordini, DDT, fatture, resi
++-- mysql/
+    +-- init.sql         # Schema DDL (12 tabelle InnoDB)
+\end{verbatim}
+
+\subsection{Client}
+
+\begin{verbatim}
+client/
++-- cmd/gialosai/        # Entry point client
++-- api/                 # Client HTTP
+|   +-- client.go        # APIClient, Login()
+|   +-- products.go      # GetCatalogo, CreaProdotto, GetReportGiacenze, ...
+|   +-- orders.go        # GetOrdini, CreaOrdineUscita, GetDDT, ...
+|   +-- users.go         # CreateUser, ToggleUserBlock, ...
+|   +-- model.go         # DTO lato client (Prodotto, Ordine, Fattura, ...)
++-- ui/
+|   +-- app/             # Modello principale (mainLayout)
+|   |   +-- app.go       # Update() con switch navigazione
+|   |   +-- model.go     # Enum paginaAttiva, userRole con iota
+|   +-- styles/          # Stili condivisi (bordi, colori, dimensioni)
+|   +-- components/      # Header, footer riutilizzabili
+|   +-- tabnav/          # Navigazione a tab con hitbox click
+|   +-- pages/
+|       +-- login/
+|       +-- magazzino/   # ordinientrata, ordiniuscita, giacenze,
+|       |                # scanner, resi
+|       +-- contabilita/ # ordini, fatture, report, catalogo
+|       +-- admin/       # dashboard, users
+\end{verbatim}
+
+\gialosaiNote{La struttura del client segue lo stesso pattern di \texttt{lazygit} e \texttt{k9s}: un modello principale che ospita sub-model per ogni pagina, con navigazione a enum e stili condivisi. Il pattern è identico a quello utilizzato da \texttt{bubbletea} nella documentazione ufficiale.}
+
+Ogni package pagina (\texttt{login/}, \texttt{giacenze/}, \texttt{fatture/}, ...) dichiara i propri metodi Bubble Tea (\texttt{Init}, \texttt{Update}, \texttt{View}) e un costruttore \texttt{New()}.
+
+% ============================================================
+\section{Persistenza, sicurezza e coerenza}
+% ============================================================
+
+\subsection{Database}
+
+MySQL 8 è eseguito tramite Docker Compose. Lo schema (\texttt{docker/mysql/init.sql}) definisce 12 tabelle con engine InnoDB, collazione \texttt{utf8mb4\_unicode\_ci} e chiavi esterne.
+
+\begin{longtable}{p{0.22\textwidth}p{0.55\textwidth}}
+\toprule
+\tableHeader \textbf{Tabella} & \textbf{Descrizione} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Tabella} & \textbf{Descrizione} \\
+\midrule
+\endhead
+\texttt{Utenti} & Account con ruolo (\texttt{magazziniere}, \texttt{contabile}, \texttt{admin}), tentativi falliti e flag blocco. \\
+\texttt{Sessioni} & Whitelist JWT: hash SHA-256 del token, scadenza, FK a \texttt{Utenti}. \\
+\texttt{Categorie} & Anagrafica categorie prodotto (nome univoco, descrizione). \\
+\texttt{Prodotti} & Catalogo con codice, barcode EAN-13, prezzi di acquisto/vendita, soglia minima, FK a \texttt{Categorie}. \\
+\texttt{Giacenze} & Quantità disponibile per prodotto (1:1 con \texttt{Prodotti}, cascade delete). \\
+\texttt{OrdiniEntrata} & Ordini fornitore con numero progressivo, stato e note. \\
+\texttt{RigheOrdineEntrata} & Righe ordine entrata: prodotto, quantità, prezzo unitario. \\
+\texttt{OrdiniUscita} & Ordini cliente con stato (\texttt{confermato}, \texttt{evaso}, \texttt{annullato}) e FK opzionale a DDT. \\
+\texttt{RigheOrdineUscita} & Righe ordine uscita: prodotto, quantità, prezzo unitario. \\
+\texttt{DDT} & Documento di trasporto collegato a un ordine uscita (1:1). \\
+\texttt{Fatture} & Fatture di vendita e note dicredito (\texttt{tipo}: \texttt{fattura} o \texttt{nota\_credito}), con imponibile, IVA e totale. \\
+\texttt{Resi} & Resi merce con stato (\texttt{da\_verificare}, \texttt{accettato}, \texttt{rifiutato}) e motivo. \\
+\bottomrule
+\end{longtable}
+
+Le chiavi esterne garantiscono l'integrità referenziale: ogni prodotto ha una giacenza, le righe dipendono dagli ordini (cascade delete), un DDT è associato a un solo ordine di uscita, e un ordine creato da un utente non può essere eliminato se l'utente viene rimosso (\texttt{RESTRICT}).
+
+\subsection{Transazioni}
+
+\texttt{TransactionHelper} (\texttt{domain/db.go}) apre una transazione e la propaga nel \texttt{context.Context}. I repository estraggono l'executor con \texttt{GetExecutor(ctx, r.DB)}, che restituisce la transazione se presente nel contesto, altrimenti la connessione diretta. Questo confine atomico protegge:
 
 \begin{itemize}
-    \item \textbf{Poi} si farà
+    \item \textbf{Ordini di entrata}: inserimento righe e incremento giacenze nello stesso \texttt{BEGIN/COMMIT}.
+    \item \textbf{Ordini di uscita}: verifica disponibilità, decremento giacenze e registrazione ordine. Un errore di giacenza insufficiente causa \texttt{ROLLBACK}.
+    \item \textbf{Login}: read-modify-write atomico dei tentativi falliti e del flag blocco.
+    \item \textbf{Resi}: aggiornamento stato e ripristino/reintegro giacenza in transazione.
 \end{itemize}
 
+\gialosaiNote{Il pattern di transazione in contesto è lo stesso utilizzato da \texttt{database/sql} di Go e da ORM come \texttt{gorm}. La propagazione via \texttt{context.Context} è la best practice raccomandata dal team di Go per la gestione delle transazioni.}
+
+\subsection{Autenticazione}
+
+Il flusso di autenticazione è il seguente:
+
+\begin{enumerate}
+    \item Il client invia \texttt{POST /api/v1/login} con username e password.
+    \item Il server verifica le credenziali con \texttt{bcrypt.CompareHashAndPassword}.
+    \item Se valide, genera un JWT HS256 (\texttt{golang-jwt/jwt/v5}) con claim \texttt{user\_id}, \texttt{username}, \texttt{role} e scadenza 24h.
+    \item Il token viene hashato con SHA-256 e salvato nella tabella \texttt{Sessioni} (mai in chiaro).
+    \item Il client conserva il JWT e lo invia come \texttt{Authorization: Bearer <token>} a ogni richiesta protetta.
+    \item Il middleware verifica: (a) firma JWT e scadenza, (b) presenza della sessione hashata nel DB, (c) inietta \texttt{userID} nel contesto.
+\end{enumerate}
+
+\gialosaiNote{L'autenticazione JWT con whitelist è lo stesso approccio utilizzato da \texttt{docker} (con token di accesso) e \texttt{kubectl} (con certificati e token). Il pattern di hash SHA-256 del token è una best practice per evitare che token compromessi siano riutilizzabili.}
+
+Dopo tre tentativi di accesso falliti consecutivi, l'account viene bloccato (\texttt{RF-02}). L'account con username \texttt{admin} è esente dal blocco. Il ripristino avviene solo tramite un altro admin che sblocca l'account e imposta una nuova password.
+
+% ============================================================
+\section{Superficie API REST}
+% ============================================================
+
+Il server espone 25 endpoint sotto il prefisso \texttt{/api/v1}. Tutte le rotte richiedono autenticazione tranne il login.
+
+\gialosaiNote{Le API REST seguono le stesse convenzioni di \texttt{docker} API (\texttt{/containers/create}, \texttt{/images/json}) e \texttt{kubernetes} API (\texttt{/api/v1/namespaces}). Il pattern CRUD con endpoint nominativi è lo standard per API REST progettate per client TUI.}
+
+\subsection{Autenticazione}
+\begin{longtable}{p{0.10\textwidth}p{0.40\textwidth}p{0.40\textwidth}}
+\toprule
+\tableHeader \textbf{Metodo} & \textbf{Percorso} & \textbf{Operazione} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Metodo} & \textbf{Percorso} & \textbf{Operazione} \\
+\midrule
+\endhead
+\texttt{POST} & \texttt{/api/v1/login} & Autentica e restituisce token JWT e ruolo. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Prodotti}
+\begin{longtable}{p{0.10\textwidth}p{0.40\textwidth}p{0.40\textwidth}}
+\toprule
+\tableHeader \textbf{Metodo} & \textbf{Percorso} & \textbf{Operazione} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Metodo} & \textbf{Percorso} & \textbf{Operazione} \\
+\midrule
+\endhead
+\texttt{GET} & \texttt{/api/v1/products/} & Elenca tutti i prodotti. \\
+\texttt{POST} & \texttt{/api/v1/products/} & Crea un nuovo prodotto. \\
+\texttt{GET} & \texttt{/api/v1/products/inventory-report} & Restituisce il report inventario. \\
+\texttt{PUT} & \texttt{/api/v1/products/\{id\}/price} & Aggiorna il prezzo di vendita. \\
+\texttt{DELETE} & \texttt{/api/v1/products/\{id\}} & Elimina un prodotto. \\
+\texttt{GET} & \texttt{/api/v1/products/barcode/\{barcode\}} & Cerca prodotto per barcode EAN-13. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Ordini}
+\begin{longtable}{p{0.10\textwidth}p{0.45\textwidth}p{0.35\textwidth}}
+\toprule
+\tableHeader \textbf{Metodo} & \textbf{Percorso} & \textbf{Operazione} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Metodo} & \textbf{Percorso} & \textbf{Operazione} \\
+\midrule
+\endhead
+\texttt{GET} & \texttt{/api/v1/orders/} & Ordini di uscita. \\
+\texttt{GET} & \texttt{/api/v1/orders/entrata} & Ordini di entrata. \\
+\texttt{POST} & \texttt{/api/v1/orders/crea-uscita} & Crea ordine di uscita. \\
+\texttt{POST} & \texttt{/api/v1/orders/crea-entrata} & Crea ordine di entrata. \\
+\texttt{PUT} & \texttt{/api/v1/orders/update-ordine-uscita/\{id\}} & Aggiorna ordine uscita. \\
+\texttt{DELETE} & \texttt{/api/v1/orders/delete-entrata/\{id\}} & Elimina ordine entrata. \\
+\texttt{POST} & \texttt{/api/v1/orders/\{id\}/create-ddt} & Genera DDT per ordine evaso. \\
+\texttt{POST} & \texttt{/api/v1/orders/create-fattura/\{id\}} & Genera fattura di vendita. \\
+\texttt{DELETE} & \texttt{/api/v1/orders/delete-fattura/\{id\}} & Elimina fattura. \\
+\texttt{POST} & \texttt{/api/v1/orders/create-credit-notes/\{id\}} & Genera nota di credito. \\
+\texttt{GET} & \texttt{/api/v1/orders/invoices} & Elenca fatture. \\
+\texttt{GET} & \texttt{/api/v1/orders/credit-notes} & Elenca note di credito. \\
+\texttt{GET} & \texttt{/api/v1/orders/resi} & Elenca resi. \\
+\texttt{PUT} & \texttt{/api/v1/orders/update-resi} & Aggiorna stato reso. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Categorie e utenti}
+\begin{longtable}{p{0.10\textwidth}p{0.45\textwidth}p{0.35\textwidth}}
+\toprule
+\tableHeader \textbf{Metodo} & \textbf{Percorso} & \textbf{Operazione} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Metodo} & \textbf{Percorso} & \textbf{Operazione} \\
+\midrule
+\endhead
+\texttt{GET} & \texttt{/api/v1/categories/} & Elenca categorie. \\
+\texttt{POST} & \texttt{/api/v1/categories/} & Crea categoria. \\
+\texttt{DELETE} & \texttt{/api/v1/categories/\{id\}} & Elimina categoria. \\
+\texttt{POST} & \texttt{/api/v1/users/} & Crea utente. \\
+\texttt{GET} & \texttt{/api/v1/users/\{username\}} & Cerca utente per username. \\
+\texttt{PUT} & \texttt{/api/v1/users/\{username\}} & Aggiorna utente. \\
+\texttt{DELETE} & \texttt{/api/v1/users/\{username\}} & Elimina utente. \\
+\bottomrule
+\end{longtable}
+
+% ============================================================
+\section{Architettura client TUI}
+% ============================================================
+
+Il client è una TUI Go basata su Bubble Tea v2 (architettura Model--View--Update) con Lipgloss v2 per lo stile. Il modello principale \texttt{mainLayout} (\texttt{client/ui/app/}) ospita tutti i sub-model e gestisce la navigazione.
+
+\gialosaiNote{Bubble Tea è il framework TUI più utilizzato nell'ecosistema Go, con progetti come \texttt{lazygit} (25k+ stelle), \texttt{glow} (rendering markdown), \texttt{soft-serve} (server Git TUI) e \texttt{charm} (la stessa azienda che lo sviluppa). Il pattern MVU è lo stesso di \texttt{Elm} e \texttt{Redux}, reso popolare da applicazioni web reattive.}
+
+\subsection{Navigazione}
+
+La navigazione è controllata da un enum \texttt{paginaAttiva} definito con \texttt{iota}:
+
+\begin{verbatim}
+const (
+    LOGIN     paginaAttiva = iota  // 0
+    MAGMENU                         // 1 - Menu magazzino
+    CONTMENU                        // 2 - Menu contabilità
+    ADMINMENU                       // 3 - Menu admin
+)
+\end{verbatim}
+
+Ogni menu espone le proprie sottopagine. Il metodo \texttt{Update()} del modello principale esegue uno \texttt{switch} sul valore corrente di \texttt{paginaAttiva} per instradare i messaggi alla sottopagina attiva. La navigazione avviene tramite scorciatoie da tastiera (\texttt{ctrl+F1}, \texttt{ctrl+F2}, ...) e \texttt{ctrl+L} per il logout.
+
+\gialosaiNote{Il sistema di navigazione a enum è lo stesso utilizzato da \texttt{lazygit}, \texttt{k9s} e \texttt{btop}. La navigazione a scorciatoie da tastiera è una best practice per TUI, garantendo efficienza e accessibilità.}
+
+\subsection{Gerarchia delle pagine}
+
+\begin{longtable}{p{0.25\textwidth}p{0.35\textwidth}p{0.30\textwidth}}
+\toprule
+\tableHeader \textbf{Pagina} & \textbf{Package} & \textbf{Ruolo} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Pagina} & \textbf{Package} & \textbf{Ruolo} \\
+\midrule
+\endhead
+Login & \texttt{pages/login/} & Tutti \\
+\midrule
+Menu Magazzino & \texttt{pages/magazzino/} & Magazziniere \\
+\quad Giacenze & \texttt{pages/magazzino/giacenze/} & Magazziniere \\
+\quad Ordini Entrata & \texttt{pages/magazzino/ordinientrata/} & Magazziniere \\
+\quad Ordini Uscita & \texttt{pages/magazzino/ordiniuscita/} & Magazziniere \\
+\quad Scanner & \texttt{pages/magazzino/scanner/} & Magazziniere \\
+\quad Resi & \texttt{pages/magazzino/resi/} & Magazziniere \\
+\midrule
+Menu Contabilità & \texttt{pages/contabilita/} & Contabile \\
+\quad Ordini & \texttt{pages/contabilita/ordini/} & Contabile \\
+\quad Fatture & \texttt{pages/contabilita/fatture/} & Contabile \\
+\quad Report & \texttt{pages/contabilita/report/} & Contabile \\
+\quad Catalogo & \texttt{pages/contabilita/catalogo/} & Contabile \\
+\midrule
+Menu Admin & \texttt{pages/admin/} & Admin \\
+\quad Dashboard & \texttt{pages/admin/dashboard/} & Admin \\
+\quad Utenti & \texttt{pages/admin/users/} & Admin \\
+\bottomrule
+\end{longtable}
+
+Il client API (\texttt{client/api/}) espone 30 funzioni esportate che coprono login, catalogo, ordini, fatture, resi e gestione utenti. Ogni funzione effettua una richiesta HTTP, deserializza la risposta JSON e restituisce il DTO lato client.
+
+% ============================================================
+\section{Topologia di deploy}
+% ============================================================
+
+Il sistema è containerizzato con Docker Compose. Due servizi (\texttt{db} e \texttt{app}) sono definiti in \texttt{docker/docker-compose.yml}.
+
+\gialosaiNote{L'approccio Docker segue le best practice di \texttt{docker} e \texttt{docker-compose}: un file YAML che definisce i servizi, le dipendenze e i volumi. Il pattern multi-stage build è lo stesso utilizzato da \texttt{golang} official image e da progetti come \texttt{traefik}.}
+
+\subsection{Servizi}
+
+\begin{longtable}{p{0.12\textwidth}p{0.30\textwidth}p{0.48\textwidth}}
+\toprule
+\tableHeader \textbf{Servizio} & \textbf{Immagine} & \textbf{Configurazione} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Servizio} & \textbf{Immagine} & \textbf{Configurazione} \\
+\midrule
+\endhead
+\texttt{db} & \texttt{mysql:8.0} & Porta host 3307, volume \texttt{mysql\_data}, healthcheck \texttt{mysqladmin ping}, init scripts da \texttt{docker/mysql/} (schema + seed). \\
+\texttt{app} & Build locale (Dockerfile multi-stage) & Porta 8080, dipende da \texttt{db} con \texttt{condition: service\_healthy}, volume \texttt{../output:/app/output}. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Dockerfile multi-stage}
+
+\begin{enumerate}
+    \item \textbf{Builder}: \texttt{golang:1.25-alpine} compila il server con \texttt{CGO\_ENABLED=0}, \texttt{-trimpath}, \texttt{-ldflags="-s -w"}.
+    \item \textbf{Runtime}: \texttt{gcr.io/distroless/static-debian12:nonroot} esegue il binario come utente \texttt{nonroot:nonroot}, minimizzando la superficie di attacco.
+\end{enumerate}
+
+\subsection{Avvio}
+
+\begin{verbatim}
+# Avvio completo (DB + server)
+docker compose -f docker/docker-compose.yml up --build
+
+# Client TUI (in un secondo terminale)
+cd client && go run .
+\end{verbatim}
+
+Compose avvia MySQL con healthcheck e il backend sulla porta 8080. Il client si connette a \texttt{http://localhost:8080}. Il volume \texttt{mysql\_data} conserva i dati tra i restart; eseguire \texttt{docker compose down -v} per ripartire da un database vuoto.
+
+% ============================================================
+\section{Flussi dati principali}
+% ============================================================
+
+\subsection{Login}
+\begin{enumerate}
+    \item Client invia \texttt{POST /api/v1/login} con \texttt\{"username", "password"\}.
+    \item \texttt{AuthService\_Login} estrae l'utente dal DB, verifica blocco e password bcrypt.
+    \item Se ok: genera JWT (HS256, scadenza 24h), hash SHA-256 del token, salva in \texttt{Sessioni}, resetta tentativi falliti.
+    \item Se password errata: incrementa tentativi; se $\geq 3$ imposta \texttt{bloccato = true}.
+    \item Risposta: \texttt\{"token": "...", "role": "magazziniere"\}.
+\end{enumerate}
+
+\subsection{Ordine di uscita con generazione DDT}
+\begin{enumerate}
+    \item Magazziniere compila l'ordine nella TUI e invia \texttt{POST /api/v1/orders/crea-uscita}.
+    \item \texttt{OrderService} apre una transazione con \texttt{WithinTransaction}.
+    \item Per ogni riga: verifica che \texttt{quantita} $\leq$ giacenza disponibile. Se insufficiente, restituisce \texttt{GiacenzaInsufficienteError} e la transazione esegue \texttt{ROLLBACK}.
+    \item Se tutte le quantità sono sufficienti: decrementa le giacenze, registra l'ordine con stato \texttt{confermato}, commit.
+    \item Il magazziniere genera il DDT con \texttt{POST /api/v1/orders/\{id\}/create-ddt}: il service assegna una numerazione annuale progressiva, crea il record DDT e aggiorna lo stato dell'ordine a \texttt{evaso}.
+\end{enumerate}
+
+\subsection{Gestione resi}
+\begin{enumerate}
+    \item Il reso viene creato con stato \texttt{da\_verificare}.
+    \item alla verifica (\texttt{PUT /api/v1/orders/update-resi}), lo stato passa a \texttt{accettato} (con ripristino giacenza) o \texttt{rifiutato} (con riduzione giacenza). Entrambe le operazioni sono transazionali.
+\end{enumerate}
+
+% ============================================================
+\section{Strategia di testing}
+% ============================================================
+
+Il progetto comprende 43 file di test distribuiti tra server (21) e client (22), eseguiti con \texttt{go test -v ./...} tramite \texttt{make test}.
+
+\gialosaiNote{L'approccio al testing segue le best practice di \texttt{go test}: test di unità con mock, test di integrazione con database transazionali, e test TUI con il framework \texttt{bubbletea/testing}. Questo è lo stesso approccio utilizzato da \texttt{docker}, \texttt{kubernetes} e \texttt{helm}.}
+
+\subsection{Livelli di testing}
+
+\begin{longtable}{p{0.18\textwidth}p{0.30\textwidth}p{0.42\textwidth}}
+\toprule
+\tableHeader \textbf{Livello} & \textbf{Strumenti} & \textbf{Copertura} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Livello} & \textbf{Strumenti} & \textbf{Copertura} \\
+\midrule
+\endhead
+Unit test domain & \texttt{go test} & Validazione EAN-13, errori sentinella, costanti, transazioni. \\
+\midrule
+Unit test service & \texttt{testify} + \texttt{go-sqlmock} & Login, CRUD utenti/prodotti/categorie, ordini, DDT, fatture, resi. \\
+\midrule
+Unit test repository & \texttt{go-sqlmock} & Query SQL parametrizzate, gestione errori DB. \\
+\midrule
+Unit test controller & \texttt{httptest} & Decodifica DTO, risposte HTTP, gestione errori. \\
+\midrule
+Test middleware & \texttt{httptest} & Verifica JWT, sessione, iniezione contesto. \\
+\midrule
+Test router & \texttt{httptest.NewServer} & Integrazione rotte con mock dei service. \\
+\midrule
+Test client API & \texttt{httptest} & Deserializzazione risposte, gestione errori HTTP. \\
+\midrule
+Test TUI & \texttt{bubbletea/testing} & Init, Update, View di ogni pagina; hitbox click; scroll. \\
+\bottomrule
+\end{longtable}
+
+% ============================================================
+\section{Alternative considerate}
+% ============================================================
+
+Le alternative progettuali principali sono state valutate e scartate per i motivi seguenti.
+
+\textbf{GUI o applicazione web al posto della TUI.} Un'interfaccia grafica o web avrebbe richiesto più lavoro di configurazione e distribuzione senza aggiungere capacità richieste dai vincoli del progetto; la TUI resta eseguibile da terminale e separata dal backend tramite API HTTP. Il successo di TUI come \texttt{htop}, \texttt{lazygit}, \texttt{k9s} e \texttt{btop} dimostra che un'interfaccia testuale ben progettata può essere più efficiente di una GUI per operazioni amministrative.
+
+\textbf{SQLite al posto di MySQL.} Un database embedded semplifica l'avvio locale, ma il sistema richiede un repository condiviso multiutente con vincoli relazionali e operazioni multi-entità; MySQL 8, gestito con Docker Compose, centralizza dati e regole in un punto controllato.
+
+\textbf{Architettura a microservizi.} La separazione in servizi indipendenti avrebbe introdotto complessità di comunicazione e di deploy non giustificata dalle dimensioni del sistema; si è preferito un processo monolitico a layer con confini espliciti tra router, controller, service, repository e domain.
+
+\textbf{DAO generico al posto del Repository pattern.} Un accesso ai dati di tipo DAO sarebbe stato più generico ma avrebbe accoppiato i service al dialetto SQL; i repository, associati alle aree di dominio, espongono interfacce ristrette coerenti con Dependency Inversion e facilitano i test con mock.
+
+\textbf{ORM (GORM) al posto di \texttt{database/sql}.} Un ORM avrebbe ridotto il boilerplate delle query ma avrebbe introdotto un livello di astrazione opaco, harder da controllare per operazioni transazionali complesse e meno trasparente nel debugging.
+
+\textbf{Sessioni classiche (cookie) al posto di JWT.} Le sessioni con cookie non sono adatte a un client TUI che non ha un browser; JWT con whitelist nel DB consente logout effettivo e controllo server-side della sessione. Il pattern è lo stesso utilizzato da \texttt{docker} (con token di accesso) e \texttt{kubectl} (con certificati e token).
+
+% ============================================================
+\section{Conseguenze e limiti}
+% ============================================================
+
+La separazione aumenta coesione e testabilità, ma introduce dipendenza dalla rete locale e dalla disponibilità di MySQL. Il repository centralizzato semplifica la consistenza dei dati, ma costituisce un punto operativo comune da gestire con backup e monitoraggio.
+
+L'integrazione finale (v2.0.0) ha allineato client e server: le principali funzionalità sono esposte via API e raggiungibili dalla navigazione TUI. I limiti residui riguardano:
+
+\begin{itemize}
+    \item \textbf{Autorizzazione RBAC}: il ruolo è presente nel token JWT ma non è ancora verificato dal router sulle singole rotte. Qualsiasi utente autenticato può accedere a qualunque endpoint protetto.
+    \item \textbf{Generazione documenti}: i percorsi PDF sono registrati nei modelli (\texttt{DDT.PathPDF}, \texttt{Fattura.PathPDF}) ma il codice non contiene un generatore di PDF o CSV.
+    \item \textbf{Bootstrap primo utente}: l'ambiente Compose fornisce utenti di prueba via seed script; avviando il server sull'host senza Compose, il primo utente deve essere creato manualmente nel database con password bcrypt.
+    \item \textbf{Navigazione TUI}: alcune viste amministrative secondarie non sono ancora collegate alla navigazione principale.
+\end{itemize}
 
 \end{document}

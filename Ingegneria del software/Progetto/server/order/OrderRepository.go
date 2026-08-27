@@ -22,9 +22,9 @@ func NewOrderRepository(db *sql.DB) *OrderRepository {
 
 func (r *OrderRepository) OrderRepository_CreateOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error {
 	exec := domain.GetExecutor(ctx, r.DB)
-	query := `INSERT INTO OrdiniEntrata (numero, fornitore, data, stato, note, created_by)
-	          VALUES (?, ?, ?, ?, ?, ?)`
-	res, err := exec.ExecContext(ctx, query, o.Numero, o.Fornitore, o.Data, string(o.Stato), o.Note, o.CreatedByID)
+	query := `INSERT INTO OrdiniEntrata (numero, fornitore, data, note, created_by)
+	          VALUES (?, ?, ?, ?, ?)`
+	res, err := exec.ExecContext(ctx, query, o.Numero, o.Fornitore, o.Data, o.Note, o.CreatedByID)
 	if err != nil {
 		return err
 	}
@@ -51,17 +51,15 @@ func (r *OrderRepository) OrderRepository_CreateOrdineEntrata(ctx context.Contex
 
 func (r *OrderRepository) OrderRepository_GetOrdineEntrataByID(ctx context.Context, id int) (*domain.OrdineEntrata, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
-	query := `SELECT id, numero, fornitore, data, stato, note, created_by FROM OrdiniEntrata WHERE id = ?`
+	query := `SELECT id, numero, fornitore, data, note, created_by FROM OrdiniEntrata WHERE id = ?`
 	var o domain.OrdineEntrata
-	var statoStr string
-	err := exec.QueryRowContext(ctx, query, id).Scan(&o.ID, &o.Numero, &o.Fornitore, &o.Data, &statoStr, &o.Note, &o.CreatedByID)
+	err := exec.QueryRowContext(ctx, query, id).Scan(&o.ID, &o.Numero, &o.Fornitore, &o.Data, &o.Note, &o.CreatedByID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, errors.New("ordine non trovato")
 		}
 		return nil, err
 	}
-	o.Stato = domain.StatoOrdine(statoStr)
 
 	// Load lines
 	queryR := `SELECT id, ordine_entrata_id, prodotto_id, quantita, prezzo_unitario FROM RigheOrdineEntrata WHERE ordine_entrata_id = ?`
@@ -80,6 +78,40 @@ func (r *OrderRepository) OrderRepository_GetOrdineEntrataByID(ctx context.Conte
 		o.Righe = append(o.Righe, r)
 	}
 	return &o, nil
+}
+
+func (r *OrderRepository) OrderRepository_GetOrdiniEntrata(ctx context.Context) ([]domain.OrdineEntrata, error) {
+	exec := domain.GetExecutor(ctx, r.DB)
+	query := `SELECT id, numero, fornitore, data, note, created_by FROM OrdiniEntrata`
+	rows, err := exec.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var list []domain.OrdineEntrata
+	for rows.Next() {
+		var o domain.OrdineEntrata
+		var ddtID sql.NullInt64
+		err := rows.Scan(&o.ID, &o.Numero, &o.Fornitore, &o.Data, &o.Note, &o.CreatedByID)
+		if err != nil {
+			return nil, err
+		}
+
+		if ddtID.Valid {
+			val := int(ddtID.Int64)
+			o.DDTID = val
+		}
+		list = append(list, o)
+	}
+	return list, nil
+}
+
+func (r *OrderRepository) OrderRepository_DeleteOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error {
+	exec := domain.GetExecutor(ctx, r.DB)
+	query := `DELETE FROM OrdiniEntrata WHERE id = ?`
+	_, err := exec.ExecContext(ctx, query, o.ID)
+	return err
 }
 
 // ─────────────────────────────────────────────
@@ -119,16 +151,14 @@ func (r *OrderRepository) OrderRepository_GetOrdineUscitaByID(ctx context.Contex
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, cliente, data, stato, note, created_by, ddt_id FROM OrdiniUscita WHERE id = ?`
 	var o domain.OrdineUscita
-	var statoStr string
 	var ddtID sql.NullInt64
-	err := exec.QueryRowContext(ctx, query, id).Scan(&o.ID, &o.Numero, &o.Cliente, &o.Data, &statoStr, &o.Note, &o.CreatedByID, &ddtID)
+	err := exec.QueryRowContext(ctx, query, id).Scan(&o.ID, &o.Numero, &o.Cliente, &o.Data, &o.Stato, &o.Note, &o.CreatedByID, &ddtID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, errors.New("ordine non trovato")
 		}
 		return nil, err
 	}
-	o.Stato = domain.StatoOrdine(statoStr)
 	if ddtID.Valid {
 		val := int(ddtID.Int64)
 		o.DDTID = &val
@@ -165,13 +195,11 @@ func (r *OrderRepository) OrderRepository_GetOrdiniUscita(ctx context.Context) (
 	var list []domain.OrdineUscita
 	for rows.Next() {
 		var o domain.OrdineUscita
-		var statoStr string
 		var ddtID sql.NullInt64
-		err := rows.Scan(&o.ID, &o.Numero, &o.Cliente, &o.Data, &statoStr, &o.Note, &o.CreatedByID, &ddtID)
+		err := rows.Scan(&o.ID, &o.Numero, &o.Cliente, &o.Data, &o.Stato, &o.Note, &o.CreatedByID, &ddtID)
 		if err != nil {
 			return nil, err
 		}
-		o.Stato = domain.StatoOrdine(statoStr)
 		if ddtID.Valid {
 			val := int(ddtID.Int64)
 			o.DDTID = &val
@@ -181,7 +209,7 @@ func (r *OrderRepository) OrderRepository_GetOrdiniUscita(ctx context.Context) (
 	return list, nil
 }
 
-func (r *OrderRepository) OrderRepository_GetOrdiniUscitaByStato(ctx context.Context, stato domain.StatoOrdine) ([]domain.OrdineUscita, error) {
+func (r *OrderRepository) OrderRepository_GetOrdiniUscitaByStato(ctx context.Context, stato domain.StatoOrdineUscita) ([]domain.OrdineUscita, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, cliente, data, stato, note, created_by, ddt_id FROM OrdiniUscita WHERE stato = ?`
 	rows, err := exec.QueryContext(ctx, query, string(stato))
@@ -193,13 +221,11 @@ func (r *OrderRepository) OrderRepository_GetOrdiniUscitaByStato(ctx context.Con
 	var list []domain.OrdineUscita
 	for rows.Next() {
 		var o domain.OrdineUscita
-		var statoStr string
 		var ddtID sql.NullInt64
-		err := rows.Scan(&o.ID, &o.Numero, &o.Cliente, &o.Data, &statoStr, &o.Note, &o.CreatedByID, &ddtID)
+		err := rows.Scan(&o.ID, &o.Numero, &o.Cliente, &o.Data, &o.Stato, &o.Note, &o.CreatedByID, &ddtID)
 		if err != nil {
 			return nil, err
 		}
-		o.Stato = domain.StatoOrdine(statoStr)
 		if ddtID.Valid {
 			val := int(ddtID.Int64)
 			o.DDTID = &val
@@ -209,10 +235,18 @@ func (r *OrderRepository) OrderRepository_GetOrdiniUscitaByStato(ctx context.Con
 	return list, nil
 }
 
+//aggiorna lo stato e l'id del ddt di un ordine di uscita
 func (r *OrderRepository) OrderRepository_UpdateOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `UPDATE OrdiniUscita SET stato = ?, ddt_id = ? WHERE id = ?`
 	_, err := exec.ExecContext(ctx, query, string(o.Stato), o.DDTID, o.ID)
+	return err
+}
+
+func (r *OrderRepository) OrderRepository_DeleteOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
+	exec := domain.GetExecutor(ctx, r.DB)
+	query := `DELETE FROM OrdiniUscita WHERE id = ?`
+	_, err := exec.ExecContext(ctx, query, o.ID)
 	return err
 }
 
@@ -235,21 +269,65 @@ func (r *OrderRepository) OrderRepository_CreateDDT(ctx context.Context, d *doma
 	return nil
 }
 
-func (r *OrderRepository) OrderRepository_CountDDTByYear(ctx context.Context, year int) (int, error) {
+func (r *OrderRepository) OrderRepository_GetDDTByYear(ctx context.Context, year int) ([]domain.DDT, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
+
 	pattern := fmt.Sprintf("DDT-%d-%%", year)
-	var count int
-	if err := exec.QueryRowContext(ctx, `SELECT COUNT(*) FROM DDT WHERE numero LIKE ?`, pattern).Scan(&count); err != nil {
-		return 0, err
+
+	rows, err := exec.QueryContext(
+		ctx,
+		`SELECT id, numero, ordine_uscita_id, data, mittente, destinatario, path_pdf
+		 FROM DDT
+		 WHERE numero LIKE ?`,
+		pattern,
+	)
+	if err != nil {
+		return nil, err
 	}
-	return count, nil
+	defer rows.Close()
+
+	var ddtList []domain.DDT
+
+	for rows.Next() {
+		var ddt domain.DDT
+
+		err := rows.Scan(
+			&ddt.ID,
+			&ddt.Numero,
+			&ddt.OrdineUscitaID,
+			&ddt.Data,
+			&ddt.Mittente,
+			&ddt.Destinatario,
+			&ddt.PathPDF,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		ddtList = append(ddtList, ddt)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return ddtList, nil
 }
 
 func (r *OrderRepository) OrderRepository_GetDDTByOrdineUscita(ctx context.Context, orderID int) (*domain.DDT, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
-	query := `SELECT id, numero, ordine_uscita_id, data, mittente, destinatario, path_pdf FROM DDT WHERE ordine_uscita_id = ?`
+	query := `SELECT id, numero, ordine_uscita_id, data, mittente, destinatario, path_pdf
+	          FROM DDT WHERE ordine_uscita_id = ?`
 	var d domain.DDT
-	err := exec.QueryRowContext(ctx, query, orderID).Scan(&d.ID, &d.Numero, &d.OrdineUscitaID, &d.Data, &d.Mittente, &d.Destinatario, &d.PathPDF)
+	err := exec.QueryRowContext(ctx, query, orderID).Scan(
+		&d.ID,
+		&d.Numero,
+		&d.OrdineUscitaID,
+		&d.Data,
+		&d.Mittente,
+		&d.Destinatario,
+		&d.PathPDF,
+	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -320,11 +398,11 @@ func (r *OrderRepository) OrderRepository_DeleteFattura(ctx context.Context, id 
 // RESI
 // ─────────────────────────────────────────────
 
-func (r *OrderRepository) OrderRepository_CreateReso(ctx context.Context, re *domain.Reso, stato string) error {
+func (r *OrderRepository) OrderRepository_CreateReso(ctx context.Context, re *domain.Reso) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Resi (ordine_uscita_id, prodotto_id, quantita, motivo, stato, data, created_by)
 	          VALUES (?, ?, ?, ?, ?, ?, ?)`
-	res, err := exec.ExecContext(ctx, query, re.OrdineUscitaID, re.ProdottoID, re.Quantita, re.Motivo, stato, re.Data, re.CreatedByID)
+	res, err := exec.ExecContext(ctx, query, re.OrdineUscitaID, re.ProdottoID, re.Quantita, re.Motivo, re.Stato, re.Data, re.CreatedByID)
 	if err != nil {
 		return err
 	}
@@ -336,15 +414,31 @@ func (r *OrderRepository) OrderRepository_CreateReso(ctx context.Context, re *do
 }
 
 func (r *OrderRepository) OrderRepository_GetResoByID(ctx context.Context, id int) (*domain.Reso, string, error) {
-	exec := domain.GetExecutor(ctx, r.DB)
-	query := `SELECT id, ordine_uscita_id, prodotto_id, quantita, motivo, stato, data, created_by FROM Resi WHERE id = ?`
-	var re domain.Reso
-	var stato string
-	err := exec.QueryRowContext(ctx, query, id).Scan(&re.ID, &re.OrdineUscitaID, &re.ProdottoID, &re.Quantita, &re.Motivo, &stato, &re.Data, &re.CreatedByID)
-	if err != nil {
-		return nil, "", err
-	}
-	return &re, stato, nil
+    exec := domain.GetExecutor(ctx, r.DB)
+
+    query := `SELECT id, ordine_uscita_id, prodotto_id, quantita, motivo, stato, data, created_by
+              FROM Resi WHERE id = ?`
+
+    var re domain.Reso
+
+    err := exec.QueryRowContext(ctx, query, id).Scan(
+        &re.ID,
+        &re.OrdineUscitaID,
+        &re.ProdottoID,
+        &re.Quantita,
+        &re.Motivo,
+        &re.Stato,
+        &re.Data,
+        &re.CreatedByID,
+    )
+
+    if err != nil {
+        return nil, "", err
+    }
+
+	//fmt.Printf("DEBUG RESO: %+v, stato=%s\n", re, re.Stato)
+
+    return &re, string(re.Stato), nil
 }
 
 func (r *OrderRepository) OrderRepository_UpdateResoStato(ctx context.Context, id int, stato string) error {
@@ -354,34 +448,49 @@ func (r *OrderRepository) OrderRepository_UpdateResoStato(ctx context.Context, i
 	return err
 }
 
-func (r *OrderRepository) OrderRepository_GetAllResi(ctx context.Context) ([]map[string]interface{}, error) {
+func (r *OrderRepository) OrderRepository_GetAllResi(ctx context.Context) ([]domain.Reso, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
-	query := `SELECT id, ordine_uscita_id, prodotto_id, quantita, motivo, stato, data, created_by FROM Resi`
+
+	query := `
+		SELECT id, ordine_uscita_id, prodotto_id, quantita,
+		       motivo, stato, data, created_by
+		FROM Resi
+	`
+
 	rows, err := exec.QueryContext(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var list []map[string]interface{}
+	var list []domain.Reso
+
 	for rows.Next() {
-		var id, outID, prodID, qty, createdBy int
-		var motivo, stato, data string
-		err := rows.Scan(&id, &outID, &prodID, &qty, &motivo, &stato, &data, &createdBy)
+		var reso domain.Reso
+
+		err := rows.Scan(
+			&reso.ID,
+			&reso.OrdineUscitaID,
+			&reso.ProdottoID,
+			&reso.Quantita,
+			&reso.Motivo,
+			&reso.Stato,
+			&reso.Data,
+			&reso.CreatedByID,
+		)
 		if err != nil {
 			return nil, err
 		}
-		item := map[string]interface{}{
-			"id":        id,
-			"order_id":  outID,
-			"prod_id":   prodID,
-			"qty":       qty,
-			"motivo":    motivo,
-			"stato":     stato,
-			"data":      data,
-			"created":   createdBy,
-		}
-		list = append(list, item)
+
+		list = append(list, reso)
 	}
+
 	return list, nil
+}
+
+func (r *OrderRepository) OrderRepository_DeleteReso(ctx context.Context, id int) error {
+	exec := domain.GetExecutor(ctx, r.DB)
+	query := `DELETE FROM Resi WHERE id = ?`
+	_, err := exec.ExecContext(ctx, query, id)
+	return err
 }

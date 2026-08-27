@@ -16,7 +16,7 @@ import (
 
 // Query usata nei test: deve corrispondere a quella in Repository.GetByUsername.
 // sqlmock confronta per regex per default, quindi basta una sottostringa stabile.
-const getByUsernameQuery = `SELECT id, username, password_hash, ruolo, domanda_sicurezza, risposta_hash, tentativi_falliti, bloccato, created_at`
+const getByUsernameQuery = `SELECT id, username, password_hash, ruolo, tentativi_falliti, bloccato, created_at`
 
 func newMockRepo(t *testing.T) (*UserRepository, sqlmock.Sqlmock, func()) {
 	db, mock, err := sqlmock.New()
@@ -41,9 +41,8 @@ func TestUserRepository_GetByUsername(t *testing.T) {
 			mockSetup: func(mock sqlmock.Sqlmock) {
 				rows := sqlmock.NewRows([]string{
 					"id", "username", "password_hash", "ruolo",
-					"domanda_sicurezza", "risposta_hash", "tentativi_falliti",
-					"bloccato", "created_at",
-				}).AddRow(1, "mario", "hash123", "magazziniere", "Il tuo colore preferito?", "rispostaHash", 0, false, now)
+					"tentativi_falliti", "bloccato", "created_at",
+				}).AddRow(1, "mario", "hash123", "magazziniere", 0, false, now)
 
 				mock.ExpectQuery(getByUsernameQuery).
 					WithArgs("mario").
@@ -112,16 +111,16 @@ func TestUserRepository_Update(t *testing.T) {
 		{
 			name: "update riuscito",
 			mockSetup: func(mock sqlmock.Sqlmock) {
-				mock.ExpectExec(`UPDATE Utenti SET password_hash = \?, tentativi_falliti = \?, bloccato = \? WHERE id = \?`).
-					WithArgs("nuovoHash", 1, false, 42).
+				mock.ExpectExec(`UPDATE Utenti SET username = \?, password_hash = \?, ruolo = \?, tentativi_falliti = \?, bloccato = \? WHERE id = \?`).
+					WithArgs("mario", "nuovoHash", "magazziniere", 1, false, 42).
 					WillReturnResult(sqlmock.NewResult(0, 1))
 			},
 		},
 		{
 			name: "errore del database durante l'update",
 			mockSetup: func(mock sqlmock.Sqlmock) {
-				mock.ExpectExec(`UPDATE Utenti SET password_hash = \?, tentativi_falliti = \?, bloccato = \? WHERE id = \?`).
-					WithArgs("nuovoHash", 1, false, 42).
+				mock.ExpectExec(`UPDATE Utenti SET username = \?, password_hash = \?, ruolo = \?, tentativi_falliti = \?, bloccato = \? WHERE id = \?`).
+					WithArgs("mario", "nuovoHash", "magazziniere", 1, false, 42).
 					WillReturnError(errors.New("db irraggiungibile"))
 			},
 			wantErr: true,
@@ -137,7 +136,9 @@ func TestUserRepository_Update(t *testing.T) {
 
 			u := &domain.Utente{
 				ID:               42,
+				Username:         "mario",
 				PasswordHash:     "nuovoHash",
+				Ruolo:            domain.Ruolo("magazziniere"),
 				TentativiFalliti: 1,
 				Bloccato:         false,
 			}
@@ -160,15 +161,13 @@ func TestUserRepository_Create(t *testing.T) {
 	repo := NewUserRepository(db)
 
 	mock.ExpectExec(`INSERT INTO Utenti`).
-		WithArgs("giulia", "hash", "contabile", "domanda", "rispostaHash", 0, false, sqlmock.AnyArg()).
+		WithArgs("giulia", "hash", "contabile", 0, false, sqlmock.AnyArg()).
 		WillReturnResult(sqlmock.NewResult(7, 1))
 
 	u := &domain.Utente{
 		Username:         "giulia",
 		PasswordHash:     "hash",
 		Ruolo:            domain.Ruolo("contabile"),
-		DomandaSicurezza: "domanda",
-		RispostaHash:     "rispostaHash",
 		CreatedAt:        time.Now(),
 	}
 

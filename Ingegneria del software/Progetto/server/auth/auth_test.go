@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -19,6 +20,15 @@ func (m *mockUserService) UserService_Login(ctx context.Context, username, passw
 	args := m.Called(ctx, username, password)
 	u, _ := args.Get(0).(*domain.Utente)
 	return u, args.Error(1)
+}
+
+type mockSessionRepository struct {
+	mock.Mock
+}
+
+func (m *mockSessionRepository) SessionRepository_Create(ctx context.Context, userID int, tokenHash string, expiresAt time.Time) error {
+	args := m.Called(ctx, userID, tokenHash, expiresAt)
+	return args.Error(0)
 }
 
 type mockAuthService struct {
@@ -62,6 +72,16 @@ func TestJWTTokens(t *testing.T) { // testa sia la generazione che la validazion
 	assert.Error(t, err)
 }
 
+func TestHashToken(t *testing.T) {
+	h1 := HashToken("my-token")
+	h2 := HashToken("my-token")
+	h3 := HashToken("different-token")
+
+	assert.Equal(t, h1, h2, "same input should produce same hash")
+	assert.NotEqual(t, h1, h3, "different input should produce different hash")
+	assert.Len(t, h1, 64, "SHA-256 hex digest should be 64 characters")
+}
+
 func TestAuthService_Login(t *testing.T) {
 	t.Run("login con successo restituisce token e ruolo", func(t *testing.T) {
 		us := new(mockUserService)
@@ -85,6 +105,40 @@ func TestAuthService_Login(t *testing.T) {
 
 		assert.Error(t, err)
 		us.AssertExpectations(t)
+	})
+
+	t.Run("login con sessione: crea la sessione nel DB", func(t *testing.T) {
+		us := new(mockUserService)
+		us.On("UserService_Login", mock.Anything, "mario", "password").
+			Return(&domain.Utente{ID: 42, Username: "mario", Ruolo: domain.RuoloMagazziniere}, nil)
+
+		sr := new(mockSessionRepository)
+		sr.On("SessionRepository_Create", mock.Anything, 42, mock.AnythingOfType("string"), mock.AnythingOfType("time.Time")).
+			Return(nil)
+
+		svc := NewAuthService(us, sr)
+		token, role, err := svc.AuthService_Login(context.Background(), "mario", "password")
+
+		require.NoError(t, err)
+		assert.NotEmpty(t, token)
+		assert.Equal(t, string(domain.RuoloMagazziniere), role)
+		sr.AssertExpectations(t)
+	})
+
+	t.Run("login con sessione: errore nella creazione sessione", func(t *testing.T) {
+		us := new(mockUserService)
+		us.On("UserService_Login", mock.Anything, "mario", "password").
+			Return(&domain.Utente{ID: 42, Username: "mario", Ruolo: domain.RuoloContabile}, nil)
+
+		sr := new(mockSessionRepository)
+		sr.On("SessionRepository_Create", mock.Anything, 42, mock.AnythingOfType("string"), mock.AnythingOfType("time.Time")).
+			Return(errors.New("db error"))
+
+		svc := NewAuthService(us, sr)
+		_, _, err := svc.AuthService_Login(context.Background(), "mario", "password")
+
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "db error")
 	})
 }
 

@@ -9,6 +9,7 @@ skinparam sequence {
 }
 
 actor    "Utente"          as User
+actor    "Admin"  as Admin
 boundary "ui:UI"           as UI
 control  "svc:AuthService" as Auth
 
@@ -37,31 +38,32 @@ group Login
   deactivate UI
 end
 
-' ── FLUSSO ALTERNATIVO: Recupero Password ────────────────────────
-group Recupero Password
-  User -> UI : selezionaRecuperoPassword()
+' ── FLUSSO ALTERNATIVO: Recupero Credenziali ─────────────────────
+group Recupero Credenziali
+  User -> Admin : segnalaCredenzialiPerdute()
+  activate Admin
+  Admin -> UI : cercaUtente(username)
   activate UI
-  UI -> Auth : richiediDomandaSicurezza(username)
+  UI -> Auth : getUtente(username)
   activate Auth
-  Auth --> UI : domandaSicurezza
-  UI --> User : mostraDomandaSicurezza(domanda)
+  Auth --> UI : utente(bloccato, tentativiFalliti)
+  UI --> Admin : mostraDettagliUtente()
 
-  User -> UI : rispondiDomanda(risposta)
-  UI -> Auth : verificaRisposta(username, risposta)
-
-  alt [risposta corretta]
-    Auth --> UI : OK
-    UI --> User : mostraFormNuovaPassword()
-    User -> UI : impostaNuovaPassword(nuovaPassword)
-    UI -> Auth : aggiornaPassword(username, nuovaPassword)
-    Auth --> UI : passwordAggiornata()
-    UI --> User : mostraConfermaAggiornamento()
-  else [risposta errata]
-    Auth --> UI : errore("Risposta non corretta")
-    UI --> User : mostraErroreRisposta()
+  alt [account bloccato]
+    Admin -> UI : sbloccaUtente(username)
+    UI -> Auth : aggiornaStato(username, bloccato = false)
+    Auth --> UI : utenteSbloccato()
   end
+
+  Admin -> UI : resettaPassword(username, nuovaPassword)
+  UI -> Auth : aggiornaPassword(username, nuovaPassword)
+  Auth --> UI : passwordAggiornata()
+  UI --> Admin : mostraConfermaAggiornamento()
+  Admin --> User : comunicaNuoveCredenziali()
   deactivate Auth
   deactivate UI
+  deactivate Admin
 end
 
 @enduml
+

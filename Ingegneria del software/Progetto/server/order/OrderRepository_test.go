@@ -25,7 +25,7 @@ func TestOrderRepository_CreateOrdineEntrata(t *testing.T) {
 
 	now := time.Now()
 	mock.ExpectExec(`INSERT INTO OrdiniEntrata`).
-		WithArgs("OE-001", "ACME Srl", now, "confermato", "", 1).
+		WithArgs("OE-001", "ACME Srl", now, "", 1).
 		WillReturnResult(sqlmock.NewResult(10, 1))
 	mock.ExpectExec(`INSERT INTO RigheOrdineEntrata`).
 		WithArgs(10, 5, 100, 0.5).
@@ -35,7 +35,6 @@ func TestOrderRepository_CreateOrdineEntrata(t *testing.T) {
 		Numero:      "OE-001",
 		Fornitore:   "ACME Srl",
 		Data:        now,
-		Stato:       domain.StatoOrdine("confermato"),
 		CreatedByID: 1,
 		Righe: []domain.RigaOrdineEntrata{
 			{ProdottoID: 5, Quantita: 100, PrezzoUnitario: 0.5},
@@ -50,12 +49,29 @@ func TestOrderRepository_CreateOrdineEntrata(t *testing.T) {
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 
+func TestOrderRepository_GetOrdiniEntrata(t *testing.T) {
+	repo, mock, closeDB := newMockOrderRepo(t)
+	defer closeDB()
+
+	rows := sqlmock.NewRows([]string{"id", "numero", "fornitore", "data", "note", "created_by"}).
+		AddRow(10, "OE-001", "ACME Srl", time.Now(), "", 1).
+		AddRow(11, "OE-002", "Beta Srl", time.Now(), "", 1)
+
+	mock.ExpectQuery(`SELECT id, numero, fornitore, data, note, created_by FROM OrdiniEntrata`).
+		WillReturnRows(rows)
+
+	list, err := repo.OrderRepository_GetOrdiniEntrata(context.Background())
+	require.NoError(t, err)
+	require.Len(t, list, 2)
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
 func TestOrderRepository_GetOrdineEntrataByID(t *testing.T) {
 	t.Run("ordine non trovato", func(t *testing.T) {
 		repo, mock, closeDB := newMockOrderRepo(t)
 		defer closeDB()
 
-		mock.ExpectQuery(`SELECT id, numero, fornitore, data, stato, note, created_by FROM OrdiniEntrata WHERE id = \?`).
+		mock.ExpectQuery(`SELECT id, numero, fornitore, data, note, created_by FROM OrdiniEntrata WHERE id = \?`).
 			WithArgs(99).
 			WillReturnError(sql.ErrNoRows)
 
@@ -68,9 +84,9 @@ func TestOrderRepository_GetOrdineEntrataByID(t *testing.T) {
 		repo, mock, closeDB := newMockOrderRepo(t)
 		defer closeDB()
 
-		headerRows := sqlmock.NewRows([]string{"id", "numero", "fornitore", "data", "stato", "note", "created_by"}).
-			AddRow(10, "OE-001", "ACME Srl", time.Now(), "confermato", "", 1)
-		mock.ExpectQuery(`SELECT id, numero, fornitore, data, stato, note, created_by FROM OrdiniEntrata WHERE id = \?`).
+		headerRows := sqlmock.NewRows([]string{"id", "numero", "fornitore", "data", "note", "created_by"}).
+			AddRow(10, "OE-001", "ACME Srl", time.Now(), "", 1)
+		mock.ExpectQuery(`SELECT id, numero, fornitore, data, note, created_by FROM OrdiniEntrata WHERE id = \?`).
 			WithArgs(10).
 			WillReturnRows(headerRows)
 
@@ -82,12 +98,26 @@ func TestOrderRepository_GetOrdineEntrataByID(t *testing.T) {
 
 		o, err := repo.OrderRepository_GetOrdineEntrataByID(context.Background(), 10)
 		require.NoError(t, err)
-		assert.Equal(t, domain.StatoOrdine("confermato"), o.Stato)
 		require.Len(t, o.Righe, 1)
 		assert.Equal(t, 100, o.Righe[0].Quantita)
 		require.NoError(t, mock.ExpectationsWereMet())
 	})
 }
+
+func TestOrderRepository_DeleteOrdineEntrata(t *testing.T) {
+	repo, mock, closeDB := newMockOrderRepo(t)
+	defer closeDB()
+
+	mock.ExpectExec(`DELETE FROM OrdiniEntrata WHERE id = \?`).
+		WithArgs(10).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	err := repo.OrderRepository_DeleteOrdineEntrata(context.Background(), &domain.OrdineEntrata{ID: 10})
+	require.NoError(t, err)
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
+//=========================================================================================
 
 func TestOrderRepository_CreateOrdineUscita(t *testing.T) {
 	repo, mock, closeDB := newMockOrderRepo(t)
@@ -105,7 +135,7 @@ func TestOrderRepository_CreateOrdineUscita(t *testing.T) {
 		Numero:      "OU-001",
 		Cliente:     "Cliente Spa",
 		Data:        now,
-		Stato:       domain.StatoOrdine("confermato"),
+		Stato:       domain.StatoOrdineUscita("confermato"),
 		CreatedByID: 1,
 		Righe: []domain.RigaOrdineUscita{
 			{ProdottoID: 5, Quantita: 10, PrezzoUnitario: 1.0},
@@ -115,6 +145,27 @@ func TestOrderRepository_CreateOrdineUscita(t *testing.T) {
 	err := repo.OrderRepository_CreateOrdineUscita(context.Background(), o)
 	require.NoError(t, err)
 	assert.Equal(t, 20, o.ID)
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
+func TestOrderRepository_GetOrdineUscita(t *testing.T) {
+	repo, mock, closeDB := newMockOrderRepo(t)
+	defer closeDB()
+
+	rows := sqlmock.NewRows([]string{"id", "numero", "cliente", "data", "stato", "note", "created_by", "ddt_id"}).
+		AddRow(20, "OU-001", "Cliente Spa", time.Now(), "confermato", "", 1, nil).
+		AddRow(21, "OU-002", "Cliente B", time.Now(), "evaso", "", 1, 21)
+
+	mock.ExpectQuery(`SELECT id, numero, cliente, data, stato, note, created_by, ddt_id FROM OrdiniUscita`).
+		WillReturnRows(rows)
+
+	list, err := repo.OrderRepository_GetOrdiniUscita(context.Background())
+	require.NoError(t, err)
+	require.Len(t, list, 2)
+	assert.Equal(t, domain.StatoOrdineUscita("confermato"), list[0].Stato)
+	assert.Nil(t, list[0].DDTID)
+	require.NotNil(t, list[1].DDTID)
+	assert.Equal(t, 21, *list[1].DDTID)
 	require.NoError(t, mock.ExpectationsWereMet())
 }
  
@@ -155,7 +206,7 @@ func TestOrderRepository_GetOrdiniUscitaByStato(t *testing.T) {
 		WithArgs("confermato").
 		WillReturnRows(rows)
 
-	list, err := repo.OrderRepository_GetOrdiniUscitaByStato(context.Background(), domain.StatoOrdine("confermato"))
+	list, err := repo.OrderRepository_GetOrdiniUscitaByStato(context.Background(), domain.StatoOrdineUscita("confermato"))
 	require.NoError(t, err)
 	require.Len(t, list, 2)
 	assert.Nil(t, list[0].DDTID)
@@ -171,10 +222,25 @@ func TestOrderRepository_UpdateOrdineUscita(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(0, 1))
 
 	ddtID := 7
-	err := repo.OrderRepository_UpdateOrdineUscita(context.Background(), &domain.OrdineUscita{ID: 20, Stato: domain.StatoOrdine("evaso"), DDTID: &ddtID})
+	err := repo.OrderRepository_UpdateOrdineUscita(context.Background(), &domain.OrdineUscita{ID: 20, Stato: domain.StatoOrdineUscita("evaso"), DDTID: &ddtID})
 	require.NoError(t, err)
 	require.NoError(t, mock.ExpectationsWereMet())
 }
+
+func TestOrderRepository_DeleteOrdineUscita(t *testing.T) {
+	repo, mock, closeDB := newMockOrderRepo(t)
+	defer closeDB()
+
+	mock.ExpectExec(`DELETE FROM OrdiniUscita WHERE id = \?`).
+		WithArgs(20).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	err := repo.OrderRepository_DeleteOrdineUscita(context.Background(), &domain.OrdineUscita{ID: 20})
+	require.NoError(t, err)
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
+//=========================================================================================
 
 func TestOrderRepository_CreateDDT(t *testing.T) {
 	repo, mock, closeDB := newMockOrderRepo(t)
@@ -200,17 +266,23 @@ func TestOrderRepository_CreateDDT(t *testing.T) {
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 
-func TestOrderRepository_CountDDTByYear(t *testing.T) {
+func TestOrderRepository_GetDDTByYear(t *testing.T) {
 	repo, mock, closeDB := newMockOrderRepo(t)
 	defer closeDB()
 
-	mock.ExpectQuery(`SELECT COUNT\(\*\) FROM DDT WHERE numero LIKE \?`).
-		WithArgs("DDT-2026-%").
-		WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(4))
+	now := time.Now()
+	rows := sqlmock.NewRows([]string{"id", "numero", "ordine_uscita_id", "data", "mittente", "destinatario", "path_pdf"}).
+		AddRow(1, "DDT-2026-0001", 10, now, "Mittente A", "Destinatario A", "path/1.pdf").
+		AddRow(2, "DDT-2026-0002", 11, now, "Mittente B", "Destinatario B", "path/2.pdf")
 
-	count, err := repo.OrderRepository_CountDDTByYear(context.Background(), 2026)
+	mock.ExpectQuery(`SELECT id, numero, ordine_uscita_id, data, mittente, destinatario, path_pdf FROM DDT WHERE numero LIKE \?`).
+		WithArgs("DDT-2026-%").
+		WillReturnRows(rows)
+
+	ddts, err := repo.OrderRepository_GetDDTByYear(context.Background(), 2026)
 	require.NoError(t, err)
-	assert.Equal(t, 4, count)
+	assert.Len(t, ddts, 2)
+	assert.Equal(t, "DDT-2026-0001", ddts[0].Numero)
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 
@@ -249,26 +321,7 @@ func TestOrderRepository_GetDDTByOrdineUscita(t *testing.T) {
 	})
 }
 
-func TestOrderRepository_GetOrdiniUscita(t *testing.T) {
-	repo, mock, closeDB := newMockOrderRepo(t)
-	defer closeDB()
-
-	ddtID := 7
-	rows := sqlmock.NewRows([]string{"id", "numero", "cliente", "data", "stato", "note", "created_by", "ddt_id"}).
-		AddRow(1, "OU-001", "Cliente A", time.Now(), "confermato", "", 1, nil).
-		AddRow(2, "OU-002", "Cliente B", time.Now(), "evaso", "", 1, ddtID)
-
-	mock.ExpectQuery(`SELECT id, numero, cliente, data, stato, note, created_by, ddt_id FROM OrdiniUscita`).
-		WillReturnRows(rows)
-
-	list, err := repo.OrderRepository_GetOrdiniUscita(context.Background())
-	require.NoError(t, err)
-	require.Len(t, list, 2)
-	assert.Nil(t, list[0].DDTID)
-	require.NotNil(t, list[1].DDTID)
-	assert.Equal(t, 7, *list[1].DDTID)
-	require.NoError(t, mock.ExpectationsWereMet())
-}
+//=========================================================================================
 
 func TestOrderRepository_CreateFattura(t *testing.T) {
 	repo, mock, closeDB := newMockOrderRepo(t)
@@ -294,60 +347,6 @@ func TestOrderRepository_CreateFattura(t *testing.T) {
 	err := repo.OrderRepository_CreateFattura(context.Background(), f)
 	require.NoError(t, err)
 	assert.Equal(t, 8, f.ID)
-	require.NoError(t, mock.ExpectationsWereMet())
-}
-
-func TestOrderRepository_CreateReso(t *testing.T) {
-	repo, mock, closeDB := newMockOrderRepo(t)
-	defer closeDB()
-
-	now := time.Now()
-	mock.ExpectExec(`INSERT INTO Resi`).
-		WithArgs(20, 5, 2, "Prodotto difettoso", "da_verificare", now, 1).
-		WillReturnResult(sqlmock.NewResult(3, 1))
-
-	re := &domain.Reso{
-		OrdineUscitaID: 20,
-		ProdottoID:     5,
-		Quantita:       2,
-		Motivo:         "Prodotto difettoso",
-		Data:           now,
-		CreatedByID:    1,
-	}
-
-	err := repo.OrderRepository_CreateReso(context.Background(), re, "da_verificare")
-	require.NoError(t, err)
-	assert.Equal(t, 3, re.ID)
-	require.NoError(t, mock.ExpectationsWereMet())
-}
-
-func TestOrderRepository_GetResoByID(t *testing.T) {
-	repo, mock, closeDB := newMockOrderRepo(t)
-	defer closeDB()
-
-	rows := sqlmock.NewRows([]string{"id", "ordine_uscita_id", "prodotto_id", "quantita", "motivo", "stato", "data", "created_by"}).
-		AddRow(3, 20, 5, 2, "Prodotto difettoso", "da_verificare", time.Now(), 1)
-	mock.ExpectQuery(`SELECT id, ordine_uscita_id, prodotto_id, quantita, motivo, stato, data, created_by FROM Resi WHERE id = \?`).
-		WithArgs(3).
-		WillReturnRows(rows)
-
-	re, stato, err := repo.OrderRepository_GetResoByID(context.Background(), 3)
-	require.NoError(t, err)
-	assert.Equal(t, "da_verificare", stato)
-	assert.Equal(t, 2, re.Quantita)
-	require.NoError(t, mock.ExpectationsWereMet())
-}
-
-func TestOrderRepository_UpdateResoStato(t *testing.T) {
-	repo, mock, closeDB := newMockOrderRepo(t)
-	defer closeDB()
-
-	mock.ExpectExec(`UPDATE Resi SET stato = \? WHERE id = \?`).
-		WithArgs("approvato", 3).
-		WillReturnResult(sqlmock.NewResult(0, 1))
-
-	err := repo.OrderRepository_UpdateResoStato(context.Background(), 3, "approvato")
-	require.NoError(t, err)
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 
@@ -397,12 +396,69 @@ func TestOrderRepository_DeleteFattura(t *testing.T) {
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 
+//=========================================================================================
+
+func TestOrderRepository_CreateReso(t *testing.T) {
+	repo, mock, closeDB := newMockOrderRepo(t)
+	defer closeDB()
+
+	now := time.Now()
+	mock.ExpectExec(`INSERT INTO Resi`).
+		WithArgs(20, 5, 2, "Prodotto difettoso", "da_verificare", now, 1).
+		WillReturnResult(sqlmock.NewResult(3, 1))
+
+	re := &domain.Reso{
+		OrdineUscitaID: 20,
+		ProdottoID:     5,
+		Quantita:       2,
+		Motivo:         "Prodotto difettoso",
+		Stato:          domain.StatoReso("da_verificare"),
+		Data:           now,
+		CreatedByID:    1,
+	}
+
+	err := repo.OrderRepository_CreateReso(context.Background(), re)
+	require.NoError(t, err)
+	assert.Equal(t, 3, re.ID)
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
+func TestOrderRepository_GetResoByID(t *testing.T) {
+	repo, mock, closeDB := newMockOrderRepo(t)
+	defer closeDB()
+
+	rows := sqlmock.NewRows([]string{"id", "ordine_uscita_id", "prodotto_id", "quantita", "motivo", "stato", "data", "created_by"}).
+		AddRow(3, 20, 5, 2, "Prodotto difettoso", "da_verificare", time.Now(), 1)
+	mock.ExpectQuery(`SELECT id, ordine_uscita_id, prodotto_id, quantita, motivo, stato, data, created_by FROM Resi WHERE id = \?`).
+		WithArgs(3).
+		WillReturnRows(rows)
+
+	re, stato, err := repo.OrderRepository_GetResoByID(context.Background(), 3)
+	require.NoError(t, err)
+	assert.Equal(t, "da_verificare", stato)
+	assert.Equal(t, 2, re.Quantita)
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
+func TestOrderRepository_UpdateResoStato(t *testing.T) {
+	repo, mock, closeDB := newMockOrderRepo(t)
+	defer closeDB()
+
+	mock.ExpectExec(`UPDATE Resi SET stato = \? WHERE id = \?`).
+		WithArgs("accettato", 3).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	err := repo.OrderRepository_UpdateResoStato(context.Background(), 3, "accettato")
+	require.NoError(t, err)
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
 func TestOrderRepository_GetAllResi(t *testing.T) {
 	repo, mock, closeDB := newMockOrderRepo(t)
 	defer closeDB()
 
 	rows := sqlmock.NewRows([]string{"id", "ordine_uscita_id", "prodotto_id", "quantita", "motivo", "stato", "data", "created_by"}).
-		AddRow(3, 20, 5, 2, "Prodotto difettoso", "da_verificare", "2026-06-01", 1)
+		AddRow(3, 20, 5, 2, "Prodotto difettoso", "da_verificare", time.Now(), 1)
 
 	mock.ExpectQuery(`SELECT id, ordine_uscita_id, prodotto_id, quantita, motivo, stato, data, created_by FROM Resi`).
 		WillReturnRows(rows)
@@ -410,7 +466,20 @@ func TestOrderRepository_GetAllResi(t *testing.T) {
 	list, err := repo.OrderRepository_GetAllResi(context.Background())
 	require.NoError(t, err)
 	require.Len(t, list, 1)
-	assert.Equal(t, 3, list[0]["id"])
-	assert.Equal(t, "da_verificare", list[0]["stato"])
+	assert.Equal(t, 3, list[0].ID)
+	assert.Equal(t, domain.StatoReso("da_verificare"), list[0].Stato)
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
+func TestOrderRepository_DeleteReso(t *testing.T) {
+	repo, mock, closeDB := newMockOrderRepo(t)
+	defer closeDB()
+
+	mock.ExpectExec(`DELETE FROM Resi WHERE id = \?`).
+		WithArgs(3).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	err := repo.OrderRepository_DeleteReso(context.Background(), 3)
+	require.NoError(t, err)
 	require.NoError(t, mock.ExpectationsWereMet())
 }

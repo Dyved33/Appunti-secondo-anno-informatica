@@ -367,7 +367,7 @@ Underfull \hbox (badness 1888) in paragraph at lines 77--77
 
 [3{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
 Underfull \hbox (badness 1122) in paragraph at lines 94--95
-[]|\T1/cmr/m/n/12 Funzionamento ga-ran-ti-to in mo-da-li-tà
+[]|\T1/cmr/m/n/12 Funzionamento ga-ran-ti-to in mo-da-li-tï¿½
  []
 
 
@@ -524,18 +524,18 @@ Package pdftex.def Info: ../out/UC7_ContabilePrezzi_AD.png  used on input line 2
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<../out/UC8_Amministratore_SD.png, id=168, 1080.035pt x 1508.63625pt>
-File: ../out/UC8_Amministratore_SD.png Graphic file (type png)
-<use ../out/UC8_Amministratore_SD.png>
-Package pdftex.def Info: ../out/UC8_Amministratore_SD.png  used on input line 221.
+<../out/UC8_Admin_SD.png, id=168, 1080.035pt x 1508.63625pt>
+File: ../out/UC8_Admin_SD.png Graphic file (type png)
+<use ../out/UC8_Admin_SD.png>
+Package pdftex.def Info: ../out/UC8_Admin_SD.png  used on input line 221.
 (pdftex.def)             Requested size: 364.19667pt x 508.7169pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<../out/UC8_Amministratore_AD.png, id=169, 2138.99126pt x 773.89125pt>
-File: ../out/UC8_Amministratore_AD.png Graphic file (type png)
-<use ../out/UC8_Amministratore_AD.png>
-Package pdftex.def Info: ../out/UC8_Amministratore_AD.png  used on input line 227.
+<../out/UC8_Admin_AD.png, id=169, 2138.99126pt x 773.89125pt>
+File: ../out/UC8_Admin_AD.png Graphic file (type png)
+<use ../out/UC8_Admin_AD.png>
+Package pdftex.def Info: ../out/UC8_Admin_AD.png  used on input line 227.
 (pdftex.def)             Requested size: 364.19667pt x 131.76051pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -552,7 +552,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 [11 <../out/UC2_VisualizzaOrdini_AD.png>]
 Overfull \hbox (5.81921pt too wide) in paragraph at lines 281--282
-\T1/cmtt/m/n/12 Giacenza \T1/cmr/m/n/12 pa-ri a 5 uni-tà. Vie-ne in-se-ri-to un \T1/cmtt/m/n/12 OrdineUscita \T1/cmr/m/n/12 con una \T1/cmtt/m/n/12 RigaOrdineUscita
+\T1/cmtt/m/n/12 Giacenza \T1/cmr/m/n/12 pa-ri a 5 uni-tï¿½. Vie-ne in-se-ri-to un \T1/cmtt/m/n/12 OrdineUscita \T1/cmr/m/n/12 con una \T1/cmtt/m/n/12 RigaOrdineUscita
  []
 
 
@@ -573,9 +573,9 @@ Overfull \hbox (5.81921pt too wide) in paragraph at lines 281--282
 
 [19 <../out/UC7_ContabilePrezzi_AD.png>]
 
-[20 <../out/UC8_Amministratore_SD.png>]
+[20 <../out/UC8_Admin_SD.png>]
 
-[21 <../out/UC8_Amministratore_AD.png>] (build/Documentazione progetto ingegneria del software.aux)
+[21 <../out/UC8_Admin_AD.png>] (build/Documentazione progetto ingegneria del software.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>

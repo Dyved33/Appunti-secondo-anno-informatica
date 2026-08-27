@@ -1,50 +1,278 @@
 \documentclass[a4paper,12pt]{article}
 
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage[italian]{babel}
-\usepackage{enumitem}
-\usepackage{geometry}
-\usepackage{hyperref}
-\usepackage{booktabs}
-\usepackage{graphicx}
-\usepackage{longtable}
-\usepackage{mdframed}
-
-\geometry{margin=2.5cm}
-
-\title{Change log}
-\author{Gruppo 11}
-\date{27 Maggio 2026}
+\usepackage{gialosai-style}
 
 \begin{document}
 
-\maketitle
+\gialosaiTitlePage{Change Log}{25 Agosto 2026}{v2.0.0}
 
-\section*{Versionamento}
+\section*{Convenzione di versionamento}
 
-\begin{longtable}{@{}p{2.2cm}p{11.8cm}@{}}
-\toprule
-\textbf{Versione} & \textbf{Contenuto sintetico} \\
-\midrule
-\endfirsthead
-\toprule
-\textbf{Versione} & \textbf{Contenuto sintetico} \\
-\midrule
-\endhead
+Il progetto adotta il \textbf{Semantic Versioning}~(\texttt{x.y.z}):
+\begin{itemize}
+    \item \texttt{x} (major): milestone architettoniche che introducono un cambio strutturale nel sistema;
+    \item \texttt{y} (minor): aggiunte funzionali all'interno della stessa milestone;
+    \item \texttt{z} (patch): correzioni di bug, fix di test e miglioramenti incrementali senza cambio di scope.
+\end{itemize}
 
-v0.1.0 & Inizializzazione del repository, impostazione base della documentazione e prima organizzazione della struttura di progetto. \\
-v0.2.0 & Prima fase documentale con architettura, README e prime correzioni alla struttura dei file. \\
-v0.3.0 & Introduzione dei diagrammi UML e consolidamento della documentazione tecnica del dominio. \\
-v0.4.0 & Nascita del backend Go con entrypoint, cartelle iniziali e configurazione preliminare del database. \\
-v0.5.0 & Introduzione della struttura modulare per categorie, ordini, prodotti e utenti, con primi test dedicati. \\
-v0.6.0 & Aggiunta dell'autenticazione JWT, dei middleware e del routing backend. \\
-v0.7.0 & Rafforzamento dei test e rifinitura del main, con normalizzazione di nomi e struttura interna. \\
-v0.8.0 & Migrazione del database a MySQL e introduzione dei file di inizializzazione e configurazione. \\
-v0.9.0 & Refactor organizzativo della repository e allineamento della documentazione alla nuova struttura modulare. \\
-v1.0.0 & Containerizzazione completa con Docker e Docker Compose, inclusa l'ultima correzione della porta esposta per il servizio MySQL. \\
-\bottomrule
-\end{longtable}
+Le release sono ordinate cronologicamente e ciascuna descrive le modifiche significative intervenute nel periodo indicato, con riferimento ai commit principali e all'impatto sul sistema.
+
+\gialosaiNote{Il versionamento segue lo standard Semantic Versioning, lo stesso utilizzato da \texttt{docker}, \texttt{kubernetes}, \texttt{node.js} e praticamente tutti i progetti software moderni. Il pattern \`{e} identico a quello utilizzato da \texttt{github} per le release.}
+
+\newpage
+
+% ============================================================
+% v1.0.0
+% ============================================================
+\begin{decisionbox}
+\section*{v1.0.0 --- Fondazione del progetto}
+\textbf{Periodo:} 9 Mag --- 29 Giu 2026 \hfill \textbf{Commit:} $\sim$35
+\end{decisionbox}
+
+\subsection*{Obiettivo}
+Costituire la repository, definire la documentazione di base, il modello di dominio e la struttura modulare del backend Go.
+
+\subsection*{Modifiche principali}
+
+\textbf{Inizializzazione repository e CI/CD.}
+Creazione della repository su GitHub con \texttt{.gitignore} (include la cartella \texttt{documentazione/build/}) e workflow GitHub Actions (\texttt{.git-log.yml}) per la notifica degli eventi Git su Discord. Configurazione di \texttt{latexmkrc} per la compilazione LaTeX.
+
+\gialosaiNote{L'approccio CI/CD segue le best practice di \texttt{docker} e \texttt{kubernetes}, che usano GitHub Actions per la build e il test automatico. Il pattern di notifica su Discord \`{e} lo stesso utilizzato da molti progetti open source.}
+
+\textbf{Documentazione LaTeX e UML.}
+Prima stesura del file principale di documentazione (\texttt{documentazione-progetto-ingegneria-del-software.tex}) con struttura, interfacce e sezioni di progetto. Creazione della cartella \texttt{documentazione/uml/} con 21 sorgenti PlantUML: diagramma dei casi d'uso generale, domain model, class diagram, e diagrammi di sequenza e di attivit\`{a} per 9 casi d'uso (UC1--UC9). Generazione e commit delle corrispondenti immagini PNG in \texttt{documentazione/img/}. Inserimento di user stories e diagrammi nella cartella UML.
+
+\textbf{Design Document e Decision Log.}
+Creazione di \texttt{Design-Document.tex} con architettura proposta, struttura dei layer e principi applicati. Prima versione di \texttt{Decision-log.tex} con le decisioni iniziali (DC-001 a DC-006). Inserimento della sezione CLI e della parte grafica nel Design Document.
+
+\textbf{Struttura del backend Go.}
+Creazione della struttura modulare con package \texttt{category}, \texttt{order}, \texttt{product}, \texttt{user} e \texttt{domain}. Definizione di \texttt{go.mod} e \texttt{go.sum} con le prime dipendenze. Primo \texttt{main.go} come entry point. Inserimento dei primi modelli del dominio. Prima stesura del Makefile con target \texttt{compile}, \texttt{run}, \texttt{test}, \texttt{clean}.
+
+\textbf{Definizione preliminare dei test.}
+Aggiunta dei file di test per i package di dominio e delle prime funzionalit\`{a} di testing con \texttt{go test}.
+
+\subsection*{Commit significativi}
+\begin{itemize}
+    \item \texttt{5b74bac} --- Initial commit (9 Mag)
+    \item \texttt{07d81c9} --- Aggiunta di tutti i diagrammi UML e user stories (22 Mag)
+    \item \texttt{8fca53e} --- Cartella con file LaTeX della documentazione (20 Mag)
+    \item \texttt{19d20b4} --- Aggiunto il Design Document (29 Mag)
+    \item \texttt{860d2d5} --- Aggiunto Decision Log (29 Mag)
+    \item \texttt{e90937e} --- Inserimento della struttura modulare per il progetto (11 Giu)
+    \item \texttt{055f5a9} --- Inserimento dei packages e dei primi modelli (1 Giu)
+    \item \texttt{d7e648c} --- Definizione del nome progetto e installazione del framework per CLI (5 Giu)
+\end{itemize}
+
+\subsection*{Impatto}
+Il progetto dispone di una repository strutturata, documentazione LaTeX compilabile, diagrammi UML completi e un backend Go con struttura modulare preliminare. Non esiste ancora un server funzionante n\'{e} un client.
+
+\newpage
+
+% ============================================================
+% v1.1.0
+% ============================================================
+\begin{decisionbox}
+\section*{v1.1.0 --- Autenticazione, persistenza e test}
+\textbf{Periodo:} 1 Lug --- 21 Lug 2026 \hfill \textbf{Commit:} $\sim$15
+\end{decisionbox}
+
+\subsection*{Obiettivo}
+Implementare il sistema di autenticazione JWT, il middleware di protezione delle rotte, la migrazione a MySQL e i test di unit\`{a} del backend.
+
+\subsection*{Modifiche principali}
+
+\textbf{Autenticazione JWT e middleware.}
+Creazione del package \texttt{auth} con \texttt{AuthJWT.go} (generazione e validazione token HS256 con \texttt{golang-jwt/jwt/v5}), \texttt{AuthPassword.go} (hash bcrypt con \texttt{golang.org/x/crypto/bcrypt}, costo di default 10) e \texttt{AuthService.go} (gestione login e sessioni). Implementazione del middleware HTTP in \texttt{middleware/AuthMiddleware.go} che verifica firma JWT, scadenza e presenza della sessione nella tabella \texttt{Sessioni} del database. Il token viene memorizzato come hash SHA-256, mai in chiaro.
+
+\gialosaiNote{L'approccio JWT con whitelist \`{e} lo stesso utilizzato da \texttt{docker} (con token di accesso) e \texttt{kubectl} (con certificati e token). Il pattern di hash SHA-256 del token \`{e} una best practice per evitare che token compromessi siano riutilizzabili.}
+
+\textbf{Router e composizione delle dipendenze.}
+Creazione di \texttt{router/Router.go} con il router \texttt{chi} (v5.3.0). Il file \texttt{NewRouter} compone l'intera catena di dipendenze: \texttt{TransactionHelper} condiviso, repository, service e controller per ogni area di dominio. Definizione delle rotte \texttt{/api/v1/} con separazione tra rotta pubblica di login e rotte protette dal middleware.
+
+\textbf{Test di unit\`{a.}}
+Aggiunta di test per router, middleware, autenticazione e controller. Introduzione di \texttt{go-sqlmock} per i test dei repository e \texttt{testify} per le asserzioni. Correzione dei test esistenti in \texttt{category}, \texttt{order}, \texttt{product} e \texttt{user}. Primo test di integrazione del router con \texttt{httptest.NewServer}.
+
+\gialosaiNote{L'approccio ai test segue le best practice di \texttt{go test}: test di unità con mock, test di integrazione con database transazionali. Questo \`{e} lo stesso approccio utilizzato da \texttt{docker}, \texttt{kubernetes} e \texttt{helm}.}
+
+\textbf{Refactoring e normalizzazione.}
+Rinominazione di variabili e metodi per uniformit\`{a}. Modifica del main per le funzionalit\`{a} di avvio. Spostamento di \texttt{go.mod} e \texttt{go.sum} nella root del progetto ( poi corretto nei moduli separati). Rimozione del file UI (non trattato in questo branch).
+
+\subsection*{Commit significativi}
+\begin{itemize}
+    \item \texttt{660d9e7} --- Definizione del compito di costruire il router backend e di avviare il server (29 Giu)
+    \item \texttt{b518ed7} --- Aggiunta delle dipendenze per JWT e creazione dei file di servizio e middleware (29 Giu)
+    \item \texttt{05fb733} --- Definizione preliminare delle funzioni di testing (29 Giu)
+    \item \texttt{fb3ba9d} --- Modifiche relative alla struttura dei test e normalizzazione (30 Giu)
+    \item \texttt{4cf02aa} --- Test per router, autenticazione e middleware (11 Lug)
+    \item \texttt{6779599} --- Aggiornamento del main e go.mod per MySQL (11 Lug)
+    \item \texttt{c4e8e33} --- File di inizializzazione del database e configurazione Docker (12 Lug)
+    \item \texttt{53f1770} --- Modifica del docker-compose per la porta 3307 (12 Lug)
+    \item \texttt{ac04343} --- Modifica del Decision Log e creazione del file di versionamento (14 Lug)
+    \item \texttt{490788f} --- Correzione degli errori e gestione della chiave JWT (21 Lug)
+\end{itemize}
+
+\subsection*{Impatto}
+Il backend \`{e} in grado di avviare un server HTTP sulla porta 8080, autenticare gli utenti con JWT, proteggere le rotte con il middleware e accedere a MySQL 8 tramite Docker Compose. I test coprono autenticazione, middleware, router e i principali service.
+
+\newpage
+
+% ============================================================
+% v1.2.0
+% ============================================================
+\begin{decisionbox}
+\section*{v1.2.0 --- Client TUI e API}
+\textbf{Periodo:} 27 Lug --- 11 Ago 2026 \hfill \textbf{Commit:} $\sim$30
+\end{decisionbox}
+
+\subsection*{Obiettivo}
+Realizzare il client TUI con login, pagina principale del magazzino e API lato client per le operazioni di magazzino.
+
+\subsection*{Modifiche principali}
+
+\textbf{Package \texttt{app} e navigazione.}
+Creazione di \texttt{client/ui/app/app.go} e \texttt{model.go} con il modello principale \texttt{mainLayout} che ospita tutti i sub-model (login, magazzino, contabilit\`{a}, admin). Navigazione tramite enum \texttt{paginaAttiva} con costanti \texttt{iota} (\texttt{LOGIN}, \texttt{MAGMENU}, \texttt{CONTMENU}, \texttt{ADMINMENU}) e \texttt{userRole} (\texttt{MAGAZZINIERE}, \texttt{CONTABILE}, \texttt{ADMIN}). Il login fallito viene gestito nell'\texttt{Update()} di \texttt{app.go}.
+
+\gialosaiNote{Il sistema di navigazione a enum \`{e} lo stesso utilizzato da \texttt{lazygit}, \texttt{k9s} e \texttt{btop}. Il pattern di navigazione a scorciatoie da tastiera \`{e} una best practice per TUI, garantendo efficienza e accessibilit\`{a}.}
+
+\textbf{Pagina di login.}
+Implementazione completa della pagina login con modello, vista, gestione dell'input, stili e test unitari. Il login invia \texttt{POST /api/v1/login} al server, riceve JWT e ruolo, e inoltra alla pagina corretta in base al ruolo.
+
+\textbf{Pagina magazzino e sottopagine.}
+Prima stesura delle pagine: giacenze (\texttt{giacenze/}), ordini entrata (\texttt{ordinientrata/}), ordini uscita (\texttt{ordiniuscita/}), resi (\texttt{resi/}) e scanner (\texttt{scanner/}). Ogni sottopagina dichiara i propri metodi Bubble Tea (\texttt{Init}, \texttt{Update}, \texttt{View}) e costruttori \texttt{New()}.
+
+\textbf{API client lato TUI.}
+Scrittura delle funzioni API in \texttt{client/api/} per: giacenze (\texttt{GetInventoryReport}), ordini entrata (\texttt{GetOrdiniEntrata}), ordini uscita, resi (\texttt{GetReturns}) e scanner. Creazione del DTO di output per i resi. Aggiunta delle corrispondenti rotte nel server.
+
+\textbf{Ridimensionamento e stile.}
+Gestione del ridimensionamento terminale su tutte le pagine tramite \texttt{tea.WindowSizeMsg}. Package \texttt{styles/} con stili condivisi (\texttt{bordi.go}, \texttt{color.go}, \texttt{size.go}, \texttt{style.go}).
+
+\subsection*{Commit significativi}
+\begin{itemize}
+    \item \texttt{1e73c6a} --- Creazione del package app (6 Ago)
+    \item \texttt{ec41996} --- Prima bozza del main per il client (7 Ago)
+    \item \texttt{60a2405} --- Gestione del login in Update() di app.go (7 Ago)
+    \item \texttt{7f887a9} --- Struttura file delle pagine del magazzino (7 Ago)
+    \item \texttt{94fd8b4} --- Test per il package magazzino (8 Ago)
+    \item \texttt{6e2cd5b} --- Scrittura delle API per giacenze (11 Ago)
+    \item \texttt{3d580c7} --- Redazione API per ordini entrata (11 Ago)
+    \item \texttt{602bde3} --- Redazione API per ordini uscita (11 Ago)
+    \item \texttt{ee3325c} --- Redazione API per i resi (11 Ago)
+    \item \texttt{fe6190e} --- Prima scrittura delle API per lo scanner (11 Ago)
+\end{itemize}
+
+\subsection*{Impatto}
+Il client TUI \`{e} in grado di avviarsi, mostrare la pagina di login, autenticarsi e navigare alla pagina del magazzino. Le API lato client coprono giacenze, ordini (entrata/uscita), resi e scanner. La navigazione tra le sottopagine del magazzino \`{e} funzionante.
+
+\newpage
+
+% ============================================================
+% v1.3.0
+% ============================================================
+\begin{decisionbox}
+\section*{v1.3.0 --- Pagine complete e funzionalit\`{a} di dominio}
+\textbf{Periodo:} 12 Ago --- 20 Ago 2026 \hfill \textbf{Commit:} $\sim$40
+\end{decisionbox}
+
+\subsection*{Obiettivo}
+Completare tutte le pagine della TUI (contabilit\`{a}, admin), implementare la creazione ordini, il DDT e la gestione utenti lato server.
+
+\subsection*{Modifiche principali}
+
+\textbf{Pagine contabilit\`{a.}}
+Creazione della struttura completa delle pagine di contabilit\`{a}: catalogo (\texttt{catalogo/}), fatture (\texttt{fatture/}), ordini (\texttt{ordini/}) e report (\texttt{report/}). Ogni sottopagina include modello, vista e test. Aggiornamento delle view di tutte le pagine con impaginazione standardizzata e stili uniformi.
+
+\textbf{Pagine admin.}
+Creazione della struttura admin con dashboard (\texttt{dashboard/}) e gestione utenti (\texttt{users/}). Implementazione della dashboard con scroll, stile e test. Prima bozza delle API per la pagina admin e della pagina di modifica utenti.
+
+\textbf{Creazione ordini e DDT.}
+Implementazione dei modelli e delle funzioni per la creazione di nuovi ordini (entrata e uscita). Creazione delle rotte POST per la creazione ordini. Implementazione della generazione DDT per ordini di uscita con numerazione annuale progressiva. Aggiunta delle API per l'update degli ordini in uscita.
+
+\gialosaiNote{La generazione DDT segue lo stesso pattern di \texttt{docker} (che genera container con ID progressivi) e \texttt{kubernetes} (che assegna UID progressivi alle risorse). Il pattern di numerazione progressiva annuale \`{e} lo standard per documenti fiscali.}
+
+\textbf{Gestione utenti lato admin.}
+Implementazione della creazione, modifica, eliminazione e visualizzazione degli utenti da parte dell'admin. Correzione della ricerca tramite barcode. Aggiunta del metodo eliminazione ordini e delle rotte per creazione DDT e fatture.
+
+\textbf{Stati ordini e resi.}
+Aggiornamento delle costanti relative agli stati di ordini in entrata, uscita e resi. Sistemazione della pagina resi con aggiunta dello stato. Standardizzazione dello stato ordini di mock.
+
+\textbf{Database di test.}
+Aggiunta di utenti test per magazzino e contabilit\`{a} nel database. Inserimento di elementi per testing in ogni tabella. Creazione di un database di test fittizio.
+
+\subsection*{Commit significativi}
+\begin{itemize}
+    \item \texttt{809a04f} --- Creazione struttura file per le pagine del contabile (6 Ago)
+    \item \texttt{c4a6310} --- Setup lavoro sulle pagine dell'admin (12 Ago)
+    \item \texttt{91e1db4} --- Prima stesura della pagina scanner (12 Ago)
+    \item \texttt{7aa663e} --- Prima stesura della pagina resi (12 Ago)
+    \item \texttt{5aee42a} --- Prima stesura della pagina ordini entrata (12 Ago)
+    \item \texttt{d0d60df} --- Secondo aggiornamento view ordini (19 Ago)
+    \item \texttt{18f42d1} --- Aggiornamento view report con impaginazione compatta (19 Ago)
+    \item \texttt{01d6466} --- Creazione modelli e funzioni per nuovi ordini (20 Ago)
+    \item \texttt{d790487} --- Creazione rotte POST per creazione nuovi ordini (20 Ago)
+    \item \texttt{69cb188} --- Aggiornamento costanti stati ordini e rotte necessarie (24 Ago)
+\end{itemize}
+
+\subsection*{Impatto}
+La TUI dispone di pagine complete per magazzino (giacenze, ordini entrata/uscita, resi, scanner), contabilit\`{a} (catalogo, fatture, ordini, report) e admin (dashboard, utenti). Il server espone API per creazione ordini, DDT, gestione utenti e aggiornamento stati. La navigazione tra le pagine \`{e} funzionante con ridimensionamento e scroll.
+
+\newpage
+
+% ============================================================
+% v2.0.0
+% ============================================================
+\begin{decisionbox}
+\section*{v2.0.0 --- Integrazione finale}
+\textbf{Periodo:} 21 Ago --- 25 Ago 2026 \hfill \textbf{Commit:} $\sim$25
+\end{decisionbox}
+
+\subsection*{Obiettivo}
+Completare l'integrazione tra client e server, correggere i bug residui, aggiornare la documentazione e portare la test suite a uno stato stabile.
+
+\subsection*{Modifiche principali}
+
+\textbf{Interfaccia ordini completa.}
+Completamento dell'interfaccia di ordini con correzione delle API e del model del componente ordini nella pagina contabilit\`{a}. Correzione del model del componente ordini della pagina contabilit\`{a}.
+
+\textbf{Autenticazione e navigazione.}
+Modifica del sistema di autenticazione per login fallito. Correzione alla modifica delle informazioni relative all'utente. Correzione dei problemi di navigazione tra le voci relative alla creazione di un utente da parte dell'admin. Correzione del sistema di navigazione tra le pagine.
+
+\gialosaiNote{Il sistema di navigazione segue lo stesso pattern di \texttt{lazygit} e \texttt{k9s}: un modello principale che ospita sub-model per ogni pagina, con navigazione a enum e stili condivisi. Il pattern \`{e} identico a quello utilizzato da \texttt{bubbletea} nella documentazione ufficiale.}
+
+\textbf{Catalogo e documenti fiscali.}
+Modifica della pagina catalogo con aggiunta di creazione ed eliminazione di prodotti e categorie. Strutturazione della pagina fatture con aggiunta dello scorrimento di pagina per tutte le tab. Modifica del tipo di fattura che appare.
+
+\textbf{Dashboard e UI.}
+Implementazione dello scorrimento e adattamento della dashboard dell'admin. Correzione del bordo doppio in users e sistemazione dei footer. Aggiornamento della view users. Correzione dei nomi nel package style. Sistemazione della ricerca per utente. Aggiornamento della ricerca tramite barcode.
+
+\textbf{Bugfix terminale.}
+Bugfix multiplo per il terminale: cambio switch pagina con \texttt{ctrl+F1}, \texttt{ctrl+F2},\ldots\ Aggiunta opzione logout con \texttt{ctrl+L}. Sistemazione del messaggio di errore di login. Sistemazione dell'impaginazione dei router di gestione delle schede. Bugfix assegnazione ruoli.
+
+\textbf{Refactoring API client.}
+Rinominazione \texttt{api.go} $\to$ \texttt{client.go} (coerenza nome:contenuto). Rinominazione \texttt{ApiClient} $\to$ \texttt{APIClient}. Creazione dei file \texttt{products.go}, \texttt{orders.go}, \texttt{users.go} nel package API. Creazione di \texttt{model.go} per riorganizzare il package delle API. Eliminazione ridondanze tra i modelli DTO.
+
+\textbf{Test e coerenza.}
+Aggiunta e correzione di test gi\`{a} esistenti in tutti i package. Sistemazione dei test per app. Correzione della coerenza dell'init del database. Correzione gestione DDT gi\`{a} creato. Sistemazione dei mock lato server. Rimozione del file \texttt{hash.go}. Inserimento utente admin per testing. Aggiornamento dei test di app.
+
+\gialosaiNote{L'approccio ai test segue le best practice di \texttt{go test}: test di unità con mock, test di integrazione con database transazionali. Questo \`{e} lo stesso approccio utilizzato da \texttt{docker}, \texttt{kubernetes} e \texttt{helm}.}
+
+\textbf{Documentazione.}
+Aggiornamento della documentazione e dei test in funzione della nuova logica di autenticazione e dell'action on click. Correzione degli UML e attualizzazione della documentazione. Correzione errori dovuti al nuovo sistema di navigazione tra le pagine.
+
+\subsection*{Commit significativi}
+\begin{itemize}
+    \item \texttt{7be2d62} --- Interfaccia di ordini completa (21 Ago)
+    \item \texttt{c20212f} --- Modifica del sistema di autenticazione per login fallito (22 Ago)
+    \item \texttt{cc3c44b} --- Inserimento del metodo eliminazione ordini e rotte DDT/fatture (22 Ago)
+    \item \texttt{dcae539} --- Aggiornamento documentazione e test per nuova logica auth (22 Ago)
+    \item \texttt{e0db618} --- Modifica pagina catalogo con creazione/eliminazione prodotti (25 Ago)
+    \item \texttt{5a59318} --- Bugfix terminale: cambio switch pagina con ctrl+F1/F2 (18 Ago)
+    \item \texttt{7cbd0b4} --- Aggiunta opzione logout con ctrl+L (18 Ago)
+    \item \texttt{c0da7e6} --- Refactoring API: creazione file products, orders, model (12 Ago)
+    \item \texttt{0e3ea19} --- Rinominazione ApiClient $\to$ APIClient (12 Ago)
+    \item \texttt{49df776} --- Aggiunta e correzione di test (25 Ago)
+\end{itemize}
+
+\subsection*{Impatto}
+Il sistema \`{e} integrato: il client TUI si connette al backend, le principali funzionalit\`{a} sono esposte via API e raggiungibili dalla navigazione. La documentazione \`{e} stata allineata al codice. La test suite \`{e} stabile e copre service, repository, controller, middleware, router, client API e modelli TUI. I limiti residui (autorizzazione RBAC per ruolo, generazione PDF/CSV, navigazione completa di alcune viste) sono documentati come lavoro futuro.
 
 \end{document}
-

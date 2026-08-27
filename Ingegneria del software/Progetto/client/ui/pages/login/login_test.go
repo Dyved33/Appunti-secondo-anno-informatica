@@ -47,7 +47,7 @@ func TestLogin_Update_Navigation(t *testing.T) {
 func TestLogin_Submit_Success(t *testing.T) {
 	// Server HTTP mock per simulare la risposta di autenticazione del backend
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/login" && r.Method == http.MethodPost {
+		if r.URL.Path == "/api/v1/login" && r.Method == http.MethodPost {
 			w.WriteHeader(http.StatusOK)
 			json.NewEncoder(w).Encode(map[string]string{
 				"token": "mock-jwt-token-12345",

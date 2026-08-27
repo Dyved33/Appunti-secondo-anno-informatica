@@ -18,7 +18,7 @@ func NewProductRepository(database *sql.DB) *ProductRepository {
 }
 
 // GetAll recupera tutti i prodotti dal database con i dati delle categorie associate via LEFT JOIN.
-func (r *ProductRepository) ProductRepository_GetAll(ctx context.Context) ([]domain.Prodotto, error) {
+func (r *ProductRepository) ProductRepository_GetAllProducts(ctx context.Context) ([]domain.Prodotto, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id, p.prezzo_acquisto, p.prezzo_vendita, p.soglia_minima,
 	                 c.nome, c.descrizione
@@ -165,7 +165,7 @@ func (r *ProductRepository) ProductRepository_Delete(ctx context.Context, id int
 }
 
 // GetGiacenza recupera la giacenza di un prodotto dal database. Se la giacenza non esiste, restituisce una giacenza vuota (quantità 0).
-func (r *ProductRepository) ProductRepository_GetGiacenza(ctx context.Context, prodID int) (*domain.Giacenza, error) {
+func (r *ProductRepository) ProductRepository_GetGiacenzaById(ctx context.Context, prodID int) (*domain.Giacenza, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, prodotto_id, quantita, updated_at FROM Giacenze WHERE prodotto_id = ?`
 	var g domain.Giacenza
@@ -180,11 +180,11 @@ func (r *ProductRepository) ProductRepository_GetGiacenza(ctx context.Context, p
 }
 
 // UpdateGiacenza modifica la giacenza di un prodotto aggiungendo o sottraendo una quantità 
-func (r *ProductRepository) ProductRepository_UpdateGiacenza(ctx context.Context, prodID int, delta int) error {
+func (r *ProductRepository) ProductRepository_UpdateGiacenza(ctx context.Context, g *domain.Giacenza) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Giacenze (prodotto_id, quantita, updated_at) VALUES (?, ?, ?)
 	          ON DUPLICATE KEY UPDATE quantita = quantita + VALUES(quantita), updated_at = VALUES(updated_at)`
-	_, err := exec.ExecContext(ctx, query, prodID, delta, time.Now())
+	_, err := exec.ExecContext(ctx, query, g.ProdottoID, g.Quantita, time.Now())
 	return err
 }
 

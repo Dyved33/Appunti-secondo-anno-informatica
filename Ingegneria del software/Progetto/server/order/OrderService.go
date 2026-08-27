@@ -10,17 +10,27 @@ import (
 
 type orderRepository interface {
 	OrderRepository_CreateOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error
+	OrderRepository_GetOrdineEntrataByID(ctx context.Context, id int) (*domain.OrdineEntrata, error)
+	OrderRepository_GetOrdiniEntrata(ctx context.Context) ([]domain.OrdineEntrata, error)
+	OrderRepository_DeleteOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error
+
 	OrderRepository_CreateOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error
 	OrderRepository_GetOrdineUscitaByID(ctx context.Context, id int) (*domain.OrdineUscita, error)
 	OrderRepository_GetOrdiniUscita(ctx context.Context) ([]domain.OrdineUscita, error)
-	OrderRepository_GetOrdiniUscitaByStato(ctx context.Context, stato domain.StatoOrdine) ([]domain.OrdineUscita, error)
+	OrderRepository_GetOrdiniUscitaByStato(ctx context.Context, stato domain.StatoOrdineUscita) ([]domain.OrdineUscita, error)
 	OrderRepository_UpdateOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error
+	OrderRepository_DeleteOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error
+
 	OrderRepository_CreateDDT(ctx context.Context, d *domain.DDT) error
-	OrderRepository_CountDDTByYear(ctx context.Context, year int) (int, error)
-	OrderRepository_CreateReso(ctx context.Context, re *domain.Reso, stato string) error
+	OrderRepository_GetDDTByYear(ctx context.Context, year int) ([]domain.DDT, error)
+	OrderRepository_GetDDTByOrdineUscita(ctx context.Context, orderID int) (*domain.DDT, error)
+
+	OrderRepository_CreateReso(ctx context.Context, re *domain.Reso) error
 	OrderRepository_GetResoByID(ctx context.Context, id int) (*domain.Reso, string, error)
 	OrderRepository_UpdateResoStato(ctx context.Context, id int, stato string) error
-	OrderRepository_GetAllResi(ctx context.Context) ([]map[string]interface{}, error)
+	OrderRepository_GetAllResi(ctx context.Context) ([]domain.Reso, error)
+	OrderRepository_DeleteReso(ctx context.Context, id int) error
+
 	OrderRepository_CreateFattura(ctx context.Context, f *domain.Fattura) error
 	OrderRepository_CountFattureByYearAndType(ctx context.Context, year int, tipo domain.TipoFattura) (int, error)
 	OrderRepository_GetAllFatture(ctx context.Context) ([]domain.Fattura, error)
@@ -30,8 +40,8 @@ type orderRepository interface {
 // productRepoForOrders è il sottoinsieme di product.Repository che serve qui.
 type productRepoForOrders interface {
 	ProductRepository_GetByID(ctx context.Context, id int) (*domain.Prodotto, error)
-	ProductRepository_GetGiacenza(ctx context.Context, prodID int) (*domain.Giacenza, error)
-	ProductRepository_UpdateGiacenza(ctx context.Context, prodID int, delta int) error
+	ProductRepository_GetGiacenzaById(ctx context.Context, prodID int) (*domain.Giacenza, error)
+	ProductRepository_UpdateGiacenza(ctx context.Context, g *domain.Giacenza) error
 }
 
 type transactionRunner interface {
@@ -54,7 +64,6 @@ func NewOrderService(orderRepo orderRepository, prodRepo productRepoForOrders, t
 
 func (s *OrderService) OrderService_ConfirmOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error {
 	o.Data = time.Now()
-	o.Stato = domain.StatoConfermato
 
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
 		// salva l'ordine di entrata
@@ -65,13 +74,28 @@ func (s *OrderService) OrderService_ConfirmOrdineEntrata(ctx context.Context, o 
 
 		// aggiorna la giacenza dei prodotti in entrata
 		for _, r := range o.Righe {
-			err = s.ProductRepo.ProductRepository_UpdateGiacenza(txCtx, r.ProdottoID, r.Quantita)
+			err = s.ProductRepo.ProductRepository_UpdateGiacenza(txCtx, &domain.Giacenza{
+				ProdottoID: r.ProdottoID,
+				Quantita:   r.Quantita,
+			})
 			if err != nil {
 				return err
 			}
 		}
 		return nil
 	})
+}
+
+func (s *OrderService) OrderService_GetOrdiniEntrata(ctx context.Context) ([]domain.OrdineEntrata, error) {
+	return s.OrderRepo.OrderRepository_GetOrdiniEntrata(ctx)
+}
+
+func (s *OrderService) OrderService_GetOrdiniEntrataById(ctx context.Context, id int) (*domain.OrdineEntrata, error) {
+	return s.OrderRepo.OrderRepository_GetOrdineEntrataByID(ctx, id)
+}
+
+func (s *OrderService) OrderService_DeleteOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error {
+	return s.OrderRepo.OrderRepository_DeleteOrdineEntrata(ctx, o)
 }
 
 // ─────────────────────────────────────────────
@@ -85,7 +109,7 @@ func (s *OrderService) OrderService_ConfirmOrdineUscita(ctx context.Context, o *
 	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
 		// verifica la giacenza dei prodotti in uscita e decrementa la giacenza
 		for _, r := range o.Righe {
-			g, err := s.ProductRepo.ProductRepository_GetGiacenza(txCtx, r.ProdottoID)
+			g, err := s.ProductRepo.ProductRepository_GetGiacenzaById(txCtx, r.ProdottoID)
 			if err != nil {
 				return err
 			}
@@ -99,7 +123,10 @@ func (s *OrderService) OrderService_ConfirmOrdineUscita(ctx context.Context, o *
 			}
 
 			// decrementa la giacenza del prodotto
-			err = s.ProductRepo.ProductRepository_UpdateGiacenza(txCtx, r.ProdottoID, -r.Quantita)
+			err = s.ProductRepo.ProductRepository_UpdateGiacenza(txCtx, &domain.Giacenza{
+				ProdottoID: r.ProdottoID,
+				Quantita:   -r.Quantita,
+			})
 			if err != nil {
 				return err
 			}
@@ -118,12 +145,47 @@ func (s *OrderService) OrderService_GetOrdiniUscita(ctx context.Context) ([]doma
 	return s.OrderRepo.OrderRepository_GetOrdiniUscita(ctx)
 }
 
-func (s *OrderService) OrderService_GetOrdiniUscitaByStato(ctx context.Context, stato domain.StatoOrdine) ([]domain.OrdineUscita, error) {
+func (s *OrderService) OrderService_GetOrdiniUscitaById(ctx context.Context, id int) (*domain.OrdineUscita, error) {
+	return s.OrderRepo.OrderRepository_GetOrdineUscitaByID(ctx, id)
+}
+
+func (s *OrderService) OrderService_GetOrdiniUscitaByStato(ctx context.Context, stato domain.StatoOrdineUscita) ([]domain.OrdineUscita, error) {
 	return s.OrderRepo.OrderRepository_GetOrdiniUscitaByStato(ctx, stato)
 }
 
-func (s *OrderService) OrderService_GetDettaglioOrdineUscita(ctx context.Context, id int) (*domain.OrdineUscita, error) {
-	return s.OrderRepo.OrderRepository_GetOrdineUscitaByID(ctx, id)
+func (s *OrderService) OrderService_UpdateOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
+	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
+		// verifica la giacenza dei prodotti in uscita e decrementa la giacenza
+		for _, r := range o.Righe {
+			g, err := s.ProductRepo.ProductRepository_GetGiacenzaById(txCtx, r.ProdottoID)
+			if err != nil {
+				return err
+			}
+			if g.Quantita < r.Quantita {
+				p, errP := s.ProductRepo.ProductRepository_GetByID(txCtx, r.ProdottoID)
+				name := "Articolo"
+				if errP == nil {
+					name = p.Nome
+				}
+				return domain.NewGiacenzaInsufficienteError(r.ProdottoID, name, g.Quantita, r.Quantita)
+			}
+
+			// decrementa la giacenza del prodotto
+			err = s.ProductRepo.ProductRepository_UpdateGiacenza(txCtx, &domain.Giacenza{
+				ProdottoID: r.ProdottoID,
+				Quantita:   -r.Quantita,
+			})
+			if err != nil {
+				return err
+			}
+		}
+
+		return s.OrderRepo.OrderRepository_UpdateOrdineUscita(txCtx, o)
+	})
+}
+
+func (s *OrderService) OrderService_DeleteOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
+	return s.OrderRepo.OrderRepository_DeleteOrdineUscita(ctx, o)
 }
 
 // ─────────────────────────────────────────────
@@ -139,18 +201,23 @@ func (s *OrderService) OrderService_GeneraDDT(ctx context.Context, orderID int, 
 			return err
 		}
 
-		if o.Stato == domain.StatoEvaso {
-			return domain.ErrDDTGiaGenerato
+		if o.DDTID != nil {
+			ddt, err = s.OrderRepo.OrderRepository_GetDDTByOrdineUscita(txCtx, orderID)
+			if err != nil {
+				return err
+			}
+
+			return nil
 		}
 
-		progressive, err := s.OrderRepo.OrderRepository_CountDDTByYear(txCtx, time.Now().Year())
+		progressive, err := s.OrderRepo.OrderRepository_GetDDTByYear(txCtx, time.Now().Year())
 		if err != nil {
 			return err
 		}
 
 		// crea il DDT
 		d := &domain.DDT{
-			Numero:         fmt.Sprintf("%s-%d-%04d", domain.PrefissoDDT, time.Now().Year(), progressive+1),
+			Numero:         fmt.Sprintf("%s-%d-%04d", domain.PrefissoDDT, time.Now().Year(), len(progressive)+1),
 			OrdineUscitaID: o.ID,
 			Data:           time.Now(),
 			Mittente:       mittente,
@@ -181,6 +248,14 @@ func (s *OrderService) OrderService_GeneraDDT(ctx context.Context, orderID int, 
 	return ddt, nil
 }
 
+func (s *OrderService) OrderService_GetDDTByOrdineUscita(ctx context.Context, orderID int) (*domain.DDT, error) {
+	return s.OrderRepo.OrderRepository_GetDDTByOrdineUscita(ctx, orderID)
+}
+
+func (s *OrderService) OrderService_GetDDTByYear(ctx context.Context, year int) ([]domain.DDT, error) {
+	return s.OrderRepo.OrderRepository_GetDDTByYear(ctx, year)
+}
+
 // ─────────────────────────────────────────────
 // GESTIONE RESI
 // ─────────────────────────────────────────────
@@ -197,7 +272,7 @@ func (s *OrderService) OrderService_CreateReso(ctx context.Context, r *domain.Re
 			return errors.New("il reso può essere registrato solo per ordini evasi")
 		}
 
-		return s.OrderRepo.OrderRepository_CreateReso(txCtx, r, "da_verificare")
+		return s.OrderRepo.OrderRepository_CreateReso(txCtx, r)
 	})
 }
 
@@ -212,12 +287,15 @@ func (s *OrderService) OrderService_VerifyReso(ctx context.Context, resoID int) 
 		}
 
 		// incrementa la giacenza del prodotto reso
-		err = s.ProductRepo.ProductRepository_UpdateGiacenza(txCtx, re.ProdottoID, re.Quantita)
+		err = s.ProductRepo.ProductRepository_UpdateGiacenza(txCtx, &domain.Giacenza{
+			ProdottoID: re.ProdottoID,
+			Quantita:   re.Quantita,
+		})
 		if err != nil {
 			return err
 		}
 
-		return s.OrderRepo.OrderRepository_UpdateResoStato(txCtx, resoID, "verificato")
+		return s.OrderRepo.OrderRepository_UpdateResoStato(txCtx, resoID, "accettato")
 	})
 }
 
@@ -227,35 +305,66 @@ func (s *OrderService) OrderService_ApproveReso(ctx context.Context, resoID int)
 		if err != nil {
 			return err
 		}
-		if stato != "verificato" {
+		if stato != "accettato" {
 			return errors.New("il reso deve essere prima verificato fisicamente")
 		}
-		return s.OrderRepo.OrderRepository_UpdateResoStato(txCtx, resoID, "approvato")
+		return s.OrderRepo.OrderRepository_UpdateResoStato(txCtx, resoID, "accettato")
 	})
 }
 
 func (s *OrderService) OrderService_RifiutaReso(ctx context.Context, resoID int) error {
-	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
-		re, stato, err := s.OrderRepo.OrderRepository_GetResoByID(txCtx, resoID)
-		if err != nil {
-			return err
-		}
-		if stato != "verificato" {
-			return errors.New("reso non verificato o già processato")
-		}
+    return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
 
-		// Rollback della giacenza del prodotto reso
-		err = s.ProductRepo.ProductRepository_UpdateGiacenza(txCtx, re.ProdottoID, -re.Quantita)
-		if err != nil {
-			return err
-		}
+        re, stato, err := s.OrderRepo.OrderRepository_GetResoByID(txCtx, resoID)
+        if err != nil {
+            return err
+        }
 
-		return s.OrderRepo.OrderRepository_UpdateResoStato(txCtx, resoID, "rifiutato")
-	})
+        if stato != "accettato" {
+            return errors.New("reso non verificato o già processato")
+        }
+
+        // Rollback della giacenza del prodotto reso
+        err = s.ProductRepo.ProductRepository_UpdateGiacenza(txCtx, &domain.Giacenza{
+            ProdottoID: re.ProdottoID,
+            Quantita:   -re.Quantita,
+        })
+        if err != nil {
+            return err
+        }
+
+        return s.OrderRepo.OrderRepository_UpdateResoStato(txCtx, resoID, "rifiutato")
+    })
 }
 
-func (s *OrderService) OrderService_GetResi(ctx context.Context) ([]map[string]interface{}, error) {
-	return s.OrderRepo.OrderRepository_GetAllResi(ctx)
+func (s *OrderService) OrderService_GetAllResi(ctx context.Context) ([]ResoDTO, error) {
+	resi, err := s.OrderRepo.OrderRepository_GetAllResi(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var dtoList []ResoDTO
+
+	for _, r := range resi {
+		dtoList = append(dtoList, ResoDTO{
+			ID:             r.ID,
+			OrdineUscitaID: r.OrdineUscitaID,
+			ProdottoID:     r.ProdottoID,
+			Quantita:       r.Quantita,
+			Motivo:         r.Motivo,
+			Stato:          string(r.Stato),
+			CreatedByID:    r.CreatedByID,
+			Data:           r.Data,
+		})
+	}
+
+	return dtoList, nil
+}
+
+func (s *OrderService) OrderService_DeleteReso(ctx context.Context, resoID int) error {
+	return s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
+		return s.OrderRepo.OrderRepository_DeleteReso(txCtx, resoID)
+	})
 }
 
 // ─────────────────────────────────────────────
@@ -313,7 +422,7 @@ func (s *OrderService) OrderService_GeneraFattura(ctx context.Context, orderID i
 	return fat, nil
 }
 
-func (s *OrderService) OrderService_GeneraNotaCredito(ctx context.Context, orderID int) (*domain.Fattura, error) {
+func (s *OrderService) OrderService_GeneraNotaCreditoById(ctx context.Context, orderID int) (*domain.Fattura, error) {
 	var notaCredito *domain.Fattura
 
 	err := s.Tx.WithinTransaction(ctx, func(txCtx context.Context) error {
@@ -363,7 +472,7 @@ func (s *OrderService) OrderService_GeneraNotaCredito(ctx context.Context, order
 	return notaCredito, nil
 }
 
-func (s *OrderService) OrderService_GetFatture(ctx context.Context) ([]domain.Fattura, error) {
+func (s *OrderService) OrderService_GetAllFatture(ctx context.Context) ([]domain.Fattura, error) {
 	return s.OrderRepo.OrderRepository_GetAllFatture(ctx)
 }
 

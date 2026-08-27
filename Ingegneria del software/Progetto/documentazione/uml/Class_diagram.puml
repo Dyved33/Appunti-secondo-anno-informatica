@@ -1,120 +1,142 @@
-@startuml ClassDiagram_GestionaleMagazzino
-
+@startuml ClassDiagram
+hide circle
+hide methods
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam classAttributeIconSize 0
 skinparam class {
   BackgroundColor #FAFAFA
-  BorderColor     #333333
-  ArrowColor      #555555
+  BorderColor #333333
+  ArrowColor #555555
 }
-skinparam classAttributeIconSize 0
-hide methods
-hide circle
-
-' ── ENUM ────────────────────────────────────
-
+skinparam enum {
+  BackgroundColor #FAFAFA
+  BorderColor #333333
+}
+title Class diagram del dominio e delle dipendenze principali
 enum Ruolo {
-  MAGAZZINIERE
-  CONTABILE
-  AMMINISTRATORE
+  magazziniere
+  contabile
+  admin
 }
-
-enum StatoOrdineEntrata {
-  BOZZA
-  IN_APPROVAZIONE
-  APPROVATO
-  RICEVUTO
-  ANNULLATO
+enum StatoOrdine {
+  confermato
+  evaso
+  annullato
 }
-
-enum StatoOrdineUscita {
-  BOZZA
-  CONFERMATO
-  EVASO
-  ANNULLATO
+enum TipoFattura {
+  fattura
+  nota_credito
 }
-
-' ── CLASSI ──────────────────────────────────────────
-
 class Utente {
-  # id           : int
-  # passwordHash : String
-  + nome         : String
-  + cognome      : String
-  + ruolo        : Ruolo
+  id : int
+  username : string
+  passwordHash : string
+  ruolo : Ruolo
+  tentativiFalliti : int
+  bloccato : bool
+  createdAt : time
 }
-
+class Sessione {
+  id : int
+  userID : int
+  tokenHash : string
+  expiresAt : time
+}
 class Categoria {
-  # id          : int
-  # codice      : String
-  + nome        : String
-  + descrizione : String
+  id : int
+  nome : string
+  descrizione : string
 }
-
 class Prodotto {
-  # id             : int
-  # codice         : String
-  + nome           : String
-  + descrizione    : String
-  + unitàMisura    : String
-  - prezzoUnitario : double
+  id : int
+  codice : string
+  barcode : string
+  nome : string
+  descrizione : string
+  categoriaID : int
+  prezzoAcq : float64
+  prezzoVend : float64
+  sogliaMin : int
 }
-
 class Giacenza {
-  # id                   : int
-  # quantitàDisponibile  : int
+  id : int
+  prodottoID : int
+  quantita : int
+  updatedAt : time
 }
-
 class OrdineEntrata {
-  # id     : int
-  # numero : String
-  # data   : LocalDate
-  # stato  : StatoOrdineEntrata
-  # note   : String
+  id : int
+  numero : string
+  fornitore : string
+  data : time
+  stato : StatoOrdine
+  note : string
+  createdBy : int
 }
-
-class OrdineUscita {
-  # id     : int
-  # numero : String
-  # data   : LocalDate
-  # stato  : StatoOrdineUscita
-  # note   : String
-}
-
 class RigaOrdineEntrata {
-  # id             : int
-  # quantità       : int
-  # prezzoUnitario : double
+  id : int
+  quantita : int
+  prezzoUnitario : float64
 }
-
+class OrdineUscita {
+  id : int
+  numero : string
+  cliente : string
+  data : time
+  stato : StatoOrdine
+  note : string
+  createdBy : int
+  ddtID : int?
+}
 class RigaOrdineUscita {
-  # id       : int
-  # quantità : int
+  id : int
+  quantita : int
+  prezzoUnitario : float64
 }
-
 class DDT {
-  # id     : int
-  # numero : String
-  # data   : LocalDate
-  # note   : String
+  id : int
+  numero : string
+  ordineUscitaID : int
+  data : time
+  mittente : string
+  destinatario : string
+  pathPDF : string
 }
-
-' ── RELAZIONI ───────────────────────────────────────
-
-Prodotto           -->     Categoria            : appartiene a
-
-' Composizione: la Giacenza dipende dall'esistenza del Prodotto
-Prodotto             *--      Giacenza             : tiene traccia in
-
-' Composizione: le righe non esistono senza l'ordine padre
-OrdineEntrata        *--   RigaOrdineEntrata    : contiene
-OrdineUscita          *--  RigaOrdineUscita     : contiene
-
-RigaOrdineEntrata  -->      Prodotto             : riguarda
-RigaOrdineUscita  -->     Prodotto             : riguarda
-
-' Un ordine di uscita può generare al più un DDT
-OrdineUscita         -->   DDT                  : genera
-
-Utente                -->   OrdineEntrata         : registra
-Utente               -->   OrdineUscita          : registra
-
+class Fattura {
+  id : int
+  numero : string
+  anno : int
+  tipo : TipoFattura
+  ordineUscitaID : int
+  imponibile : float64
+  iva : float64
+  totale : float64
+  data : time
+  pathPDF : string
+}
+class Reso {
+  id : int
+  ordineUscitaID : int
+  prodottoID : int
+  quantita : int
+  motivo : string
+  stato : string
+  data : time
+  createdBy : int
+}
+Utente "1" -- "0..*" Sessione
+Utente "1" -- "0..*" OrdineEntrata : registra
+Utente "1" -- "0..*" OrdineUscita : registra
+Categoria "0..1" -- "0..*" Prodotto : categorizza
+Prodotto "1" *-- "1" Giacenza
+OrdineEntrata "1" *-- "0..*" RigaOrdineEntrata
+OrdineUscita "1" *-- "0..*" RigaOrdineUscita
+RigaOrdineEntrata "*" --> "1" Prodotto
+RigaOrdineUscita "*" --> "1" Prodotto
+OrdineUscita "1" -- "0..1" DDT : genera
+OrdineUscita "1" -- "0..*" Fattura
+OrdineUscita "1" -- "0..*" Reso
+Reso "*" --> "1" Prodotto
 @enduml

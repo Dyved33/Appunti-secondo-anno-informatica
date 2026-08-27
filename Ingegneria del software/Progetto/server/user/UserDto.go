@@ -15,23 +15,3 @@ type LoginResponseDTO struct {
 	Ruolo        string `json:"ruolo"`
 	ErrorMessage string `json:"error_message,omitempty"`
 }
-
-// RecoveryRequestDTO rappresenta la richiesta per il recupero delle credenziali.
-// L'utente fornisce il suo username per ricevere la domanda di sicurezza.
-type RecoveryRequestDTO struct {
-	Username string `json:"username"`
-}
-
-// RecoveryResponseDTO contiene la domanda di sicurezza associata all'utente.
-// Viene restituita quando si richiede il recupero delle credenziali.
-type RecoveryResponseDTO struct {
-	DomandaSicurezza string `json:"domanda_sicurezza"`
-}
-
-// ResetPasswordRequestDTO rappresenta la richiesta di reset della password.
-// L'utente fornisce il suo username, la risposta alla domanda di sicurezza e la nuova password.
-type ResetPasswordRequestDTO struct {
-	Username    string `json:"username"`
-	Risposta    string `json:"risposta"`
-	NewPassword string `json:"new_password"`
-}

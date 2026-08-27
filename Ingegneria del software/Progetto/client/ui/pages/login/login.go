@@ -58,7 +58,17 @@ func (l Login) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		l.success = true
 		return l, nil
 
+	case tea.WindowSizeMsg:
+		return l, nil
+
 	case tea.KeyPressMsg:
+		if l.isBlocked() {
+			if msg.String() == "esc" {
+				return l, tea.Quit
+			}
+			return l, nil
+		}
+
 		switch msg.String() {
 		case "esc":
 			return l, tea.Quit
@@ -117,20 +127,26 @@ func (l Login) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return l, cmd
 }
 
+// isBlocked verifica se l'account è stato bloccato per troppi tentativi falliti.
+func (l Login) isBlocked() bool {
+	return l.err != nil && strings.Contains(strings.ToLower(l.err.Error()), "bloccato")
+}
+
 // View costruisce ed esegue il rendering dell'interfaccia utente (UI) per la schermata di login.
 //
 // Come è stato scritto il codice:
-//  1. Inserisce l'intestazione stilizzata "AUTENTICAZIONE UTENTE" mediante `style.LoginTitleStile`.
+//  1. Inserisce l'intestazione stilizzata "AUTENTICAZIONE UTENTE" mediante `style.TitleStile`.
 //  2. Scorre i campi di input concatenando le loro viste. Se il cursore è visibile sul campo attivo,
 //     calcola la coordinata verticale offset.
 //  3. Se l'autenticazione è in corso, aggiunge la stringa di caricamento; se vi è un errore,
-//     applica `style.LoginErrorStile`; in caso di successo, applica `style.LoginSuccessStile`.
+//     applica `style.ErrorStile`; in caso di successo, applica `style.SuccessStile`.
 //  4. Avvolge l'intero blocco testuale nella cornice stilizzata `style.LoginBoxStile` di Lipgloss e restituisce `tea.View`.
 func (l Login) View() tea.View {
 	var b strings.Builder
 	var c *tea.Cursor
 
-	b.WriteString(style.LoginTitleStile.Render("AUTENTICAZIONE UTENTE") + "\n\n")
+	b.WriteString(style.TitleStile.Render("AUTENTICAZIONE UTENTE"))
+	b.WriteString("\n\n")
 
 	for i, in := range l.inputs {
 		b.WriteString(l.inputs[i].View())
@@ -148,9 +164,22 @@ func (l Login) View() tea.View {
 	if l.loading {
 		b.WriteString("\n\nAutenticazione in corso...")
 	} else if l.err != nil {
-		b.WriteString("\n\n" + style.LoginErrorStile.Render("Errore: "+l.err.Error()))
+		b.WriteString("\n\n")
+		if l.isBlocked() {
+			b.WriteString(style.ErrorStile.Render("Account bloccato. Contattare l'admin."))
+		} else {
+			b.WriteString(style.ErrorStile.Render("Autenticazione Fallita"))
+		}
 	} else if l.success {
-		b.WriteString("\n\n" + style.LoginSuccessStile.Render("Login effettuato con successo!"))
+		b.WriteString("\n\n")
+		b.WriteString(style.SuccessStile.Render("Login effettuato con successo!"))
+	}
+
+	b.WriteString("\n\n")
+	if l.isBlocked() {
+		b.WriteString(style.FooterStile.Render("[esc] Chiudi applicazione"))
+	} else {
+		b.WriteString(style.FooterStile.Render("[↑/↓] Naviga  |  [enter] Accedi  |  [esc] Esci"))
 	}
 
 	boxFinale := style.LoginBoxStile.Render(b.String())
@@ -199,7 +228,7 @@ func (l *Login) updateInputs(msg tea.Msg) tea.Cmd {
 // Come è stato scritto il codice:
 // Restituisce una closure che esegue `client.Login(username, password)`. In caso di errore restituisce un `SubmitErrorMsg`;
 // in caso di successo restituisce un `LoginSubmitMsg`.
-func doSubmitCmd(client *api.ApiClient, username, password string) tea.Cmd {
+func doSubmitCmd(client *api.APIClient, username, password string) tea.Cmd {
 	return func() tea.Msg {
 		err := client.Login(username, password)
 		if err != nil {

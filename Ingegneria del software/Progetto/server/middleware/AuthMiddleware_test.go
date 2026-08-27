@@ -22,7 +22,7 @@ func (m *mockSessionValidator) SessionRepository_IsValid(ctx context.Context, to
 
 func TestAuthMiddleware(t *testing.T) {
 	// Genera un token valido per i test
-	tokenValido, err := auth.GenerateToken(123, "mario", "Amministratore")
+	tokenValido, err := auth.GenerateToken(123, "mario", "Admin")
 	assert.NoError(t, err)
 
 	tests := []struct {
@@ -77,7 +77,7 @@ func TestAuthMiddleware(t *testing.T) {
 }
 
 func TestAuthMiddleware_WithSessionValidator(t *testing.T) {
-	tokenValido, err := auth.GenerateToken(123, "mario", "Amministratore")
+	tokenValido, err := auth.GenerateToken(123, "mario", "Admin")
 	assert.NoError(t, err)
 	tokenHash := auth.HashToken(tokenValido)
 

@@ -1,0 +1,1640 @@
+COMMIT: 028420b25c299353519b8a1e0167607cc3f14cb4
+AUTHOR: Dyved33
+DATE: 2026-08-25 20:11:03 +0200
+MESSAGE:
+modifica sul tipo di fattura che appare
+
+---
+COMMIT: 49df7765a04ba131a8c4f193924b752d7ca1ec58
+AUTHOR: Dyved33
+DATE: 2026-08-25 20:04:09 +0200
+MESSAGE:
+Aggiunta e correzione di test già esistenti
+
+---
+COMMIT: e0db6189b6c4d4dd3b8240aace2387b767364213
+AUTHOR: Dyved33
+DATE: 2026-08-25 17:41:45 +0200
+MESSAGE:
+modifica della pagina catalogo con aggiunta di creazione ed eliminazione di prodotti e categorie. strutturazione della pagina fatture e aggiunta dello scorrimento di pagina per tutte le tab presenti
+
+---
+COMMIT: b004aec7e296933408c6640b1f71d73a6b8bdb1f
+AUTHOR: Dyved33
+DATE: 2026-08-24 20:32:57 +0200
+MESSAGE:
+ulteriore correzione dello scorrimento mirato alla dashboard dell'admin
+
+---
+COMMIT: acfca1f514dd767e0020a185063650879ef9bb16
+AUTHOR: tommmasogarofani
+DATE: 2026-08-24 20:28:36 +0200
+MESSAGE:
+aggiunta stato in ordini/resi
+
+---
+COMMIT: fd2f30fb420f9efd5fd5c0784e46a1425a8ae665
+AUTHOR: tommmasogarofani
+DATE: 2026-08-24 19:42:21 +0200
+MESSAGE:
+sistemazione warning in ordini.go
+
+---
+COMMIT: b925f4dc070de94fc29fde14aba1bc07895a5821
+AUTHOR: tommmasogarofani
+DATE: 2026-08-24 19:35:54 +0200
+MESSAGE:
+siostemazione test nel package contabilità e nel package ordini
+
+---
+COMMIT: e2744e6eb5ba6b44f0764561bd431341468b5095
+AUTHOR: Dyved33
+DATE: 2026-08-24 20:14:33 +0200
+MESSAGE:
+correzione modifiche allo scorrimento di pagina
+
+---
+COMMIT: 88763d0a5c443cc3f203ee8d86e688f9d315a6b0
+AUTHOR: Dyved33
+DATE: 2026-08-24 19:48:27 +0200
+MESSAGE:
+Implementazione dello scorrimento e adattamento della dashboard dell'admin
+
+---
+COMMIT: f3ccdc7340f7962456945bb3e07650ce83bf61e8
+AUTHOR: tommmasogarofani
+DATE: 2026-08-24 19:29:46 +0200
+MESSAGE:
+riscrittura pagina contabilità, correzione api
+
+---
+COMMIT: 69cb1880d85bda2d17c66434e87e77427a874bcf
+AUTHOR: Dyved33
+DATE: 2026-08-24 18:27:07 +0200
+MESSAGE:
+aggiornamento delle costanti relative agli stati di ordini in entrata, uscita e resi. adattamento dei metodi e aggiunta delle rotte necessarie
+
+---
+COMMIT: 35bc5e727ff372103cf0d94857a97e07de8f89a0
+AUTHOR: Dyved33
+DATE: 2026-08-24 13:41:44 +0200
+MESSAGE:
+correzione della ricerca tramite barcode e aggiunta dell'eliminazione di uno specifico utente da parte dell'admin
+
+---
+COMMIT: 5aefedf440724f5265242a37711eebd74ab19916
+AUTHOR: tommmasogarofani
+DATE: 2026-08-24 12:22:38 +0200
+MESSAGE:
+sistemazione pagina resi
+
+---
+COMMIT: 74816977614fe999981d97d322ec70fea2839f50
+AUTHOR: Dyved33
+DATE: 2026-08-24 12:06:36 +0200
+MESSAGE:
+Rimozione del file hash.go
+
+---
+COMMIT: 56c3a62bb4ebf1d2855a0796d3c4774fe6c95f46
+AUTHOR: tommmasogarofani
+DATE: 2026-08-24 11:00:14 +0200
+MESSAGE:
+sistemazione mock lato server
+
+---
+COMMIT: adc716d168d124b824f00a691059e967cb896c35
+AUTHOR: Dyved33
+DATE: 2026-08-23 21:45:18 +0200
+MESSAGE:
+correzione di coerenza dell'init del database
+
+---
+COMMIT: a5c498ff064498a5e573475e24d4405b1aa9223c
+AUTHOR: Dyved33
+DATE: 2026-08-23 20:42:27 +0200
+MESSAGE:
+Correzione gestione ddt già creato
+
+---
+COMMIT: 439813d71396cf6fa73de39e5fd08eb936962b7b
+AUTHOR: Dyved33
+DATE: 2026-08-23 20:32:43 +0200
+MESSAGE:
+Aggiunta della rotta per l'update degli ordini in uscita
+
+---
+COMMIT: d4438433bee0e1f7afad414ba16781f07869c478
+AUTHOR: tommmasogarofani
+DATE: 2026-08-23 20:26:43 +0200
+MESSAGE:
+aggiunta creazione ddt in ordini uscita
+
+---
+COMMIT: 5ecf66768ab422d1724cd479b1934a7b8f3210a5
+AUTHOR: tommmasogarofani
+DATE: 2026-08-23 18:10:01 +0200
+MESSAGE:
+inserimento api per ddt
+
+---
+COMMIT: 031c37102b4e1637cdb1e2b06ad8eb803f0d57e2
+AUTHOR: tommmasogarofani
+DATE: 2026-08-23 17:31:24 +0200
+MESSAGE:
+impaginzaione
+
+---
+COMMIT: 2fcafa1f432c03b7c7606de9663da1344f1ce0ff
+AUTHOR: tommmasogarofani
+DATE: 2026-08-23 16:50:58 +0200
+MESSAGE:
+correzione stile per ordini con stato confermato
+
+---
+COMMIT: 82c800dc6903c36b0836530285668767145f0704
+AUTHOR: tommmasogarofani
+DATE: 2026-08-23 16:50:40 +0200
+MESSAGE:
+standardizzazione stato ordini di mock
+
+---
+COMMIT: 88c2b8374f2c30a7cfd347cd044e69192d08a772
+AUTHOR: tommmasogarofani
+DATE: 2026-08-23 16:47:37 +0200
+MESSAGE:
+correzione rotta api per get ordiniUscita
+
+---
+COMMIT: 349c4428b55cf4b4573a811d6446f918565178f0
+AUTHOR: tommmasogarofani
+DATE: 2026-08-23 11:54:07 +0200
+MESSAGE:
+impaginazione ordini entrata (e giacenze)
+
+---
+COMMIT: 00aa67a28f2c7eb3981d7947d4b9dd2420dadd36
+AUTHOR: Dyved33
+DATE: 2026-08-22 23:20:09 +0200
+MESSAGE:
+correzione errori dovuti al nuovo sistema di navigazione tra le pagine, creazione di un database di test fittizio e adattamento della documentazione
+
+---
+COMMIT: dcae539c7f078ff43101c470c7ffc44ec9153c76
+AUTHOR: Dyved33
+DATE: 2026-08-22 17:44:49 +0200
+MESSAGE:
+aggiornamento della documentazione e dei test in funzione della nuova logica di autenticazione e dell'action on click
+
+---
+COMMIT: f7f90839891f7c37f49ac027830856149a9339f5
+AUTHOR: tommmasogarofani
+DATE: 2026-08-22 16:18:07 +0200
+MESSAGE:
+sistemazione impaginazione giacenze
+
+---
+COMMIT: 670740130b092741df805d25debbbb5e505bb32e
+AUTHOR: Dyved33
+DATE: 2026-08-22 15:19:33 +0200
+MESSAGE:
+modifiche del sistema di recupero account
+
+---
+COMMIT: 679cea35018e734c87895960ed1e0ef0ddc2bc61
+AUTHOR: tommmasogarofani
+DATE: 2026-08-22 15:08:16 +0200
+MESSAGE:
+inserimento di elementi per testing in ogni tabella
+
+---
+COMMIT: cc3c44b01be58892966016c30ad9310a64a1fe47
+AUTHOR: Dyved33
+DATE: 2026-08-22 14:56:20 +0200
+MESSAGE:
+inserimento del metodo eliminazione ordini e rotte per creazione di ddt e fatture ed eliminazione delle fatture
+
+---
+COMMIT: c20212fa04d1816d32fb2e6bfefcf647b47b6048
+AUTHOR: Dyved33
+DATE: 2026-08-22 10:03:08 +0200
+MESSAGE:
+modifica del sistema di autenticazione nel caso di login fallito e correzione alla modifica delle informazioni relative all'utente
+
+---
+COMMIT: 413484f0ac36d08aba98838ea0b752eb333f8478
+AUTHOR: Dyved33
+DATE: 2026-08-22 09:39:46 +0200
+MESSAGE:
+correzione dei problemi di navigazione tra la voci relative alla creazione di un utente da parte dell'amministratore
+
+---
+COMMIT: 1984a20cd246604a7cc0ad77786dd0f0a11ca9a0
+AUTHOR: tommmasogarofani
+DATE: 2026-08-21 13:26:33 +0200
+MESSAGE:
+correzione api per ordini
+
+---
+COMMIT: 7be2d62c24d8b6a5a6255ed723b42f837ec835ef
+AUTHOR: tommmasogarofani
+DATE: 2026-08-21 12:17:32 +0200
+MESSAGE:
+interfaccia di ordini completa
+
+---
+COMMIT: a07a4728d74d54e60185573d28e937d9a39bc86b
+AUTHOR: tommmasogarofani
+DATE: 2026-08-21 10:09:35 +0200
+MESSAGE:
+accorpamento dei due tipi delle righe degli ordini (client dto)
+
+---
+COMMIT: 180984763fddba6b00fb375dabfded2474cb37be
+AUTHOR: tommmasogarofani
+DATE: 2026-08-20 15:16:29 +0200
+MESSAGE:
+correzione nomi utilizzati
+
+---
+COMMIT: 01d6466e5642e31c05dcfd39eae58b1beea42e01
+AUTHOR: tommmasogarofani
+DATE: 2026-08-20 15:08:15 +0200
+MESSAGE:
+creazione modelli e funzioni per la creazione di nuovi ordini
+
+---
+COMMIT: d790487add47340f2b0556496ee87cfeb95ff3c8
+AUTHOR: tommmasogarofani
+DATE: 2026-08-20 11:36:19 +0200
+MESSAGE:
+creazione rotte post per creazione nuovi ordini
+
+---
+COMMIT: 382fe496c48b8d52a609fcf336d01ca52e413bc4
+AUTHOR: tommmasogarofani
+DATE: 2026-08-19 18:47:02 +0200
+MESSAGE:
+eliminazione bordo doppio in users
+
+---
+COMMIT: 493ed6ac1eaaa2db70e03f535010372cd78327ef
+AUTHOR: tommmasogarofani
+DATE: 2026-08-19 18:21:01 +0200
+MESSAGE:
+giustificazione centrale e sistemazione dei footer
+
+---
+COMMIT: 4675214949e34f4d5e52ad37c60e959d29a6b8ee
+AUTHOR: tommmasogarofani
+DATE: 2026-08-19 16:03:40 +0200
+MESSAGE:
+aggiornamento view users
+
+---
+COMMIT: 77e23ca6901af5a52f677ecca30569e449612807
+AUTHOR: tommmasogarofani
+DATE: 2026-08-19 16:03:10 +0200
+MESSAGE:
+aggiornamento view giacenze
+
+---
+COMMIT: 8949c3344cbcf5a4ba07b33751ad8695256ba7c1
+AUTHOR: tommmasogarofani
+DATE: 2026-08-19 15:56:53 +0200
+MESSAGE:
+aggiornamento view ordini entrata
+
+---
+COMMIT: 96452b9cd44b465f8e8a2e85638b229c58ec8af6
+AUTHOR: tommmasogarofani
+DATE: 2026-08-19 15:54:55 +0200
+MESSAGE:
+aggiornamento view ordiniuscita
+
+---
+COMMIT: b15d08a17c6028a682449a5bb626c434bd4656c5
+AUTHOR: tommmasogarofani
+DATE: 2026-08-19 15:51:44 +0200
+MESSAGE:
+aggiornamento view resi
+
+---
+COMMIT: 403fea3e72f3554225d122d900156d54b7d6f1fa
+AUTHOR: tommmasogarofani
+DATE: 2026-08-19 15:49:18 +0200
+MESSAGE:
+aggiornamento view in scanner
+
+---
+COMMIT: 5496d2be81b79ee43d1f28e90d21f1961b2d0128
+AUTHOR: tommmasogarofani
+DATE: 2026-08-19 15:44:51 +0200
+MESSAGE:
+aggiornamento view catalogo
+
+---
+COMMIT: c79f5e4f2a0bf63ed87f16cf56e244ca52c0ef51
+AUTHOR: tommmasogarofani
+DATE: 2026-08-19 15:29:00 +0200
+MESSAGE:
+aggiornamento view di fatture
+
+---
+COMMIT: d0d60df4fc63d59c6a6b538350707fb05450d8ef
+AUTHOR: tommmasogarofani
+DATE: 2026-08-19 15:23:21 +0200
+MESSAGE:
+secondo aggiornamento view di ordini/
+
+---
+COMMIT: 18f42d12ce5ff1a450f31eea1ea6872e2839f9a0
+AUTHOR: tommmasogarofani
+DATE: 2026-08-19 11:24:56 +0200
+MESSAGE:
+aggiornamento della view di report impaginazione più compatta e sistemata con la standard dei box
+
+---
+COMMIT: a8dd58ebfdb1b1145ac327d512b9b633185d0d96
+AUTHOR: tommmasogarofani
+DATE: 2026-08-18 20:22:32 +0200
+MESSAGE:
+correzione dei nomi nel package style
+
+---
+COMMIT: f663cb00e8291ad40b786e8de315e7e317794aed
+AUTHOR: tommmasogarofani
+DATE: 2026-08-18 20:17:50 +0200
+MESSAGE:
+sistemazione stile della dashboard
+
+---
+COMMIT: e583529d94de865ed9b664de80c3471a7c452186
+AUTHOR: tommmasogarofani
+DATE: 2026-08-18 19:41:41 +0200
+MESSAGE:
+Sistemazione della ricerca per utente
+
+---
+COMMIT: b2ec6dab6886cf20a28828113f2c257d9a6b728a
+AUTHOR: tommmasogarofani
+DATE: 2026-08-18 13:09:09 +0200
+MESSAGE:
+correzione dei percorsi delle api per i resi e i prodotti
+
+---
+COMMIT: 5a593188135d413ff8a1aa10d72ce1ce8c865a18
+AUTHOR: tommmasogarofani
+DATE: 2026-08-18 11:46:54 +0200
+MESSAGE:
+Bugfix (f10-f11) terminale. Cambio switch pagina con tasti ctrl+F1, ctrl+F2, ...
+
+---
+COMMIT: 7cbd0b4a55ac7bf2483c9924b7cc2aa15ee01609
+AUTHOR: tommmasogarofani
+DATE: 2026-08-18 11:16:27 +0200
+MESSAGE:
+AGGIUNTA OPZIONE LOGOUT con ctrl+l
+
+---
+COMMIT: b13923200754356c86f3a695e9f1348b19880779
+AUTHOR: tommmasogarofani
+DATE: 2026-08-18 10:56:25 +0200
+MESSAGE:
+Sistemazione del messaggio di errore di login
+
+---
+COMMIT: 80b3c8873faaea5c919b6cabcb8913e0c4ea8ed3
+AUTHOR: tommmasogarofani
+DATE: 2026-08-18 10:56:04 +0200
+MESSAGE:
+Sistemazione dell'impaginazione dei router di gestione delle schede
+
+---
+COMMIT: 1fa2fa9e6d0dc7b8268799e477366f19451c2347
+AUTHOR: tommmasogarofani
+DATE: 2026-08-18 09:44:12 +0200
+MESSAGE:
+bugfix(app) assegnazione dei ruoli sistemata
+
+---
+COMMIT: f844a763a476fdd7fd91ec870639f9db0a543c0d
+AUTHOR: tommmasogarofani
+DATE: 2026-08-17 16:26:47 +0200
+MESSAGE:
+Aggiunta utenti test per magazzino e contabilità nel database
+
+---
+COMMIT: e30b19e173c421aa7b046b1ff6c862bd84ca3d13
+AUTHOR: tommmasogarofani
+DATE: 2026-08-17 16:16:21 +0200
+MESSAGE:
+Sistemazione dei test per app
+
+---
+COMMIT: 0c2a0c9a29bb386e0cc0a9747716abfe973ad3bb
+AUTHOR: tommmasogarofani
+DATE: 2026-08-16 20:22:04 +0200
+MESSAGE:
+aggiunta di una funzione (commentata) per estrarre il ruolo da jwt in caso non arrivi dall'api
+
+---
+COMMIT: b4a45eff8c2cc6f3b59ed037b0ea40352dc3b4a9
+AUTHOR: tommmasogarofani
+DATE: 2026-08-16 19:22:32 +0200
+MESSAGE:
+gestione ridimensionamento su tutte le pagine
+
+---
+COMMIT: 0917719c882a383fce9cf2a100a8e07bc2e2cfba
+AUTHOR: tommmasogarofani
+DATE: 2026-08-16 18:49:34 +0200
+MESSAGE:
+riozione del package mainmenu
+
+---
+COMMIT: 8b3c295a609ce1343355838fb83c7a00960b7834
+AUTHOR: tommmasogarofani
+DATE: 2026-08-16 16:04:27 +0200
+MESSAGE:
+Sistemazione del file init.sql e aggiunta alla cartella docker
+
+---
+COMMIT: 60a341f2ccc457a5f3552a1f5b460b7fbb91c88b
+AUTHOR: tommmasogarofani
+DATE: 2026-08-16 10:53:30 +0200
+MESSAGE:
+eliminazione dei riferimenti alla pagina reportinventario da admin
+
+---
+COMMIT: 4814f2306d93d531c50ee89f19f1562e1406891e
+AUTHOR: tommmasogarofani
+DATE: 2026-08-16 10:49:07 +0200
+MESSAGE:
+inserimento utente admin per testing
+
+---
+COMMIT: 30aa63e9dea611fab16333d04878459ffc2b803d
+AUTHOR: tommmasogarofani
+DATE: 2026-08-16 09:58:36 +0200
+MESSAGE:
+spostamento del main all'interno della cartella dedicata
+
+---
+COMMIT: b7b79069a228c2ae5a851fbbb2301b0b976e7ef4
+AUTHOR: Dyved33
+DATE: 2026-08-15 21:03:08 +0200
+MESSAGE:
+correzione degli uml e attualizzazione della documentazione
+
+---
+COMMIT: 02c3cd4dd6a8d5aa02de307e2973af939bf4da6a
+AUTHOR: tommmasogarofani
+DATE: 2026-08-15 16:09:56 +0200
+MESSAGE:
+aggiunta commenti api
+
+---
+COMMIT: babc36787029c4dcc8b358c33ba0714b98d08415
+AUTHOR: tommmasogarofani
+DATE: 2026-08-15 16:08:51 +0200
+MESSAGE:
+bozza della pagina di modifica degli utenti dell' admin
+
+---
+COMMIT: 6c2fdea39159c54e84c10a2aaba1a92bb6c3f20e
+AUTHOR: tommmasogarofani
+DATE: 2026-08-15 12:38:53 +0200
+MESSAGE:
+prima bozza delle api per la pagina user dell'admin
+
+---
+COMMIT: d5f5585ca074da6be42712b50dcf3c0907a4d1d6
+AUTHOR: tommmasogarofani
+DATE: 2026-08-14 17:03:22 +0200
+MESSAGE:
+eliminazione pagina inventario: predisposto accesso alle pagine degli utenti magazzino
+
+---
+COMMIT: f62e3339563f868a9a2cf903ed7da254206ca93b
+AUTHOR: tommmasogarofani
+DATE: 2026-08-14 16:53:41 +0200
+MESSAGE:
+stesura pagina dashboard
+
+---
+COMMIT: 38479298d997be63215690196bfdf4959737d2a9
+AUTHOR: tommmasogarofani
+DATE: 2026-08-14 00:24:51 +0200
+MESSAGE:
+Stesura della logica ddi base e dei modelli per il router di admin
+
+---
+COMMIT: 3f4994358c0a57e7b3c6e6edd89b3dd3e115a43c
+AUTHOR: David Cardinali
+DATE: 2026-08-15 10:46:51 +0300
+MESSAGE:
+Merge pull request #7 from tommasogarofani/coerenza-e-test
+
+aggiunta e correzione dei test sia nel folder server che relativi alla pagina contabilita, correzione relativa alla coerenza dei model usati e aggiunta delle rotte private per gli utenti nel router
+---
+COMMIT: 778d86b895889b6f9390df8fd08f7abf35c0d1f4
+AUTHOR: Dyved33
+DATE: 2026-08-15 09:44:45 +0200
+MESSAGE:
+inserimento di rotte protette per le azioni da compiere sugli utenti
+
+---
+COMMIT: bf546c2501e84c4588a0b382880e531ff91de591
+AUTHOR: Dyved33
+DATE: 2026-08-15 09:09:04 +0200
+MESSAGE:
+correzione del model del componente ordini della pagina contabilita
+
+---
+COMMIT: 9da4097bc541f5cf242fc3495ebfdafdda94740e
+AUTHOR: Dyved33
+DATE: 2026-08-14 23:41:38 +0200
+MESSAGE:
+modifica delle funzioni e dei test relativi alla pagina contabilita
+
+---
+COMMIT: 687579cffed331fbd63c0bebfe3bda8bfd6af283
+AUTHOR: Dyved33
+DATE: 2026-08-14 19:05:07 +0200
+MESSAGE:
+ultime correzzioni dei test di server
+
+---
+COMMIT: 5f8ae127430d5860e21fdf012513a01935f48cdd
+AUTHOR: Dyved33
+DATE: 2026-08-14 18:14:28 +0200
+MESSAGE:
+primi test per le funzioni della pagina contabilità e modifica del file architettura
+
+---
+COMMIT: c31acaa9c047bda8b69386e935afadd9cd82cc8c
+AUTHOR: Dyved33
+DATE: 2026-08-14 15:11:55 +0200
+MESSAGE:
+modifiche legate alla coerenza delle struct utilizzate, piccoli bug fix inerenti i parametri utilizzati e inserimento delle funzioni di test mancanti
+
+---
+COMMIT: cf5435afea34f40445302e1ad070a3ef0960ac84
+AUTHOR: tommmasogarofani
+DATE: 2026-08-13 22:57:29 +0200
+MESSAGE:
+rimozione tags inutili
+
+---
+COMMIT: 8810fbafa9b51499d9b4a89ece1607eaf12f20da
+AUTHOR: tommmasogarofani
+DATE: 2026-08-13 22:48:14 +0200
+MESSAGE:
+eliminazione ridondanze tra i modelli dto
+
+---
+COMMIT: 0e3ea19be7a4f00b8c81b6fc712a7e03a3414205
+AUTHOR: tommmasogarofani
+DATE: 2026-08-12 20:14:00 +0200
+MESSAGE:
+Renaming(ApiClient) -> APIClient
+
+---
+COMMIT: 52d1d483a64535e0bef61ec25e6ae179ea834a39
+AUTHOR: tommmasogarofani
+DATE: 2026-08-12 20:02:37 +0200
+MESSAGE:
+rename: api.go -> client.go (coerenza nome:contenuto)
+
+---
+COMMIT: c0da7e68fc6556e502a36e101c78ee4e69eb4f74
+AUTHOR: tommmasogarofani
+DATE: 2026-08-12 20:01:01 +0200
+MESSAGE:
+refactoring(api): creazione dei file products e orders.
+
+---
+COMMIT: 4d8e637acfc313349bcd5e2b831600a8bb986f2a
+AUTHOR: tommmasogarofani
+DATE: 2026-08-12 19:36:13 +0200
+MESSAGE:
+CREAZIONE del file model.go per riorganizzare il package delle api
+
+---
+COMMIT: c4a6310a524bd5d62e484cb99d819c3ec6aca82d
+AUTHOR: tommmasogarofani
+DATE: 2026-08-12 17:59:40 +0200
+MESSAGE:
+setup lavoro sulle pagine dell'admin
+
+---
+COMMIT: 7e5c9459aafaea47bc55800cafd3a0452fe5a60f
+AUTHOR: tommmasogarofani
+DATE: 2026-08-12 17:48:55 +0200
+MESSAGE:
+aggiunta commenti di documentazione al package
+
+---
+COMMIT: 325dbcbbf89c8bd00b7f70362a917c2b8de6e4b0
+AUTHOR: tommmasogarofani
+DATE: 2026-08-12 17:48:48 +0200
+MESSAGE:
+aggiunta commenti di documentazione al package
+
+---
+COMMIT: 87fcc0512ef15f4e49c90ec614afcd74c4c4964b
+AUTHOR: tommmasogarofani
+DATE: 2026-08-12 17:42:00 +0200
+MESSAGE:
+aggiornamento dei test di app
+
+---
+COMMIT: 91e1db467eeabc68ddb24af71a5611f831f967b1
+AUTHOR: tommmasogarofani
+DATE: 2026-08-12 17:41:34 +0200
+MESSAGE:
+New(scanner): prima stesura della pagina di scanner
+
+---
+COMMIT: 7aa663e8169753c0e447fe31e7e25bf7698b6e73
+AUTHOR: tommmasogarofani
+DATE: 2026-08-12 17:33:06 +0200
+MESSAGE:
+New(resi): prima stesura della pagina di resi
+
+---
+COMMIT: 5bc15e9ecd6c44e2d5190e63738834d20420d1b6
+AUTHOR: tommmasogarofani
+DATE: 2026-08-12 17:27:03 +0200
+MESSAGE:
+New(ordiniuscita): prima stesura della pagina di ordiniuscita
+
+---
+COMMIT: 5aee42acaf0e3c9d9a788c750ce13b9ecaa15c50
+AUTHOR: tommmasogarofani
+DATE: 2026-08-12 16:55:54 +0200
+MESSAGE:
+new(ordinientrata) prima stesura della pagina di ordini entrata
+
+---
+COMMIT: e7022e249ba9e606a19459a2188e6a7d167b369c
+AUTHOR: tommmasogarofani
+DATE: 2026-08-12 00:35:43 +0200
+MESSAGE:
+modifica dello switch case del router: aggiunta della possibilità SCANNER
+
+---
+COMMIT: a19e003dc12378aba10ea9712c974e42c7e636be
+AUTHOR: tommmasogarofani
+DATE: 2026-08-12 00:32:21 +0200
+MESSAGE:
+New(giacenze): prima fase della pagina di giacenze
+
+---
+COMMIT: 9b755d213eb101ce233dd8e8f24844404d32ab91
+AUTHOR: Dyved33
+DATE: 2026-08-12 09:05:49 +0200
+MESSAGE:
+refactoring della logica di product
+
+---
+COMMIT: 59096a6d96e10fe8aafd68f6363b7b99e8ee4bcd
+AUTHOR: Dyved33
+DATE: 2026-08-12 08:54:09 +0200
+MESSAGE:
+correzione nella logica formale del login per gli users
+
+---
+COMMIT: beadf87afa00032603ab78150afd8445c75fbc83
+AUTHOR: Dyved33
+DATE: 2026-08-11 21:35:06 +0200
+MESSAGE:
+correzione e adattamento metodi legati agli ordini
+
+---
+COMMIT: fe6190e5d53fc1ef9a9bf8c158c4e5abfdf4f1d8
+AUTHOR: tommmasogarofani
+DATE: 2026-08-11 18:06:36 +0200
+MESSAGE:
+Prima scrittura delle API per lo scanner
+
+---
+COMMIT: ee3325c24e62039be2817b9f6e8bb36a46b43ec5
+AUTHOR: tommmasogarofani
+DATE: 2026-08-11 16:26:43 +0200
+MESSAGE:
+Redazione API per i resi
+
+---
+COMMIT: 2815fcb584847f1974efaf5508e6a3912255fe63
+AUTHOR: tommmasogarofani
+DATE: 2026-08-11 16:16:25 +0200
+MESSAGE:
+Aggiunta del modello dto di output per i resi
+
+---
+COMMIT: a75455cc1789f0f6890ade4b23d2caa39b3a497b
+AUTHOR: tommmasogarofani
+DATE: 2026-08-11 16:12:07 +0200
+MESSAGE:
+aggiunta rotta per il metodo OrderController_GetReturns
+
+---
+COMMIT: 91238fddf041ffb3138db4f1e5846bdfd026a62d
+AUTHOR: Dyved33
+DATE: 2026-08-11 15:50:42 +0200
+MESSAGE:
+correzione metodo resi
+
+---
+COMMIT: 3d580c76363a34d14d122e800f6e83a35ee02c2f
+AUTHOR: tommmasogarofani
+DATE: 2026-08-11 15:23:23 +0200
+MESSAGE:
+Redazione API per la pagina `ordinientrata`
+
+---
+COMMIT: e9cbeb495e7211b4e6152bfa0268ce789d9dad61
+AUTHOR: tommmasogarofani
+DATE: 2026-08-11 15:21:08 +0200
+MESSAGE:
+aggiunta rotta per il metodo OrderControllerGetOrdiniEntrata
+
+---
+COMMIT: 602bde39c95027a4a9056cc9e8d38b4028060379
+AUTHOR: tommmasogarofani
+DATE: 2026-08-11 13:37:21 +0200
+MESSAGE:
+redazione api per la pagina `ordiniuscita`
+
+---
+COMMIT: 6e2cd5b702d8ff7cb73399de724011eed707ccd2
+AUTHOR: tommmasogarofani
+DATE: 2026-08-11 11:31:20 +0200
+MESSAGE:
+scrittura delle api per giacenze
+
+---
+COMMIT: 44ba84ea2c9f6a9ac929ec69c4bd41fc2ffaafc6
+AUTHOR: tommmasogarofani
+DATE: 2026-08-11 11:27:38 +0200
+MESSAGE:
+aggiunta della rotta per il metodo ProductController_GetInventoryReport()
+
+---
+COMMIT: 94fd8b4ee7ed2abf8b404e3c155dced18355dde2
+AUTHOR: tommmasogarofani
+DATE: 2026-08-08 16:19:06 +0200
+MESSAGE:
+test per il package `magazzino`
+
+---
+COMMIT: 95b5a67d835b1b88ff199e43f21235b8b259e1dc
+AUTHOR: tommmasogarofani
+DATE: 2026-08-08 12:36:02 +0200
+MESSAGE:
+redazione del file magazzino.go: tutti i metodi di bubbletea e helper. Dichiarazione degli stessi metodi in tutti i package delle sottopagine
+
+---
+COMMIT: 5866de67eac967ee60a75366e0c4a00be842df3a
+AUTHOR: Dyved33
+DATE: 2026-08-11 14:56:33 +0200
+MESSAGE:
+Aggiunta di metodi mancanti
+
+---
+COMMIT: 7f36333fd84891407dc1ffdab60cb57175558dd3
+AUTHOR: tommmasogarofani
+DATE: 2026-08-08 10:39:01 +0200
+MESSAGE:
+prima redazione del file model per il package magazzino con relativa dichiaraziuone dei Model e relativi costruttori all'interno di ogni sottopagina
+
+---
+COMMIT: 7f887a9c7aeb33f9a39851b19545b480d1b93e3c
+AUTHOR: tommmasogarofani
+DATE: 2026-08-07 19:50:27 +0200
+MESSAGE:
+struttura file delle pagine del magazzino
+
+---
+COMMIT: 3271d5fae434f53b4639674af89dc318a949acdc
+AUTHOR: David Cardinali
+DATE: 2026-08-07 18:05:33 +0300
+MESSAGE:
+Merge pull request #6 from tommasogarofani/contabilita
+
+merge della struttura delle pagine relative alla contabilità
+---
+COMMIT: e1297e6b06f9db6237f4011f103ba58e637fcf0d
+AUTHOR: tommmasogarofani
+DATE: 2026-08-07 16:11:39 +0200
+MESSAGE:
+rifinitura test del package app
+
+---
+COMMIT: ec419966ee93572d33b3ff148d0958edd5ed0fe8
+AUTHOR: tommmasogarofani
+DATE: 2026-08-07 11:54:07 +0200
+MESSAGE:
+prima bozza del main per il client
+
+---
+COMMIT: 35f100b9fafc0a190bfc62a9aacdd3d62d4c08e6
+AUTHOR: tommmasogarofani
+DATE: 2026-08-07 11:09:56 +0200
+MESSAGE:
+rifinizione del metodo View in app.go
+
+---
+COMMIT: 60a240508e5eb8491a1b785075a1ee9c8273ce76
+AUTHOR: tommmasogarofani
+DATE: 2026-08-07 10:01:05 +0200
+MESSAGE:
+getione del login  in Update() di app.go
+
+---
+COMMIT: aabbb5f6a304ae93c13d7cd7b431d8ef9e02f433
+AUTHOR: tommmasogarofani
+DATE: 2026-08-07 09:49:36 +0200
+MESSAGE:
+Cambio della pagina iniziale: login
+
+---
+COMMIT: d0a0f77185d90051bf08db695fbaaba4fe9bce77
+AUTHOR: Dyved33
+DATE: 2026-08-06 22:03:24 +0200
+MESSAGE:
+error fix, inserimento logica per le pagine relative al contabile e aggiunta delle chiamate api lato client
+
+---
+COMMIT: 00e428b299711a05d71f65d9958faaa5892f107b
+AUTHOR: tommmasogarofani
+DATE: 2026-08-06 21:04:28 +0200
+MESSAGE:
+Merge remote-tracking branch 'origin/develop/term-app' into develop/term-app
+
+---
+COMMIT: 59ca81f41ec9e2e2b123d648220c0685b67b05b5
+AUTHOR: tommmasogarofani
+DATE: 2026-08-06 11:19:13 +0200
+MESSAGE:
+invio di tutti i messaggi alle pagine, non piu solo i keymsg
+
+---
+COMMIT: e9207db5c0ac6c153c3c695b0446ca7b47070f4f
+AUTHOR: tommmasogarofani
+DATE: 2026-08-06 10:36:44 +0200
+MESSAGE:
+cambio logica gestione del nome delle pagine: utilizzo di costanti iota. Correzione del nome del costruttore, rimasto non aggiornato
+
+---
+COMMIT: a83424aa526d6aaf5989fe8362d5f13202719b3a
+AUTHOR: tommmasogarofani
+DATE: 2026-08-06 10:20:24 +0200
+MESSAGE:
+Spostamento del modello principale nel file model insieme al costruttore, al quale è stato cambiato nome standardizzandolo in New
+
+---
+COMMIT: 1e20ac0344f20705729c122a3dadef97d7d54322
+AUTHOR: tommmasogarofani
+DATE: 2026-08-06 10:02:00 +0200
+MESSAGE:
+creazione model.go per il package app
+
+---
+COMMIT: 1e73c6a82a6de4444f1e9aab9a02ff75ddac19ee
+AUTHOR: tommmasogarofani
+DATE: 2026-08-06 09:58:52 +0200
+MESSAGE:
+creazione del package app
+
+---
+COMMIT: 809a04f6738d233a1111abae759b30e3e4e11301
+AUTHOR: Dyved33
+DATE: 2026-08-06 14:44:50 +0200
+MESSAGE:
+crerazione struttura file per le pagine del contabile con tutte le costanti e le struct necessarie
+
+---
+COMMIT: 55fdac73466ba2e0b78786c7b174be60fdb8e54d
+AUTHOR: tommmasogarofani
+DATE: 2026-08-06 10:20:24 +0200
+MESSAGE:
+Spostamento del modello principale nel file model insieme al costruttore, al quale è stato cambiato nome standardizzandolo in New
+
+---
+COMMIT: a01d118ddf3a14825910ce189a1d6190e6d9ec54
+AUTHOR: tommmasogarofani
+DATE: 2026-08-06 10:10:56 +0200
+MESSAGE:
+Merge remote-tracking branch 'refs/remotes/origin/develop/term-app' into develop/term-app
+
+---
+COMMIT: 33e814149a43be7697a0512ca074ade49136c8b9
+AUTHOR: tommmasogarofani
+DATE: 2026-08-06 10:02:00 +0200
+MESSAGE:
+creazione model.go per il package app
+
+---
+COMMIT: 9d3c15125c43392aeffa514780288771ee8c7efe
+AUTHOR: tommmasogarofani
+DATE: 2026-08-06 09:58:52 +0200
+MESSAGE:
+creazione del package app
+
+---
+COMMIT: ca07e6914b17d3eff7b2173ba6a3935245d96428
+AUTHOR: Dyved33
+DATE: 2026-08-06 10:04:47 +0200
+MESSAGE:
+versionamento e correzzione delle librerie e inserimento del go.work per lavorare su un solo contesto
+
+---
+COMMIT: e3aaa35752b74683dcf7b2a952a75db02e385dd6
+AUTHOR: tommmasogarofani
+DATE: 2026-08-06 10:02:00 +0200
+MESSAGE:
+creazione model.go per il package app
+
+---
+COMMIT: 9ae5da1f2cf9ed8fa43f1ee642f03b1364d29dfc
+AUTHOR: tommmasogarofani
+DATE: 2026-08-06 09:58:52 +0200
+MESSAGE:
+creazione del package app
+
+---
+COMMIT: 9be695e385c22cd37f851d8430904a259f5efc9c
+AUTHOR: Dyved33
+DATE: 2026-08-06 09:52:44 +0200
+MESSAGE:
+eliminazione dei file comuni con le librerie da usare
+
+---
+COMMIT: 679f60afd55e2a97dd888080e3fa914286e3e3d7
+AUTHOR: Dyved33
+DATE: 2026-08-06 09:44:44 +0200
+MESSAGE:
+refactoring della struttura del programma e modifica consecuenziale degli import
+
+---
+COMMIT: 3f102855b031a1981996bbf355e37bf3b663f1a0
+AUTHOR: Dyved33
+DATE: 2026-08-05 19:46:03 +0200
+MESSAGE:
+modifica del percorso dei packages e inserimento della logica di storing e confronto dei jwt
+
+---
+COMMIT: d91cc9387e9f3219ad91d2cd9d1b64176b75e4c6
+AUTHOR: Tommaso Garofani
+DATE: 2026-08-05 16:09:57 +0200
+MESSAGE:
+Merge pull request #5 from tommasogarofani/develop/completazione-login
+
+Develop/completazione login
+---
+COMMIT: 0fe5e6f9c58f01ffd66fbf895c15032d0b64ec00
+AUTHOR: tommmasogarofani
+DATE: 2026-08-05 16:00:32 +0200
+MESSAGE:
+miglioramneto degli stili per l'interfaccia
+
+---
+COMMIT: 77b104efc75484b0c54b7e7fec60e5d07d64f85d
+AUTHOR: tommmasogarofani
+DATE: 2026-08-05 16:00:05 +0200
+MESSAGE:
+aggiunta di alcuni stili per il login
+
+---
+COMMIT: a68882a09f1380f12c98a4a78933728d8481225c
+AUTHOR: tommmasogarofani
+DATE: 2026-08-05 15:55:24 +0200
+MESSAGE:
+aggiunta di alcuni colori nel package styles
+
+---
+COMMIT: d1b76107dfc67173f0d5bc8bda846aea0c4736ab
+AUTHOR: tommmasogarofani
+DATE: 2026-08-05 15:54:53 +0200
+MESSAGE:
+aggiunta getter username e passwd; aggiunta del campo client nell struct Login che punta ad una ApiClient
+
+---
+COMMIT: 81dc6813d62192973b028fa20b0bdc184fbc57e1
+AUTHOR: tommmasogarofani
+DATE: 2026-08-05 15:49:22 +0200
+MESSAGE:
+redazione test unitari login
+
+---
+COMMIT: 413e520acd0a55af784624e190a3060d2b7d3558
+AUTHOR: tommmasogarofani
+DATE: 2026-08-05 08:53:25 +0200
+MESSAGE:
+correzione della logica in login
+
+---
+COMMIT: 3ca03771e5a990ab6a7b1fc1ecbd6d8f5871f066
+AUTHOR: tommmasogarofani
+DATE: 2026-08-05 08:48:46 +0200
+MESSAGE:
+aggiornamento tecnico del metodo Login: controllo status http restituito dal server prima di fare il decode del json
+
+---
+COMMIT: 8157bcb0898c1fbb9962400f816a7da1f8efd6bc
+AUTHOR: tommmasogarofani
+DATE: 2026-08-05 08:40:01 +0200
+MESSAGE:
+aggiunta getter token in api.go
+
+---
+COMMIT: 9c02afbff998186f02ccb92afc7f137b9572b995
+AUTHOR: tommmasogarofani
+DATE: 2026-08-04 17:04:13 +0200
+MESSAGE:
+commenti documentativi per il package
+
+---
+COMMIT: 6f7c80c167e2f0ee8123b72d428d38546d828407
+AUTHOR: tommmasogarofani
+DATE: 2026-08-04 16:48:08 +0200
+MESSAGE:
+cambio nome costruttore del modello ApiClient in New()
+
+---
+COMMIT: ea424b324e41b86f628e00f880d0a2a04ff5b1df
+AUTHOR: tommmasogarofani
+DATE: 2026-08-04 10:00:35 +0200
+MESSAGE:
+riorganizzazione package
+
+---
+COMMIT: 4fe430fd08219530605c542c55a8774d05809f87
+AUTHOR: tommmasogarofani
+DATE: 2026-07-27 18:08:21 +0200
+MESSAGE:
+aggiunta repomix a gitignore
+
+---
+COMMIT: 9492f05938a662cc84121a2a18663339423ac348
+AUTHOR: tommmasogarofani
+DATE: 2026-07-27 18:00:57 +0200
+MESSAGE:
+modifica di tutti i percorsi di inclusione
+
+---
+COMMIT: 660143462a5b7a1f643dc21b5c0644b3efecd40d
+AUTHOR: tommmasogarofani
+DATE: 2026-07-27 17:56:52 +0200
+MESSAGE:
+aggiornamento del modulo
+
+---
+COMMIT: 49435e956e03d9beb5afc0c03bd57824186c7cc6
+AUTHOR: tommmasogarofani
+DATE: 2026-07-27 16:31:45 +0200
+MESSAGE:
+inserimento file forntend
+
+---
+COMMIT: 6be5b1011bb98861175aee935dffa8f5328ca1c3
+AUTHOR: tommmasogarofani
+DATE: 2026-07-27 16:18:59 +0200
+MESSAGE:
+spostamento dei file di modulo
+
+---
+COMMIT: 470021ce66fb459ce0fafe40dae22b415d7f758f
+AUTHOR: tommmasogarofani
+DATE: 2026-07-27 16:01:09 +0200
+MESSAGE:
+refactoring per accogliere il forntend
+
+---
+COMMIT: b1ebbc155bc216308df83d5b73e1edcf5365e5af
+AUTHOR: David Cardinali
+DATE: 2026-07-21 15:01:10 +0200
+MESSAGE:
+Merge pull request 
+
+Inserimento nel main della logica e dei relativi test dell'applicazione
+---
+COMMIT: 254c03f2ad68139defe6a78b43e2c7b410d2008e
+AUTHOR: Dyved33
+DATE: 2026-07-21 14:58:28 +0200
+MESSAGE:
+Merge remote-tracking branch 'origin/main' into struttura_modulare
+
+---
+COMMIT: 490788f78e3ce518bba26d3c704b41ebf169deef
+AUTHOR: Dyved33
+DATE: 2026-07-21 14:45:08 +0200
+MESSAGE:
+Correzione degli errori non ben implementati e gestione della chiave JWT
+
+---
+COMMIT: ac04343a7933df24694807edd1d3ae98cf9ee406
+AUTHOR: Dyved33
+DATE: 2026-07-14 17:44:35 +0200
+MESSAGE:
+Modifica del file relativo alle decisioni e creazione del file per il versionamento del progettto
+
+---
+COMMIT: 53f1770319f3c14266f357c125df8388cb9c7dcb
+AUTHOR: Dyved33
+DATE: 2026-07-12 16:05:59 +0200
+MESSAGE:
+Modifica del docker-compose per esporre la porta 3307 e crerare con successo il container
+
+---
+COMMIT: c4e8e334317bfa077b7d487dbb73d3a032c8ca1c
+AUTHOR: Dyved33
+DATE: 2026-07-12 12:17:53 +0200
+MESSAGE:
+Aggiunta dei file di inizializzazione del database e dei file di configurazione per Docker e Docker Compose
+
+---
+COMMIT: 67795998772dfe059e12c190091d1e77d73e70d5
+AUTHOR: Dyved33
+DATE: 2026-07-11 17:18:51 +0200
+MESSAGE:
+Aggiornamento del main e del go.mod per supportare l'uso di MySQL come database piuttosto che SQLite
+
+---
+COMMIT: 9ccde3bf4121ecb575fa4b2ada025ba6f81450be
+AUTHOR: Dyved33
+DATE: 2026-07-11 17:10:45 +0200
+MESSAGE:
+Piccola correzione del main
+
+---
+COMMIT: 4cf02aa9add41c94a38e6b15fe21ef1e053e41bd
+AUTHOR: Dyved33
+DATE: 2026-07-11 17:08:44 +0200
+MESSAGE:
+Aggiunta dei test relativi a router, autenticazione e middleware. Rimozione del file relativo alla ui (non vine trattato in questo branch) e correzione dei bug presenti nei test di category, order, product e user.
+
+---
+COMMIT: fb3ba9d54148d768953bb3b9ce2717fbc101b3e4
+AUTHOR: Dyved33
+DATE: 2026-06-30 11:20:18 +0200
+MESSAGE:
+Modifiche relative alla struttura dei singoli test, rinominazione di variabili e metodi per uniformità, mofifica del main per funzionalità e riposizionamento dei file go.mod e go.sum nella root del progetto.
+
+---
+COMMIT: b518ed73bde9c192d5ccb355da65a428761df7f0
+AUTHOR: Dyved33
+DATE: 2026-06-29 16:46:42 +0200
+MESSAGE:
+Aggiunta delle dipendenze necessarie per l'autenticazione e la gestione dei token JWT, insieme alla creazione dei file di servizio e middleware per l'autenticazione.
+
+---
+COMMIT: 660d9e785002b8fedfeb53863fbfba355791539f
+AUTHOR: Dyved33
+DATE: 2026-06-29 16:27:59 +0200
+MESSAGE:
+Definizione del compito di costruire il router backend e di avviare il sever da parte del main
+
+---
+COMMIT: 05fb733e1476b3427dc0ccb09cdcd99639d935cd
+AUTHOR: Dyved33
+DATE: 2026-06-29 12:47:49 +0200
+MESSAGE:
+Definizione preliminare delle funzioni di testing
+
+---
+COMMIT: 1e9d048d2efc644be017d3d35ad72e41585016c5
+AUTHOR: Dyved33
+DATE: 2026-06-25 18:57:57 +0200
+MESSAGE:
+Creazione dei file e delle cartelle per la struttura modulare del progetto, suddividendo le responsabilità in moduli separati per categorie, ordini, prodotti e utenti. Aggiunta dei file necessari per il testing
+
+---
+COMMIT: 4317bf42f689ef961df20163d4a36e10e7846299
+AUTHOR: tommmasogarofani
+DATE: 2026-06-12 17:09:49 +0200
+MESSAGE:
+aggiornamento gitignore
+
+---
+COMMIT: 87bdc1474d383b6fc054435d64a73ec8088ecaef
+AUTHOR: tommmasogarofani
+DATE: 2026-06-12 17:08:31 +0200
+MESSAGE:
+aggiornamento main.go e Makefile
+
+---
+COMMIT: 48392e69a88f6fdbaf84b79050d6c0a17fca851b
+AUTHOR: tommmasogarofani
+DATE: 2026-06-12 17:06:35 +0200
+MESSAGE:
+allineamento documentazione
+
+---
+COMMIT: bfa8653fe1f8ab95cfcad400b341bbacbab49b54
+AUTHOR: tommmasogarofani
+DATE: 2026-06-12 16:05:14 +0200
+MESSAGE:
+refactoring generale
+spostamento main nella cartella degli entri point.
+
+spostamento uml/ in documentazione/
+
+rinominazione di test/ in testdata/
+
+---
+COMMIT: bceb1a21437ac8b6c60f25a794d8012f403b05e7
+AUTHOR: Dyved33
+DATE: 2026-06-11 15:41:40 +0200
+MESSAGE:
+Prime correzzioni alla struttura modulare
+
+---
+COMMIT: e90937e5835e673d9458bb6bebd1d74d5f2745c7
+AUTHOR: Dyved33
+DATE: 2026-06-11 15:34:20 +0200
+MESSAGE:
+Inserimento della struttura modulare per il progetto
+
+---
+COMMIT: 658cecc7aa9be2175fabb696c611588619404974
+AUTHOR: Luca Rosadi
+DATE: 2026-06-05 18:55:05 +0200
+MESSAGE:
+inserimento della parte cli nel decision log e design document
+
+---
+COMMIT: f30a2cbde862111304648385ddc7e4c1fcab4a9a
+AUTHOR: Luca Rosadi
+DATE: 2026-06-05 18:53:45 +0200
+MESSAGE:
+inizio parte grafica
+
+---
+COMMIT: d7e648cddf5d926e917f06397689bae39c8555c8
+AUTHOR: Luca Rosadi
+DATE: 2026-06-05 17:13:47 +0200
+MESSAGE:
+definizione del nome progetto e istallazione del framework per cli
+
+---
+COMMIT: 88152ee1a9ff109403e0abcec298334d7ca0c505
+AUTHOR: Dyved33
+DATE: 2026-06-05 09:24:48 +0200
+MESSAGE:
+Aggiunta dei file con le librerie fondamentali per la realizzazione del progetto e inclusione nei file del backend
+
+---
+COMMIT: 055f5a98674a25e8d0582b7a2f23445c221a8d48
+AUTHOR: Dyved33
+DATE: 2026-06-01 09:54:45 +0200
+MESSAGE:
+Inserimento dei packages e dei primi moldels del progetto
+
+---
+COMMIT: a9b8cfcbe045d2721d3baea14ab8ea0d8b530660
+AUTHOR: Luca Rosadi
+DATE: 2026-05-31 10:46:57 +0200
+MESSAGE:
+Rimozione frontend php per utilizzo cli in go
+
+---
+COMMIT: d80138426b9d3b857471203db9c187d807338369
+AUTHOR: Luca Rosadi
+DATE: 2026-05-29 18:00:06 +0200
+MESSAGE:
+Rimossa icona inutile
+
+---
+COMMIT: 860d2d5fd6f820f74cf95420c8b78244224a23dd
+AUTHOR: Luca Rosadi
+DATE: 2026-05-29 17:57:16 +0200
+MESSAGE:
+Aggiunto Decision Log
+
+---
+COMMIT: 19d20b45ee9f7a1e4bc89e83d2206d2c7735bb6a
+AUTHOR: Luca Rosadi
+DATE: 2026-05-29 09:28:31 +0200
+MESSAGE:
+Aggiunto il Design Document
+
+---
+COMMIT: d9142720bc198b8ca2c573694db6849a630565bc
+AUTHOR: tommmasogarofani
+DATE: 2026-05-28 11:12:59 +0200
+MESSAGE:
+scrittura completa del README con le informazioni attuali
+
+---
+COMMIT: ad6a9f12c62f6e68a86100a3a401e78388e0df78
+AUTHOR: tommmasogarofani
+DATE: 2026-05-28 09:48:40 +0200
+MESSAGE:
+aggiunta file in struttura nel architettura.md
+
+---
+COMMIT: 15924b6d3b96c8514af1acf94813acc7013f87a3
+AUTHOR: tommmasogarofani
+DATE: 2026-05-28 09:46:13 +0200
+MESSAGE:
+piccola modifica al Makefile
+
+---
+COMMIT: b38cfd021b1160fd3f92a7ec92a36df96d9053a2
+AUTHOR: tommmasogarofani
+DATE: 2026-05-28 09:45:30 +0200
+MESSAGE:
+aggiornamento struttura esposta nel file architettura.md
+
+---
+COMMIT: 3159081621615ac915d7688ad0008dd5c8c0d58a
+AUTHOR: tommmasogarofani
+DATE: 2026-05-28 09:30:01 +0200
+MESSAGE:
+rimozione delle maiuscole da tutti i nomi di file e cartelle
+
+---
+COMMIT: 1a492ff2f9235419776d764935542d37818eb454
+AUTHOR: tommmasogarofani
+DATE: 2026-05-28 09:19:18 +0200
+MESSAGE:
+creazione del main.go
+
+---
+COMMIT: 8cb1ae5a60882a0ed1a68b7817d5743a95f05444
+AUTHOR: tommmasogarofani
+DATE: 2026-05-28 09:18:26 +0200
+MESSAGE:
+spostamento del readme nella home della repo
+
+---
+COMMIT: df9fe4c3b392f187886c48059fcdcf17bd96e43e
+AUTHOR: tommmasogarofani
+DATE: 2026-05-28 09:17:12 +0200
+MESSAGE:
+unione delle cartelle documentazione/img/ e documentazione/out/. eliminazione di out/. creazione cartella img/png-uml che contiene i file degli uml. Modifica dei path che puntano ai .png degli uml sul file di dcumentazione.
+
+---
+COMMIT: 1451e1e93e035f1d60639911d626e2abceac09e4
+AUTHOR: tommmasogarofani
+DATE: 2026-05-28 09:03:09 +0200
+MESSAGE:
+Merge branch 'main' of github.com:tommasogarofani/ingsw_25-26_group-11
+
+---
+COMMIT: f2972353b389be36887e583dc10d00d827ec93de
+AUTHOR: tommmasogarofani
+DATE: 2026-05-28 09:02:29 +0200
+MESSAGE:
+rinomina del file di documentazione
+
+---
+COMMIT: ee701fbf4a79ef0cfd6f4f8dc8d79bb4c367bf48
+AUTHOR: Dyved33
+DATE: 2026-05-27 19:44:31 +0200
+MESSAGE:
+Modifica del file riguardante l'archiettura con aggiunta di una bozza inerente il backend del progetto
+
+---
+COMMIT: 4f08b3bc36f429d1cf9d143ce7b4fae9695b1cf6
+AUTHOR: tommmasogarofani
+DATE: 2026-05-27 19:08:14 +0200
+MESSAGE:
+creazione architettura.md
+
+---
+COMMIT: 9644731602585fbd0222673fdb211e87db4d7c62
+AUTHOR: Dyved33
+DATE: 2026-05-27 16:40:27 +0200
+MESSAGE:
+Fix struttura progetto attraverso i folder
+
+---
+COMMIT: 73e165c5517aaeff1696135d4a4313d21b2e77de
+AUTHOR: Dyved33
+DATE: 2026-05-27 16:37:23 +0200
+MESSAGE:
+Sistemazione struttura cartelle
+
+---
+COMMIT: 8ccb2ee327759e4ebb2c452f2ff073e9a42bec9a
+AUTHOR: Dyved33
+DATE: 2026-05-27 16:34:54 +0200
+MESSAGE:
+Inizializzazione file di backend e frontend
+
+---
+COMMIT: ef6e51002256cf38b43ba7c15a54e5c15311c06e
+AUTHOR: Dyved33
+DATE: 2026-05-27 16:23:51 +0200
+MESSAGE:
+Inizializzazione dei primi file del backend
+
+---
+COMMIT: fdf02478367ddc1fb6999d7284440b18b0c0b0af
+AUTHOR: Dyved33
+DATE: 2026-05-27 16:13:11 +0200
+MESSAGE:
+Inizializzazione del database SQL lite e prima divisione delle cartelle del progetto
+
+---
+COMMIT: 0917b5fa3bf332986c552a0838460ff38e857195
+AUTHOR: Dyved33
+DATE: 2026-05-26 17:40:57 +0200
+MESSAGE:
+Aggiunta delle immagini in formato .png di tutti i diagrammi prodotti nel file della documentazione. Inserimento di alcune user stories
+
+---
+COMMIT: 005997a97cbfacee0f819037d79f5137e3436cc1
+AUTHOR: Rosadi Luca
+DATE: 2026-05-26 14:51:43 +0200
+MESSAGE:
+Update README.md
+---
+COMMIT: 77bcb6404b40ffaeb24d9cb1c528c01e04380463
+AUTHOR: Rosadi Luca
+DATE: 2026-05-26 14:49:50 +0200
+MESSAGE:
+Update README with new project icon and description
+
+Updated the README with a new image and improved formatting.
+---
+COMMIT: a39533e817b89fba39540120ab216dfd44cf46d0
+AUTHOR: Rosadi Luca
+DATE: 2026-05-26 14:47:09 +0200
+MESSAGE:
+Fix image source in README.md
+
+Updated image source link in README
+---
+COMMIT: d548347b5e9cf1042e33573cadd43598192879f8
+AUTHOR: Luca Rosadi
+DATE: 2026-05-26 14:26:46 +0200
+MESSAGE:
+Sostituzione del file Readme.tex con Readme.md
+
+---
+COMMIT: 21cbe33bf20c934d2be36a9891df5bb5e1d2e77a
+AUTHOR: tommmasogarofani
+DATE: 2026-05-26 14:27:45 +0200
+MESSAGE:
+bozza del makefile
+
+---
+COMMIT: 75864f79dd7264ef8b93e40dded1cd3a25664e6c
+AUTHOR: Dyved33
+DATE: 2026-05-26 13:45:42 +0200
+MESSAGE:
+Fix alla struttura al domain model del progetto
+
+---
+COMMIT: e0e99da3ea6ea3eb19400853a314033bc1581bec
+AUTHOR: tommmasogarofani
+DATE: 2026-05-26 13:41:14 +0200
+MESSAGE:
+modifica della proposta e della documentazione principale
+
+---
+COMMIT: 803bc136ee1f7dc2bdee461eb73a494f6427d88f
+AUTHOR: tommmasogarofani
+DATE: 2026-05-26 12:59:17 +0200
+MESSAGE:
+proposta di modifica strutturale
+
+---
+COMMIT: d5d31a77516de9f69483689ad013f4ca20ec0fc0
+AUTHOR: tommmasogarofani
+DATE: 2026-05-26 12:55:54 +0200
+MESSAGE:
+modifica file principale di documentazione; creazione di una proposta di modifica strutturale del file
+
+---
+COMMIT: fed9eb83da34408c2912ef58ffcf630e72570a90
+AUTHOR: Luca Rosadi
+DATE: 2026-05-26 10:33:20 +0200
+MESSAGE:
+Fix della cartella contenente i file di configurazione
+
+---
+COMMIT: 332a79da9560d3698539715fbf8e7d24c2efa7fa
+AUTHOR: tommmasogarofani
+DATE: 2026-05-26 10:09:21 +0200
+MESSAGE:
+--cached su cartella documentazione/build
+
+---
+COMMIT: d88728584cd9e306d69759f77ccd3336aafbf353
+AUTHOR: Dyved33
+DATE: 2026-05-26 09:56:19 +0200
+MESSAGE:
+Bug fix file latex riguardo i requisiti
+
+---
+COMMIT: cf1f1e89f2495d14beab8268a95b81797fbfe009
+AUTHOR: Tommaso Garofani
+DATE: 2026-05-23 19:34:31 +0200
+MESSAGE:
+Fix .gitignore to include build directory
+---
+COMMIT: bde26fdeb98fa0146e28bc2af30c10e0cefe7c63
+AUTHOR: tommmasogarofani
+DATE: 2026-05-23 19:15:57 +0200
+MESSAGE:
+Merge branch 'main' of github.com:tommasogarofani/ingsw_25-26_group-11
+
+---
+COMMIT: d0ed2e51d2aab32b553098509551eac18f2e94a3
+AUTHOR: Tommaso Garofani
+DATE: 2026-05-23 19:12:29 +0200
+MESSAGE:
+Merge pull request #1 from tommasogarofani/config/gitignore-setup
+
+modifica .gitignore
+---
+COMMIT: 987fcf5c79f9c23d50306758204ab73527564e38
+AUTHOR: tommmasogarofani
+DATE: 2026-05-23 19:04:08 +0200
+MESSAGE:
+Merge branch 'config/gitignore-setup'
+
+---
+COMMIT: bb0129b3daa7c009b2660e01034edfee856529b1
+AUTHOR: tommmasogarofani
+DATE: 2026-05-23 19:00:30 +0200
+MESSAGE:
+aggiornamento gitignore, (documentazione/build aggiunta)
+
+---
+COMMIT: 017b7a9fe6010073a9b92d8876ac328ea4b4d991
+AUTHOR: tommmasogarofani
+DATE: 2026-05-23 18:57:04 +0200
+MESSAGE:
+refactor della repo, modifica gitignore
+
+---
+COMMIT: d7ed47df7103cb97fb318b3c475c8aa799115b0c
+AUTHOR: tommmasogarofani
+DATE: 2026-05-23 11:50:00 +0200
+MESSAGE:
+modifica .gitignore
+
+---
+COMMIT: 07d81c923ccd8c5a68f95fa34f4f496e1445d8f6
+AUTHOR: Dyved33
+DATE: 2026-05-22 15:51:36 +0200
+MESSAGE:
+Aggiunta di tutti i diagrammi necessari tra cui lo use case diagram, il domain diagram, il class diagram e i sequence e activity diagram relativi a 8 casi d'uso. Modifica del folder documentazione per gestire tutti i file di formato diverso dal .tex
+
+---
+COMMIT: 353fa8635adcacf78db67f3607d9ec6e57e50e96
+AUTHOR: tommmasogarofani
+DATE: 2026-05-22 11:48:31 +0200
+MESSAGE:
+organizzazione repo. spostamento documentazione
+
+---
+COMMIT: 8fca53eb5ad302be6f5364a2564f36a042d5265c
+AUTHOR: Dyved33
+DATE: 2026-05-20 18:17:05 +0200
+MESSAGE:
+Aggiunta della cartella con il file latex riguardante la documentazione essenziale del progetto
+
+---
+COMMIT: e56841f38355fbb22e5454266c38ea4f08d40cf5
+AUTHOR: Dyved33
+DATE: 2026-05-17 12:35:42 +0200
+MESSAGE:
+Aggiunta della cartella contenente gli UML e primo grafo con: attori, use cases e requisiti funzionali
+
+---
+COMMIT: f883405514e1497fdf15dc9b0a0b450c5f1ebf12
+AUTHOR: tommmasogarofani
+DATE: 2026-05-15 16:03:50 +0200
+MESSAGE:
+<<REPO-SETUP>> modifica .gitignore
+
+---
+COMMIT: f6d2b33b07e96d514d9c424abcb9c7528303abd8
+AUTHOR: tommmasogarofani
+DATE: 2026-05-14 11:28:20 +0200
+MESSAGE:
+Rimozione del md creato da github, creazione del readme latex, modifica .gitignore aggiungendo la cartella dei file di build di latex, configurazione del file latexmkrc
+
+---
+COMMIT: 7a88beeed845a037a324a399576caa1a33b4e846
+AUTHOR: tommmasogarofani
+DATE: 2026-05-12 15:27:36 +0200
+MESSAGE:
+<<REPO-SETUP>> .github/workflows/git-log.yml added
+
+---
+COMMIT: 5b74bac57699a0444f3d9527c4a46197ee88c997
+AUTHOR: tommasogarofani
+DATE: 2026-05-09 11:25:31 +0200
+MESSAGE:
+Initial commit
+---

@@ -5,12 +5,12 @@ ARG TARGETARCH
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
+COPY server/go.mod server/go.sum ./
 RUN go mod download
 
-COPY . ./
+COPY server/ ./
 
-RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath -ldflags="-s -w" -o /out/gialosai ./src/main.go
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath -ldflags="-s -w" -o /out/gialosai ./cmd/gialosai
 
 FROM --platform=$TARGETPLATFORM gcr.io/distroless/static-debian12:nonroot
 

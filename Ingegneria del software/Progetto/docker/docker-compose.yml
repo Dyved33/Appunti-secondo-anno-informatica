@@ -12,7 +12,9 @@ services:
       MYSQL_PASSWORD: gialosai
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./mysql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      # Tutti gli .sql numerici vengono eseguiti in ordine SOLO alla prima
+      # creazione del volume: init.sql (DDL), prova.sql (dati demo).
+      - ./mysql:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-prootpassword"]
       interval: 10s

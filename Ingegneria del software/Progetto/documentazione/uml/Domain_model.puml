@@ -1,83 +1,113 @@
-@startuml DomainModel_GestionaleMagazzino
-
-skinparam class {
-  BackgroundColor #e9bd2e
-  BorderColor     #333333
-  ArrowColor      #555555
-}
-skinparam classAttributeIconSize 0
-hide methods
+@startuml DomainModel
 hide circle
-
+hide methods
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam class {
+  BackgroundColor #FAFAFA
+  BorderColor #333333
+  ArrowColor #555555
+}
+title Modello di dominio implementato
+hide methods
 class Utente {
+  id
   username
-  nome
-  cognome
+  passwordHash
   ruolo
+  tentativiFalliti
+  bloccato
+  createdAt
 }
-
+class Sessione {
+  userID
+  tokenHash
+  expiresAt
+}
 class Categoria {
-  codice
+  id
   nome
   descrizione
 }
-
 class Prodotto {
+  id
   codice
+  barcode
   nome
   descrizione
-  unitàMisura
-  prezzoUnitario
+  prezzoAcquisto
+  prezzoVendita
+  sogliaMinima
 }
-
 class Giacenza {
-  quantitàDisponibile
+  quantita
+  updatedAt
 }
-
 class OrdineEntrata {
   numero
+  fornitore
   data
   stato
   note
-  quantità
+  createdBy
+}
+class RigaOrdineEntrata {
+  quantita
   prezzoUnitario
 }
-
 class OrdineUscita {
   numero
+  cliente
   data
   stato
   note
-  quantità
+  createdBy
+  ddtID
 }
-
+class RigaOrdineUscita {
+  quantita
+  prezzoUnitario
+}
 class DDT {
   numero
+  ordineUscitaID
   data
-  note
+  mittente
+  destinatario
+  pathPDF
 }
-
-' ── ASSOCIAZIONI ────────────────────────────────────
-
-' Un prodotto appartiene a una categoria
-Prodotto       "0..*" -- "1"    Categoria          : appartiene a
-
-' La giacenza traccia lo stock corrente di un prodotto
-Giacenza       "1"    --  "1"    Prodotto            : traccia stock di
-
-' Gli ordini contengono righe (composizione: le righe non esistono senza l'ordine)
-OrdineEntrata  "1"    -- "1..*" OrdineEntrata   : contiene
-OrdineUscita   "1"    -- "1..*" OrdineUscita    : contiene
-
-' Ogni riga riguarda un prodotto
-OrdineEntrata "1..*" -- "1" Prodotto            : riguarda
-OrdineUscita  "1..*" -- "1" Prodotto            : riguarda
-
-' Un ordine di uscita può generare un DDT
-OrdineUscita   "1"    -- "0..1" DDT                 : genera
-
-' Un utente registra ordini
-Utente         "1"    -- "0..*" OrdineEntrata        : registra
-Utente         "1"    -- "0..*" OrdineUscita         : registra
-
+class Fattura {
+  numero
+  anno
+  tipo
+  ordineUscitaID
+  imponibile
+  IVA
+  totale
+  data
+  pathPDF
+}
+class Reso {
+  ordineUscitaID
+  prodottoID
+  quantita
+  motivo
+  stato
+  data
+  createdBy
+}
+Utente "1" -- "0..*" Sessione
+Categoria "0..1" -- "0..*" Prodotto
+Prodotto "1" -- "1" Giacenza
+Utente "1" -- "0..*" OrdineEntrata
+Utente "1" -- "0..*" OrdineUscita
+OrdineEntrata "1" *-- "0..*" RigaOrdineEntrata
+OrdineUscita "1" *-- "0..*" RigaOrdineUscita
+RigaOrdineEntrata "*" --> "1" Prodotto
+RigaOrdineUscita "*" --> "1" Prodotto
+OrdineUscita "1" -- "0..1" DDT
+OrdineUscita "1" -- "0..*" Fattura
+OrdineUscita "1" -- "0..*" Reso
+Reso "*" --> "1" Prodotto
 @enduml

@@ -1,0 +1,85 @@
+@startuml UC9_GestioneUtenti_SD
+
+skinparam sequence {
+  ArrowColor      #555555
+  ParticipantBackgroundColor #FAFAFA
+  ParticipantBorderColor #333333
+  ActorBackgroundColor #E8F4FD
+  ActorBorderColor #2980B9
+}
+
+actor    "Admin"     as Admin
+boundary "ui:UI"              as UI
+control  "rep:UserRepository" as UserRepo
+
+' ── 1. Creazione utente ─────────────────────────────
+group Creare Utente
+  Admin -> UI : creaUtente(dati)
+  activate UI
+  UI -> UserRepo : create(username, password, ruolo)
+  activate UserRepo
+  UserRepo --> UI : utenteCreato
+  deactivate UserRepo
+  UI --> Admin : mostraConferma()
+  deactivate UI
+end
+
+' ── 2. Visualizzazione utente ───────────────────────
+group Visualizzare Utente
+  Admin -> UI : apriUtente(username)
+  activate UI
+  UI -> UserRepo : getByUsername(username)
+  activate UserRepo
+  UserRepo --> UI : utente
+  deactivate UserRepo
+  UI --> Admin : mostraDettaglioUtente(utente)
+  deactivate UI
+end
+
+' ── 3. Modifica utente ──────────────────────────────
+group Modificare Utente
+  Admin -> UI : modificaUtente(utente, dati)
+  activate UI
+  UI -> UserRepo : update(utente)
+  activate UserRepo
+  UserRepo --> UI : utenteAggiornato
+  deactivate UserRepo
+  UI --> Admin : mostraConferma()
+  deactivate UI
+end
+
+' ── 4. Eliminazione utente ──────────────────────────
+group Eliminare Utente
+  Admin -> UI : eliminaUtente(username)
+  activate UI
+  UI -> UserRepo : getByUsername(username)
+  activate UserRepo
+  UserRepo --> UI : utente
+  deactivate UserRepo
+  UI -> UserRepo : delete(utente)
+  activate UserRepo
+  UserRepo --> UI : utenteEliminato
+  deactivate UserRepo
+  UI --> Admin : mostraConferma()
+  deactivate UI
+end
+
+' ── 5. Sblocco e reset password ─────────────────────
+group Recuperare Credenziali
+  Admin -> UI : sbloccaUtente(username)
+  activate UI
+  UI -> UserRepo : update(bloccato = false, tentativiFalliti = 0)
+  activate UserRepo
+  UserRepo --> UI : utenteSbloccato
+  deactivate UserRepo
+  UI --> Admin : mostraConferma()
+  Admin -> UI : resettaPassword(username, nuovaPassword)
+  UI -> UserRepo : update(passwordHash)
+  activate UserRepo
+  UserRepo --> UI : passwordAggiornata
+  deactivate UserRepo
+  UI --> Admin : mostraConferma()
+  deactivate UI
+end
+
+@enduml

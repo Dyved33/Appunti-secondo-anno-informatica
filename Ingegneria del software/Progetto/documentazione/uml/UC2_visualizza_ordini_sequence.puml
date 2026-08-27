@@ -35,3 +35,4 @@ UI --> Mag : mostraDettaglioOrdine(dettaglioOrdine)
 deactivate UI
 
 @enduml
+

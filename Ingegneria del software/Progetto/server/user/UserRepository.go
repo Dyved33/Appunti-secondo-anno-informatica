@@ -21,15 +21,14 @@ func NewUserRepository(database *sql.DB) *UserRepository {
 // è l'equivalente di Read in un CRUD convenzionale
 func (r *UserRepository) UserRepository_GetByUsername(ctx context.Context, username string) (*domain.Utente, error) {
 	exec := domain.GetExecutor(ctx, r.DB) // serve per ottenere il corretto executor (DB o transazione) dal contesto
-	query := `SELECT id, username, password_hash, ruolo, domanda_sicurezza, risposta_hash, tentativi_falliti, bloccato, created_at 
+	query := `SELECT id, username, password_hash, ruolo, tentativi_falliti, bloccato, created_at 
 	          FROM Utenti WHERE username = ?`
 
 	var u domain.Utente // crea un'istanza vuota di Utente per popolare i dati dal database
 	var ruoloStr string
 	err := exec.QueryRowContext(ctx, query, username).Scan(
 		&u.ID, &u.Username, &u.PasswordHash, &ruoloStr,
-		&u.DomandaSicurezza, &u.RispostaHash, &u.TentativiFalliti,
-		&u.Bloccato, &u.CreatedAt,
+		&u.TentativiFalliti, &u.Bloccato, &u.CreatedAt,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -45,17 +44,17 @@ func (r *UserRepository) UserRepository_GetByUsername(ctx context.Context, usern
 // Update modifica i dati di un utente esistente nel database
 func (r *UserRepository) UserRepository_Update(ctx context.Context, u *domain.Utente) error {
 	exec := domain.GetExecutor(ctx, r.DB)
-	query := `UPDATE Utenti SET password_hash = ?, tentativi_falliti = ?, bloccato = ? WHERE id = ?`
-	_, err := exec.ExecContext(ctx, query, u.PasswordHash, u.TentativiFalliti, u.Bloccato, u.ID)
+	query := `UPDATE Utenti SET username = ?, password_hash = ?, ruolo = ?, tentativi_falliti = ?, bloccato = ? WHERE id = ?`
+	_, err := exec.ExecContext(ctx, query, u.Username, u.PasswordHash, string(u.Ruolo), u.TentativiFalliti, u.Bloccato, u.ID)
 	return err
 }
 
 // Create inserisce un nuovo utente nel database (assegna automaticamente l'ID generato dal database all'oggetto Utente passato)
 func (r *UserRepository) UserRepository_Create(ctx context.Context, u *domain.Utente) error {
 	exec := domain.GetExecutor(ctx, r.DB)
-	query := `INSERT INTO Utenti (username, password_hash, ruolo, domanda_sicurezza, risposta_hash, tentativi_falliti, bloccato, created_at)
-	          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-	res, err := exec.ExecContext(ctx, query, u.Username, u.PasswordHash, string(u.Ruolo), u.DomandaSicurezza, u.RispostaHash, u.TentativiFalliti, u.Bloccato, u.CreatedAt)
+	query := `INSERT INTO Utenti (username, password_hash, ruolo, tentativi_falliti, bloccato, created_at)
+	          VALUES (?, ?, ?, ?, ?, ?)`
+	res, err := exec.ExecContext(ctx, query, u.Username, u.PasswordHash, string(u.Ruolo), u.TentativiFalliti, u.Bloccato, u.CreatedAt)
 	if err != nil {
 		return err
 	}

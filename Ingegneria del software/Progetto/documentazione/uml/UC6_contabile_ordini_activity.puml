@@ -45,6 +45,23 @@ if (vuole generare fattura?) then (sì)
 
 endif
 
+|Contabile|
+if (vuole generare nota di credito?) then (sì)
+
+  |Sistema|
+  if (ordine è EVASO?) then (sì)
+    :Genera documento Nota di Credito;
+
+    |Contabile|
+    :Visualizza nota di credito generata;
+
+  else (no)
+    :Mostra errore "Ordine non evaso";
+  endif
+
+endif
+
 stop
 
 @enduml
+

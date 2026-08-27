@@ -10,13 +10,17 @@ import "fmt"
 type Ruolo string
 
 const (
-	RuoloMagazziniere  Ruolo = "magazziniere"  // carico/scarico, DDT, giacenze
-	RuoloContabile     Ruolo = "contabile"      // ordini, fatture, listini
-	RuoloAmministratore Ruolo = "amministratore" // supervisione globale, reportistica
+	RuoloMagazziniere Ruolo = "magazziniere" // carico/scarico, DDT, giacenze
+	RuoloContabile    Ruolo = "contabile"    // ordini, fatture, listini
+	RuoloAdmin        Ruolo = "admin"        // supervisione globale, reportistica
 )
 
+// NomeUtenteAdmin è lo username riservato all'admin principale.
+// L'account corrispondente non deve mai essere bloccato automaticamente.
+const NomeUtenteAdmin = "admin"
+
 // AllRuoli elenca tutti i ruoli validi — utile per validazione e menu di selezione.
-var AllRuoli = []Ruolo{RuoloMagazziniere, RuoloContabile, RuoloAmministratore}
+var AllRuoli = []Ruolo{RuoloMagazziniere, RuoloContabile, RuoloAdmin}
 
 // IsValid verifica che il ruolo sia tra quelli riconosciuti dal sistema.
 func (r Ruolo) IsValid() bool {
@@ -28,6 +32,11 @@ func (r Ruolo) IsValid() bool {
 	return false
 }
 
+// IsAdmin indica se il ruolo ha privilegi amministrativi.
+func (r Ruolo) IsAdmin() bool {
+	return r == RuoloAdmin
+}
+
 // Label restituisce il nome leggibile del ruolo per la TUI.
 func (r Ruolo) Label() string {
 	switch r {
@@ -35,8 +44,8 @@ func (r Ruolo) Label() string {
 		return "Magazziniere"
 	case RuoloContabile:
 		return "Contabile"
-	case RuoloAmministratore:
-		return "Amministratore"
+	case RuoloAdmin:
+		return "Admin"
 	default:
 		return "Sconosciuto"
 	}
@@ -46,16 +55,27 @@ func (r Ruolo) Label() string {
 // STATI ORDINE — RF-09
 // ─────────────────────────────────────────────
 
-// StatoOrdine rappresenta il ciclo di vita di un ordine.
-type StatoOrdine string
+// StatoOrdine rappresenta il ciclo di vita di un ordine in uscita.
+type StatoOrdineUscita string
 
 const (
 	// StatoConfermato: ordine registrato ma non ancora evaso.
-	StatoConfermato StatoOrdine = "confermato"
+	StatoConfermato StatoOrdineUscita = "confermato"
 	// StatoEvaso: ordine completato, DDT generato (RF-09).
-	StatoEvaso StatoOrdine = "evaso"
+	StatoEvaso StatoOrdineUscita = "evaso"
 	// StatoAnnullato: ordine cancellato prima dell'evasione.
-	StatoAnnullato StatoOrdine = "annullato"
+	StatoAnnullato StatoOrdineUscita = "annullato"
+)
+
+// StatoReso rappresenta il ciclo di vita di un reso.
+type StatoReso string
+
+const (
+	StatoDaVerificare StatoReso = "da_verificare" // reso registrato ma non ancora controllato
+	// StatoAccettato: reso approvato e contabilizzato.
+	StatoAccettato StatoReso = "accettato"
+	// StatoRifiutato: reso respinto, merce non accettata.
+	StatoRifiutato StatoReso = "rifiutato"
 )
 
 // ─────────────────────────────────────────────
@@ -66,8 +86,8 @@ const (
 type TipoFattura string
 
 const (
-	TipoFatturaVendita    TipoFattura = "fattura"       // documento fiscale standard
-	TipoNotaCredito       TipoFattura = "nota_credito"  // storno/reso — RF-11, RF-13
+	TipoFatturaVendita TipoFattura = "fattura"      // documento fiscale standard
+	TipoNotaCredito    TipoFattura = "nota_credito" // storno/reso — RF-11, RF-13
 )
 
 // ─────────────────────────────────────────────
@@ -109,9 +129,9 @@ const (
 const (
 	// DefaultMySQLHost/Port/Name definiscono i valori base per il database del server.
 	// Le credenziali possono essere passate separatamente quando si costruisce la DSN.
-	DefaultMySQLHost = "127.0.0.1"
-	DefaultMySQLPort = 3306
-	DefaultMySQLName = "gialosai"
+	DefaultMySQLHost   = "127.0.0.1"
+	DefaultMySQLPort   = 3306
+	DefaultMySQLName   = "gialosai"
 	DefaultMySQLParams = "parseTime=true&loc=Local&charset=utf8mb4"
 
 	// OutputPDFDir è la cartella in cui vengono salvati DDT e fatture generati.

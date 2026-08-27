@@ -7,12 +7,6 @@ import (
 	"charm.land/bubbles/v2/textinput"
 )
 
-// utente rappresenta la struttura dati interna per la gestione delle credenziali (username e password).
-type utente struct {
-	username string
-	password string
-}
-
 // Login rappresenta il modello di stato della pagina di login nell'architettura TUI Bubble Tea.
 // Mantiene l'indice del campo attualmente focalizzato (focusIndex), la slice dei moduli di input di testo (inputs),
 // la modalità del cursore (cursorMode), il client API (Client), ed i campi di stato (err, success, loading)
@@ -21,7 +15,7 @@ type Login struct {
 	focusIndex int
 	inputs     []textinput.Model
 	cursorMode cursor.Mode
-	Client     *api.ApiClient
+	Client     *api.APIClient
 	err        error
 	success    bool
 	loading    bool

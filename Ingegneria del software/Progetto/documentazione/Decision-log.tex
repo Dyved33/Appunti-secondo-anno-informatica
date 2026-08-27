@@ -1,128 +1,547 @@
 \documentclass[a4paper,12pt]{article}
 
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage[italian]{babel}
-\usepackage{enumitem}
-\usepackage{geometry}
-\usepackage{hyperref}
-\usepackage{booktabs}
-\usepackage{graphicx}
-\usepackage{longtable}
-\usepackage{mdframed}
-
-\geometry{margin=2.5cm}
-
-\title{Decision log}
-\author{Gruppo 11}
-\date{27 Maggio 2026}
+\usepackage{gialosai-style}
 
 \begin{document}
 
-\maketitle
+\gialosaiTitlePage{Decision Log}{25 Agosto 2026}{v2.0.0}
 
-% COPIARE E INCOLLARE QUESTO SCHEMA E MODIFICARLO PER INSERIRE UNA DECISIONE
-\begin{mdframed}
-    \section{INSERISCI ID}
+\section*{Convenzione}
+Ogni decisione \`{e} documentata con: contesto, alternativa scelta, alternative considerate (con confronto tecnico), motivazione della scelta e conseguenze sull'implementazione. Le alternative sono ordinate per vicinanza alla scelta effettiva.
 
-    \subsection{DESCRIZIONE}
-    Descrivi la decisione
+\newpage
 
-    \subsection{CONTESTO}
-    Spiega brevemente il contesto
+% ============================================================
+% DC-001
+% ============================================================
+\begin{decisionbox}
+\section*{DC-001 --- Framework per l'interfaccia testuale (TUI)}
+\textbf{Decisione.} Il client \`{e} una TUI Go basata su \textbf{Bubble Tea v2} (Model--View--Update) con \textbf{Lipgloss v2} per lo stile.
+\end{decisionbox}
 
-    \subsection{ALTERNATIVE}
-    Inserisci le alternative che sono state prese in considerazione e il perche non sono state attuate
+\subsection*{Contesto}
+Il progetto richiede un'interfaccia utente eseguibile da terminale, senza dipendenze da GUI o browser. Il client deve gestire navigazione multi-pagina, input da tastiera, ridimensionamento terminale e rendering di tabelle con stili colorati.
 
-    \subsection{CONSEGUENZE}
-    Inserisci le conseguenze derivanti dalla decisione
-\end{mdframed}
-%----------------------------------------------------------------------------
+\gialosaiNote{Il framework Bubble Tea \`{e} utilizzato da strumenti CLI di grande successo come \texttt{lazygit} (25k+ stelle GitHub), \texttt{glow} (rendering markdown), \texttt{soft-serve} (server Git TUI) e \texttt{charm} (la piattaforma Charm). Il pattern MVU (Model-View-Update) \`{e} lo stesso di \texttt{Elm} e \texttt{Redux}, reso popolare da applicazioni web reattive.}
 
-\begin{mdframed}
-    \section{DC-001}
+\subsection*{Alternative considerate}
 
-    \subsection{DESCRIZIONE}
-    Abbiamo deciso di optare per un Front-end di tipo TUI (text-based user interface) in quanto piu semplice rispetto ad una web-app e più pratica e veloce da sviluppare e configurare nel contesto di una applicazione di tipo CLI (command line interface) come la nostra.
+\begin{longtable}{p{0.18\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endhead
 
-    \subsection{CONTESTO}
-    In fase di strutturazione del progetto dovevamo decidere come sviluppare il front-end della nostra applicazione in quanto, in base a questa decisione, avremmo dovuto strutturare il resto del progetto. 
+Bubble Tea (scelta) & Architettura MVU ben definita; ecosistema Charm ricco (Lipgloss, Bubbles, Bubbles/Table); comunit\`{a} attiva; supporto nativo a mouse, AltScreen e window resize; v2 con API stabilizzata; heatingcooling con modello funzionale puro. & Learning curve iniziale per il paradigm MVU; dipendenza dall'ecosistema Charm; v2 ancora recente (possibili breaking change). \\
+\midrule
 
-    \subsection{ALTERNATIVE}
-    Le alternative che sono state vagliate sono state:
-    \begin{itemize}
-        \item Front-end di tipo web-app: questa alternativa è stata scartata in quanto avrebbe richiesto più tempo e risorse per lo sviluppo e la configurazione, inoltre non si adattava bene al contesto di un'applicazione CLI come la nostra.
-        \item Front-end di tipo GUI (graphical user interface): questa alternativa è stata scartata in quanto avrebbe richiesto più tempo e risorse per lo sviluppo e la configurazione, inoltre non si adattava bene al contesto di un'applicazione CLI come la nostra.
-        \item Front-end di tipo TUI (text-based user interface): questa alternativa è stata scelta in quanto più semplice e veloce da sviluppare e configurare nel contesto di un'applicazione CLI come la nostra.
-    \end{itemize}
+tview & Interfaccia a widget pronti (table, list, form, modal); supporto scroll e mouse; simile ad Android View; documentazione semplice. & Architettura ad oggetti con mutabilit\`{a} diffusa; meno flessibile per layout personalizzati; stile visivo pi\`{u} datato; comunit\`{a} pi\`{u} piccola; nessun sistema di styling separato. \\
+\midrule
 
-    \subsection{CONSEGUENZE}
-    La scelta di una TUI ha come conseguenza quella di non poter fare affidamento su un framework di sviluppo web, ma ci permette di avere un front-end più semplice e veloce da sviluppare oltre che ad essere più adattabile
-\end{mdframed}
+termui & Leggero, senza dipendenze esterne; API minimale; buono per dashboard semplici. & Nessun sistema di layout dichiarativo; gestione manuale dello stato; nessun supporto a widget complessi (tabelle, form); manutenzione ridotta. \\
+\midrule
 
-\begin{mdframed}
-    \section{DC-002}
+\texttt{os/exec} + input raw & Nessuna dipendenza; controllo totale su byte-level del terminale. & Implementazione manuale di ANSI escape codes; nessuna astrazione di layout; testabilit\`{a} quasi nulla; codice non manutenibile. \\
+\bottomrule
+\end{longtable}
 
-    \subsection{DESCRIZIONE}
-    Abbiamo deciso di dividere la struttura logica dell'applicazione in base agli elementi fondamentali del progetto stesso, ovvero: \textit{utente}, \textit{prodotto}, \textit{ordine} e \textit{carrello}. 
-    In questo modo abbiamo deciso di creare un package per ogni elemento fondamentale del progetto, in modo da avere una struttura logica chiara e ben definita. 
-    All'interno di ciascun pacchetto si trovano il file di comunicazione con il database (repository), il file di gestione della logica dell'elemento (service), il file di caratterizzazione dei dati che vengono mandati e ricevuti dal front-end (DTO) e il file di gestione della logica del front-end (controller). In questo modo abbiamo deciso di avere una struttura logica chiara e ben definita, in cui ogni elemento fondamentale del progetto ha un proprio package dedicato.
-    A questa struttura abbiamo aggiunto un pacchetto con tutte le costanti, gli errori, i modelli e i metodi necessari per l'interazione con il database. 
+\subsection*{Motivazione}
+Bubble Tea \`{e} la scelta naturale per TUI complesse in Go: il paradigm MVU separa stato, logica e rendering; Lipgloss fornisce un sistema di styling dichiarativo; Bubbles offre componenti pronti (table, viewport, text input). L'ecosistema Charm ha una comunit\`{a} attiva e documentazione completa. tview avrebbe limitato la personalizzazione visiva; termui e os/exec avrebbero richiesto troppo lavoro manuale.
 
-    \subsection{CONTESTO}
-    Per facilitare la comunicazione con il front-end e la modularità del progetto, dovevamo cercare di capire nel dettaglio le caratteristiche strutturali del progetto, in modo da poter creare una struttura logica chiara e ben definita. 
+\gialosaiNote{Esempi concreti di Bubble Tea in produzione: \texttt{lazygit} (interfaccia per git), \texttt{k9s} (amministrazione Kubernetes), \texttt{btop} (monitor risorse), \texttt{glow} (rendering markdown), \texttt{soft-serve} (server Git TUI), \texttt{mods} (generazione testo con IA). Questi dimostrano la maturit\`{a} e l'affidabilit\`{a} del framework.}
 
-    \subsection{ALTERNATIVE}
-    Le alternative che sono state vagliate sono state:
-    \begin{itemize}
-        \item Creare un package per ogni elemento fondamentale del progetto: questa alternativa è stata scelta in quanto permette di avere una struttura logica chiara e ben definita, in cui ogni elemento fondamentale del progetto ha un proprio package dedicato.
-        \item Creare un package per ogni funzionalità del progetto: questa alternativa è stata scartata in quanto avrebbe reso la struttura logica del progetto più complessa e meno chiara, in quanto le funzionalità del progetto sono strettamente legate agli elementi fondamentali del progetto. Inoltre, questa alternativa, ci avrebbe dato più difficoltà nella gestione dei test (in base al funzionamento di Go)
-    \end{itemize}
+\subsection*{Conseguenze}
+Tutte le pagine seguono il pattern \texttt{Init/Update/View}. Lo stile \`{e} centralizzato in \texttt{client/ui/styles/}. La navigazione tra pagine \`{e} gestita dal modello principale \texttt{mainLayout} con enum \texttt{iota}. Il tabnav usa il rendering reale per calcolare le hitbox dei click.
 
-    \subsection{CONSEGUENZE}
-    La conseguenza primaria di questa decisione è quella di avere una struttura logica chiara e ben definita. L'unico svantaggio che abbiamo rilevato è quello di non poter strutturare delle classi con metodi ricorrenti e riutilizzabili in quanto, in base al funzionamento di Go, non è possibile creare classi astratte. Tuttavia, abbiamo deciso di accettare questo svantaggio in quanto riteniamo che la chiarezza e la modularità del progetto siano più importanti.
-\end{mdframed}
+% ============================================================
+% DC-002
+% ============================================================
+\begin{decisionbox}
+\section*{DC-002 --- Router HTTP per il server}
+\textbf{Decisione.} Il server usa \textbf{chi} (v5.3.0) come router HTTP.
+\end{decisionbox}
 
-\begin{mdframed}
-    \section{DC-003}
+\subsection*{Contesto}
+Il backend Go deve esporre un insieme di rotte REST organizzate per area di dominio, con separazione tra rotta pubblica (login) e rotte protette (middleware auth). Il router deve supportare middleware a catena, parametri URL, gruppi di rotte e method matching.
 
-    \subsection{DESCRIZIONE}
-    Abbiamo deciso di utilizzare un router backend come API Gateway per gestire le richieste in entrata e in uscita, in modo da avere un punto di accesso unico per tutte le richieste e una gestione centralizzata delle stesse. 
+\gialosaiNote{chi \`{e} utilizzato da progetti come \texttt{go-chi/chi} (naturalmente), \texttt{PresslyLabs/goose} e molti altri. Il design di chi \`{e} ispirato a \texttt{net/http} standard, garantendo compatibilit\`{a} con l'intero ecosistema Go.}
 
-    \subsection{CONTESTO}
-    Uno dei principali problemi che abbiamo riscontrato durante lo sviluppo del progetto è stato quello di gestire le richieste in entrata e in uscita, in quanto il front-end e il back-end sono due entità separate e non comunicano direttamente tra loro. Per risolvere questo problema abbiamo deciso di utilizzare un router backend come API Gateway, in modo da avere un punto di accesso unico per tutte le richieste e una gestione centralizzata delle stesse.
-    In questa maniera riusciamo a separare in maniera netta e chiara la gestione delle rotte libere e quelle che richiedono l'autenticazione.
+\subsection*{Alternative considerate}
 
-    \subsection{ALTERNATIVE}
-    Le alternative che sono state vagliate sono state:
-    \begin{itemize}
-        \item Utilizzare un router backend come API Gateway: questa alternativa è stata scelta in quanto permette di avere un punto di accesso unico per tutte le richieste e una gestione centralizzata delle stesse. Inoltre, ci permette di separare in maniera netta e chiara la gestione delle rotte libere e quelle che richiedono l'autenticazione.
-        \item Utilizzare un router frontend come API Gateway: questa alternativa è stata scartata in quanto non permette di avere un punto di accesso unico per tutte le richieste e una gestione centralizzata delle stesse. Inoltre, non permette di separare in maniera netta e chiara la gestione delle rotte libere e quelle che richiedono l'autenticazione.
-        \item Utilizzare un BaaS (Backend as a Service) come API Gateway: questa alternativa è stata scartata in quanto non permette di avere un punto di accesso unico per tutte le richieste e una gestione centralizzata delle stesse. Inoltre, non permette di separare in maniera netta e chiara la gestione delle rotte libere e quelle che richiedono l'autenticazione.
-    \end{itemize}
+\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endhead
 
-    \subsection{CONSEGUENZE}
-    La conseguenza di questa decisione è chiaramente quella di utilizzare una tecnologia di gestione molto datata (rispetto ad un BaaS per esempio), ma ci permette di essere molto più flessibili e di avere un controllo maggiore sulle richieste in entrata e in uscita. 
-\end{mdframed}
+chi (scelta) & Interfaccia compatibile con \texttt{net/http} standard; middleware chain; route groups; URL params; stile composable; nessuna dipendenza esterna pesante; buona documentazione. & Nessun built-in validation; routing tree radix-3 leggermente pi\`{u} lento di gin in benchmark estremi (differenza trascurabile). \\
+\midrule
 
-\begin{mdframed}
-    \section{DC-004}
+gin-gonic & Performance estremamente alte (radix tree); binding JSON integrato; middleware built-in; validazione integrata; community grande. & Interfaccia \texttt{*gin.Context} non \`{e} \texttt{http.Request} nativo; accoppiamento stretto con il framework; package routing pi\`{u} rigido; meno trasparente nei middleware. \\
+\midrule
 
-    \subsection{DESCRIZIONE}
-    Abbiamo deciso di separare in autenticazione e in middleware la gestione (rispettivamente) della creazione di token di validazione e della validazione dei token stessi. 
+echo & Performance alte; middleware chain; routing con group; validazione; OpenAPI automatico. & \texttt{*echo.Context} wrapper proprietario; meno trasparente di chi per il passaggio di contesto; community leggermente pi\`{u} piccola di gin/chi. \\
+\midrule
 
-    \subsection{CONTESTO}
-    Siccome l'applicazione deve essere multiutente e dato che ogni utilizzatore si deve connettere ad un server, volendo evitare che per ogni interazione con il database (contenuto nel server) fosse necessaria una nuova autenticazione, abbiamo optato per l'utilizzo di token JWT (JSON Web Token). In questo modo, una volta che l'utente si è autenticato, il server gli fornisce un token JWT che dovrà essere inviato ad ogni richiesta successiva per poter accedere alle risorse protette.
+\texttt{net/http} puro & Nessuna dipendenza; controllo totale; stdlib. & Routing manuale con \texttt{ServeMux} (limitato prima di Go 1.22); nessun supporto a parametri URL nativo; codice boilerplate elevato; nessun middleware chain organizzato. \\
+\bottomrule
+\end{longtable}
 
-    \subsection{ALTERNATIVE}
-    Le alternative che sono state vagliate sono state:
-    \begin{itemize}
-        \item Fare in modo che l'admin, in ogni sessione di lavoro, conceda l'autorizzazione all'accesso ad ogni utente: questa alternativa è stata scartata in quanto non permette di limitare l'accesso alle risorse protette ed è sicuramente un metodo non efficiente.
-        \item Utilizzare un token JWT per ogni richiesta: questa alternativa è stata scelta in quanto permette di avere un controllo più granulare sulla validità dei token e di ridurre il rischio di abusi.
-    \end{itemize}
+\subsection*{Motivazione}
+chi \`{e} un wrapper leggero di \texttt{net/http}: le rotte sono handler standard, i middleware sono \texttt{func(http.Handler) http.Handler}, e il contesto \`{e} quello nativo di Go. Questo garantisce trasparenza, compatibilit\`{a} con l'ecosistema e facilit\`{a} di testing con \texttt{httptest}. gin sarebbe stato pi\`{u} performante ma pi\`{u} invasivo; echo avrebbe aggiunto un wrapper inutile; \texttt{net/http} puro avrebbe richiesto troppo boilerplate per il routing con parametri.
 
-    \subsection{CONSEGUENZE}
-    La conseguenza di questa decisione è quella di avere un controllo più granulare sulla validità dei token e di ridurre il rischio di abusi. Inoltre, ci permette di avere una gestione più semplice e chiara della validazione dei token, in quanto la logica è separata in due componenti distinte (autenticazione e middleware).    
-\end{mdframed}
+\gialosaiNote{Il pattern di chi \`{e} lo stesso utilizzato da \texttt{docker} (che usa \texttt{mux} di stdlib) e \texttt{kubectl} (che usa \texttt{cobra} per CLI e \texttt{net/http} per API). La scelta di chi rappresenta un compromesso ottimale tra semplicit\`{a} e funzionalit\`{a}.}
+
+\subsection*{Conseguenze}
+Il router \`{e} composto in \texttt{router.NewRouter} dove vengono creati tutti i repository, service e controller. Le rotte protette usano \texttt{r.Group()} con \texttt{middleware.NewAuthMiddleware(sessionRepo)}. I parametri URL (es. \texttt{\{username\}}, \texttt{\{order\_id\}}) vengono estratti con \texttt{chi.URLParam}.
+
+% ============================================================
+% DC-003
+% ============================================================
+\begin{decisionbox}
+\section*{DC-003 --- Database relazionale}
+\textbf{Decisione.} Il sistema usa \textbf{MySQL 8.0} eseguito tramite Docker Compose, con driver \texttt{go-sql-driver/mysql}.
+\end{decisionbox}
+
+\subsection*{Contesto}
+Il sistema richiede un database relazionale condiviso multiutente, vincoli di integrit\`{a} referenziale, transazioni e supporto a operazioni multi-entit\`{a} (ordini, righe, giacenze, DDT, fatture).
+
+\gialosaiNote{MySQL 8 \`{e} lo stesso database utilizzato da \texttt{docker} (per Docker Hub), \texttt{kubernetes} (per gli store) e \texttt{github} (per GitHub.com). Il driver \texttt{go-sql-driver/mysql} \`{e} il pi\`{u} utilizzato nell'ecosistema Go per MySQL.}
+
+\subsection*{Alternative considerate}
+
+\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endhead
+
+MySQL 8 (scelta) & InnoDB con ACID; chiavi esterne; \texttt{utf8mb4}; Docker image ufficiale; healthcheck; ecosistema maturo; MySQL 8 supporta CTE e window functions. & Overhead rispetto a SQLite per sviluppo singolo; configurazione iniziale pi\`{u} complessa;occupa pi\`{u} risorse. \\
+\midrule
+
+SQLite & Zero configurazione; file singolo; ideale per prototipi; embeddabile. & Nessun supporto concorrente multi-writer; nessun controllo di accesso multi-utente; funzionalit\`{a} SQL ridotte; nessun supporto nativo a stored procedures; InnoDB perde vincoli di integrit\`{a}. \\
+\midrule
+
+PostgreSQL & Funzionalit\`{a} SQL pi\`{u} ricche (JSON, array, CTE avanzate); MVCC nativo; estensioni (PostGIS, pg\_trgm). & Immagine Docker pi\`{u} pesante; configurazione iniziale pi\`{u} complessa di MySQL; per un progetto universitario le funzionalit\`{a} extra non sono necessarie. \\
+\midrule
+
+MongoDB & Schema flessibile; scalabilit\`{a} orizzontale; JSON nativo. & Nessuna relazione nativa; nessuna transazione multi-documento garanzia (prima di v4.0); inadatto a dominio relazionale come ordini/giacenze; perdita di vincoli di integrit\`{a}. \\
+\bottomrule
+\end{longtable}
+
+\subsection*{Motivazione}
+MySQL 8 con InnoDB \`{e} il compromesso ottimale: fornisce ACID, chiavi esterne, transazioni e \texttt{utf8mb4} con un'immagine Docker leggera e ben supportata. SQLite non supporta concorrenza multi-writer; PostgreSQL avrebbe aggiunto complessit\`{a} non necessaria; MongoDB \`{e} inadatto a un dominio relazionale con vincoli di integrit\`{a} forti (ogni prodotto ha una giacenza, le righe dipendono dagli ordini).
+
+\subsection*{Conseguenze}
+Lo schema \`{e} definito in \texttt{docker/mysql/init.sql} con InnoDB e \texttt{utf8mb4}. Docker Compose avvia MySQL sulla porta host 3307 con healthcheck. I repository usano \texttt{database/sql} con query parametrizzate. Le transazioni sono gestite da \texttt{TransactionHelper} che propagates nel contesto.
+
+% ============================================================
+% DC-004
+% ============================================================
+\begin{decisionbox}
+\section*{DC-004 --- Architettura a layer con Repository pattern}
+\textbf{Decisione.} Il server \`{e} organizzato in layer: \textbf{router $\to$ controller $\to$ service $\to$ repository $\to$ domain}, con \textbf{Repository pattern} per l'accesso ai dati e dipendenze iniettate via interfacce.
+\end{decisionbox}
+
+\subsection*{Contesto}
+Le responsabilit\`{a} di trasporto HTTP, logica applicativa e persistenza SQL devono restare separate e indipendenti. I service devono essere testabili con mock senza accedere al database.
+
+\gialosaiNote{Il Repository pattern \`{e} lo stesso utilizzato da \texttt{database/sql} in Go, da \texttt{gorm} e da \texttt{sqlx}. L'architettura a layer \`{e} lo standard per backend Go, utilizzato da \texttt{docker} (che usa un pattern simile con client/API/server) e \texttt{kubernetes} (che usa un pattern simile con informer/cache/store).}
+
+\subsection*{Alternative considerate}
+
+\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endhead
+
+Layer + Repository (scelta) & Separazione chiara delle responsabilit\`{a}; testabilit\`{a} con mock; coerenza con Dependency Inversion; ogni layer \`{e} sostituibile; modello standard per backend Go. & Pi\`{u} boilerplate (interfacce, iniezione); crescita del numero di file; rischio di ``service anemici'' se la logica si disperde. \\
+\midrule
+
+MVC classico & Pattern noto; separazione model/view/controller. & La view \`{e} nel client separato; il controller HTTP non \`{e} un MVC; il pattern non si adatta alla separazione client/server. \\
+\midrule
+
+DAO generico & Accesso ai dati pi\`{u} flessibile; meno file. & Accoppia i service al dialetto SQL; nessuna separazione tra logica e persistenza; difficile testare con mock. \\
+\midrule
+
+Moduli monolitici (senza layer) & Zero boilerplate; codice compatto. & Test impossibili senza DB; logica mescolata a SQL; impossibile sostituire componenti; debito tecnico crescente. \\
+\bottomrule
+\end{longtable}
+
+\subsection*{Motivazione}
+Il Repository pattern isola il dialetto SQL nei repository, che espongono interfacce ristrette. I service dipendono da queste interfacce (Dependency Inversion), non dalle implementazioni concrete. Questo consente di sostituire i repository con mock nei test, come effettivamente fatto con \texttt{go-sqlmock}. MVC non si adatta perch\'{e} la view \`{e} nel processo client separato. DAO non fornirebbe la separazione tra logica e persistenza.
+
+\gialosaiNote{Il pattern \`{e} identico a quello utilizzato da \texttt{docker} (che separa client/API/daemon) e \texttt{kubernetes} (che separa API server/controller/scheduler/node). La separazione garantisce testabilit\`{a} e manutenibilit\`{a}.}
+
+\subsection*{Conseguenze}
+Ogni area di dominio (\texttt{auth}, \texttt{user}, \texttt{product}, \texttt{category}, \texttt{order}) ha i propri: controller (adattatore HTTP), service (logica di business), repository (accesso SQL) e DTO (rappresentazione di trasporto). Il router compone le dipendenze in \texttt{NewRouter}. I test dei service usano mock delle interfacce di repository.
+
+% ============================================================
+% DC-005
+% ============================================================
+\begin{decisionbox}
+\section*{DC-005 --- Autenticazione JWT con sessione persistita}
+\textbf{Decisione.} Il server usa \textbf{JWT} (HS256, \texttt{golang-jwt/jwt/v5}) con una \textbf{whitelist di sessioni} nel database (\texttt{Sessioni}). Il token viene memorizzato come hash SHA-256, mai in chiaro.
+\end{decisionbox}
+
+\subsection*{Contesto}
+Il sistema deve autenticare le richieste HTTP, supportare logout, gestire la scadenza delle sessioni e proteggere da token rubati.
+
+\gialosaiNote{L'autenticazione JWT con whitelist \`{e} lo stesso approccio utilizzato da \texttt{docker} (con token di accesso) e \texttt{kubectl} (con certificati e token). Il pattern di hash SHA-256 del token \`{e} una best practice per evitare che token compromessi siano riutilizzabili.}
+
+\subsection*{Alternative considerate}
+
+\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endhead
+
+JWT + sessione DB (scelta) & Logout effettivo (revoca lato server); controllo della scadenza lato DB; token memorizzato come hash; sicurezza contro token rubati. & Overhead di una query per ogni richiesta protetta; persistenza della sessione nel DB; complessit\`{a} di gestione della tabella Sessioni. \\
+\midrule
+
+JWT stateless (senza DB) & Nessuna query per richiesta; performance migliori; scalabilit\`{a}. & Impossibile fare logout effettivo; token valido fino alla scadenza anche se rubato; nessun controllo server-side sulla sessione; revoca impossibile. \\
+\midrule
+
+Sessioni classiche (cookie + DB) & Standard web; revoca semplice; non serve gestire JWT. & Dipendenza dai cookie; non \`{e} lo standard per API REST; problemi di CSRF; il client TUI deve gestire cookie manualmente. \\
+\midrule
+
+OAuth2 / OpenID Connect & Standard industriale; federazione; SSO. & Overkill per un sistema locale con 3 ruoli; infrastruttura complessa; dipendenza da provider esterno. \\
+\bottomrule
+\end{longtable}
+
+\subsection*{Motivazione}
+JWT stateless non consente il logout effettivo: se il token viene rubato, resta valido fino alla scadenza. Con la whitelist nel database, il middleware verifica sia la firma sia la presenza della sessione non scaduta nella tabella \texttt{Sessioni}. L'hash SHA-256 del token viene memorizzato, cos\`{i} che anche una compromissione del database non riveli i token. Sessioni classiche con cookie non sono adatte a un client TUI.
+
+\gialosaiNote{Il pattern \`{e} identico a quello utilizzato da \texttt{docker} (con token di accesso) e \texttt{kubectl} (con certificati e token). La whitelist nel database \`{e} la best practice per sistemi che richiedono logout effettivo e controllo server-side della sessione.}
+
+\subsection*{Conseguenze}
+Il login genera un JWT con claim \texttt{user\_id}, \texttt{username}, \texttt{role} e scadenza 24h. Il token viene hashato con SHA-256 e salvato nella tabella \texttt{Sessioni}. Il middleware per ogni richiesta protetta: (1) verifica la firma JWT, (2) hash il token, (3) consulta il DB per validit\`{a} della sessione, (4) inietta \texttt{userID} nel contesto. Il logout elimina la riga dalla tabella.
+
+% ============================================================
+% DC-006
+% ============================================================
+\begin{decisionbox}
+\section*{DC-006 --- Password hashing con bcrypt}
+\textbf{Decisione.} Le password sono hashate con \textbf{bcrypt} (\texttt{golang.org/x/crypto/bcrypt}, costo di default 10).
+\end{decisionbox}
+
+\subsection*{Contesto}
+Le password devono essere memorizzate in modo sicuro, senza testo in chiaro, resistendo ad attacchi a dizionario e rainbow table.
+
+\gialosaiNote{bcrypt \`{e} lo standard utilizzato da \texttt{docker} (per le password degli utenti), \texttt{kubernetes} (per le secret) e \texttt{github} (per le password degli utenti). Il costo di default (10) \`{e} lo stesso utilizzato dalla maggior parte dei sistemi di autenticazione.}
+
+\subsection*{Alternative considerate}
+
+\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endhead
+
+bcrypt (scelta) & Lento per design (costo configurabile); resistente a rainbow table; salt integrato; standard industriale; libreria Go ufficiale (\texttt{x/crypto}). & Costo fisso di CPU (trascurabile per login su rete locale); hash lungo (60 byte). \\
+\midrule
+
+scrypt & Parametri configurabili (N, r, p); resistente a GPU/ASIC; usato in cryptocurrencies. & Parametri da calibrare; meno maturo di bcrypt;implementazioni Go meno note. \\
+\midrule
+
+argon2id & State-of-the-art ( Winner Password Hashing Competition); resistente a side-channel; parametri configurabili. & Pi\`{u} recente; meno supportato in librerie esterne; parametri da calibrare; ecosistema Go meno maturo. \\
+\midrule
+
+SHA-256 (nonsicuro) & Velocissimo; libreria stdlib. & Vulnerabile a rainbow table; nessun salt; non \`{e} un password hasher; reversibile con dictionary attack. \\
+\bottomrule
+\end{longtable}
+
+\subsection*{Motivazione}
+bcrypt \`{e} lo standard consolidato per il hashing delle password. Il costo di default (10) \`{e} sufficiente per un sistema locale. SHA-256 non \`{e} sicuro per password. scrypt e argon2id sono pi\`{u} moderni ma per un progetto universitario la differenza \`{e} trascurabile; bcrypt \`{e} pi\`{u} collaudato e documentato.
+
+\subsection*{Conseguenze}
+\texttt{HashPassword} genera l'hash con \texttt{bcrypt.GenerateFromPassword} e costo 10. \texttt{CheckPassword} verifica con \texttt{bcrypt.CompareHashAndPassword}. L'hash \`{e} memorizzato nella colonna \texttt{password\_hash VARCHAR(255)} della tabella \texttt{Utenti}.
+
+% ============================================================
+% DC-007
+% ============================================================
+\begin{decisionbox}
+\section*{DC-007 --- TransactionHelper con contesto}
+\textbf{Decisione.} \texttt{domain.TransactionHelper} inserisce una transazione SQL nel \texttt{context.Context} della richiesta; i repository la estraggono e la usano quando disponibile, altrimenti aprono una connessione diretta tramite l'interfaccia \texttt{QueryExecutor}.
+\end{decisionbox}
+
+\subsection*{Contesto}
+Operazioni come registrazione ordini, aggiornamento giacenze e generazione DDT richiedono atomicit\`{a} su pi\`{u} tabelle. La transazione deve essere trasparente ai service e compatibile con il pattern dei repository.
+
+\gialosaiNote{Il pattern di transazione in contesto \`{e} lo stesso utilizzato da \texttt{database/sql} di Go e da ORM come \texttt{gorm}. La propagazione via \texttt{context.Context} \`{e} la best practice raccomandata dal team di Go per la gestione delle transazioni.}
+
+\subsection*{Alternative considerate}
+
+\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endhead
+
+Transaction-in-context (scelta) & Trasparente ai repository; rollback automatico; supporta nesting; i service non gestiscono \texttt{BEGIN/COMMIT} manualmente; testabile. & Uso di \texttt{context.WithValue} (type-safe only at boundary); debugging pi\`{u} complesso; invisibilit\`{a} implicita della transazione. \\
+\midrule
+
+Manuale (\texttt{tx, err := db.Begin()}) & Esplicito; facile da capire; debugging semplice. & Boilerplate in ogni service; rischio di dimenticare rollback; codice duplicato; difficile nesting. \\
+\midrule
+
+ORM (GORM) & API ad alto livello; migration; callback pre/post. & Abstraction leak; SQL meno controllabile; dipendenza pesante; overhead per un progetto con schema noto. \\
+\bottomrule
+\end{longtable}
+
+\subsection*{Motivazione}
+Il pattern transaction-in-context \`{e} il pi\`{u} idoneo per un backend Go con repository pattern: il service chiama \texttt{Tx.WithinTransaction(ctx, fn)} e tutti i repository all'interno della closure partecipano alla stessa transazione, senza sapere di essere in una transazione. L'interfaccia \texttt{QueryExecutor} (che unisce \texttt{ExecContext}, \texttt{QueryContext}, \texttt{QueryRowContext}) \`{e} implementata sia da \texttt{*sql.Tx} che da \texttt{*sql.DB}, rendendo la transizione trasparente.
+
+\subsection*{Conseguenze}
+\texttt{TransactionHelper.WithinTransaction} verifica se esiste gi\`{a} una transazione nel contesto (supporto nesting), altrimenti ne crea una con \texttt{DB.BeginTx}. In caso di errore esegue rollback; in caso di successo commit. I repository chiamano \texttt{GetExecutor(ctx, r.DB)} per ottenere l'executor corretto. Il meccanismo \`{e} usato in \texttt{UserService\_Login} (atomicit\`{a} di read-modify-write per tentativi falliti) e nella creazione ordini (aggiornamento atomico di ordini e giacenze).
+
+% ============================================================
+% DC-008
+% ============================================================
+\begin{decisionbox}
+\section*{DC-008 --- Nomi delle pagine con iota}
+\textbf{Decisione.} I nomi delle pagine della TUI sono definiti come costanti \texttt{iota} in un enum Go, anzich\'{e} come stringhe o interi manuali.
+\end{decisionbox}
+
+\subsection*{Contesto}
+Il router del client deve commutare tra decine di viste (login, magazzino, contabilit\`{a}, admin e sottopagine) in base al valore dello stato. La navigazione avviene tramite \texttt{switch} nel metodo \texttt{Update} e \texttt{View} del modello principale.
+
+\gialosaiNote{Il pattern di enum con \`{e} lo stesso utilizzato da \texttt{lazygit}, \texttt{k9s} e \texttt{btop} per la navigazione. Il sistema di navigazione a enum garantisce che il compilatore Go possa rilevare switch incompleti, aiutando a identificare pagine non gestite.}
+
+\subsection*{Alternative considerate}
+
+\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endhead
+
+iota enum (scelta) & Unicit\`{a} garantita a compile-time; nessun errore di battitura; rende il codice leggibile (\texttt{LOGIN}, \texttt{MAGMENU}); il compilatore avvisa per switch incompleti. & Indici impliciti (meno trasparente in debug); non autoserializzabile in JSON. \\
+\midrule
+
+Stringhe costanti & Leggibilit\`{a} diretta; debug semplice. & Possibili duplicati; errori di battitura non rilevati; pi\`{u} lento nel confronto. \\
+\midrule
+
+Interi manuali & Performance massime. & Errori di assegnazione non rilevati; codice poco leggibile; rischio di indici duplicati. \\
+\midrule
+
+Registry dinamico (map) & Flessibilit\`{a} a runtime; registrazioni dinamiche. & Overhead; nessun controllo a compile-time; complessit\`{a} non necessaria per un enum fisso. \\
+\bottomrule
+\end{longtable}
+
+\subsection*{Motivazione}
+L'uso di \texttt{iota} garantisce unicit\`{a} a compile-time e rende il codice leggibile. Il compilatore Go può rilevare switch incompleti (escluso con \texttt{default}), aiutando a identificare pagine non gestite. Stringhe costanti sarebbero state ugualmente valide ma senza il supporto del compilatore per switch.
+
+\subsection*{Conseguenze}
+L'enum \texttt{paginaAttiva} definisce \texttt{LOGIN}, \texttt{MAGMENU}, \texttt{CONTMENU}, \texttt{ADMINMENU}. L'enum \texttt{userRole} definisce \texttt{MAGAZZINIERE}, \texttt{CONTABILE}, \texttt{ADMIN}. Il metodo \texttt{parseUserRole} in \texttt{app.go} converte la stringa del ruolo (ricevuta dal JWT) nel corrispondente valore enum.
+
+% ============================================================
+% DC-009
+% ============================================================
+\begin{decisionbox}
+\section*{DC-009 --- Containerizzazione con Docker Compose}
+\textbf{Decisione.} Il sistema \`{e} containerizzato con \textbf{Docker Compose} (due servizi: \texttt{db} per MySQL e \texttt{app} per il backend). Il Dockerfile del server usa un \textbf{multi-stage build} con builder Alpine e runtime distroless nonroot.
+\end{decisionbox}
+
+\subsection*{Contesto}
+Il server richiede MySQL e deve essere avviabile in modo riproducibile. Il database deve essere persistente e inizializzato con script SQL alla prima creazione.
+
+\gialosaiNote{L'approccio Docker segue le best practice di \texttt{docker} e \texttt{docker-compose}: un file YAML che definisce i servizi, le dipendenze e i volumi. Il pattern multi-stage build \`{e} lo stesso utilizzato da \texttt{golang} official image e da progetti come \texttt{traefik}.}
+
+\subsection*{Alternative considerate}
+
+\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endhead
+
+Docker Compose (scelta) & Avvio con un comando; dipendenze dichiarate; healthcheck; volumi persistenti; script di init automatici; riproducibile. & Overhead di container; debugging pi\`{u} complesso; consumo risorse. \\
+\midrule
+
+Avvio manuale (host) & Zero overhead; debugging diretto. & Installazione MySQL manuale; inizializzazione schema manuale; non riproducibile su altre macchine. \\
+\midrule
+
+Kubernetes & Orchestrazione scalabile; self-healing; rollbacks. & Complessit\`{a} enorme per un progetto universitario; necessita di cluster; overkill. \\
+\midrule
+
+Podman + Podman Compose & Alternativa rootless a Docker; compatibilit\`{a} Docker. & Community pi\`{u} piccola; meno tooling; meno supporto da parte delle CI/CD. \\
+\bottomrule
+\end{longtable}
+
+\subsection*{Motivazione}
+Docker Compose \`{e} lo standard per lo sviluppo locale multi-container. Un singolo comando (\texttt{docker compose up --build}) avvia MySQL con healthcheck e il backend. Gli script di init (\texttt{init.sql}, \texttt{prova.sql}) vengono eseguiti automaticamente alla prima creazione del volume. Il multi-stage build riduce l'immagine finale a un binario statico su distroless nonroot, minimizzando la superficie di attacco.
+
+\subsection*{Conseguenze}
+Il \texttt{docker-compose.yml} definisce i servizi \texttt{db} (MySQL 8, porta 3307) e \texttt{app} (Go backend, porta 8080). Il volume \texttt{mysql\_data} persiste i dati. Il Dockerfile usa \texttt{golang:1.25-alpine} per il build e \texttt{gcr.io/distroless/static-debian12:nonroot} per il runtime. Il servizio \texttt{app} dipende da \texttt{db} con \texttt{condition: service\_healthy}.
+
+% ============================================================
+% DC-010
+% ============================================================
+\begin{decisionbox}
+\section*{DC-010 --- Scanner come emulazione tastiera}
+\textbf{Decisione.} Il lettore codici a barre EAN-13 \`{e} integrato come emulazione di tastiera: il terminale riceve la stringa come input sequenziale di caratteri, senza API dedicate o driver specifici.
+\end{decisionbox}
+
+\subsection*{Contesto}
+La TUI non pu\`{o} accedere a dispositivi USB direttamente. Il lettore fisico opera come un normale terminale, inviando i caratteri del codice come keystrokes.
+
+\gialosaiNote{L'approccio di emulazione tastiera \`{e} lo stesso utilizzato da \texttt{htop}, \texttt{btop} e \texttt{lazygit} per l'input da tastiera. Il pattern di input come keystroke \`{e} lo standard per applicazioni TUI che devono interoperare con dispositivi fisici.}
+
+\subsection*{Alternative considerate}
+
+\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endhead
+
+Emulazione tastiera (scelta) & Nessun driver; trasparente alla TUI; funziona con qualsiasi lettore compatibile; zero configurazione. & Dipende dalla velocit\`{a} del lettore; rischio di input parziali se il terminale \`{e} lento; nessun feedback acustico/visivo integrato. \\
+\midrule
+
+API USB (libusb) & Controllo diretto del dispositivo; indipendente dal terminale. & Necessita di permessi USB; dipende dal modello di lettore; complessit\`{a} elevata; non portable. \\
+\midrule
+
+Protocollo seriale & Comunicazione diretta; feedack immediato. & Configurazione porta seriale; dipendenza dal modello; driver specifici. \\
+\midrule
+
+Input manuale da tastiera & Zero dipendenze. & Errore umano elevato; lento; non automatizzabile. \\
+\bottomrule
+\end{longtable}
+
+\subsection*{Motivazione}
+La maggior parte dei lettori codici a barre opera come ``keyboard wedge'': inviano il codice come se fosse stato digitato da tastiera. Questo approccio \`{e} universale, non richiede driver e funziona immediatamente con la TUI. Il codice EAN-13 viene validato dal service e usato per identificare il prodotto.
+
+\subsection*{Conseguenze}
+La pagina scanner in \texttt{client/ui/pages/magazzino/scanner/} riceve l'input come normale keystroke. Il codice EAN-13 viene validato con \texttt{domain.IsValidEAN13} prima di essere usato per la ricerca del prodotto. Non \`{e} necessario un driver o un protocollo specifico.
+
+% ============================================================
+% DC-011
+% ============================================================
+\begin{decisionbox}
+\section*{DC-011 --- Blocco account dopo 3 tentativi}
+\textbf{Decisione.} Il servizio utenti blocca automaticamente l'account dopo \textbf{3 tentativi di login falliti} consecutivi. L'account con username \texttt{admin} \`{e} esente dal blocco. Il ripristino avviene solo tramite un altro admin.
+\end{decisionbox}
+
+\subsection*{Contesto}
+Il sistema deve proteggersi da attacchi brute-force su una rete locale dove i tentativi di accesso non autorizzati sono un rischio concreto.
+
+\gialosaiNote{Il blocco dopo tentativi falliti \`{e} lo stesso approccio utilizzato da \texttt{ssh} (con \texttt{fail2ban}), \texttt{docker} (con rate limiting) e \texttt{github} (con blocco account). Il pattern \`{e} standard per sistemi che richiedono sicurezza su rete locale.}
+
+\subsection*{Alternative considerate}
+
+\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endhead
+
+Blocco dopo 3 tentativi (scelta) & Protezione concreta contre-force; semplice da implementare; comportamento prevedibile. & Blocco accidentale legittimo; dipendenza dall'admin per il ripristino; timing attack possibile (ma non critico su rete locale). \\
+\midrule
+
+Rate limiting (es. 5 req/min) & Pi\`{u} flessibile; non blocca l'account; grace period. & Pi\`{u} complesso da implementare; non protegge da attacchi lenti; necessita di storage dei tentativi. \\
+\midrule
+
+CAPTCHA & Protezione contro bot; non blocca l'account. & Non applicabile in TUI; complessit\`{a} di integrazione;esperienza utente ridotta. \\
+\midrule
+
+Nessuna protezione & Zero overhead. & Vulnerabile a brute-force; inaccettabile per un sistema con dati sensibili. \\
+\bottomrule
+\end{longtable}
+
+\subsection*{Motivazione}
+Per un sistema locale con 3 ruoli, il blocco dopo 3 tentativi \`{e} la soluzione pi\`{u} pratica: semplice, efficace e documentata. L'esenzione dell'admin garantisce sempre l'accesso amministrativo. Il rate limiting sarebbe stato pi\`{u} flessibile ma pi\`{u} complesso; CAPTCHA non \`{e} applicabile in TUI.
+
+\subsection*{Conseguenze}
+La costante \texttt{MaxTentativiLogin = 3} \`{e} definita in \texttt{domain/constants.go}. Il metodo \texttt{UserService\_Login} gestisce il ciclo: (1) fetch utente, (2) verifica admin, (3) verifica blocco, (4) verifica password, (5) incrementa tentativi o resetta. Tutto avviene in un'unica transazione. Dopo 3 fallimenti, \texttt{Bloccato} viene impostato a \texttt{true} e l'utente non pu\`{o} pi\`{u} autenticarsi.
+
+% ============================================================
+% DC-012
+% ============================================================
+\begin{decisionbox}
+\section*{DC-012 --- UML come sorgente unico delle immagini}
+\textbf{Decisione.} I diagrammi UML sono mantenuti come sorgenti PlantUML in \texttt{documentazione/uml/}; le immagini PNG in \texttt{documentazione/img/} sono esportazioni generate da questi sorgenti.
+\end{decisionbox}
+
+\subsection*{Contesto}
+Le figure dei documenti LaTeX devono restare allineate ai sorgenti e al codice ed essere rigenerabili in modo riproducibile.
+
+\gialosaiNote{PlantUML \`{e} lo standard per diagrammi UML in formato testuale, utilizzato da \texttt{docker}, \texttt{kubernetes} e \texttt{github} per la documentazione. Il pattern di sorgente testuale + export \`{e} lo stesso utilizzato da \texttt{mermaid} e \texttt{d2}.}
+
+\subsection*{Alternative considerate}
+
+\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endfirsthead
+\toprule
+\tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
+\midrule
+\endhead
+
+PlantUML (scelta) & Notazione testuale; versionabile con Git; rigenerabile; extention VS Code; standard per diagrammi UML. & Rendering lento per diagrammi complessi; sintassi non intuitive per principianti; dipendenza da Java runtime. \\
+\midrule
+
+Draw.io / Lucidchart & GUI visuale; collaborazione in tempo reale; export PNG/SVG. & File binari non versionabili facilmente; diff impossibile; dipendenza da piattaforma cloud. \\
+\midrule
+
+Mermaid & Sintasse markdown-friendly; rendering nel browser; integrato in GitHub. & Supporto UML limitato; nessun class diagram completo; meno PlantUML per diagrammi complessi. \\
+\midrule
+
+Hand-drawn (disegno manuale) & Massima flessibilit\`{a} visiva. & Non versionabile; non rigenerabile; impossibile da mantenere; non standard. \\
+\bottomrule
+\end{longtable}
+
+\subsection*{Motivazione}
+PlantUML \`{e} lo standard per diagrammi UML in formato testuale: i sorgenti sono versionabili con Git (i diff mostrano le modifiche testuali), rigenerabili in modo deterministic, e supportati dall'estensione VS Code. Draw.io non sarebbe versionabile; Mermaid non supporta i class diagram in modo completo.
+
+\subsection*{Conseguenze}
+I 21 sorgenti \texttt{.puml} in \texttt{documentazione/uml/} generano le 25 immagini PNG in \texttt{documentazione/img/}. Ogni modifica ai diagrammi richiede di rigenerare le immagini e ricommetterle insieme ai sorgenti. I sorgenti usano solo costrutti PlantUML standard.
 
 \end{document}

@@ -3,6 +3,7 @@ package product
 // ProductInputDTO rappresenta i dati in ingresso per la creazione o modifica di un prodotto.
 // Contiene tutti i campi necessari per definire un articolo a magazzino.
 type ProductInputDTO struct {
+	ID          int     `json:"id"`
 	Codice      string  `json:"codice"`
 	Barcode     string  `json:"barcode"`
 	Nome        string  `json:"nome"`

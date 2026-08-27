@@ -367,7 +367,7 @@ Underfull \hbox (badness 1888) in paragraph at lines 77--77
 
 [3{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
 Underfull \hbox (badness 1122) in paragraph at lines 94--95
-[]|\T1/cmr/m/n/12 Funzionamento ga-ran-ti-to in mo-da-li-tà
+[]|\T1/cmr/m/n/12 Funzionamento ga-ran-ti-to in mo-da-li-tï¿½
  []
 
 
@@ -381,10 +381,10 @@ Underfull \hbox (badness 2617) in paragraph at lines 95--96
  []
 
 [4]
-<./img/png-uml/UseCaseDiagram.png, id=137, 1606.0pt x 1348.03625pt>
-File: ./img/png-uml/UseCaseDiagram.png Graphic file (type png)
-<use ./img/png-uml/UseCaseDiagram.png>
-Package pdftex.def Info: ./img/png-uml/UseCaseDiagram.png  used on input line 106.
+<./img/UseCaseDiagram.png, id=137, 1606.0pt x 1348.03625pt>
+File: ./img/UseCaseDiagram.png Graphic file (type png)
+<use ./img/UseCaseDiagram.png>
+Package pdftex.def Info: ./img/UseCaseDiagram.png  used on input line 106.
 (pdftex.def)             Requested size: 364.19667pt x 305.70169pt.
 
 Overfull \hbox (16.98216pt too wide) in paragraph at lines 112--113
@@ -393,16 +393,16 @@ Overfull \hbox (16.98216pt too wide) in paragraph at lines 112--113
 
 
 
-[5 <./img/png-uml/UseCaseDiagram.png>]
-<./img/png-uml/DomainModel.png, id=144, 640.3925pt x 684.5575pt>
-File: ./img/png-uml/DomainModel.png Graphic file (type png)
-<use ./img/png-uml/DomainModel.png>
-Package pdftex.def Info: ./img/png-uml/DomainModel.png  used on input line 119.
+[5 <./img/UseCaseDiagram.png>]
+<./img/DomainModel.png, id=144, 640.3925pt x 684.5575pt>
+File: ./img/DomainModel.png Graphic file (type png)
+<use ./img/DomainModel.png>
+Package pdftex.def Info: ./img/DomainModel.png  used on input line 119.
 (pdftex.def)             Requested size: 364.19667pt x 389.31395pt.
-<./img/png-uml/ClassDiagram.png, id=145, 795.97375pt x 894.34125pt>
-File: ./img/png-uml/ClassDiagram.png Graphic file (type png)
-<use ./img/png-uml/ClassDiagram.png>
-Package pdftex.def Info: ./img/png-uml/ClassDiagram.png  used on input line 128.
+<./img/ClassDiagram.png, id=145, 795.97375pt x 894.34125pt>
+File: ./img/ClassDiagram.png Graphic file (type png)
+<use ./img/ClassDiagram.png>
+Package pdftex.def Info: ./img/ClassDiagram.png  used on input line 128.
 (pdftex.def)             Requested size: 409.71692pt x 460.33842pt.
 
 
@@ -410,172 +410,172 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 
-[6 <./img/png-uml/DomainModel.png>]
-<./img/png-uml/UC1_Login_SD.png, id=154, 1019.81pt x 1111.15125pt>
-File: ./img/png-uml/UC1_Login_SD.png Graphic file (type png)
-<use ./img/png-uml/UC1_Login_SD.png>
-Package pdftex.def Info: ./img/png-uml/UC1_Login_SD.png  used on input line 137.
+[6 <./img/DomainModel.png>]
+<./img/UC1_Login_SD.png, id=154, 1019.81pt x 1111.15125pt>
+File: ./img/UC1_Login_SD.png Graphic file (type png)
+<use ./img/UC1_Login_SD.png>
+Package pdftex.def Info: ./img/UC1_Login_SD.png  used on input line 137.
 (pdftex.def)             Requested size: 364.19667pt x 396.82664pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC1_Login_AD.png, id=155, 1684.2925pt x 994.71625pt>
-File: ./img/png-uml/UC1_Login_AD.png Graphic file (type png)
-<use ./img/png-uml/UC1_Login_AD.png>
-Package pdftex.def Info: ./img/png-uml/UC1_Login_AD.png  used on input line 143.
+<./img/UC1_Login_AD.png, id=155, 1684.2925pt x 994.71625pt>
+File: ./img/UC1_Login_AD.png Graphic file (type png)
+<use ./img/UC1_Login_AD.png>
+Package pdftex.def Info: ./img/UC1_Login_AD.png  used on input line 143.
 (pdftex.def)             Requested size: 364.19667pt x 215.08925pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC2_VisualizzaOrdini_SD.png, id=156, 643.40375pt x 416.55624pt>
-File: ./img/png-uml/UC2_VisualizzaOrdini_SD.png Graphic file (type png)
-<use ./img/png-uml/UC2_VisualizzaOrdini_SD.png>
-Package pdftex.def Info: ./img/png-uml/UC2_VisualizzaOrdini_SD.png  used on input line 149.
+<./img/UC2_VisualizzaOrdini_SD.png, id=156, 643.40375pt x 416.55624pt>
+File: ./img/UC2_VisualizzaOrdini_SD.png Graphic file (type png)
+<use ./img/UC2_VisualizzaOrdini_SD.png>
+Package pdftex.def Info: ./img/UC2_VisualizzaOrdini_SD.png  used on input line 149.
 (pdftex.def)             Requested size: 364.19667pt x 235.79964pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC2_VisualizzaOrdini_AD.png, id=157, 553.06625pt x 473.77pt>
-File: ./img/png-uml/UC2_VisualizzaOrdini_AD.png Graphic file (type png)
-<use ./img/png-uml/UC2_VisualizzaOrdini_AD.png>
-Package pdftex.def Info: ./img/png-uml/UC2_VisualizzaOrdini_AD.png  used on input line 155.
+<./img/UC2_VisualizzaOrdini_AD.png, id=157, 553.06625pt x 473.77pt>
+File: ./img/UC2_VisualizzaOrdini_AD.png Graphic file (type png)
+<use ./img/UC2_VisualizzaOrdini_AD.png>
+Package pdftex.def Info: ./img/UC2_VisualizzaOrdini_AD.png  used on input line 155.
 (pdftex.def)             Requested size: 364.19667pt x 311.98071pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC3_GestioneGiacenze_SD.png, id=158, 985.6825pt x 892.33376pt>
-File: ./img/png-uml/UC3_GestioneGiacenze_SD.png Graphic file (type png)
-<use ./img/png-uml/UC3_GestioneGiacenze_SD.png>
-Package pdftex.def Info: ./img/png-uml/UC3_GestioneGiacenze_SD.png  used on input line 161.
+<./img/UC3_GestioneGiacenze_SD.png, id=158, 985.6825pt x 892.33376pt>
+File: ./img/UC3_GestioneGiacenze_SD.png Graphic file (type png)
+<use ./img/UC3_GestioneGiacenze_SD.png>
+Package pdftex.def Info: ./img/UC3_GestioneGiacenze_SD.png  used on input line 161.
 (pdftex.def)             Requested size: 364.19667pt x 329.709pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC3_GestioneGiacenze_AD.png, id=159, 1512.65125pt x 741.77126pt>
-File: ./img/png-uml/UC3_GestioneGiacenze_AD.png Graphic file (type png)
-<use ./img/png-uml/UC3_GestioneGiacenze_AD.png>
-Package pdftex.def Info: ./img/png-uml/UC3_GestioneGiacenze_AD.png  used on input line 167.
+<./img/UC3_GestioneGiacenze_AD.png, id=159, 1512.65125pt x 741.77126pt>
+File: ./img/UC3_GestioneGiacenze_AD.png Graphic file (type png)
+<use ./img/UC3_GestioneGiacenze_AD.png>
+Package pdftex.def Info: ./img/UC3_GestioneGiacenze_AD.png  used on input line 167.
 (pdftex.def)             Requested size: 364.19667pt x 178.59467pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC4_GeneraDDT_SD.png, id=160, 895.345pt x 504.88625pt>
-File: ./img/png-uml/UC4_GeneraDDT_SD.png Graphic file (type png)
-<use ./img/png-uml/UC4_GeneraDDT_SD.png>
-Package pdftex.def Info: ./img/png-uml/UC4_GeneraDDT_SD.png  used on input line 173.
+<./img/UC4_GeneraDDT_SD.png, id=160, 895.345pt x 504.88625pt>
+File: ./img/UC4_GeneraDDT_SD.png Graphic file (type png)
+<use ./img/UC4_GeneraDDT_SD.png>
+Package pdftex.def Info: ./img/UC4_GeneraDDT_SD.png  used on input line 173.
 (pdftex.def)             Requested size: 364.19667pt x 205.37146pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC4_GeneraDDT_AD.png, id=161, 591.20876pt x 559.08875pt>
-File: ./img/png-uml/UC4_GeneraDDT_AD.png Graphic file (type png)
-<use ./img/png-uml/UC4_GeneraDDT_AD.png>
-Package pdftex.def Info: ./img/png-uml/UC4_GeneraDDT_AD.png  used on input line 179.
+<./img/UC4_GeneraDDT_AD.png, id=161, 591.20876pt x 559.08875pt>
+File: ./img/UC4_GeneraDDT_AD.png Graphic file (type png)
+<use ./img/UC4_GeneraDDT_AD.png>
+Package pdftex.def Info: ./img/UC4_GeneraDDT_AD.png  used on input line 179.
 (pdftex.def)             Requested size: 364.19667pt x 344.41338pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC5_Resi_SD.png, id=162, 955.57pt x 783.92876pt>
-File: ./img/png-uml/UC5_Resi_SD.png Graphic file (type png)
-<use ./img/png-uml/UC5_Resi_SD.png>
-Package pdftex.def Info: ./img/png-uml/UC5_Resi_SD.png  used on input line 185.
+<./img/UC5_Resi_SD.png, id=162, 955.57pt x 783.92876pt>
+File: ./img/UC5_Resi_SD.png Graphic file (type png)
+<use ./img/UC5_Resi_SD.png>
+Package pdftex.def Info: ./img/UC5_Resi_SD.png  used on input line 185.
 (pdftex.def)             Requested size: 364.19667pt x 298.76923pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC5_Resi_AD.png, id=163, 806.01125pt x 789.95125pt>
-File: ./img/png-uml/UC5_Resi_AD.png Graphic file (type png)
-<use ./img/png-uml/UC5_Resi_AD.png>
-Package pdftex.def Info: ./img/png-uml/UC5_Resi_AD.png  used on input line 191.
+<./img/UC5_Resi_AD.png, id=163, 806.01125pt x 789.95125pt>
+File: ./img/UC5_Resi_AD.png Graphic file (type png)
+<use ./img/UC5_Resi_AD.png>
+Package pdftex.def Info: ./img/UC5_Resi_AD.png  used on input line 191.
 (pdftex.def)             Requested size: 364.19667pt x 356.93326pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC6_ContabileOrdini_SD.png, id=164, 810.02625pt x 786.94pt>
-File: ./img/png-uml/UC6_ContabileOrdini_SD.png Graphic file (type png)
-<use ./img/png-uml/UC6_ContabileOrdini_SD.png>
-Package pdftex.def Info: ./img/png-uml/UC6_ContabileOrdini_SD.png  used on input line 197.
+<./img/UC6_ContabileOrdini_SD.png, id=164, 810.02625pt x 786.94pt>
+File: ./img/UC6_ContabileOrdini_SD.png Graphic file (type png)
+<use ./img/UC6_ContabileOrdini_SD.png>
+Package pdftex.def Info: ./img/UC6_ContabileOrdini_SD.png  used on input line 197.
 (pdftex.def)             Requested size: 364.19667pt x 353.81953pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC6_ContabileOrdini_AD.png, id=165, 843.15pt x 850.17625pt>
-File: ./img/png-uml/UC6_ContabileOrdini_AD.png Graphic file (type png)
-<use ./img/png-uml/UC6_ContabileOrdini_AD.png>
-Package pdftex.def Info: ./img/png-uml/UC6_ContabileOrdini_AD.png  used on input line 203.
+<./img/UC6_ContabileOrdini_AD.png, id=165, 843.15pt x 850.17625pt>
+File: ./img/UC6_ContabileOrdini_AD.png Graphic file (type png)
+<use ./img/UC6_ContabileOrdini_AD.png>
+Package pdftex.def Info: ./img/UC6_ContabileOrdini_AD.png  used on input line 203.
 (pdftex.def)             Requested size: 364.19667pt x 367.22916pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC7_ContabilePrezzi_SD.png, id=166, 1102.1175pt x 631.35875pt>
-File: ./img/png-uml/UC7_ContabilePrezzi_SD.png Graphic file (type png)
-<use ./img/png-uml/UC7_ContabilePrezzi_SD.png>
-Package pdftex.def Info: ./img/png-uml/UC7_ContabilePrezzi_SD.png  used on input line 209.
+<./img/UC7_ContabilePrezzi_SD.png, id=166, 1102.1175pt x 631.35875pt>
+File: ./img/UC7_ContabilePrezzi_SD.png Graphic file (type png)
+<use ./img/UC7_ContabilePrezzi_SD.png>
+Package pdftex.def Info: ./img/UC7_ContabilePrezzi_SD.png  used on input line 209.
 (pdftex.def)             Requested size: 364.19667pt x 208.6284pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC7_ContabilePrezzi_AD.png, id=167, 1080.035pt x 625.33624pt>
-File: ./img/png-uml/UC7_ContabilePrezzi_AD.png Graphic file (type png)
-<use ./img/png-uml/UC7_ContabilePrezzi_AD.png>
-Package pdftex.def Info: ./img/png-uml/UC7_ContabilePrezzi_AD.png  used on input line 215.
+<./img/UC7_ContabilePrezzi_AD.png, id=167, 1080.035pt x 625.33624pt>
+File: ./img/UC7_ContabilePrezzi_AD.png Graphic file (type png)
+<use ./img/UC7_ContabilePrezzi_AD.png>
+Package pdftex.def Info: ./img/UC7_ContabilePrezzi_AD.png  used on input line 215.
 (pdftex.def)             Requested size: 364.19667pt x 210.86534pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC8_Amministratore_SD.png, id=168, 1080.035pt x 1508.63625pt>
-File: ./img/png-uml/UC8_Amministratore_SD.png Graphic file (type png)
-<use ./img/png-uml/UC8_Amministratore_SD.png>
-Package pdftex.def Info: ./img/png-uml/UC8_Amministratore_SD.png  used on input line 221.
+<./img/UC8_Admin_SD.png, id=168, 1080.035pt x 1508.63625pt>
+File: ./img/UC8_Admin_SD.png Graphic file (type png)
+<use ./img/UC8_Admin_SD.png>
+Package pdftex.def Info: ./img/UC8_Admin_SD.png  used on input line 221.
 (pdftex.def)             Requested size: 364.19667pt x 508.7169pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<./img/png-uml/UC8_Amministratore_AD.png, id=169, 2138.99126pt x 773.89125pt>
-File: ./img/png-uml/UC8_Amministratore_AD.png Graphic file (type png)
-<use ./img/png-uml/UC8_Amministratore_AD.png>
-Package pdftex.def Info: ./img/png-uml/UC8_Amministratore_AD.png  used on input line 227.
+<./img/UC8_Admin_AD.png, id=169, 2138.99126pt x 773.89125pt>
+File: ./img/UC8_Admin_AD.png Graphic file (type png)
+<use ./img/UC8_Admin_AD.png>
+Package pdftex.def Info: ./img/UC8_Admin_AD.png  used on input line 227.
 (pdftex.def)             Requested size: 364.19667pt x 131.76051pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 
-[7 <./img/png-uml/ClassDiagram.png>]
+[7 <./img/ClassDiagram.png>]
 
-[8 <./img/png-uml/UC1_Login_SD.png>]
+[8 <./img/UC1_Login_SD.png>]
 
-[9 <./img/png-uml/UC1_Login_AD.png>]
+[9 <./img/UC1_Login_AD.png>]
 
-[10 <./img/png-uml/UC2_VisualizzaOrdini_SD.png>]
+[10 <./img/UC2_VisualizzaOrdini_SD.png>]
 
-[11 <./img/png-uml/UC2_VisualizzaOrdini_AD.png>]
+[11 <./img/UC2_VisualizzaOrdini_AD.png>]
 Overfull \hbox (5.81921pt too wide) in paragraph at lines 281--282
-\T1/cmtt/m/n/12 Giacenza \T1/cmr/m/n/12 pa-ri a 5 uni-tà. Vie-ne in-se-ri-to un \T1/cmtt/m/n/12 OrdineUscita \T1/cmr/m/n/12 con una \T1/cmtt/m/n/12 RigaOrdineUscita
+\T1/cmtt/m/n/12 Giacenza \T1/cmr/m/n/12 pa-ri a 5 uni-tï¿½. Vie-ne in-se-ri-to un \T1/cmtt/m/n/12 OrdineUscita \T1/cmr/m/n/12 con una \T1/cmtt/m/n/12 RigaOrdineUscita
  []
 
 
 
-[12 <./img/png-uml/UC3_GestioneGiacenze_SD.png>]
+[12 <./img/UC3_GestioneGiacenze_SD.png>]
 
-[13 <./img/png-uml/UC3_GestioneGiacenze_AD.png> <./img/png-uml/UC4_GeneraDDT_SD.png>]
+[13 <./img/UC3_GestioneGiacenze_AD.png> <./img/UC4_GeneraDDT_SD.png>]
 
-[14 <./img/png-uml/UC4_GeneraDDT_AD.png>]
+[14 <./img/UC4_GeneraDDT_AD.png>]
 
-[15 <./img/png-uml/UC5_Resi_SD.png>]
+[15 <./img/UC5_Resi_SD.png>]
 
-[16 <./img/png-uml/UC5_Resi_AD.png>]
+[16 <./img/UC5_Resi_AD.png>]
 
-[17 <./img/png-uml/UC6_ContabileOrdini_SD.png>]
+[17 <./img/UC6_ContabileOrdini_SD.png>]
 
-[18 <./img/png-uml/UC6_ContabileOrdini_AD.png> <./img/png-uml/UC7_ContabilePrezzi_SD.png>]
+[18 <./img/UC6_ContabileOrdini_AD.png> <./img/UC7_ContabilePrezzi_SD.png>]
 
-[19 <./img/png-uml/UC7_ContabilePrezzi_AD.png>]
+[19 <./img/UC7_ContabilePrezzi_AD.png>]
 
-[20 <./img/png-uml/UC8_Amministratore_SD.png>]
+[20 <./img/UC8_Admin_SD.png>]
 
-[21 <./img/png-uml/UC8_Amministratore_AD.png>] (build/documentazione-progetto-ingegneria-del-software.aux)
+[21 <./img/UC8_Admin_AD.png>] (build/documentazione-progetto-ingegneria-del-software.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>

@@ -2,54 +2,54 @@ package order
 
 import "time"
 
-// OrderLineInputDTO rappresenta una singola riga (prodotto + quantità) in una richiesta di ordine.
-type OrderLineInputDTO struct {
+// RigaOrdineEntrataDTO rappresenta una singola riga (prodotto + quantità) in una richiesta di ordine.
+type RigaOrdineEntrataDTO struct {
 	ProdottoID     int     `json:"prodotto_id"`
 	Quantita       int     `json:"quantita"`
 	PrezzoUnitario float64 `json:"prezzo_unitario"`
 }
 
-// OrderInputDTO rappresenta la richiesta di creazione di un ordine di entrata o uscita.
+// OrdineEntrataDTO rappresenta la richiesta di creazione di un ordine di entrata.
 // Contiene i dati dell'ordine e l'elenco delle righe (prodotti con quantità e prezzi).
-type OrderInputDTO struct {
-	Numero      string              `json:"numero"`
-	Cliente     string              `json:"cliente,omitempty"`
-	Fornitore   string              `json:"fornitore,omitempty"`
-	Note        string              `json:"note"`
-	CreatedByID int                 `json:"created_by_id"`
-	Righe       []OrderLineInputDTO `json:"righe"`
+type OrdineEntrataDTO struct {
+	Numero      string                 `json:"numero"`
+	Cliente     string                 `json:"cliente,omitempty"`
+	Fornitore   string                 `json:"fornitore,omitempty"`
+	Note        string                 `json:"note"`
+	CreatedByID int                    `json:"created_by_id"`
+	Righe       []RigaOrdineEntrataDTO `json:"righe"`
 }
 
-// OrderLineOutputDTO rappresenta una singola riga di ordine nella risposta.
-type OrderLineOutputDTO struct {
+// RigaOrdineUscitaDTO rappresenta una singola riga di ordine nella risposta.
+type RigaOrdineUscitaDTO struct {
 	ID             int     `json:"id"`
 	ProdottoID     int     `json:"prodotto_id"`
 	Quantita       int     `json:"quantita"`
 	PrezzoUnitario float64 `json:"prezzo_unitario"`
 }
 
-// OrderOutputDTO rappresenta i dati di un ordine nella risposta.
-type OrderOutputDTO struct {
-	ID          int                  `json:"id"`
-	Numero      string               `json:"numero"`
-	Cliente     string               `json:"cliente,omitempty"`
-	Fornitore   string               `json:"fornitore,omitempty"`
-	Data        time.Time            `json:"data"`
-	Stato       string               `json:"stato"`
-	Note        string               `json:"note"`
-	CreatedByID int                  `json:"created_by_id"`
-	DDTID       *int                 `json:"ddt_id,omitempty"`
-	Righe       []OrderLineOutputDTO `json:"righe,omitempty"`
+// OrdineUscitaDTO rappresenta i dati di un ordine di uscita nella risposta.
+type OrdineUscitaDTO struct {
+	ID          int                   `json:"id"`
+	Numero      string                `json:"numero"`
+	Cliente     string                `json:"cliente,omitempty"`
+	Fornitore   string                `json:"fornitore,omitempty"`
+	Data        time.Time             `json:"data"`
+	Stato       string                `json:"stato"`
+	Note        string                `json:"note"`
+	CreatedByID int                   `json:"created_by_id"`
+	DDTID       *int                  `json:"ddt_id,omitempty"`
+	Righe       []RigaOrdineUscitaDTO `json:"righe,omitempty"`
 }
 
-// DDTInputDTO rappresenta i dati per la generazione di un DDT (Documento di Trasporto).
-type DDTInputDTO struct {
+// DDTEntrataDTO rappresenta i dati per la generazione di un DDT (Documento di Trasporto).
+type DDTEntrataDTO struct {
 	Mittente     string `json:"mittente"`
 	Destinatario string `json:"destinatario"`
 }
 
-// DDTOutputDTO rappresenta i dati di un DDT nella risposta.
-type DDTOutputDTO struct {
+// DDTUscitaDTO rappresenta i dati di un DDT nella risposta.
+type DDTUscitaDTO struct {
 	ID             int       `json:"id"`
 	Numero         string    `json:"numero"`
 	OrdineUscitaID int       `json:"ordine_uscita_id"`
@@ -59,8 +59,8 @@ type DDTOutputDTO struct {
 	PathPDF        string    `json:"path_pdf"`
 }
 
-// FatturaOutputDTO rappresenta i dati di una fattura o nota di credito nella risposta.
-type FatturaOutputDTO struct {
+// FatturaDTO rappresenta i dati di una fattura o nota di credito nella risposta.
+type FatturaDTO struct {
 	ID             int       `json:"id"`
 	Numero         string    `json:"numero"`
 	Tipo           string    `json:"tipo"`
@@ -72,11 +72,13 @@ type FatturaOutputDTO struct {
 	PathPDF        string    `json:"path_pdf"`
 }
 
-// ResoInputDTO rappresenta i dati per la registrazione di un reso di merce.
-type ResoInputDTO struct {
-	OrdineUscitaID int    `json:"ordine_uscita_id"`
-	ProdottoID     int    `json:"prodotto_id"`
-	Quantita       int    `json:"quantita"`
-	Motivo         string `json:"motivo"`
-	CreatedByID    int    `json:"created_by_id"`
+type ResoDTO struct {
+	ID             int       `json:"id"`
+	OrdineUscitaID int       `json:"ordine_uscita_id"`
+	ProdottoID     int       `json:"prodotto_id"`
+	Quantita       int       `json:"quantita"`
+	Motivo         string    `json:"motivo"`
+	Stato          string    `json:"stato"`
+	CreatedByID    int       `json:"created_by_id"`
+	Data           time.Time `json:"data"`
 }

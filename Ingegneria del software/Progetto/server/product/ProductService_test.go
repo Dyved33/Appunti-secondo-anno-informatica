@@ -18,7 +18,20 @@ type mockProductRepository struct {
 	mock.Mock
 }
 
-func (m *mockProductRepository) ProductRepository_GetAll(ctx context.Context) ([]domain.Prodotto, error) {
+// ProductRepository_GetGiacenzaById implements [productRepository].
+func (m *mockProductRepository) ProductRepository_GetGiacenzaById(ctx context.Context, prodID int) (*domain.Giacenza, error) {
+	args := m.Called(ctx, prodID)
+	g, _ := args.Get(0).(*domain.Giacenza)
+	return g, args.Error(1)
+}
+
+// ProductRepository_UpdateGiacenza implements [productRepository].
+func (m *mockProductRepository) ProductRepository_UpdateGiacenza(ctx context.Context, g *domain.Giacenza) error {
+	args := m.Called(ctx, g)
+	return args.Error(0)
+}
+
+func (m *mockProductRepository) ProductRepository_GetAllProducts(ctx context.Context) ([]domain.Prodotto, error) {
 	args := m.Called(ctx)
 	list, _ := args.Get(0).([]domain.Prodotto)
 	return list, args.Error(1)
@@ -55,6 +68,12 @@ func (m *mockProductRepository) ProductRepository_GetAllGiacenze(ctx context.Con
 	args := m.Called(ctx)
 	list, _ := args.Get(0).([]domain.Giacenza)
 	return list, args.Error(1)
+}
+
+func (m *mockProductRepository) ProductRepository_GetGiacenzaByID(ctx context.Context, productID int) (*domain.Giacenza, error) {
+	args := m.Called(ctx, productID)
+	g, _ := args.Get(0).(*domain.Giacenza)
+	return g, args.Error(1)
 }
 
 // fakeTxRunner esegue subito la funzione passata, senza una vera transazione:
@@ -109,6 +128,29 @@ func TestProductService_Create(t *testing.T) {
 			repo.AssertExpectations(t)
 		})
 	}
+}
+
+func TestProductService_GetGiacenzaByID(t *testing.T) {
+	t.Run("giacenza esistente", func(t *testing.T) {
+		repo := new(mockProductRepository)
+		repo.On("ProductRepository_GetGiacenzaById", mock.Anything, 1).Return(&domain.Giacenza{ProdottoID: 1, Quantita: 50}, nil)
+
+		svc := NewProductService(repo, fakeTxRunner{})
+		g, err := svc.ProductService_GetGiacenzaByID(context.Background(), 1)
+
+		require.NoError(t, err)
+		assert.Equal(t, 50, g.Quantita)
+	})
+
+	t.Run("giacenza inesistente restituisce errore", func(t *testing.T) {
+		repo := new(mockProductRepository)
+		repo.On("ProductRepository_GetGiacenzaById", mock.Anything, 99).Return(nil, domain.ErrProdottoNonTrovato)
+
+		svc := NewProductService(repo, fakeTxRunner{})
+		_, err := svc.ProductService_GetGiacenzaByID(context.Background(), 99)
+
+		require.ErrorIs(t, err, domain.ErrProdottoNonTrovato)
+	})
 }
 
 func TestProductService_Update(t *testing.T) {
@@ -168,6 +210,101 @@ func TestProductService_Delete(t *testing.T) {
 	repo.AssertExpectations(t)
 }
 
+func TestProductService_GetAllProducts(t *testing.T) {
+	repo := new(mockProductRepository)
+	expected := []domain.Prodotto{
+		{ID: 1, Nome: "Vite"},
+		{ID: 2, Nome: "Bullone"},
+	}
+	repo.On("ProductRepository_GetAllProducts", mock.Anything).Return(expected, nil)
+
+	svc := NewProductService(repo, fakeTxRunner{})
+	list, err := svc.ProductService_GetAllProducts(context.Background())
+
+	require.NoError(t, err)
+	assert.Len(t, list, 2)
+	assert.Equal(t, "Vite", list[0].Nome)
+	repo.AssertExpectations(t)
+}
+
+func TestProductService_GetAllProducts_Errore(t *testing.T) {
+	repo := new(mockProductRepository)
+	repo.On("ProductRepository_GetAllProducts", mock.Anything).Return(nil, errors.New("db down"))
+
+	svc := NewProductService(repo, fakeTxRunner{})
+	_, err := svc.ProductService_GetAllProducts(context.Background())
+	require.Error(t, err)
+}
+
+func TestProductService_GetByID(t *testing.T) {
+	repo := new(mockProductRepository)
+	expected := &domain.Prodotto{ID: 5, Nome: "Vite M6"}
+	repo.On("ProductRepository_GetByID", mock.Anything, 5).Return(expected, nil)
+
+	svc := NewProductService(repo, fakeTxRunner{})
+	p, err := svc.ProductService_GetByID(context.Background(), 5)
+
+	require.NoError(t, err)
+	assert.Equal(t, "Vite M6", p.Nome)
+	repo.AssertExpectations(t)
+}
+
+func TestProductService_GetByID_NonTrovato(t *testing.T) {
+	repo := new(mockProductRepository)
+	repo.On("ProductRepository_GetByID", mock.Anything, 999).Return(nil, errors.New("not found"))
+
+	svc := NewProductService(repo, fakeTxRunner{})
+	_, err := svc.ProductService_GetByID(context.Background(), 999)
+	require.Error(t, err)
+}
+
+func TestProductService_GetValoreMagazzino(t *testing.T) {
+	repo := new(mockProductRepository)
+	cat := &domain.Categoria{Nome: "Ferramenta"}
+	products := []domain.Prodotto{
+		{ID: 1, Nome: "Vite", SogliaMin: 100, PrezzoVend: 0.25, Categoria: cat},
+		{ID: 2, Nome: "Bullone", SogliaMin: 50, PrezzoVend: 0.40, Categoria: cat},
+	}
+	giacenze := []domain.Giacenza{
+		{ProdottoID: 1, Quantita: 30},
+		{ProdottoID: 2, Quantita: 200},
+	}
+
+	repo.On("ProductRepository_GetAllProducts", mock.Anything).Return(products, nil)
+	repo.On("ProductRepository_GetAllGiacenze", mock.Anything).Return(giacenze, nil)
+
+	svc := NewProductService(repo, fakeTxRunner{})
+	qty, valore, err := svc.ProductService_GetValoreMagazzino(context.Background())
+
+	require.NoError(t, err)
+	assert.Equal(t, 230, qty)
+	assert.InDelta(t, 30*0.25+200*0.40, valore, 0.0001)
+	repo.AssertExpectations(t)
+}
+
+func TestProductService_GetValoreMagazzino_Errore(t *testing.T) {
+	repo := new(mockProductRepository)
+	repo.On("ProductRepository_GetAllProducts", mock.Anything).Return(nil, errors.New("db down"))
+
+	svc := NewProductService(repo, fakeTxRunner{})
+	qty, valore, err := svc.ProductService_GetValoreMagazzino(context.Background())
+	require.Error(t, err)
+	assert.Equal(t, 0, qty)
+	assert.Equal(t, 0.0, valore)
+}
+
+func TestProductService_GetAllGiacenze_ErroreGiacenze(t *testing.T) {
+	repo := new(mockProductRepository)
+	repo.On("ProductRepository_GetAllProducts", mock.Anything).Return([]domain.Prodotto{}, nil)
+	repo.On("ProductRepository_GetAllGiacenze", mock.Anything).Return(nil, errors.New("db down"))
+
+	svc := NewProductService(repo, fakeTxRunner{})
+	_, err := svc.ProductService_GetAllGiacenze(context.Background())
+	require.Error(t, err)
+}
+
+//====================================
+
 func TestProductService_UpdateListinoPrices(t *testing.T) {
 	t.Run("aggiorna i prezzi mantenendo gli altri campi", func(t *testing.T) {
 		repo := new(mockProductRepository)
@@ -196,7 +333,7 @@ func TestProductService_UpdateListinoPrices(t *testing.T) {
 	})
 }
 
-func TestProductService_GetInventarioReport(t *testing.T) {
+func TestProductService_GetAllGiacenze(t *testing.T) {
 	repo := new(mockProductRepository)
 
 	categoria := &domain.Categoria{Nome: "Ferramenta"}
@@ -210,11 +347,11 @@ func TestProductService_GetInventarioReport(t *testing.T) {
 		{ProdottoID: 2, Quantita: 200}, // sopra soglia
 	}
 
-	repo.On("ProductRepository_GetAll", mock.Anything).Return(products, nil)
+	repo.On("ProductRepository_GetAllProducts", mock.Anything).Return(products, nil)
 	repo.On("ProductRepository_GetAllGiacenze", mock.Anything).Return(giacenze, nil)
 
 	svc := NewProductService(repo, fakeTxRunner{})
-	report, err := svc.ProductService_GetInventarioReport(context.Background())
+	report, err := svc.ProductService_GetAllGiacenze(context.Background())
 
 	require.NoError(t, err)
 	require.Len(t, report.Articoli, 2, "deve includere solo i prodotti per cui esiste una giacenza")
@@ -231,7 +368,7 @@ func TestProductService_GetInventarioReport(t *testing.T) {
 func TestProductService_GetProdottiSottoSoglia(t *testing.T) {
 	t.Run("propaga l'errore del report", func(t *testing.T) {
 		repo := new(mockProductRepository)
-		repo.On("ProductRepository_GetAll", mock.Anything).Return(nil, errors.New("db down"))
+		repo.On("ProductRepository_GetAllProducts", mock.Anything).Return(nil, errors.New("db down"))
 
 		svc := NewProductService(repo, fakeTxRunner{})
 		_, err := svc.ProductService_GetProdottiSottoSoglia(context.Background())
@@ -241,7 +378,7 @@ func TestProductService_GetProdottiSottoSoglia(t *testing.T) {
 
 	t.Run("restituisce solo gli articoli sotto soglia", func(t *testing.T) {
 		repo := new(mockProductRepository)
-		repo.On("ProductRepository_GetAll", mock.Anything).Return([]domain.Prodotto{
+		repo.On("ProductRepository_GetAllProducts", mock.Anything).Return([]domain.Prodotto{
 			{ID: 1, SogliaMin: 100},
 		}, nil)
 		repo.On("ProductRepository_GetAllGiacenze", mock.Anything).Return([]domain.Giacenza{
@@ -255,21 +392,4 @@ func TestProductService_GetProdottiSottoSoglia(t *testing.T) {
 		require.Len(t, items, 1)
 		assert.True(t, items[0].SottoSoglia)
 	})
-}
-
-func TestProductService_GetValoreMagazzino(t *testing.T) {
-	repo := new(mockProductRepository)
-	repo.On("ProductRepository_GetAll", mock.Anything).Return([]domain.Prodotto{
-		{ID: 1, SogliaMin: 0, PrezzoVend: 2.0},
-	}, nil)
-	repo.On("ProductRepository_GetAllGiacenze", mock.Anything).Return([]domain.Giacenza{
-		{ProdottoID: 1, Quantita: 10},
-	}, nil)
-
-	svc := NewProductService(repo, fakeTxRunner{})
-	qty, value, err := svc.ProductService_GetValoreMagazzino(context.Background())
-
-	require.NoError(t, err)
-	assert.Equal(t, 10, qty)
-	assert.InDelta(t, 20.0, value, 0.0001)
 }

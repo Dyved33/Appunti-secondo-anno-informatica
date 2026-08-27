@@ -54,6 +54,22 @@ else [ordine NON evaso]
 end
 
 deactivate FatSvc
+
+' ── 5. Generazione nota di credito ───────────────────
+Cont -> UI : generaNotaCredito(ordine)
+UI -> FatSvc : generaNotaCredito(ordine.id)
+activate FatSvc
+
+alt [ordine è EVASO]
+  FatSvc --> UI : notaCredito
+  UI --> Cont : mostraNotaCredito(notaCredito)
+else [ordine NON evaso]
+  FatSvc --> UI : errore("Ordine non ancora evaso")
+  UI --> Cont : mostraErrore()
+end
+
+deactivate FatSvc
 deactivate UI
 
 @enduml
+

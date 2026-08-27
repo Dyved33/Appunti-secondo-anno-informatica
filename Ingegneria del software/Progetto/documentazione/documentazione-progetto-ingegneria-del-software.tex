@@ -1,32 +1,43 @@
 \documentclass[a4paper,12pt]{article}
 
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage[italian]{babel}
-\usepackage{enumitem}
-\usepackage{geometry}
-\usepackage{hyperref}
-\usepackage{booktabs}
-\usepackage{graphicx}
-\usepackage{longtable}
+\usepackage{gialosai-style}
+\usepackage{listings}
+\usepackage{caption}
 
-\geometry{margin=2.5cm}
-
-\title{Documentazione Tecnica di Progetto \\ \large Gestionale Locale per la Gestione del Magazzino}
-\author{Gruppo 11}
-\date{26 Maggio 2026}
+\lstset{
+    language=Go,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{gialosaiAccent},
+    commentstyle=\color{gialosaiGray},
+    stringstyle=\color{gialosaiGreen},
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{gialosaiBorder},
+    backgroundcolor=\color{gialosaiLight},
+    numbers=left,
+    numberstyle=\tiny\color{gialosaiGray},
+    columns=fullflexible,
+    tabsize=4,
+    showstringspaces=false,
+}
 
 \begin{document}
 
-\maketitle
+\gialosaiTitlePage{Documentazione Tecnica di Progetto}{25 Agosto 2026}{v2.0.0}
 
+% ============================================================
 \section*{Storico delle Versioni}
+% ============================================================
 \begin{center}
     \begin{tabular}{llll}
         \toprule
-        \textbf{Versione} & \textbf{Data} & \textbf{Descrizione}                                          & \textbf{Autore} \\
+        \tableHeader \textbf{Versione} & \textbf{Data} & \textbf{Descrizione}                                          & \textbf{Autore} \\
         \midrule
-        v1.0              & 26/05/2026    & Strutturazione iniziale, analisi requisiti e allineamento UML & Gruppo 11       \\
+        v1.0.0            & 09/05/2026    & Fondazione del progetto: repository, documentazione, UML e struttura modulare backend & Gruppo 11 \\
+        v1.1.0            & 01/07/2026    & Autenticazione JWT (JSON Web Token), persistenza MySQL, test di unit\`{a} e Docker Compose & Gruppo 11 \\
+        v1.2.0            & 27/07/2026    & Client TUI con login, pagine magazzino e API lato client & Gruppo 11 \\
+        v1.3.0            & 12/08/2026    & Pagine complete (contabilit\`{a}, admin), creazione ordini, DDT e gestione utenti & Gruppo 11 \\
+        v2.0.0            & 21/08/2026    & Integrazione finale: allineamento client--server, bugfix, test stabili e documentazione & Gruppo 11 \\
         \bottomrule
     \end{tabular}
 \end{center}
@@ -35,39 +46,55 @@
 \tableofcontents
 \newpage
 
+% ============================================================
 \section{Introduzione}
+% ============================================================
+
 \subsection{Scopo del Progetto}
 Il software ha l'obiettivo di gestire le dinamiche logistiche interne di un'azienda, ottimizzando la gestione del magazzino, della movimentazione delle merci in entrata/uscita e della documentazione contabile associata.
 
+\gialosaiNote{Il progetto si ispira a soluzioni CLI già consolidate nel panorama dello sviluppo software: \texttt{docker} per la gestione containerizzata, \texttt{kubectl} per l'amministrazione di cluster, e \texttt{gh} (GitHub CLI) per l'interazione con piattaforme remote. GiaLoSai adotta lo stesso principio di interfaccia testuale affidabile e navigabile da tastiera.}
+
 \subsection{Obiettivi e Ambito (Scope)}
-L'applicazione opera in un contesto puramente locale (offline). Questa scelta risponde a specifici vincoli ambientali e di sicurezza dell'infrastruttura ospitante, la quale potrebbe presentare zone prive di connettività internet stabile o politiche aziendali restrittive riguardo all'esposizione di dati sensibili all'esterno della rete aziendale. Il sistema gestisce l'intero ciclo di vita della merce: dalla registrazione dei prodotti a magazzino alla generazione dei documenti di trasporto (DDT) e della fatturazione.
+L'implementazione è un sistema client--server destinato a una rete locale: il client TUI comunica con il backend HTTP, che accede a MySQL. Il progetto modella l'intero ciclo della merce, dalla registrazione dei prodotti fino a DDT, fatture, note di credito e resi.
 
 \subsection{Glossario}
 \begin{itemize}
     \item \textbf{DDT}: Documento di Trasporto.
     \item \textbf{RBAC}: Role-Based Access Control (Gestione permessi basata sui ruoli).
-    \item \textbf{MVC}: Model-View-Controller (Pattern architetturale).
-    \item \textbf{DAO}: Data Access Object (Oggetto per l'accesso ai dati).
+    \item \textbf{TUI}: Text-based User Interface, interfaccia utente da terminale.
+    \item \textbf{DTO}: Data Transfer Object, struttura usata per lo scambio HTTP.
+    \item \textbf{API}: Application Programming Interface, interfaccia di programmazione che espone endpoint HTTP per la comunicazione tra client e server.
+    \item \textbf{REST}: Representational State Transfer, stile architetturale per servizi web basato su risorse identificate da URI e operazioni HTTP (GET, POST, PUT, DELETE).
+    \item \textbf{MVC}: Model-View-Controller, pattern architetturale che separa il modello dati (Model), la presentazione (View) e la logica di controllo (Controller). Nella nostra architettura la View appartiene al processo client TUI, mentre i controller del server sono controller HTTP.
+    \item \textbf{ORM}: Object-Relational Mapping, tecnica che mappa oggetti del dominio su tabelle relazionali, evitando di scrivere direttamente SQL. In Go, GORM \`{e} un esempio di ORM; noi usiamo \texttt{database/sql} con query parametrizzate per mantenere il controllo sulla persistenza.
+    \item \textbf{JWT}: JSON Web Token, standard per la trasmissione di informazioni autenticate in forma compatta e sicura tramite token firmati.
+    \item \textbf{CRUD}: Create, Read, Update, Delete, le quattro operazioni fondamentali di gestione dei dati.
+    \item \textbf{SQL}: Structured Query Language, linguaggio dichiarativo per interrogare e modificare database relazionali.
+    \item \textbf{Repository}: componente che incapsula l'accesso alla persistenza.
     \item \textbf{Stock-out}: Condizione di esaurimento delle scorte di un prodotto.
 \end{itemize}
 
+% ============================================================
 \section{Analisi dei Requisiti}
+% ============================================================
+
 \subsection{Attori del Sistema}
 \begin{itemize}
     \item \textbf{Magazziniere}: Gestisce il flusso fisico delle merci (carico/scarico), effettua la scansione dei codici a barre, consulta le giacenze e genera i DDT per la merce in uscita.
     \item \textbf{Contabile}: Visiona l'elenco e il dettaglio degli ordini, gestisce le fatture, le note di credito e modifica i listini dei prezzi di acquisto e vendita.
-    \item \textbf{Amministratore}: Supervisione globale del sistema, consultazione delle merci e dei prezzi, controllo delle fatture, gestione dei resi e generazione della reportistica avanzata dell'inventario.
+    \item \textbf{Admin}: Supervisione globale del sistema, gestione degli utenti, consultazione delle merci e dei prezzi, controllo delle fatture, gestione dei resi e generazione della reportistica avanzata dell'inventario.
 \end{itemize}
 
 \subsection{Requisiti Funzionali (RF)}
 \begin{longtable}{p{0.15\textwidth} p{0.6\textwidth} p{0.15\textwidth}}
     \caption{Requisiti Funzionali}                                                                                                              \\
     \toprule
-    \textbf{ID} & \textbf{Descrizione}                                                                                      & \textbf{Priorità} \\
+    \tableHeader \textbf{ID} & \textbf{Descrizione}                                                                                      & \textbf{Priorità} \\
     \midrule
     RF-01       & Login degli utenti tramite username e password basato su ruoli (RBAC).                                    & Alta              \\
-    RF-02       & Blocco automatico dell'account utente a seguito di 3 tentativi di login falliti.                          & Alta              \\
-    RF-03       & Recupero della password utente tramite verifica di una domanda di sicurezza preimpostata.                 & Media             \\
+    RF-02       & Blocco automatico dell'account utente a seguito di 3 tentativi di login falliti (l'account admin \`e esente).  & Alta              \\
+    RF-03       & Recupero delle credenziali tramite l'admin, che sblocca l'account e reimposta la password dell'utente. & Media             \\
     RF-04       & Visualizzazione, inserimento e modifica dei dati anagrafici dei prodotti e delle categorie.               & Alta              \\
     RF-05       & Consultazione in tempo reale dell'elenco delle giacenze di magazzino.                                     & Alta              \\
     RF-06       & Registrazione di un nuovo Ordine di Entrata e aggiornamento automatico incrementale delle giacenze.       & Alta              \\
@@ -79,7 +106,8 @@ L'applicazione opera in un contesto puramente locale (offline). Questa scelta ri
     RF-12       & Visualizzazione e filtraggio degli ordini ricevuti (evasi e non evasi) da parte del contabile.            & Alta              \\
     RF-13       & Generazione e conservazione di fatture di vendita e note di credito con numerazione progressiva annuale.  & Alta              \\
     RF-14       & Modifica manuale dei listini dei prezzi di vendita e di acquisto dei prodotti.                            & Media             \\
-    RF-15       & Integrazione software per l'acquisizione rapida dei codici a barre dei prodotti tramite lettore ottico.   & Media             \\
+    RF-15       & Integrazione software per l'acquisizione rapida dei codici a barre dei prodotti tramite lettore ottico.                                   & Media             \\
+    RF-16       & Gestione degli utenti: creazione, modifica, eliminazione e visualizzazione degli account da parte dell'admin.                            & Alta              \\
     \bottomrule
 \end{longtable}
 
@@ -87,158 +115,182 @@ L'applicazione opera in un contesto puramente locale (offline). Questa scelta ri
 \begin{longtable}{p{0.15\textwidth} p{0.25\textwidth} p{0.45\textwidth}}
     \caption{Requisiti Non Funzionali}                                                                                                                     \\
     \toprule
-    \textbf{ID} & \textbf{Categoria} & \textbf{Descrizione}                                                                                                \\
+    \tableHeader \textbf{ID} & \textbf{Categoria} & \textbf{Descrizione}                                                                                                \\
     \midrule
     RNF-01      & Prestazioni        & Il tempo di risposta alla scansione di un codice a barre deve essere inferiore a 0.5s per il 95\% delle operazioni. \\
     RNF-02      & Prestazioni        & La generazione di un report annuale dell'inventario non deve richiedere più di 3s di elaborazione CPU.              \\
     RNF-03      & Portabilità        & Funzionamento garantito in modalità offline su qualsiasi sistema operativo desktop moderno.                         \\
     RNF-04      & Sicurezza          & Dati archiviati interamente in locale senza alcuna esposizione o transito all'esterno della rete aziendale.         \\
-    RNF-05      & Archiviazione      & Utilizzo di un database embedded SQLite, memorizzato in un singolo file binario locale.                             \\
-    RNF-06      & Usabilità          & Interfaccia grafica (GUI) leggera, reattiva e ottimizzata per hardware a risorse limitate.                          \\
+    RNF-05      & Archiviazione      & Persistenza relazionale centralizzata in MySQL 8, avviabile con Docker Compose.                                      \\
+    RNF-06      & Usabilità          & Interfaccia testuale (TUI) leggera, navigabile da terminale.                                                         \\
     \bottomrule
 \end{longtable}
 
 \subsection{Analisi dei Casi d'Uso}
-Il sistema è documentato tramite diagrammi dei casi d'uso che mappano le interazioni tra i tre attori principali e le macro-funzionalità del sistema. I flussi dettagliati delle operazioni principali sono descritti nei diagrammi di attività allegati nella cartella di progetto.
+Il sistema è documentato tramite diagrammi dei casi d'uso che mappano le interazioni tra i tre attori principali (magazziniere, contabile e admin) e le macro-funzionalità: ordini, documenti fiscali, resi, inventario, prodotti e prezzi, utenti e autenticazione. Le relazioni di inclusione (\emph{include}) e di estensione (\emph{extend}) modellano rispettivamente i passi obbligati e le varianti dei flussi. I flussi dettagliati delle operazioni principali sono descritti nei diagrammi di sequenza e di attività allegati nella cartella di progetto.
+
+\gialosaiNote{I diagrammi seguenti sono esportati dai sorgenti PlantUML in \texttt{documentazione/uml/} e descrivono il modello di dominio e i flussi di design allineati al codice. La disponibilità effettiva di ogni funzionalità resta determinata dalle rotte del router e dalla navigazione della TUI: i diagrammi sono una vista di design, non una garanzia di integrazione end-to-end.}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UseCaseDiagram.png}
+    \includegraphics[width=0.8\textwidth]{./img/UseCaseDiagram.png}
     \caption{Diagramma dei Casi d'Uso Generale}
 \end{figure}
 
+% ============================================================
 \section{Progettazione e Architettura}
+% ============================================================
+
 \subsection{Scelte Architetturali}
-Il software adotta rigorosamente il pattern architetturale \textbf{Model-View-Controller (MVC)}. Questa scelta garantisce la netta separazione tra la logica di business e l'interfaccia utente, abbattendo il debito tecnico. Il motore di database scelto è \textbf{SQLite} per rispondere al vincolo di esecuzione locale e portabilità assoluta (zero configurazione iniziale, assenza di demoni di rete in background e facilità di backup tramite la copia di un singolo file binario).
+Il sistema combina gli stili \emph{client--server}, \emph{layered} e \emph{repository}. Il client TUI \`{e} separato dal backend REST (Representational State Transfer) e comunica mediante HTTP (Hypertext Transfer Protocol) e JSON (JavaScript Object Notation). Nel server il router e il middleware costituiscono l'adattatore di trasporto; controller, service e repository separano rispettivamente conversione dei DTO, regole applicative e persistenza. Non si tratta di MVC (Model-View-Controller) classico: la View appartiene al processo client, mentre i controller del server sono controller HTTP.
+
+\gialosaiNote{L'architettura client--server con TUI segue lo stesso pattern utilizzato da strumenti come \texttt{gh} (GitHub CLI) e \texttt{docker}: un client leggero che espone un'interfaccia testuale ricca, comunicando con un backend tramite API REST. Il pattern Repository \`{e} lo stesso adottato da \texttt{database/sql} in Go e da ORM (Object-Relational Mapping) come GORM, garantendo separazione tra logica applicativa e persistenza.}
+
+I repository incapsulano query MySQL parametrizzate. I service dipendono da interfacce ristrette e sono quindi verificabili con mock, coerentemente con Dependency Inversion. \texttt{TransactionHelper} propaga la transazione nel contesto, garantendo atomicità per operazioni quali aggiornamento delle giacenze e registrazione degli ordini. MySQL 8, InnoDB e le chiavi esterne sono configurati nello script \texttt{docker/mysql/init.sql}.
 
 \subsection{Modello del Dominio}
-Il dominio dell'applicazione è incentrato sulle entità fondamentali per il tracciamento logistico, mappate nel file \texttt{Domain\_model.puml}: \texttt{Utente}, \texttt{Prodotto}, \texttt{Categoria}, \texttt{Giacenza}, \texttt{OrdineEntrata}, \texttt{OrdineUscita} e \texttt{DDT}.
+Il dominio dell'applicazione è incentrato sulle entità fondamentali per il tracciamento logistico, mappate nel file \texttt{Domain\_model.puml}: \texttt{Utente} e \texttt{Sessione}, \texttt{Categoria}, \texttt{Prodotto} e \texttt{Giacenza}, \texttt{OrdineEntrata} e \texttt{OrdineUscita} con le rispettive righe, \texttt{DDT}, \texttt{Fattura} (comprese le note di credito, distinte dal tipo) e \texttt{Reso}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/DomainModel.png}
+    \includegraphics[width=0.8\textwidth]{./img/DomainModel.png}
     \caption{Modello del Dominio}
 \end{figure}
 
 \subsection{Design Dettagliato (Diagramma delle Classi)}
-La struttura interna del codice segue rigorosamente lo schema delle classi definito in \texttt{Class\_diagram.puml}. Per isolare la persistenza dei dati, viene adottato il pattern \textbf{DAO (Data Access Object)}. Le classi DAO incapsulano la totalità delle istruzioni SQL ed eseguono le query sul database SQLite, garantendo che lo strato dei Controller dipenda esclusivamente da oggetti di dominio e mai dal dialetto SQL sottostante.
+Il modello del codice comprende entità di dominio, DTO, controller, service e repository. Il pattern Repository isola il dialetto SQL e il dettaglio della connessione dal service layer. L'aggregazione dei componenti avviene in \texttt{router.NewRouter}; il dominio rimane indipendente da HTTP e da MySQL. Il diagramma delle classi è una vista di design e deve essere letto insieme al codice: le operazioni effettivamente pubblicate sono determinate dalle rotte del router.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\textwidth]{./img/png-uml/ClassDiagram.png}
+    \includegraphics[width=0.9\textwidth]{./img/ClassDiagram.png}
     \caption{Diagramma delle Classi}
 \end{figure}
 
 \subsection{Comportamento del Sistema (Diagrammi di Sequenza)}
-I flussi di interazione dinamica tra i componenti della View, della logica di controllo (Service) e dello strato dei dati sono formalizzati tramite diagrammi di sequenza. Di seguito viene riportato, a titolo esemplificativo, il diagramma di sequenza relativo al processo di login e recupero delle credenziali (\texttt{UC1\_login\_sequence.puml}).
+I diagrammi rappresentano scenari di requisiti e design. I flussi implementati devono essere distinti da quelli pianificati: login, consultazione di prodotti e categorie, aggiornamento del prezzo di vendita e lettura dei documenti pubblicati dal router sono esposti in HTTP. DDT, fatture, resi e ordini sono presenti nei service, ma non tutte le relative azioni hanno una rotta o una navigazione TUI disponibile. I diagrammi non costituiscono quindi una garanzia di disponibilità end-to-end.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC1_Login_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/UC1_Login_SD.png}
     \caption{Diagramma di Sequenza: Login e Recupero Password (UC1)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC1_Login_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/UC1_Login_AD.png}
     \caption{Diagramma di Attività: Login e Recupero Password (UC1)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC2_VisualizzaOrdini_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/UC2_VisualizzaOrdini_SD.png}
     \caption{Diagramma di Sequenza: Visualizzazione Ordini (UC2)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC2_VisualizzaOrdini_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/UC2_VisualizzaOrdini_AD.png}
     \caption{Diagramma di Attività: Visualizzazione Ordini (UC2)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC3_GestioneGiacenze_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/UC3_GestioneGiacenze_SD.png}
     \caption{Diagramma di Sequenza: Gestione Giacenza (UC3)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC3_GestioneGiacenze_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/UC3_GestioneGiacenze_AD.png}
     \caption{Diagramma di Attività: Gestione Giacenza (UC3)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC4_GeneraDDT_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/UC4_GeneraDDT_SD.png}
     \caption{Diagramma di Sequenza: Generazione DDT (UC4)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC4_GeneraDDT_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/UC4_GeneraDDT_AD.png}
     \caption{Diagramma di Attività: Generazione DDT (UC4)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC5_Resi_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/UC5_Resi_SD.png}
     \caption{Diagramma di Sequenza: Resi (UC5)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC5_Resi_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/UC5_Resi_AD.png}
     \caption{Diagramma di Attività: Resi (UC5)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC6_ContabileOrdini_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/UC6_ContabileOrdini_SD.png}
     \caption{Diagramma di Sequenza: Contabile Ordini (UC6)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC6_ContabileOrdini_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/UC6_ContabileOrdini_AD.png}
     \caption{Diagramma di Attività: Contabile Ordini (UC6)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC7_ContabilePrezzi_SD.png}
+    \includegraphics[width=0.8\textwidth]{./img/UC7_ContabilePrezzi_SD.png}
     \caption{Diagramma di Sequenza: Contabile Prezzi (UC7)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC7_ContabilePrezzi_AD.png}
+    \includegraphics[width=0.8\textwidth]{./img/UC7_ContabilePrezzi_AD.png}
     \caption{Diagramma di Attività: Contabile Prezzi (UC7)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC8_Amministratore_SD.png}
-    \caption{Diagramma di Sequenza: Amministratore (UC8)}
+    \includegraphics[width=0.8\textwidth]{./img/UC8_Amministratore_SD.png}
+    \caption{Diagramma di Sequenza: Admin (UC8)}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{./img/png-uml/UC8_Amministratore_AD.png}
-    \caption{Diagramma di Attività: Amministratore (UC8)}
+    \includegraphics[width=0.8\textwidth]{./img/UC8_Amministratore_AD.png}
+    \caption{Diagramma di Attività: Admin (UC8)}
 \end{figure}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./img/UC9_GestioneUtenti_SD.png}
+    \caption{Diagramma di Sequenza: Gestione Utenti (UC9)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./img/UC9_GestioneUtenti_AD.png}
+    \caption{Diagramma di Attività: Gestione Utenti (UC9)}
+\end{figure}
+
+% ============================================================
 \section{Gestione del Progetto (Scrum)}
+% ============================================================
+
 \subsection{Backlog}
 L'elenco ordinato e prioritizzato dei requisiti tecnici necessari al completamento del primo ciclo di sviluppo comprende:
 \begin{enumerate}
-    \item Configurazione dell'architettura software di base, dell'ambiente di sviluppo locale e della connessione al file SQLite.
+    \item Configurazione dell'architettura software di base, dell'ambiente Docker e della connessione a MySQL.
     \item Definizione dello schema logico della base dati tramite script SQL (creazione delle tabelle \texttt{Utente}, \texttt{Prodotto}, \texttt{Categoria}, \texttt{Giacenza}, \texttt{OrdineEntrata}, \texttt{OrdineUscita}, \texttt{RigaOrdineEntrata}, \texttt{RigaOrdineUscita}, \texttt{DDT}).
-    \item Sviluppo delle interfacce grafiche e delle funzioni CRUD per la gestione dell'Anagrafica Prodotti e Categorie.
+    \item Sviluppo delle interfacce grafiche e delle funzioni CRUD (Create, Read, Update, Delete) per la gestione dell'Anagrafica Prodotti e Categorie.
     \item Implementazione del modulo di movimentazione (logica e maschere per la compilazione di \texttt{OrdineEntrata} e \texttt{OrdineUscita}).
     \item Integrazione software per l'acquisizione dell'input da lettore di codici a barre tramite emulazione tastiera.
     \item Sviluppo del sottosistema di controllo e notifica visiva per i prodotti sotto la soglia minima inseriti in \texttt{Giacenza}.
-    \item Progettazione ed implementazione del motore di reportistica ed esportazione dell'inventario in formato PDF e CSV.
+    \item Sviluppo del motore di reportistica dell'inventario: il report JSON è esposto dal router; l'esportazione in formato PDF e CSV è pianificata ma non ancora implementata.
     \item Sviluppo del modulo di autenticazione locale e gestione dei permessi basata sui ruoli tramite \texttt{AuthService}.
 \end{enumerate}
 
@@ -247,8 +299,8 @@ Le storie riflettono i bisogni concreti degli attori scritti secondo gli standar
 \begin{itemize}
     \item \textbf{US-01 (Accesso con credenziali)}: "Come utente, voglio accedere all'applicazione con username e password, in modo da poter utilizzare le funzionalità del mio ruolo".
     \item \textbf{US-02 (Scansione Barcode)}: "Come magazziniere, voglio poter scansionare il codice a barre di un prodotto in arrivo tramite il lettore ottico, per aggiornare la quantità in giacenza nel sistema in modo rapido, automatizzato e senza commettere errori manuali".
-    \item \textbf{US-03 (Sicurezza Account)}: "Come amministratore del sistema, voglio che il software blocchi l'account dopo 3 tentativi falliti, per impedire ad utenti non autorizzati di indovinare le password d'accesso dei dipendenti".
-    \item \textbf{US-04 (Recupero Password)}: "Come utente, voglio poter recuperare la mia password dimenticata rispondendo a una domanda di sicurezza preimpostata".
+    \item \textbf{US-03 (Sicurezza Account)}: "Come admin del sistema, voglio che il software blocchi l'account dopo 3 tentativi falliti, per impedire ad utenti non autorizzati di indovinare le password d'accesso dei dipendenti".
+    \item \textbf{US-04 (Recupero Credenziali)}: "Come utente bloccato o con credenziali dimenticate, voglio poter rivolgermi all'admin, che sblocca il mio account e mi fornisce una nuova password".
     \item \textbf{US-05 (Visualizzazione elenco ordini)}: "Come magazziniere, voglio vedere l'elenco di tutti gli ordini di entrata e uscita, in modo da avere una panoramica completa dei movimenti del magazzino".
     \item \textbf{US-06 (Visualizzazione dettaglio ordini)}: "Come magazziniere, voglio vedere il dettaglio di un ordine di entrata o uscita selezionato, in modo da conoscere i prodotti coinvolti e le relative quantità".
     \item \textbf{US-07 (Registrazione Ordini in entrata)}: "Come magazziniere, voglio registrare un ordine di entrata con i prodotti ricevuti, in modo da aggiornare automaticamente le giacenze".
@@ -259,28 +311,35 @@ Le storie riflettono i bisogni concreti degli attori scritti secondo gli standar
     \item \textbf{US-12 (Gestione resi)}: "Come magazziniere, voglio gestire i resi della merce, in modo da poter ripristinare le quantità in giacenza e tenere traccia dei movimenti di reso".
     \item \textbf{US-13 (Visualizzazione ordini per contabile)}: "Come contabile, voglio visualizzare l'elenco degli ordini ricevuti (evasi e non evasi), in modo da poter gestire la fatturazione e le note di credito".
     \item \textbf{US-14 (Generazione Fatture)}: "Come contabile, voglio generare fatture per gli ordini di uscita evasi, in modo da poter emettere documenti ufficiali per i clienti".
-    \item \textbf{US-14 (Gestione prezzi)}: "Come contabile, voglio poter modificare manualmente i listini dei prezzi di vendita e di acquisto dei prodotti, in modo da mantenere aggiornati i prezzi nel sistema".
-    \item \textbf{US-15 (Reportistica inventario)}: "Come amministratore, voglio generare report avanzati dell'inventario, in modo da avere una visione dettagliata dello stato del magazzino e delle tendenze di consumo dei prodotti".
+    \item \textbf{US-15 (Nota di credito)}: "Come contabile, voglio generare una nota di credito per un ordine di uscita evaso, in modo da correggere la fatturazione quando necessario".
+    \item \textbf{US-16 (Gestione prezzi)}: "Come contabile, voglio poter modificare manualmente i listini dei prezzi di vendita e di acquisto dei prodotti, in modo da mantenere aggiornati i prezzi nel sistema".
+    \item \textbf{US-17 (Gestione utenti)}: "Come admin, voglio creare, modificare ed eliminare gli account degli utenti, in modo da gestire l'accesso al sistema e i relativi ruoli".
+    \item \textbf{US-18 (Reportistica inventario)}: "Come admin, voglio generare report avanzati dell'inventario, in modo da avere una visione dettagliata dello stato del magazzino e delle tendenze di consumo dei prodotti".
 \end{itemize}
 
 \subsection{Criteri di Accettazione}
-Vengono definiti i vincoli formali affinché la User Story \textbf{US-01} possa essere considerata completata ("Done"):
+Vengono definiti i vincoli formali affinché la User Story \textbf{US-02} (Scansione Barcode) possa essere considerata completata ("Done"):
 \begin{itemize}
     \item \textbf{Criterio 1}: Il sistema deve riconoscere e decodificare correttamente e senza latenza i codici a barre conformi allo standard internazionale EAN-13.
     \item \textbf{Criterio 2}: Al momento della scansione riuscita all'interno della schermata di carico, i dati identificativi del prodotto devono comparire istantaneamente nei campi visivi e la relativa quantità nella tabella \texttt{Giacenza} deve essere incrementata automaticamente nel database.
-    \item \textbf{Criterio 3}: Qualora il codice a barre scansionato non trovi corrispondenza all'interno della tabella \texttt{Prodotto}, il sistema deve inibire il salvataggio automatico, emettere un feedback acustico di errore ed aprire una finestra pop-up contestuale che consenta all'operatore di inserire il prodotto ex-novo in anagrafica o annullare l'operazione.
+    \item \textbf{Criterio 3}: Qualora il codice a barre non trovi corrispondenza in \texttt{Prodotti}, il service restituisce un errore di prodotto non trovato. Feedback acustico, pop-up e inserimento contestuale non sono implementati nella TUI corrente.
 \end{itemize}
 
+% ============================================================
 \section{Strategia di Verifica e Validazione}
+% ============================================================
+
 \subsection{Piano di Testing}
 Il piano prevede una suite di test di unità (Unit Testing) sistematici eseguiti sulla Business Logic tramite lo strumento standard di testing di Go (\texttt{go test}). I test sono focalizzati sulla verifica delle transazioni e sul rispetto dei vincoli di integrità del magazzino.
+
+\gialosaiNote{L'approccio ai test segue le best practice di ecosistemi CLI consolidati: \texttt{go test} è lo strumento standard anche per progetti come \texttt{docker}, \texttt{kubernetes} e \texttt{helm}. I test di integrazione con database transazionali sono un pattern comune nella struttura dei test di Go.}
 
 \subsection{Casi di Test (Test Cases)}
 \textbf{TC-01}: Tentativo di scarico merce con quantità richiesta superiore alla giacenza fisica attuale.
 \begin{itemize}
     \item \textbf{Scenario}: Un prodotto registrato in anagrafica dispone di una quantità fisica in \texttt{Giacenza} pari a 5 unità. Viene inserito un \texttt{OrdineUscita} con una \texttt{RigaOrdineUscita} richiedente l'uscita di 6 unità del medesimo prodotto.
     \item \textbf{Input}: Invocazione della funzione di business \texttt{registraScarico()} con quantità = 6.
-    \item \textbf{Risultato Atteso}: Il sistema deve intercettare preventivamente l'incoerenza prima di modificare i dati, bloccare l'esecuzione della transazione sul database SQLite tramite un'operazione di \texttt{ROLLBACK} e restituire un errore software personalizzato di tipo \texttt{GiacenzaInsufficienteError}. L'interfaccia utente cattura l'errore e mostra un messaggio di errore bloccante, impedendo che i dati assumano valori negativi incongruenti.
+    \item \textbf{Risultato Atteso}: Il service intercetta l'incoerenza prima di modificare i dati, la transazione MySQL esegue il \texttt{ROLLBACK} e viene restituito un \texttt{GiacenzaInsufficienteError}. Il service impedisce quindi giacenze negative; la visualizzazione dell'errore dipende dall'integrazione TUI/API della specifica operazione.
 \end{itemize}
 
 \end{document}

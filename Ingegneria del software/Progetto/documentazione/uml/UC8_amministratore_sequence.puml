@@ -1,4 +1,4 @@
-@startuml UC8_Amministratore_SD
+@startuml UC8_Admin_SD
 
 skinparam sequence {
   ArrowColor      #555555
@@ -8,7 +8,7 @@ skinparam sequence {
   ActorBorderColor #2980B9
 }
 
-actor    "Amministratore"      as Admin
+actor    "Admin"      as Admin
 boundary "ui:UI"               as UI
 control  "svc:ProdottoService" as ProdSvc
 control  "svc:FatturaService"  as FatSvc
@@ -103,3 +103,4 @@ group Gestione Resi
 end
 
 @enduml
+

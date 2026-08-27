@@ -17,6 +17,74 @@ type mockOrderServiceForController struct {
 	mock.Mock
 }
 
+// OrderService_GeneraNotaCreditoById implements [orderService].
+func (m *mockOrderServiceForController) OrderService_GeneraNotaCreditoById(ctx context.Context, orderID int) (*domain.Fattura, error) {
+	args := m.Called(ctx, orderID)
+	f, _ := args.Get(0).(*domain.Fattura)
+	return f, args.Error(1)
+}
+
+// OrderService_GetAllFatture implements [orderService].
+func (m *mockOrderServiceForController) OrderService_GetAllFatture(ctx context.Context) ([]domain.Fattura, error) {
+	args := m.Called(ctx)
+	list, _ := args.Get(0).([]domain.Fattura)
+	return list, args.Error(1)
+}
+
+// OrderService_GetAllResi implements [orderService].
+func (m *mockOrderServiceForController) OrderService_GetAllResi(ctx context.Context) ([]ResoDTO, error) {
+	args := m.Called(ctx)
+	list, _ := args.Get(0).([]ResoDTO)
+	return list, args.Error(1)
+}
+
+// OrderService_GetDDTByOrdineUscita implements [orderService].
+func (m *mockOrderServiceForController) OrderService_GetDDTByOrdineUscita(ctx context.Context, orderID int) (*domain.DDT, error) {
+	args := m.Called(ctx, orderID)
+	d, _ := args.Get(0).(*domain.DDT)
+	return d, args.Error(1)
+}
+
+// OrderService_GetDDTByYear implements [orderService].
+func (m *mockOrderServiceForController) OrderService_GetDDTByYear(ctx context.Context, year int) ([]domain.DDT, error) {
+	args := m.Called(ctx, year)
+	list, _ := args.Get(0).([]domain.DDT)
+	return list, args.Error(1)
+}
+
+// OrderService_GetOrdiniEntrata implements [orderService].
+func (m *mockOrderServiceForController) OrderService_GetOrdiniEntrata(ctx context.Context) ([]domain.OrdineEntrata, error) {
+	args := m.Called(ctx)
+	list, _ := args.Get(0).([]domain.OrdineEntrata)
+	return list, args.Error(1)
+}
+
+// OrderService_GetOrdiniEntrataById implements [orderService].
+func (m *mockOrderServiceForController) OrderService_GetOrdiniEntrataById(ctx context.Context, id int) (*domain.OrdineEntrata, error) {
+	args := m.Called(ctx, id)
+	o, _ := args.Get(0).(*domain.OrdineEntrata)
+	return o, args.Error(1)
+}
+
+func (m *mockOrderServiceForController) OrderService_DeleteOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error {
+	args := m.Called(ctx, o)
+	return args.Error(0)
+}
+
+// OrderService_GetOrdiniUscitaById implements [orderService].
+func (m *mockOrderServiceForController) OrderService_GetOrdiniUscitaById(ctx context.Context, id int) (*domain.OrdineUscita, error) {
+	args := m.Called(ctx, id)
+	o, _ := args.Get(0).(*domain.OrdineUscita)
+	return o, args.Error(1)
+}
+
+// OrderService_GetOrdiniUscitaNonEvasi implements [orderService].
+func (m *mockOrderServiceForController) OrderService_GetOrdiniUscitaNonEvasi(ctx context.Context) ([]domain.OrdineUscita, error) {
+	args := m.Called(ctx)
+	list, _ := args.Get(0).([]domain.OrdineUscita)
+	return list, args.Error(1)
+}
+
 func (m *mockOrderServiceForController) OrderService_ConfirmOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error {
 	args := m.Called(ctx, o)
 	return args.Error(0)
@@ -33,10 +101,26 @@ func (m *mockOrderServiceForController) OrderService_GetOrdiniUscita(ctx context
 	return list, args.Error(1)
 }
 
-func (m *mockOrderServiceForController) OrderService_GetOrdiniUscitaByStato(ctx context.Context, stato domain.StatoOrdine) ([]domain.OrdineUscita, error) {
+func (m *mockOrderServiceForController) OrderService_GetOrdiniUscitaByStato(ctx context.Context, stato domain.StatoOrdineUscita) ([]domain.OrdineUscita, error) {
 	args := m.Called(ctx, stato)
 	list, _ := args.Get(0).([]domain.OrdineUscita)
 	return list, args.Error(1)
+}
+
+func (m *mockOrderServiceForController) OrderService_GetDettaglioOrdineUscita(ctx context.Context, id int) (*domain.OrdineUscita, error) {
+	args := m.Called(ctx, id)
+	o, _ := args.Get(0).(*domain.OrdineUscita)
+	return o, args.Error(1)
+}
+
+func (m *mockOrderServiceForController) OrderService_UpdateOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
+	args := m.Called(ctx, o)
+	return args.Error(0)
+}
+
+func (m *mockOrderServiceForController) OrderService_DeleteOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
+	args := m.Called(ctx, o)
+	return args.Error(0)
 }
 
 func (m *mockOrderServiceForController) OrderService_GeneraDDT(ctx context.Context, orderID int, mittente, destinatario string) (*domain.DDT, error) {
@@ -65,6 +149,11 @@ func (m *mockOrderServiceForController) OrderService_RifiutaReso(ctx context.Con
 	return args.Error(0)
 }
 
+func (m *mockOrderServiceForController) OrderService_DeleteReso(ctx context.Context, resoID int) error {
+	args := m.Called(ctx, resoID)
+	return args.Error(0)
+}
+
 func (m *mockOrderServiceForController) OrderService_GeneraFattura(ctx context.Context, orderID int) (*domain.Fattura, error) {
 	args := m.Called(ctx, orderID)
 	f, _ := args.Get(0).(*domain.Fattura)
@@ -83,6 +172,11 @@ func (m *mockOrderServiceForController) OrderService_GetFatture(ctx context.Cont
 	return list, args.Error(1)
 }
 
+func (m *mockOrderServiceForController) OrderService_DeleteFattura(ctx context.Context, fatturaID int) error {
+	args := m.Called(ctx, fatturaID)
+	return args.Error(0)
+}
+
 func (m *mockOrderServiceForController) OrderService_GetNoteCredito(ctx context.Context) ([]domain.Fattura, error) {
 	args := m.Called(ctx)
 	list, _ := args.Get(0).([]domain.Fattura)
@@ -96,10 +190,10 @@ func TestOrderController_RegisterEntryOrder(t *testing.T) {
 	})).Return(nil)
 
 	c := NewOrderController(svc)
-	err := c.OrderController_RegisterEntryOrder(context.Background(), OrderInputDTO{
+	err := c.OrderController_RegisterEntryOrder(context.Background(), OrdineEntrataDTO{
 		Numero:    "OE-001",
 		Fornitore: "ACME Srl",
-		Righe: []OrderLineInputDTO{
+		Righe: []RigaOrdineEntrataDTO{
 			{ProdottoID: 5, Quantita: 100, PrezzoUnitario: 0.5},
 		},
 	})
@@ -116,10 +210,10 @@ func TestOrderController_RegisterExitOrder(t *testing.T) {
 		})).Return(nil)
 
 		c := NewOrderController(svc)
-		err := c.OrderController_RegisterExitOrder(context.Background(), OrderInputDTO{
+		err := c.OrderController_RegisterExitOrder(context.Background(), OrdineUscitaDTO{
 			Numero:  "OU-001",
 			Cliente: "Cliente Spa",
-			Righe: []OrderLineInputDTO{
+			Righe: []RigaOrdineUscitaDTO{
 				{ProdottoID: 5, Quantita: 10, PrezzoUnitario: 1.0},
 			},
 		})
@@ -134,21 +228,80 @@ func TestOrderController_RegisterExitOrder(t *testing.T) {
 			Return(domain.NewGiacenzaInsufficienteError(5, "Vite M6", 3, 10))
 
 		c := NewOrderController(svc)
-		err := c.OrderController_RegisterExitOrder(context.Background(), OrderInputDTO{})
+		err := c.OrderController_RegisterExitOrder(context.Background(), OrdineUscitaDTO{})
 
 		require.Error(t, err)
 	})
 }
 
-func TestOrderController_GetAll(t *testing.T) {
+func TestOrderController_GetOrdiniEntrata(t *testing.T) {
+	svc := new(mockOrderServiceForController)
+	svc.On("OrderService_GetOrdiniEntrata", mock.Anything).Return([]domain.OrdineEntrata{
+		{ID: 1, Numero: "OE-001", Fornitore: "ACME Srl"},
+	}, nil)
+
+	c := NewOrderController(svc)
+	out, err := c.OrderController_GetOrdiniEntrata(context.Background())
+
+	require.NoError(t, err)
+	require.Len(t, out, 1)
+}
+
+func TestOrderController_GetOrdiniEntrataById(t *testing.T) {
+	svc := new(mockOrderServiceForController)
+	svc.On("OrderService_GetOrdiniEntrataById", mock.Anything, 1).Return(&domain.OrdineEntrata{ID: 1, Numero: "OE-001", Fornitore: "ACME Srl"}, nil)
+
+	c := NewOrderController(svc)
+	out, err := c.OrderController_GetOrdiniEntrataById(context.Background(), 1)
+
+	require.NoError(t, err)
+	require.NotNil(t, out)
+}
+
+func TestOrderController_DeleteOrdineEntrata(t *testing.T) {
+	svc := new(mockOrderServiceForController)
+
+	order := &domain.OrdineEntrata{
+		ID:     1,
+		Numero: "OE-001",
+	}
+
+	svc.On(
+		"OrderService_GetOrdiniEntrataById",
+		mock.Anything,
+		1,
+	).Return(order, nil)
+
+	svc.On(
+		"OrderService_DeleteOrdineEntrata",
+		mock.Anything,
+		order,
+	).Return(nil)
+
+	c := NewOrderController(svc)
+
+	err := c.OrderController_DeleteOrdineEntrata(
+		context.Background(),
+		1,
+	)
+
+	require.NoError(t, err)
+	svc.AssertExpectations(t)
+}
+
+func TestOrderController_GetOrdiniUscita(t *testing.T) {
 	svc := new(mockOrderServiceForController)
 	ddtID := 7
 	svc.On("OrderService_GetOrdiniUscita", mock.Anything).Return([]domain.OrdineUscita{
 		{ID: 1, Numero: "OU-001", Cliente: "Cliente A", Stato: domain.StatoEvaso, DDTID: &ddtID},
 	}, nil)
+	svc.On("OrderService_GetOrdiniUscitaById", mock.Anything, 1).Return(&domain.OrdineUscita{
+		ID:    1,
+		Righe: []domain.RigaOrdineUscita{{ID: 10, ProdottoID: 5, Quantita: 2, PrezzoUnitario: 1.5}},
+	}, nil)
 
 	c := NewOrderController(svc)
-	out, err := c.OrderController_GetAll(context.Background())
+	out, err := c.OrderController_GetOrdiniUscita(context.Background())
 
 	require.NoError(t, err)
 	require.Len(t, out, 1)
@@ -159,8 +312,8 @@ func TestOrderController_GetAll(t *testing.T) {
 
 func TestOrderController_GetOrdersByStatus(t *testing.T) {
 	svc := new(mockOrderServiceForController)
-	svc.On("OrderService_GetOrdiniUscitaByStato", mock.Anything, domain.StatoOrdine("confermato")).
-		Return([]domain.OrdineUscita{{ID: 1, Numero: "OU-001", Stato: domain.StatoOrdine("confermato")}}, nil)
+	svc.On("OrderService_GetOrdiniUscitaByStato", mock.Anything, domain.StatoOrdineUscita("confermato")).
+		Return([]domain.OrdineUscita{{ID: 1, Numero: "OU-001", Stato: domain.StatoOrdineUscita("confermato")}}, nil)
 
 	c := NewOrderController(svc)
 	out, err := c.OrderController_GetOrdersByStatus(context.Background(), "confermato")
@@ -170,14 +323,60 @@ func TestOrderController_GetOrdersByStatus(t *testing.T) {
 	assert.Equal(t, "confermato", out[0].Stato)
 }
 
-func TestOrderController_IssueDDT(t *testing.T) {
+func TestOrderController_UpdateOrdineUscita(t *testing.T) {
+	svc := new(mockOrderServiceForController)
+	svc.On("OrderService_GetOrdiniUscitaById", mock.Anything, 1).Return(&domain.OrdineUscita{ID: 1, Numero: "OU-001", Cliente: "Cliente A"}, nil)
+	svc.On("OrderService_UpdateOrdineUscita", mock.Anything, mock.Anything).Return(nil)
+
+	c := NewOrderController(svc)
+	err := c.OrderController_UpdateOrdineUscita(context.Background(), 1, OrdineUscitaDTO{
+		Numero:  "OU-002",
+		Cliente: "Cliente B",
+	})
+
+	require.NoError(t, err)
+	svc.AssertExpectations(t)
+}
+
+func TestOrderController_DeleteOrdineUscita(t *testing.T) {
+	svc := new(mockOrderServiceForController)
+
+	order := &domain.OrdineUscita{
+		ID:     1,
+		Numero: "OU-001",
+	}
+
+	svc.On(
+		"OrderService_GetOrdiniUscitaById",
+		mock.Anything,
+		1,
+	).Return(order, nil)
+
+	svc.On(
+		"OrderService_DeleteOrdineUscita",
+		mock.Anything,
+		order,
+	).Return(nil)
+
+	c := NewOrderController(svc)
+
+	err := c.OrderController_DeleteOrdineUscita(
+		context.Background(),
+		1,
+	)
+
+	require.NoError(t, err)
+	svc.AssertExpectations(t)
+}
+
+func TestOrderController_GeneraDDT(t *testing.T) {
 	t.Run("genera il DDT e lo mappa nel DTO", func(t *testing.T) {
 		svc := new(mockOrderServiceForController)
 		svc.On("OrderService_GeneraDDT", mock.Anything, 20, "Magazzino", "Cliente Spa").
 			Return(&domain.DDT{ID: 5, Numero: "DDT-2026-0001", OrdineUscitaID: 20}, nil)
 
 		c := NewOrderController(svc)
-		out, err := c.OrderController_IssueDDT(context.Background(), 20, DDTInputDTO{Mittente: "Magazzino", Destinatario: "Cliente Spa"})
+		out, err := c.OrderController_GeneraDDT(context.Background(), 20, DDTEntrataDTO{Mittente: "Magazzino", Destinatario: "Cliente Spa"})
 
 		require.NoError(t, err)
 		assert.Equal(t, "DDT-2026-0001", out.Numero)
@@ -189,7 +388,7 @@ func TestOrderController_IssueDDT(t *testing.T) {
 			Return(nil, domain.ErrDDTGiaGenerato)
 
 		c := NewOrderController(svc)
-		_, err := c.OrderController_IssueDDT(context.Background(), 20, DDTInputDTO{Mittente: "Magazzino", Destinatario: "Cliente Spa"})
+		_, err := c.OrderController_GeneraDDT(context.Background(), 20, DDTEntrataDTO{Mittente: "Magazzino", Destinatario: "Cliente Spa"})
 
 		require.ErrorIs(t, err, domain.ErrDDTGiaGenerato)
 	})
@@ -202,7 +401,7 @@ func TestOrderController_CreateReturn(t *testing.T) {
 	})).Return(nil)
 
 	c := NewOrderController(svc)
-	err := c.OrderController_CreateReturn(context.Background(), ResoInputDTO{
+	err := c.OrderController_CreateReturn(context.Background(), ResoDTO{
 		OrdineUscitaID: 20,
 		ProdottoID:     5,
 		Quantita:       2,
@@ -214,47 +413,147 @@ func TestOrderController_CreateReturn(t *testing.T) {
 	svc.AssertExpectations(t)
 }
 
-func TestOrderController_VerifyReturnPhysical(t *testing.T) {
+func TestOrderController_UpdateStatoReso(t *testing.T) {
+
+	t.Run("stato da_verificare chiama VerifyReso", func(t *testing.T) {
+		service := new(mockOrderServiceForController)
+
+		controller := &OrderController{
+			Service: service,
+		}
+
+		service.On(
+			"OrderService_VerifyReso",
+			mock.Anything,
+			3,
+		).Return(nil)
+
+		err := controller.OrderController_UpdateStatoReso(
+			context.Background(),
+			3,
+			"da_verificare",
+		)
+
+		require.NoError(t, err)
+		service.AssertExpectations(t)
+	})
+
+	t.Run("stato approvato chiama ApproveReso", func(t *testing.T) {
+		service := new(mockOrderServiceForController)
+
+		controller := &OrderController{
+			Service: service,
+		}
+
+		service.On(
+			"OrderService_ApproveReso",
+			mock.Anything,
+			3,
+		).Return(nil)
+
+		err := controller.OrderController_UpdateStatoReso(
+			context.Background(),
+			3,
+			"approvato",
+		)
+
+		require.NoError(t, err)
+		service.AssertExpectations(t)
+	})
+
+	t.Run("stato rifiutato chiama RifiutaReso", func(t *testing.T) {
+		service := new(mockOrderServiceForController)
+
+		controller := &OrderController{
+			Service: service,
+		}
+
+		service.On(
+			"OrderService_RifiutaReso",
+			mock.Anything,
+			3,
+		).Return(nil)
+
+		err := controller.OrderController_UpdateStatoReso(
+			context.Background(),
+			3,
+			"rifiutato",
+		)
+
+		require.NoError(t, err)
+		service.AssertExpectations(t)
+	})
+
+	t.Run("stato non valido non chiama nessun servizio", func(t *testing.T) {
+		service := new(mockOrderServiceForController)
+
+		controller := &OrderController{
+			Service: service,
+		}
+
+		err := controller.OrderController_UpdateStatoReso(
+			context.Background(),
+			3,
+			"stato_non_valido",
+		)
+
+		require.NoError(t, err)
+
+		service.AssertNotCalled(
+			t,
+			"OrderService_VerifyReso",
+			mock.Anything,
+			mock.Anything,
+		)
+		service.AssertNotCalled(
+			t,
+			"OrderService_ApproveReso",
+			mock.Anything,
+			mock.Anything,
+		)
+		service.AssertNotCalled(
+			t,
+			"OrderService_RifiutaReso",
+			mock.Anything,
+			mock.Anything,
+		)
+	})
+}
+
+func TestOrderController_GetReturns(t *testing.T) {
 	svc := new(mockOrderServiceForController)
-	svc.On("OrderService_VerifyReso", mock.Anything, 3).Return(nil)
+	svc.On("OrderService_GetAllResi", mock.Anything).Return([]ResoDTO{
+		{ID: 1, OrdineUscitaID: 20, ProdottoID: 5, Quantita: 2, Motivo: "Difettoso"},
+	}, nil)
 
 	c := NewOrderController(svc)
-	err := c.OrderController_VerifyReturnPhysical(context.Background(), 3)
+	out, err := c.OrderController_GetReturns(context.Background())
+
+	require.NoError(t, err)
+	require.Len(t, out, 1)
+	assert.Equal(t, 20, out[0].OrdineUscitaID)
+	assert.Equal(t, "Difettoso", out[0].Motivo)
+}
+
+func TestOrderController_DeleteReso(t *testing.T) {
+	svc := new(mockOrderServiceForController)
+	svc.On("OrderService_DeleteReso", mock.Anything, 3).Return(nil)
+
+	c := NewOrderController(svc)
+	err := c.OrderController_DeleteReso(context.Background(), 3)
 
 	require.NoError(t, err)
 	svc.AssertExpectations(t)
 }
 
-func TestOrderController_ApproveReturn(t *testing.T) {
-	svc := new(mockOrderServiceForController)
-	svc.On("OrderService_ApproveReso", mock.Anything, 3).Return(nil)
-
-	c := NewOrderController(svc)
-	err := c.OrderController_ApproveReturn(context.Background(), 3)
-
-	require.NoError(t, err)
-	svc.AssertExpectations(t)
-}
-
-func TestOrderController_RejectReturn(t *testing.T) {
-	svc := new(mockOrderServiceForController)
-	svc.On("OrderService_RifiutaReso", mock.Anything, 3).Return(nil)
-
-	c := NewOrderController(svc)
-	err := c.OrderController_RejectReturn(context.Background(), 3)
-
-	require.NoError(t, err)
-	svc.AssertExpectations(t)
-}
-
-func TestOrderController_IssueInvoice(t *testing.T) {
+func TestOrderController_GeneraFattura(t *testing.T) {
 	t.Run("emette la fattura e la mappa nel DTO", func(t *testing.T) {
 		svc := new(mockOrderServiceForController)
 		svc.On("OrderService_GeneraFattura", mock.Anything, 20).
 			Return(&domain.Fattura{ID: 1, Numero: "FT-2026-0001", Tipo: domain.TipoFatturaVendita, Totale: 122.0}, nil)
 
 		c := NewOrderController(svc)
-		out, err := c.OrderController_IssueInvoice(context.Background(), 20)
+		out, err := c.OrderController_GeneraFattura(context.Background(), 20)
 
 		require.NoError(t, err)
 		assert.Equal(t, "FT-2026-0001", out.Numero)
@@ -267,19 +566,30 @@ func TestOrderController_IssueInvoice(t *testing.T) {
 			Return(nil, errors.New("impossibile emettere fattura per un ordine non ancora evaso"))
 
 		c := NewOrderController(svc)
-		_, err := c.OrderController_IssueInvoice(context.Background(), 20)
+		_, err := c.OrderController_GeneraFattura(context.Background(), 20)
 
 		require.Error(t, err)
 	})
 }
 
-func TestOrderController_IssueCreditNote(t *testing.T) {
+func TestOrderController_DeleteFattura(t *testing.T) {
 	svc := new(mockOrderServiceForController)
-	svc.On("OrderService_GeneraNotaCredito", mock.Anything, 20).
+	svc.On("OrderService_DeleteFattura", mock.Anything, 1).Return(nil)
+
+	c := NewOrderController(svc)
+	err := c.OrderController_DeleteFattura(context.Background(), 1)
+
+	require.NoError(t, err)
+	svc.AssertExpectations(t)
+}
+
+func TestOrderController_GeneraNotaCredito(t *testing.T) {
+	svc := new(mockOrderServiceForController)
+	svc.On("OrderService_GeneraNotaCreditoById", mock.Anything, 20).
 		Return(&domain.Fattura{ID: 2, Numero: "NC-2026-0001", Tipo: domain.TipoNotaCredito}, nil)
 
 	c := NewOrderController(svc)
-	out, err := c.OrderController_IssueCreditNote(context.Background(), 20)
+	out, err := c.OrderController_GeneraNotaCredito(context.Background(), 20)
 
 	require.NoError(t, err)
 	assert.Equal(t, "NC-2026-0001", out.Numero)
@@ -287,7 +597,7 @@ func TestOrderController_IssueCreditNote(t *testing.T) {
 
 func TestOrderController_GetInvoices(t *testing.T) {
 	svc := new(mockOrderServiceForController)
-	svc.On("OrderService_GetFatture", mock.Anything).Return([]domain.Fattura{
+	svc.On("OrderService_GetAllFatture", mock.Anything).Return([]domain.Fattura{
 		{ID: 1, Numero: "FT-2026-0001"},
 		{ID: 2, Numero: "FT-2026-0002"},
 	}, nil)
@@ -311,4 +621,27 @@ func TestOrderController_GetCreditNotes(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, out, 1)
 	assert.Equal(t, "NC-2026-0001", out[0].Numero)
+}
+
+func TestOrderController_FatturaToDTO(t *testing.T) {
+	f := domain.Fattura{
+		ID:             1,
+		Numero:         "FT-2026-0001",
+		Tipo:           domain.TipoFatturaVendita,
+		OrdineUscitaID: 20,
+		Imponibile:     100.0,
+		IVA:            22.0,
+		Totale:         122.0,
+	}
+
+	c := NewOrderController(nil)
+	dto := c.OrderController_FatturaToDTO(f)
+
+	assert.Equal(t, f.ID, dto.ID)
+	assert.Equal(t, f.Numero, dto.Numero)
+	assert.Equal(t, string(f.Tipo), dto.Tipo)
+	assert.Equal(t, f.OrdineUscitaID, dto.OrdineUscitaID)
+	assert.Equal(t, f.Imponibile, dto.Imponibile)
+	assert.Equal(t, f.IVA, dto.IVA)
+	assert.Equal(t, f.Totale, dto.Totale)
 }

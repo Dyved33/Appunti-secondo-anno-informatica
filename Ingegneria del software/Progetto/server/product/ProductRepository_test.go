@@ -34,7 +34,7 @@ func TestProductRepository_GetAll(t *testing.T) {
 	mock.ExpectQuery(`SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id`).
 		WillReturnRows(rows)
 
-	got, err := repo.ProductRepository_GetAll(context.Background())
+	got, err := repo.ProductRepository_GetAllProducts(context.Background())
 	require.NoError(t, err)
 	require.Len(t, got, 2)
 
@@ -142,6 +142,28 @@ func TestProductRepository_Create(t *testing.T) {
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 
+func TestProductRepository_Update(t *testing.T) {
+	repo, mock, closeDB := newMockProductRepo(t)
+	defer closeDB()
+
+	mock.ExpectExec(`UPDATE Prodotti SET codice = \?, barcode = \?, nome = \?, descrizione = \?, categoria_id = \?, prezzo_acquisto = \?, prezzo_vendita = \?, soglia_minima = \? WHERE id = \?`).
+		WithArgs("P010", "8001112223334", "Chiave inglese", "", 0, 3.5, 7.0, 5, 10).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	p := &domain.Prodotto{
+		ID:         10,
+		Codice:     "P010",
+		Barcode:    "8001112223334",
+		Nome:       "Chiave inglese",
+		PrezzoAcq:  3.5,
+		PrezzoVend: 7.0,
+		SogliaMin:  5,
+	}
+	err := repo.ProductRepository_Update(context.Background(), p)
+	require.NoError(t, err)
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
 func TestProductRepository_Delete(t *testing.T) {
 	repo, mock, closeDB := newMockProductRepo(t)
 	defer closeDB()
@@ -158,7 +180,9 @@ func TestProductRepository_Delete(t *testing.T) {
 	require.NoError(t, mock.ExpectationsWereMet())
 }
 
-func TestProductRepository_GetGiacenza(t *testing.T) {
+//===============================
+
+func TestProductRepository_GetGiacenzaById(t *testing.T) {
 	t.Run("giacenza esistente", func(t *testing.T) {
 		repo, mock, closeDB := newMockProductRepo(t)
 		defer closeDB()
@@ -169,7 +193,7 @@ func TestProductRepository_GetGiacenza(t *testing.T) {
 			WithArgs(7).
 			WillReturnRows(rows)
 
-		g, err := repo.ProductRepository_GetGiacenza(context.Background(), 7)
+		g, err := repo.ProductRepository_GetGiacenzaById(context.Background(), 7)
 		require.NoError(t, err)
 		assert.Equal(t, 42, g.Quantita)
 		require.NoError(t, mock.ExpectationsWereMet())
@@ -183,7 +207,7 @@ func TestProductRepository_GetGiacenza(t *testing.T) {
 			WithArgs(99).
 			WillReturnError(sql.ErrNoRows)
 
-		g, err := repo.ProductRepository_GetGiacenza(context.Background(), 99)
+		g, err := repo.ProductRepository_GetGiacenzaById(context.Background(), 99)
 		require.NoError(t, err)
 		require.NotNil(t, g)
 		assert.Equal(t, 0, g.Quantita)
@@ -199,7 +223,7 @@ func TestProductRepository_GetGiacenza(t *testing.T) {
 			WithArgs(7).
 			WillReturnError(errors.New("db irraggiungibile"))
 
-		_, err := repo.ProductRepository_GetGiacenza(context.Background(), 7)
+		_, err := repo.ProductRepository_GetGiacenzaById(context.Background(), 7)
 		assert.Error(t, err)
 		require.NoError(t, mock.ExpectationsWereMet())
 	})
@@ -221,5 +245,22 @@ func TestProductRepository_GetAllGiacenze(t *testing.T) {
 	require.Len(t, got, 2)
 	assert.Equal(t, "Vite M6", got[0].Prodotto.Nome)
 	assert.Equal(t, 100, got[0].Prodotto.SogliaMin)
+	require.NoError(t, mock.ExpectationsWereMet())
+}
+
+func TestProductRepository_UpdateGiacenza(t *testing.T) {
+	repo, mock, closeDB := newMockProductRepo(t)
+	defer closeDB()
+
+	mock.ExpectExec(`INSERT INTO Giacenze \(prodotto_id, quantita, updated_at\) VALUES \(\?, \?, \?\) ON DUPLICATE KEY UPDATE quantita = quantita \+ VALUES\(quantita\), updated_at = VALUES\(updated_at\)`).
+		WithArgs(1, 150, sqlmock.AnyArg()).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	g := &domain.Giacenza{
+		ProdottoID: 1,
+		Quantita:   150,
+	}
+	err := repo.ProductRepository_UpdateGiacenza(context.Background(), g)
+	require.NoError(t, err)
 	require.NoError(t, mock.ExpectationsWereMet())
 }

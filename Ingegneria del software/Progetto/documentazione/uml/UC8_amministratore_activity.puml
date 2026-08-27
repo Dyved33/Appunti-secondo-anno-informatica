@@ -1,4 +1,4 @@
-@startuml UC8_Amministratore_AD
+@startuml UC8_Admin_AD
 
 skinparam activity {
   BackgroundColor #FAFAFA
@@ -8,7 +8,7 @@ skinparam activity {
   DiamondBorderColor #B8860B
 }
 
-|Amministratore|
+|Admin|
 start
 :Sceglie sezione da gestire;
 
@@ -16,7 +16,7 @@ if (Merci?) then (sì)
   |Sistema|
   :Carica e mostra merci con valore totale;
 
-  |Amministratore|
+  |Admin|
   if (vuole agire su un prodotto?) then (sì)
     :Seleziona prodotto;
 
@@ -31,7 +31,7 @@ if (Merci?) then (sì)
       :Elimina prodotto;
     endif
 
-    |Amministratore|
+    |Admin|
     :Visualizza conferma;
   endif
 
@@ -40,7 +40,7 @@ else (no)
     |Sistema|
     :Carica e mostra elenco fatture;
 
-    |Amministratore|
+    |Admin|
     if (vuole agire su una fattura?) then (sì)
       :Seleziona fattura;
 
@@ -53,7 +53,7 @@ else (no)
         :Elimina fattura;
       endif
 
-      |Amministratore|
+      |Admin|
       :Visualizza conferma;
     endif
 
@@ -61,7 +61,7 @@ else (no)
     |Sistema|
     :Carica e mostra elenco resi;
 
-    |Amministratore|
+    |Admin|
     :Seleziona un reso;
 
     if (Approva?) then (sì)
@@ -73,7 +73,7 @@ else (no)
       :Imposta stato Reso = RIFIUTATO;
     endif
 
-    |Amministratore|
+    |Admin|
     :Visualizza conferma;
   endif
 endif
@@ -81,3 +81,4 @@ endif
 stop
 
 @enduml
+

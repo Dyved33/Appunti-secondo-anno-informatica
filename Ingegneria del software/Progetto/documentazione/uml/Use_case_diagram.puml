@@ -1,122 +1,145 @@
-@startuml UC_GestionaleMagazzino
-
-skinparam packageStyle rectangle
+@startuml UseCaseDiagram
+hide circle
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName Arial
 skinparam actorStyle awesome
-
-skinparam package {
-  BackgroundColor #f9f9f9
-  BorderColor     #888177
-  Shadowing       false
-}
-
 skinparam usecase {
-  BorderColor     #333333
-  ArrowColor      #555555
-  BackgroundColor #f1d5f5
+  BackgroundColor #F1D5F5
+  BorderColor #333333
+  ArrowColor #555555
 }
-
 skinparam actor {
   BackgroundColor #E8F4FD
-  BorderColor     #2980B9
+  BorderColor #2980B9
 }
 
 left to right direction
 
-' ── ATTORI ──────────────────────────────────────────
-actor "Magazziniere"   as Mag
-actor "Contabile"      as Cont
-actor "Amministratore" as Admin
+actor Magazziniere
+actor Admin
+actor Contabile
 
-' L'Amministratore eredita tutte le capacità del Magazziniere DA CONTROLLARE SE HA SENSO
-Admin --|> Mag   
-
-' ── SISTEMA ─────────────────────────────────────────
 rectangle "Gestionale Magazzino" {
 
-  package "Autenticazione" {
-    usecase "Effettuare Login"       as UC_Login
-    usecase "Validare Credenziali"   as UC_ValCred
-    usecase "Recuperare Password"    as UC_RecPwd
+  rectangle "Gestione Ordini" {
+    usecase "Approvare Ordine" as ApprovareOrdine
+    usecase "Registrare Ordine Entrata" as RegistrareOrdineEntrata
+    usecase "Registrare Ordine Uscita" as RegistrareOrdineUscita
+    usecase "Visualizzare Ordini" as VisualizzareOrdini
+    usecase "Generare Report Ordini" as GenerareReportOrdini
+    usecase "Generare DDT" as GenerareDDT
+    usecase "Verificare Disponibilità" as VerificareDisponibilita
   }
 
-  package "Gestione Prodotti" {
-    usecase "Visualizzare Catalogo"  as UC_VisCat
-    usecase "Ricercare Prodotto"     as UC_Search
-    usecase "Aggiungere Prodotto"    as UC_AddProd
-    usecase "Modificare Prodotto"    as UC_ModProd
-    usecase "Eliminare Prodotto"     as UC_DelProd
-    usecase "Validare Dati Prodotto" as UC_ValProd
-    usecase "Gestire Categorie"      as UC_Cat
+  rectangle "Gestione Documenti Fiscali" {
+    usecase "Generare Fattura" as GenerareFattura
+    usecase "Generare Nota di Credito" as GenerareNotaCredito
+    usecase "Visualizzare Fatture e Note di Credito" as VisualizzareFatture
   }
 
-  package "Gestione Inventario" {
-    usecase "Visualizzare Giacenze"      as UC_VisGiac
-    usecase "Aggiornare Giacenze"        as UC_AggGiac
-    usecase "Eseguire Inventario Fisico" as UC_InvFis
-    usecase "Esportare Report Giacenze"  as UC_RepGiac
+  rectangle "Gestione Resi" {
+    usecase "Registrare Reso" as RegistrareReso
+    usecase "Verificare Reso" as VerificareReso
+    usecase "Approvare Reso" as ApprovareReso
+    usecase "Rifiutare Reso" as RifiutareReso
   }
 
-  package "Gestione Ordini" {
-    usecase "Registrare Ordine Entrata" as UC_OrdIn
-    usecase "Registrare Ordine Uscita"  as UC_OrdOut
-    usecase "Visualizzare Ordini"       as UC_VisOrd
-    usecase "Verificare Disponibilità"  as UC_VerDisp
-    usecase "Generare DDT"              as UC_DDT
-    usecase "Approvare Ordine"          as UC_AppOrd
-    usecase "Generare Report Ordini"    as UC_RepOrd
+  rectangle "Gestione Inventario" {
+    usecase "Aggiornare Giacenze" as AggiornareGiacenze
+    usecase "Eseguire Inventario Fisico" as EseguireInventarioFisico
+    usecase "Visualizzare Giacenze" as VisualizzareGiacenze
+    usecase "Esportare Report Giacenze" as EsportareReportGiacenze
+    usecase "Visualizzare Valore Magazzino" as VisualizzareValoreMagazzino
+    usecase "Ricevere Notifica Sotto Soglia" as NotificaSottoSoglia
   }
 
-  ' ── ASSOCIAZIONI ATTORE → CASO D'USO ────────────
-  Mag  --> UC_Login
-  Cont --> UC_Login
+  rectangle "Gestione Prodotti e Prezzi" {
+    usecase "Visualizzare Catalogo" as VisualizzareCatalogo
+    usecase "Eliminare Prodotto" as EliminareProdotto
+    usecase "Aggiungere Prodotto" as AggiungeProdotto
+    usecase "Modificare Prodotto" as ModificareProdotto
+    usecase "Gestire Categorie" as GestireCategorie
+    usecase "Ricercare Prodotto" as RicercareProdotto
+    usecase "Validare Dati Prodotto" as ValidareDatiProdotto
+    usecase "Aggiornare Prezzo di Vendita" as AggiornarePrezzoVendita
+    usecase "Aggiornare Prezzo di Acquisto" as AggiornarePrezzoAcquisto
+  }
 
-  Mag  --> UC_VisCat
-  Mag  --> UC_OrdIn
-  Mag  --> UC_OrdOut
-  Mag  --> UC_VisGiac
-  Mag  --> UC_InvFis
-  Mag  --> UC_VisOrd
+  rectangle "Gestione Utenti" {
+    usecase "Creare Utente" as CreareUtente
+    usecase "Visualizzare Utenti" as VisualizzareUtenti
+    usecase "Modificare Utente" as ModificareUtente
+    usecase "Eliminare Utente" as EliminareUtente
+  }
 
-  Cont --> UC_VisOrd
-  Cont --> UC_VisGiac
-  Cont --> UC_RepOrd
-  Cont --> UC_RepGiac
-
-  Admin --> UC_AddProd
-  Admin --> UC_ModProd
-  Admin --> UC_DelProd
-  Admin --> UC_Cat
-  Admin --> UC_AppOrd
-
-  ' ── RELAZIONI <<include>> ────────────────────────
-  ' Il login include sempre la validazione delle credenziali
-  UC_Login   ..> UC_ValCred : <<include>>
-
-  ' La visualizzazione catalogo include la ricerca (search bar integrata)
-  UC_VisCat  ..> UC_Search  : <<include>>
-  UC_DelProd  ..> UC_Search  : <<include>>
-
-  ' Aggiungere/Modificare un prodotto richiede sempre la validazione dei dati
-  UC_AddProd ..> UC_ValProd : <<include>>
-  UC_ModProd ..> UC_ValProd : <<include>>
-
-  ' Un ordine di uscita verifica SEMPRE la disponibilità prima di procedere
-  UC_OrdOut  ..> UC_VerDisp : <<include>>
-
-  ' Qualsiasi movimento aggiorna sempre le giacenze
-  UC_OrdIn   ..> UC_AggGiac : <<include>>
-  UC_OrdOut  ..> UC_AggGiac : <<include>>
-  UC_OrdOut  ..> UC_DDT : <<include>>
-
-  ' ── RELAZIONI <<extend>> ─────────────────────────
-  ' Durante il login, l'utente PUÒ recuperare la password (se dimenticata)
-  UC_Login  ..> UC_RecPwd : <<extend>>
-
-  ' Un ordine di entrata PUÒ richiedere approvazione (es. sopra una certa soglia di valore)
-  UC_AppOrd  ..> UC_OrdIn  : <<extend>>
-
-  ' Dall'inventario fisico si PUÒ aggiornare le giacenze se ci sono discrepanze
-  UC_AggGiac ..> UC_InvFis : <<extend>>
+  rectangle "Autenticazione" {
+    usecase "Effettuare Login" as EffettuareLogin
+    usecase "Validare Credenziali" as ValidareCredenziali
+    usecase "Recuperare Password" as RecuperarePassword
+  }
 }
+
+' --- Associazioni Magazziniere ---
+Magazziniere --> ApprovareOrdine
+Magazziniere --> RegistrareOrdineUscita
+Magazziniere --> VisualizzareOrdini
+Magazziniere --> GenerareReportOrdini
+Magazziniere --> VisualizzareGiacenze
+Magazziniere --> EsportareReportGiacenze
+Magazziniere --> NotificaSottoSoglia
+Magazziniere --> VerificareReso
+Magazziniere --> EffettuareLogin
+
+' --- Associazioni Admin ---
+Admin --> VisualizzareCatalogo
+Admin --> EliminareProdotto
+Admin --> AggiungeProdotto
+Admin --> ModificareProdotto
+Admin --> GestireCategorie
+Admin --> VisualizzareFatture
+Admin --> ApprovareReso
+Admin --> RifiutareReso
+Admin --> CreareUtente
+Admin --> VisualizzareUtenti
+Admin --> ModificareUtente
+Admin --> EliminareUtente
+Admin --> EffettuareLogin
+
+' --- Associazioni Contabile ---
+Contabile --> VisualizzareCatalogo
+Contabile --> AggiornarePrezzoVendita
+Contabile --> AggiornarePrezzoAcquisto
+Contabile --> VisualizzareValoreMagazzino
+Contabile --> VisualizzareOrdini
+Contabile --> GenerareFattura
+Contabile --> GenerareNotaCredito
+Contabile --> VisualizzareFatture
+Contabile --> RegistrareReso
+Contabile --> EffettuareLogin
+
+' --- Relazioni «include» ---
+RegistrareOrdineUscita ..> GenerareDDT : «include»
+RegistrareOrdineUscita ..> VerificareDisponibilita : «include»
+RegistrareOrdineEntrata ..> AggiornareGiacenze : «include»
+VisualizzareCatalogo ..> RicercareProdotto : «include»
+EliminareProdotto ..> RicercareProdotto : «include»
+AggiungeProdotto ..> ValidareDatiProdotto : «include»
+ModificareProdotto ..> ValidareDatiProdotto : «include»
+AggiornarePrezzoVendita ..> VisualizzareCatalogo : «include»
+AggiornarePrezzoAcquisto ..> VisualizzareCatalogo : «include»
+VisualizzareValoreMagazzino ..> VisualizzareGiacenze : «include»
+GenerareFattura ..> VisualizzareOrdini : «include»
+GenerareNotaCredito ..> VisualizzareOrdini : «include»
+RegistrareReso ..> VisualizzareOrdini : «include»
+ApprovareReso ..> VerificareReso : «include»
+RifiutareReso ..> VerificareReso : «include»
+EffettuareLogin ..> ValidareCredenziali : «include»
+
+' --- Relazioni «extend» ---
+ApprovareOrdine ..> RegistrareOrdineEntrata : «extend»
+AggiornareGiacenze ..> EseguireInventarioFisico : «extend»
+VisualizzareGiacenze ..> NotificaSottoSoglia : «extend»
+EffettuareLogin ..> RecuperarePassword : «extend»
 
 @enduml

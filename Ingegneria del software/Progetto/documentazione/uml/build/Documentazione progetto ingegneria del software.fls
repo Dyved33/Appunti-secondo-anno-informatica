@@ -241,16 +241,16 @@ INPUT ../out/UC7_ContabilePrezzi_AD.png
 INPUT ../out/UC7_ContabilePrezzi_AD.png
 INPUT ../out/UC7_ContabilePrezzi_AD.png
 INPUT ../out/UC7_ContabilePrezzi_AD.png
-INPUT ../out/UC8_Amministratore_SD.png
-INPUT ../out/UC8_Amministratore_SD.png
-INPUT ../out/UC8_Amministratore_SD.png
-INPUT ../out/UC8_Amministratore_SD.png
-INPUT ../out/UC8_Amministratore_SD.png
-INPUT ../out/UC8_Amministratore_AD.png
-INPUT ../out/UC8_Amministratore_AD.png
-INPUT ../out/UC8_Amministratore_AD.png
-INPUT ../out/UC8_Amministratore_AD.png
-INPUT ../out/UC8_Amministratore_AD.png
+INPUT ../out/UC8_Admin_SD.png
+INPUT ../out/UC8_Admin_SD.png
+INPUT ../out/UC8_Admin_SD.png
+INPUT ../out/UC8_Admin_SD.png
+INPUT ../out/UC8_Admin_SD.png
+INPUT ../out/UC8_Admin_AD.png
+INPUT ../out/UC8_Admin_AD.png
+INPUT ../out/UC8_Admin_AD.png
+INPUT ../out/UC8_Admin_AD.png
+INPUT ../out/UC8_Admin_AD.png
 INPUT build/Documentazione progetto ingegneria del software.aux
 INPUT build/Documentazione progetto ingegneria del software.out
 INPUT build/Documentazione progetto ingegneria del software.out
