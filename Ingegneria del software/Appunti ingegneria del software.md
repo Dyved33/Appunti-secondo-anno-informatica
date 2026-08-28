@@ -3399,7 +3399,7 @@ DoD minima: codice, test e documentazione coerenti nello stesso merge.
 **Ownership, chi mantiene cosa:** 
 - **README:** ownership del team, revisione obbligatoria quando cambiano uso/setup. 
 - **Design doc:** ownership dei responsabili architetturali del modulo. 
-- *ADR:* ownership di chi propone la decisione, con review tecnica. 
+- **ADR:** ownership di chi propone la decisione, con review tecnica. 
 - **Javadoc:** ownership di chi modifica API pubbliche e servizi applicativi. 
 
 Principio: ogni documento deve avere un proprietario esplicito, non “di nessuno”.  
