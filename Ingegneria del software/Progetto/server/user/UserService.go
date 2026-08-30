@@ -20,7 +20,8 @@ type transactionRunner interface {
 	WithinTransaction(ctx context.Context, fn func(ctx context.Context) error) error
 }
 
-// la struct UserService serve a richiamare le funzioni del UserRepository e a gestire la logica di business relativa agli utenti
+// UserService espone la logica di business relativa agli utenti e delega le
+// operazioni di persistenza al repository.
 type UserService struct {
 	Repo userRepository
 	Tx   transactionRunner
@@ -58,8 +59,8 @@ func (s *UserService) UserService_Login(ctx context.Context, username, password 
 		if !admin && (u.Bloccato || u.TentativiFalliti >= domain.MaxTentativiLogin) {
 			u.Bloccato = true
 			if err := s.Repo.UserRepository_Update(txCtx, u); err != nil {
- 				return err
- 			}
+				return err
+			}
 			return domain.ErrAccountBloccato
 		}
 
@@ -71,8 +72,8 @@ func (s *UserService) UserService_Login(ctx context.Context, username, password 
 			if u.TentativiFalliti >= domain.MaxTentativiLogin && !admin {
 				u.Bloccato = true
 				if err := s.Repo.UserRepository_Update(txCtx, u); err != nil {
- 					return err
- 				}
+					return err
+				}
 				loginErr = domain.ErrAccountBloccato
 				return nil
 			}

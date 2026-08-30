@@ -83,7 +83,7 @@ func (m Model) View() tea.View {
 
 	// 4. Footer con le istruzioni unificate
 	sb.WriteString("\n")
-	sb.WriteString(style.FooterStile.Render("[tab] Cambia Tabella  |  [↑/↓] Naviga  |  [ctrl+n] Nuovo  |  [ctrl+d] Elimina  |  [enter/space] Dettaglio  |  [r] Ricarica"))
+	sb.WriteString(style.FooterStile.Render("[tab] Cambia Tabella  |  [↑/↓ o k/j] Naviga  |  [pgup/pgdown o rotellina] Scorri  |  [ctrl+n] Nuovo  |  [ctrl+d] Elimina  |  [enter/space] Dettaglio  |  [r] Ricarica"))
 
 	return tea.NewView(sb.String())
 }
@@ -192,7 +192,7 @@ func (m Model) renderTabellaEntrata() string {
 	sb.WriteString("\n")
 
 	inizio := m.offsetEntrata
-	fine := inizio + style.RighePerPagina
+	fine := inizio + m.righeVisibili()
 	if fine > len(m.ordiniEntrata) {
 		fine = len(m.ordiniEntrata)
 	}
@@ -226,9 +226,14 @@ func (m Model) renderTabellaEntrata() string {
 		}
 	}
 
-	pagine := (len(m.ordiniEntrata) + style.RighePerPagina - 1) / style.RighePerPagina
-	paginaCorr := m.offsetEntrata/style.RighePerPagina + 1
-	sb.WriteString(fmt.Sprintf("\nPagina %d/%d", paginaCorr, pagine))
+	if len(m.ordiniEntrata) > m.righeVisibili() {
+		vis := m.righeVisibili()
+		ultimo := m.offsetEntrata + vis
+		if ultimo > len(m.ordiniEntrata) {
+			ultimo = len(m.ordiniEntrata)
+		}
+		sb.WriteString(fmt.Sprintf("\nOrdini %d–%d di %d (pgup/pgdown o rotellina per scorrere)", m.offsetEntrata+1, ultimo, len(m.ordiniEntrata)))
+	}
 
 	return sb.String()
 }
@@ -247,7 +252,7 @@ func (m Model) renderTabellaUscita() string {
 	sb.WriteString("\n")
 
 	inizio := m.offsetUscita
-	fine := inizio + style.RighePerPagina
+	fine := inizio + m.righeVisibili()
 	if fine > len(m.ordiniUscita) {
 		fine = len(m.ordiniUscita)
 	}
@@ -285,9 +290,14 @@ func (m Model) renderTabellaUscita() string {
 		}
 	}
 
-	pagine := (len(m.ordiniUscita) + style.RighePerPagina - 1) / style.RighePerPagina
-	paginaCorr := m.offsetUscita/style.RighePerPagina + 1
-	sb.WriteString(fmt.Sprintf("\nPagina %d/%d", paginaCorr, pagine))
+	if len(m.ordiniUscita) > m.righeVisibili() {
+		vis := m.righeVisibili()
+		ultimo := m.offsetUscita + vis
+		if ultimo > len(m.ordiniUscita) {
+			ultimo = len(m.ordiniUscita)
+		}
+		sb.WriteString(fmt.Sprintf("\nOrdini %d–%d di %d (pgup/pgdown o rotellina per scorrere)", m.offsetUscita+1, ultimo, len(m.ordiniUscita)))
+	}
 
 	return sb.String()
 }
@@ -386,7 +396,7 @@ func (m Model) renderTabellaResi() string {
 	sb.WriteString("\n")
 
 	inizio := m.offsetResi
-	fine := inizio + style.RighePerPagina
+	fine := inizio + m.righeVisibili()
 	if fine > len(m.resi) {
 		fine = len(m.resi)
 	}
@@ -423,9 +433,14 @@ func (m Model) renderTabellaResi() string {
 		}
 	}
 
-	pagine := (len(m.resi) + style.RighePerPagina - 1) / style.RighePerPagina
-	paginaCorr := m.offsetResi/style.RighePerPagina + 1
-	sb.WriteString(fmt.Sprintf("\nPagina %d/%d", paginaCorr, pagine))
+	if len(m.resi) > m.righeVisibili() {
+		vis := m.righeVisibili()
+		ultimo := m.offsetResi + vis
+		if ultimo > len(m.resi) {
+			ultimo = len(m.resi)
+		}
+		sb.WriteString(fmt.Sprintf("\nResi %d–%d di %d (pgup/pgdown o rotellina per scorrere)", m.offsetResi+1, ultimo, len(m.resi)))
+	}
 
 	return sb.String()
 }

@@ -30,9 +30,9 @@ func (c *APIClient) ToggleUserBlock(username string, bloccato bool) (User, error
 	})
 }
 
-// GetUsers recupera l'elenco completo degli utenti dal backend.
-// Effettua una richiesta GET a /api/v1/users e trasforma i dati server in oggetti User.
-// Restituisce un errore se la richiesta al server fallisce.
+// GetUsersByUsername recupera dal backend l'utente identificato dallo username.
+// Effettua una richiesta GET a /api/v1/users/{username} e trasforma i dati
+// server in un oggetto User. Restituisce un errore se la richiesta fallisce.
 func (c *APIClient) GetUsersByUsername(username string) (User, error) {
 	var dto serverUserDTO
 	if err := c.doJSON(

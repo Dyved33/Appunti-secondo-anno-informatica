@@ -86,6 +86,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // ── View ──────────────────────────────────────────────────────────────────
 
+// View disegna lo stato attuale della pagina Fatture: mostra un indicatore di
+// caricamento o l'errore se presente, altrimenti rende in base alla modalità
+// attiva (schermata principale, creazione fattura/nota di credito o conferma
+// eliminazione), chiudendo con un eventuale messaggio di successo.
 func (m Model) View() tea.View {
 	var sb strings.Builder
 
@@ -151,7 +155,7 @@ func (m Model) renderMainView() string {
 		}
 	} else {
 		headerStr := fmt.Sprintf("   %-12s %-8s %-24s %-14s %s",
-			"NUMERO", "ANNO", "CLIENTE", "IMPORTO", "TIPO")
+			"NUMERO", "ANNO", "CLIENTE", "TOTALE", "TIPO")
 		sb.WriteString(style.HeaderStile.Render(headerStr))
 		sb.WriteString("\n")
 		sb.WriteString(strings.Repeat("─", 80))
@@ -196,6 +200,8 @@ func (m Model) renderMainView() string {
 	}
 
 	// Footer compatto su riga unica
+	sb.WriteString("\n")
+	sb.WriteString(style.InfoStile.Render("Il valore TOTALE mostrato è calcolato come imponibile + IVA (22%)."))
 	sb.WriteString("\n")
 	if m.sezione == SEZ_FATTURE {
 		sb.WriteString(style.FooterStile.Render(

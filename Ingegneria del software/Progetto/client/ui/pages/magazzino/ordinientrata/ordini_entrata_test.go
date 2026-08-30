@@ -1,6 +1,7 @@
 package ordinientrata
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"testing"
@@ -262,5 +263,43 @@ func TestOrdiniEntrata_ComposizioneEntraNelloSchermo(t *testing.T) {
 		if !strings.Contains(view, "di 60") {
 			t.Errorf("winH=%d: atteso indicatore di scorrimento 'Ordini X–Y di 60'", winH)
 		}
+	}
+}
+
+// TestOrdiniEntrata_GestioneErrore verifica che l'errore di rete venga gestito correttamente
+func TestOrdiniEntrata_GestioneErrore(t *testing.T) {
+	client := &api.APIClient{}
+	m := New(client)
+
+	errTest := errors.New("errore di rete durante il recupero ordini")
+	res, cmd := m.Update(ErroreMsg{Err: errTest})
+	mErr := res.(Model)
+
+	if cmd != nil {
+		t.Errorf("Update(ErroreMsg) non deve restituire comandi, ottenuto: %v", cmd)
+	}
+	if mErr.loading {
+		t.Error("loading deve essere false dopo ErroreMsg")
+	}
+	if !strings.Contains(mErr.View().Content, "errore di rete durante il recupero ordini") {
+		t.Error("View() deve renderizzare il testo dell'errore restituito")
+	}
+}
+
+// TestOrdiniEntrata_RicaricamentoTastoR verifica che il tasto 'r' attivi il ricaricamento degli ordini
+func TestOrdiniEntrata_RicaricamentoTastoR(t *testing.T) {
+	client := &api.APIClient{}
+	m := New(client)
+	m.loading = false
+	m.ordini = nuoviOrdiniMock(2)
+
+	res, cmd := m.Update(tea.KeyPressMsg{Code: 'r', Text: "r"})
+	mR := res.(Model)
+
+	if !mR.loading {
+		t.Error("Premendo 'r' lo stato loading deve tornare a true")
+	}
+	if cmd == nil {
+		t.Error("Premendo 'r' deve essere emesso il tea.Cmd per ricaricare gli ordini")
 	}
 }

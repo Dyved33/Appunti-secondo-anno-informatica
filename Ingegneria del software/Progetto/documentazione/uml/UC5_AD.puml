@@ -1,0 +1,50 @@
+@startuml UC5_AD
+
+skinparam activity {
+  BackgroundColor #FAFAFA
+  BorderColor #333333
+  ArrowColor #555555
+  DiamondBackgroundColor #FFF9E6
+  DiamondBorderColor #B8860B
+}
+
+|Contabile|
+start
+:Seleziona ordine uscita evaso\nda associare al reso;
+:Registra nuovo reso;
+
+|Sistema|
+:Crea Reso con stato da_verificare;
+
+|Magazziniere|
+:Apre elenco resi;
+
+|Sistema|
+:Carica e mostra lista resi;
+
+|Magazziniere|
+:Seleziona reso da verificare;
+:Visualizza dettaglio reso;
+:Verifica fisicamente la merce ricevuta;
+:Conferma verifica;
+
+|Sistema|
+:Incrementa giacenze per ogni riga del reso;
+:Imposta stato Reso = accettato;
+
+|Magazziniere|
+if (merce risolta conforme?) then (sì)
+  :Visualizza conferma verifica;
+else (no — rifiuto del reso già accettato)
+  |Sistema|
+  :Decrementa (ripristina) giacenze\nper ogni riga del reso;
+  :Imposta stato Reso = rifiutato;
+
+  |Magazziniere|
+  :Visualizza conferma rifiuto;
+endif
+
+stop
+
+@enduml
+

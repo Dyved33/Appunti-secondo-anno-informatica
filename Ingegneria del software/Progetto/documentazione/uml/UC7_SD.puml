@@ -1,0 +1,48 @@
+@startuml UC7_SD
+
+skinparam sequence {
+  ArrowColor      #555555
+  ParticipantBackgroundColor #FAFAFA
+  ParticipantBorderColor #333333
+  ActorBackgroundColor #E8F4FD
+  ActorBorderColor #2980B9
+}
+
+actor    "Contabile"           as Cont
+boundary "ui:UI"               as UI
+control  "svc:ProdottoService" as ProdSvc
+
+' ── 1. Aggiorna prezzo di un prodotto ────────────────
+group Aggiornare Prezzo Prodotto
+  Cont -> UI : apriListaProdotti()
+  activate UI
+  UI -> ProdSvc : getProdotti()
+  activate ProdSvc
+  ProdSvc --> UI : listaProdotti
+  deactivate ProdSvc
+  UI --> Cont : mostraListaProdotti(listaProdotti)
+
+  Cont -> UI : aggiornaPrezzoUnitario(prodotto, nuovoPrezzo)
+  UI -> ProdSvc : aggiornaPrezzoUnitario(prodotto.id, nuovoPrezzo)
+  activate ProdSvc
+  ProdSvc --> UI : prezzoAggiornato
+  deactivate ProdSvc
+  UI --> Cont : mostraConfermaAggiornamento()
+  deactivate UI
+end
+
+' ── 2. Visualizza valore totale magazzino ────────────
+group Visualizzare Valore Magazzino
+  Cont -> UI : apriValoreMagazzino()
+  activate UI
+  UI -> ProdSvc : getValoreMagazzino()
+  activate ProdSvc
+  note right of ProdSvc : calcola Σ(quantità × prezzoUnitario)
+  ProdSvc --> UI : (totaleQuantità, totaleValore)
+  deactivate ProdSvc
+  UI --> Cont : mostraRiepilogoMagazzino(totaleQuantità, totaleValore)
+  deactivate UI
+end
+
+@enduml
+

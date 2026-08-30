@@ -244,14 +244,46 @@ func TestOrderService_DeleteOrdineEntrata_Errore(t *testing.T) {
 }
 
 func TestOrderService_DeleteOrdineUscita(t *testing.T) {
-	svc, orderRepo, _ := newOrderServiceWithMocks()
+	t.Run("ordine confermato eliminato: ripristina la giacenza (incremento)", func(t *testing.T) {
+		svc, orderRepo, prodRepo := newOrderServiceWithMocks()
 
-	o := &domain.OrdineUscita{ID: 1, Numero: "OU-001"}
-	orderRepo.On("OrderRepository_DeleteOrdineUscita", mock.Anything, o).Return(nil)
+		o := &domain.OrdineUscita{
+			ID:     1,
+			Numero: "OU-001",
+			Stato:  domain.StatoConfermato,
+			Righe: []domain.RigaOrdineUscita{
+				{ProdottoID: 5, Quantita: 10},
+				{ProdottoID: 6, Quantita: 3},
+			},
+		}
+		prodRepo.On("ProductRepository_UpdateGiacenza", mock.Anything, &domain.Giacenza{ProdottoID: 5, Quantita: 10}).Return(nil)
+		prodRepo.On("ProductRepository_UpdateGiacenza", mock.Anything, &domain.Giacenza{ProdottoID: 6, Quantita: 3}).Return(nil)
+		orderRepo.On("OrderRepository_DeleteOrdineUscita", mock.Anything, o).Return(nil)
 
-	err := svc.OrderService_DeleteOrdineUscita(context.Background(), o)
-	require.NoError(t, err)
-	orderRepo.AssertExpectations(t)
+		err := svc.OrderService_DeleteOrdineUscita(context.Background(), o)
+		require.NoError(t, err)
+		orderRepo.AssertExpectations(t)
+		prodRepo.AssertExpectations(t)
+	})
+
+	t.Run("ordine annullato eliminato: non tocca la giacenza", func(t *testing.T) {
+		svc, orderRepo, prodRepo := newOrderServiceWithMocks()
+
+		o := &domain.OrdineUscita{
+			ID:     2,
+			Numero: "OU-002",
+			Stato:  domain.StatoAnnullato,
+			Righe: []domain.RigaOrdineUscita{
+				{ProdottoID: 5, Quantita: 10},
+			},
+		}
+		orderRepo.On("OrderRepository_DeleteOrdineUscita", mock.Anything, o).Return(nil)
+
+		err := svc.OrderService_DeleteOrdineUscita(context.Background(), o)
+		require.NoError(t, err)
+		orderRepo.AssertExpectations(t)
+		prodRepo.AssertNotCalled(t, "ProductRepository_UpdateGiacenza", mock.Anything, mock.Anything)
+	})
 }
 
 func TestOrderService_DeleteOrdineUscita_Errore(t *testing.T) {
@@ -447,6 +479,8 @@ func TestOrderService_UpdateOrdineUscita(t *testing.T) {
 		svc, orderRepo, _ := newOrderServiceWithMocks()
 
 		o := &domain.OrdineUscita{ID: 1, Stato: domain.StatoConfermato}
+		orderRepo.On("OrderRepository_GetOrdineUscitaByID", mock.Anything, 1).
+			Return(&domain.OrdineUscita{ID: 1, Stato: domain.StatoConfermato}, nil)
 		orderRepo.On("OrderRepository_UpdateOrdineUscita", mock.Anything, o).Return(nil)
 
 		err := svc.OrderService_UpdateOrdineUscita(context.Background(), o)
@@ -454,7 +488,7 @@ func TestOrderService_UpdateOrdineUscita(t *testing.T) {
 		orderRepo.AssertExpectations(t)
 	})
 
-	t.Run("ordine con righe: scarica giacenza e aggiorna", func(t *testing.T) {
+	t.Run("ordine confermato modificato senza cambio stato: non tocca la giacenza", func(t *testing.T) {
 		svc, orderRepo, prodRepo := newOrderServiceWithMocks()
 
 		o := &domain.OrdineUscita{
@@ -464,6 +498,49 @@ func TestOrderService_UpdateOrdineUscita(t *testing.T) {
 				{ProdottoID: 5, Quantita: 10},
 			},
 		}
+		orderRepo.On("OrderRepository_GetOrdineUscitaByID", mock.Anything, 1).
+			Return(&domain.OrdineUscita{ID: 1, Stato: domain.StatoConfermato}, nil)
+		orderRepo.On("OrderRepository_UpdateOrdineUscita", mock.Anything, o).Return(nil)
+
+		err := svc.OrderService_UpdateOrdineUscita(context.Background(), o)
+		require.NoError(t, err)
+		orderRepo.AssertExpectations(t)
+		prodRepo.AssertNotCalled(t, "ProductRepository_UpdateGiacenza", mock.Anything, mock.Anything)
+	})
+
+	t.Run("ordine confermato annullato: ripristina la giacenza (incremento)", func(t *testing.T) {
+		svc, orderRepo, prodRepo := newOrderServiceWithMocks()
+
+		o := &domain.OrdineUscita{
+			ID:    1,
+			Stato: domain.StatoAnnullato,
+			Righe: []domain.RigaOrdineUscita{
+				{ProdottoID: 5, Quantita: 10},
+			},
+		}
+		orderRepo.On("OrderRepository_GetOrdineUscitaByID", mock.Anything, 1).
+			Return(&domain.OrdineUscita{ID: 1, Stato: domain.StatoConfermato}, nil)
+		prodRepo.On("ProductRepository_UpdateGiacenza", mock.Anything, &domain.Giacenza{ProdottoID: 5, Quantita: 10}).Return(nil)
+		orderRepo.On("OrderRepository_UpdateOrdineUscita", mock.Anything, o).Return(nil)
+
+		err := svc.OrderService_UpdateOrdineUscita(context.Background(), o)
+		require.NoError(t, err)
+		orderRepo.AssertExpectations(t)
+		prodRepo.AssertExpectations(t)
+	})
+
+	t.Run("ordine annullato riattivato: scarica di nuovo la giacenza", func(t *testing.T) {
+		svc, orderRepo, prodRepo := newOrderServiceWithMocks()
+
+		o := &domain.OrdineUscita{
+			ID:    1,
+			Stato: domain.StatoConfermato,
+			Righe: []domain.RigaOrdineUscita{
+				{ProdottoID: 5, Quantita: 10},
+			},
+		}
+		orderRepo.On("OrderRepository_GetOrdineUscitaByID", mock.Anything, 1).
+			Return(&domain.OrdineUscita{ID: 1, Stato: domain.StatoAnnullato}, nil)
 		prodRepo.On("ProductRepository_GetGiacenzaById", mock.Anything, 5).Return(&domain.Giacenza{ProdottoID: 5, Quantita: 100}, nil)
 		prodRepo.On("ProductRepository_UpdateGiacenza", mock.Anything, &domain.Giacenza{ProdottoID: 5, Quantita: -10}).Return(nil)
 		orderRepo.On("OrderRepository_UpdateOrdineUscita", mock.Anything, o).Return(nil)
@@ -478,11 +555,14 @@ func TestOrderService_UpdateOrdineUscita(t *testing.T) {
 		svc, orderRepo, prodRepo := newOrderServiceWithMocks()
 
 		o := &domain.OrdineUscita{
-			ID: 1,
+			ID:    1,
+			Stato: domain.StatoConfermato,
 			Righe: []domain.RigaOrdineUscita{
 				{ProdottoID: 5, Quantita: 100},
 			},
 		}
+		orderRepo.On("OrderRepository_GetOrdineUscitaByID", mock.Anything, 1).
+			Return(&domain.OrdineUscita{ID: 1, Stato: domain.StatoAnnullato}, nil)
 		prodRepo.On("ProductRepository_GetGiacenzaById", mock.Anything, 5).Return(&domain.Giacenza{ProdottoID: 5, Quantita: 5}, nil)
 		prodRepo.On("ProductRepository_GetByID", mock.Anything, 5).Return(&domain.Prodotto{ID: 5, Nome: "Vite"}, nil)
 
@@ -494,14 +574,17 @@ func TestOrderService_UpdateOrdineUscita(t *testing.T) {
 	})
 
 	t.Run("errore aggiornamento giacenza: propagato", func(t *testing.T) {
-		svc, _, prodRepo := newOrderServiceWithMocks()
+		svc, orderRepo, prodRepo := newOrderServiceWithMocks()
 
 		o := &domain.OrdineUscita{
-			ID: 1,
+			ID:    1,
+			Stato: domain.StatoConfermato,
 			Righe: []domain.RigaOrdineUscita{
 				{ProdottoID: 5, Quantita: 10},
 			},
 		}
+		orderRepo.On("OrderRepository_GetOrdineUscitaByID", mock.Anything, 1).
+			Return(&domain.OrdineUscita{ID: 1, Stato: domain.StatoAnnullato}, nil)
 		prodRepo.On("ProductRepository_GetGiacenzaById", mock.Anything, 5).Return(&domain.Giacenza{ProdottoID: 5, Quantita: 100}, nil)
 		prodRepo.On("ProductRepository_UpdateGiacenza", mock.Anything, mock.Anything).Return(errors.New("db error"))
 

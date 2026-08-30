@@ -1,0 +1,129 @@
+@startuml DomainModel
+hide circle
+hide methods
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam class {
+  BackgroundColor #FAFAFA
+  BorderColor #333333
+  ArrowColor #555555
+}
+title Modello di dominio implementato
+hide methods
+class Utente {
+  id
+  username
+  passwordHash
+  ruolo
+  tentativiFalliti
+  bloccato
+  createdAt
+}
+class Sessione {
+  id
+  userID
+  tokenHash
+  expiresAt
+  createdAt
+}
+class Categoria {
+  id
+  nome
+  descrizione
+}
+class Prodotto {
+  id
+  codice
+  barcode
+  nome
+  descrizione
+  categoriaID
+  prezzoAcquisto
+  prezzoVendita
+  sogliaMinima
+}
+class Giacenza {
+  id
+  prodottoID
+  quantita
+  updatedAt
+}
+class OrdineEntrata {
+  id
+  ddtID
+  numero
+  fornitore
+  data
+  note
+  createdBy
+}
+class RigaOrdineEntrata {
+  id
+  ordineEntrataID
+  prodottoID
+  quantita
+  prezzoUnitario
+}
+class OrdineUscita {
+  id
+  numero
+  cliente
+  data
+  stato
+  note
+  createdBy
+  ddtID
+}
+class RigaOrdineUscita {
+  id
+  ordineUscitaID
+  prodottoID
+  quantita
+  prezzoUnitario
+}
+class DDT {
+  id
+  numero
+  ordineUscitaID
+  data
+  mittente
+  destinatario
+  pathPDF
+}
+class Fattura {
+  id
+  numero
+  anno
+  tipo
+  ordineUscitaID
+  imponibile
+  IVA
+  totale
+  data
+  pathPDF
+}
+class Reso {
+  id
+  ordineUscitaID
+  prodottoID
+  quantita
+  motivo
+  stato
+  data
+  createdBy
+}
+Utente "1" -- "0..*" Sessione
+Categoria "0..1" -- "0..*" Prodotto
+Prodotto "1" -- "1" Giacenza
+Utente "1" -- "0..*" OrdineEntrata
+Utente "1" -- "0..*" OrdineUscita
+OrdineEntrata "1" *-- "0..*" RigaOrdineEntrata
+OrdineUscita "1" *-- "0..*" RigaOrdineUscita
+RigaOrdineEntrata "*" --> "1" Prodotto
+RigaOrdineUscita "*" --> "1" Prodotto
+OrdineUscita "1" -- "0..1" DDT
+OrdineUscita "1" -- "0..*" Fattura
+OrdineUscita "1" -- "0..*" Reso
+Reso "*" --> "1" Prodotto
+@enduml

@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
-	style "github.com/tommasogarofani/ingsw_25-26_group-11/client/ui/styles"
 )
 
 // Init avvia il comando iniziale di caricamento dati dal backend.
@@ -35,6 +34,19 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 
 	case tea.WindowSizeMsg:
+		m.winW = msg.Width
+		m.winH = msg.Height
+		m.clampScroll()
+		return m, nil
+
+	case tea.MouseWheelMsg:
+		if !m.creazioneEntrata && !m.creazioneUscita && !m.creazioneReso && !m.confermaEliminazione {
+			delta := -passoRotellina
+			if msg.Button == tea.MouseWheelDown {
+				delta = passoRotellina
+			}
+			m.spostaCursore(delta)
+		}
 		return m, nil
 
 	case OrdineEntrataCreatoMsg, OrdineUscitaCreatoMsg, ResoCreatoMsg:
@@ -90,10 +102,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.spostaCursore(1)
 
 		case "pgup":
-			m.spostaCursore(-style.RighePerPagina)
+			m.spostaCursore(-m.righeVisibili())
 
 		case "pgdown":
-			m.spostaCursore(style.RighePerPagina)
+			m.spostaCursore(m.righeVisibili())
 
 		case "enter", "space":
 			m.toggleEspansione()

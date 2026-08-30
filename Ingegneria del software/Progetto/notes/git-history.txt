@@ -1,3 +1,544 @@
+COMMIT: cfdc6c12d8a5915fe03d19030b91bbf5173de956
+AUTHOR: tommmasogarofani
+DATE: 2026-08-29 15:52:32 +0200
+MESSAGE:
+rmozione cartella output dal g.ignore
+
+---
+COMMIT: 8c3e8ebb06e6d62a7d964fc2f5e5b517f10ae87f
+AUTHOR: Dyved33
+DATE: 2026-08-29 16:35:18 +0200
+MESSAGE:
+lievi modifiche alla documentazione
+
+---
+COMMIT: 25ec935c827547e247bde60dd836feb1f41d4839
+AUTHOR: tommmasogarofani
+DATE: 2026-08-29 15:32:18 +0200
+MESSAGE:
+aggiornamento readme
+
+---
+COMMIT: d62ce08eec471831d405c6d2759b211be2b28cb1
+AUTHOR: Dyved33
+DATE: 2026-08-29 13:15:01 +0200
+MESSAGE:
+modifiche di documentazione e readme
+
+---
+COMMIT: b0161d28735e2f6d8202d6b45f6a5cfb7643ca2b
+AUTHOR: Dyved33
+DATE: 2026-08-29 11:35:51 +0200
+MESSAGE:
+inserimento dei commenti mancanti per arricchire la documentazione
+
+---
+COMMIT: fc9e0505ccad6a40e35d379e6d950bf9ff82263f
+AUTHOR: tommmasogarofani
+DATE: 2026-08-29 11:19:49 +0200
+MESSAGE:
+correzione test per magazzino/scanner
+
+---
+COMMIT: c2976f869e116654895457b4523c9e97e068bcd6
+AUTHOR: tommmasogarofani
+DATE: 2026-08-29 11:16:33 +0200
+MESSAGE:
+correzione test per magazzino/resi
+
+---
+COMMIT: cfe3df47cb76ca008aca0a41863d6189734a39c5
+AUTHOR: tommmasogarofani
+DATE: 2026-08-29 11:14:26 +0200
+MESSAGE:
+correzione test per magazzino/ordini-uscita
+
+---
+COMMIT: d59626242d6a0656c36361c7fffbbadaad009274
+AUTHOR: tommmasogarofani
+DATE: 2026-08-29 11:12:14 +0200
+MESSAGE:
+correzione test per magazzino/ordini-entrata
+
+---
+COMMIT: 676d32dbdbf6b811de22c97e08aa669ca9709d24
+AUTHOR: tommmasogarofani
+DATE: 2026-08-29 11:10:24 +0200
+MESSAGE:
+correzione test per magazzino/giacenze
+
+---
+COMMIT: 98593e2521171fe466d33cae07d63388f9d217cd
+AUTHOR: tommmasogarofani
+DATE: 2026-08-29 11:02:57 +0200
+MESSAGE:
+correzione test per contabilità/ordini
+
+---
+COMMIT: 59fc5a5c2098368b68a7b8d58db029d3495e6311
+AUTHOR: Dyved33
+DATE: 2026-08-29 10:41:21 +0200
+MESSAGE:
+rimozione file di build dei documenti .tex e prototipo di godoc
+
+---
+COMMIT: 97f4e151ff12c0868b17f4bc562944de91fa355b
+AUTHOR: tommmasogarofani
+DATE: 2026-08-29 09:47:12 +0200
+MESSAGE:
+correzione test per contabilità/fatture
+
+---
+COMMIT: b13be6c6afe39502cc2e7b0544c9ce1a3635799c
+AUTHOR: Dyved33
+DATE: 2026-08-28 19:24:13 +0200
+MESSAGE:
+modifiche di impaginazione della documentazione
+
+---
+COMMIT: d37bbdc343d7501b4a8442a4948eeee9f7de3e11
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 18:17:51 +0200
+MESSAGE:
+correzione test per contabilità/catalogo
+
+---
+COMMIT: fb4eda378e503bacec0a32b36c72d2fbedf332be
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 18:01:29 +0200
+MESSAGE:
+miglioramento test per contabilità/report
+
+---
+COMMIT: 863e208a4538cde789d93b27ba5928a985086e6f
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 17:52:28 +0200
+MESSAGE:
+miglioramento test per contabilità/ordini
+
+---
+COMMIT: bdc5d5643a0848118a06cb63dd01304829811740
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 17:43:54 +0200
+MESSAGE:
+miglioramento test per contabilità/fatture
+
+---
+COMMIT: 81c952e87cd8f35deed15e2d169e20adb4cef8c9
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 17:39:29 +0200
+MESSAGE:
+miglioramento test per contabilità/catalogo
+
+---
+COMMIT: e0ad628fcfd63e761197f23c2e4f1a721be368ef
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 17:33:13 +0200
+MESSAGE:
+miglioramento test per app
+
+---
+COMMIT: 31092b6aaf3b15a4b4e278b23723b130db6b1730
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 17:24:37 +0200
+MESSAGE:
+miglioramento test per contabilità
+
+---
+COMMIT: b6f201733f1d05dc2d0603c24f3df4fde93392ac
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 17:21:42 +0200
+MESSAGE:
+integrazione test per users
+
+---
+COMMIT: 300195871a9ef31b993bef0ac2c7f272db81f9c5
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 17:20:16 +0200
+MESSAGE:
+correzione test per dashboard
+
+---
+COMMIT: 4a9095eaaa6ec082e15eebffbccf82ebad235725
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 17:18:23 +0200
+MESSAGE:
+integrazione test per dashboard
+
+---
+COMMIT: af7d981f694bf91185409e2898a904fecbbe7f73
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 17:18:08 +0200
+MESSAGE:
+integrazione test per admin
+
+---
+COMMIT: 8845063a7f700a33f9944f4869afb587003680e7
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 17:16:17 +0200
+MESSAGE:
+integrazione login tests
+
+---
+COMMIT: 97535a42804ca93e487350c29c31136e277ad14e
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 17:15:09 +0200
+MESSAGE:
+test per tabnav
+
+---
+COMMIT: c8baff56ca9a16e11f41cc1a1862040b106f48ab
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 17:14:02 +0200
+MESSAGE:
+eliminazione footer
+
+---
+COMMIT: e5e1d1448465f0efb1e16842ef9e2892b7c62311
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 17:11:46 +0200
+MESSAGE:
+aggiunta test per styles
+
+---
+COMMIT: ef688d5d194a214cffb7e49dc0b539f52be882c8
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 17:09:33 +0200
+MESSAGE:
+aggiornamento test del package api
+
+---
+COMMIT: e69132be17610ea2f3940c2c96d2a4bd83df1d42
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 16:19:43 +0200
+MESSAGE:
+modifiche sui requisiti
+
+---
+COMMIT: da1be798cfe69361a5b7060e9e56e0cd4b268fbd
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 14:32:11 +0200
+MESSAGE:
+correzione nella specifica delle multipagine
+
+---
+COMMIT: 45dfb57559efda61fc58024c35a39b2b42667a97
+AUTHOR: tommmasogarofani
+DATE: 2026-08-28 11:49:25 +0200
+MESSAGE:
+aggiunta layout nota
+
+---
+COMMIT: d947ebe91bff48298990370c6fa5abc0a00f545f
+AUTHOR: Dyved33
+DATE: 2026-08-27 17:29:54 +0200
+MESSAGE:
+correzione dello scroll della pagina ordini e listini
+
+---
+COMMIT: e7c390e5872e322cc3ea8d8ab726e72faa3932e0
+AUTHOR: Dyved33
+DATE: 2026-08-27 17:12:10 +0200
+MESSAGE:
+correzione al footer della pagina giacenze e bug fix dei test
+
+---
+COMMIT: a6f4d0a035bf391593a45a40934585f236c03762
+AUTHOR: Dyved33
+DATE: 2026-08-27 16:51:11 +0200
+MESSAGE:
+correzzione dello scroll per la pagina giacenze
+
+---
+COMMIT: 5eb5f7622a67165b42acc796c6baf59898e1eda6
+AUTHOR: Dyved33
+DATE: 2026-08-27 16:47:16 +0200
+MESSAGE:
+aggiunta dello scroll nelle pagine catalogo e ordini
+
+---
+COMMIT: ad04f16882ab50a1927e65157962fc6aa456fb37
+AUTHOR: Dyved33
+DATE: 2026-08-27 16:43:06 +0200
+MESSAGE:
+arricchimento e correzione del databse fittizio
+
+---
+COMMIT: 443b2254d61ed8220bfb103bffa0a9e49fb0a360
+AUTHOR: Dyved33
+DATE: 2026-08-27 16:30:26 +0200
+MESSAGE:
+database fittizzio
+
+---
+COMMIT: cd9513c343ff6cbd5e5e842d4c1d1e7b25ca4c9d
+AUTHOR: Dyved33
+DATE: 2026-08-27 17:29:54 +0200
+MESSAGE:
+correzione dello scroll della pagina ordini e listini
+
+---
+COMMIT: 6e2a2b4cbc30c71cd8ba403e0225c9b3d5ce47c2
+AUTHOR: Dyved33
+DATE: 2026-08-27 17:12:10 +0200
+MESSAGE:
+correzione al footer della pagina giacenze e bug fix dei test
+
+---
+COMMIT: 615d0de02b63eed7a28019fa931991e470e56c23
+AUTHOR: tommmasogarofani
+DATE: 2026-08-27 16:59:22 +0200
+MESSAGE:
+inserimento foto non tagliata dell'uml dei casi d'uso generale
+
+---
+COMMIT: 3fb1dfab5943406018784a10b671d0140ea92779
+AUTHOR: Dyved33
+DATE: 2026-08-27 16:51:11 +0200
+MESSAGE:
+correzzione dello scroll per la pagina giacenze
+
+---
+COMMIT: 159bf20a160deafeb96c1bb147a005e82c330376
+AUTHOR: Dyved33
+DATE: 2026-08-27 16:47:16 +0200
+MESSAGE:
+aggiunta dello scroll nelle pagine catalogo e ordini
+
+---
+COMMIT: e3efe479e79b1e655600d39bc67c77ce45834296
+AUTHOR: Dyved33
+DATE: 2026-08-27 16:43:06 +0200
+MESSAGE:
+arricchimento e correzione del databse fittizio
+
+---
+COMMIT: a882679825a79cdfef1d2da6dc2e68d528b010a7
+AUTHOR: Dyved33
+DATE: 2026-08-27 16:30:26 +0200
+MESSAGE:
+database fittizzio
+
+---
+COMMIT: 34cc830d15cafa064f0ff932d34a2856f4f4a4a6
+AUTHOR: tommmasogarofani
+DATE: 2026-08-27 15:59:56 +0200
+MESSAGE:
+bugfix: testo giustificato nei blocchi di tipo gialosaiNote
+
+---
+COMMIT: 06a21d06c7ae91c7dfbf0c703f01cf67d035e371
+AUTHOR: tommmasogarofani
+DATE: 2026-08-27 15:31:25 +0200
+MESSAGE:
+modifica footer della documentazione e eliminazione warning
+
+---
+COMMIT: c50de49eeb8a6da9e8890853f7b767d7c66152c7
+AUTHOR: tommmasogarofani
+DATE: 2026-08-27 15:13:01 +0200
+MESSAGE:
+eliminazione documenti di build di latex
+
+---
+COMMIT: fbebebbf13d2049a9aff8a9b14df3b62eb5dc887
+AUTHOR: David Cardinali
+DATE: 2026-08-27 14:09:07 +0300
+MESSAGE:
+Merge pull request #9 from tommasogarofani/develop/rifinitura-f.end
+
+bug fix riguardo gli ordini in entrata e in uscita
+---
+COMMIT: 4edff6c5d8fe08b6472a42dc5494b61cdee06596
+AUTHOR: Dyved33
+DATE: 2026-08-27 13:05:35 +0200
+MESSAGE:
+bug fix riguardo gli ordini in entrata e in uscita
+
+---
+COMMIT: e38cf364c874d4861764db591146504cd9993942
+AUTHOR: tommmasogarofani
+DATE: 2026-08-27 12:08:08 +0200
+MESSAGE:
+spaziatura footer in ordini
+
+---
+COMMIT: 8c04b3cd3a84ebd749fb50b3f9dd765fd4f255ba
+AUTHOR: tommmasogarofani
+DATE: 2026-08-27 12:05:50 +0200
+MESSAGE:
+rimozione stato dalla tabella degloi ordini nin entrata
+
+---
+COMMIT: 3d589b0524a6230b23f153f5dad901e572f452f6
+AUTHOR: tommmasogarofani
+DATE: 2026-08-27 11:17:54 +0200
+MESSAGE:
+rimozione file di build di latex
+
+---
+COMMIT: 567f9e0b4d6f68c661b6765983b978ae86724b24
+AUTHOR: tommmasogarofani
+DATE: 2026-08-27 10:54:34 +0200
+MESSAGE:
+bugfix catalogo: return dopo errore agguiunto
+
+---
+COMMIT: d23d7d1177a574de9989087058250610f6bdf865
+AUTHOR: tommmasogarofani
+DATE: 2026-08-27 10:39:29 +0200
+MESSAGE:
+aggiornamento test per il package api
+
+---
+COMMIT: f001afc23db0554e88c2bd25b49adf1a10a0735e
+AUTHOR: tommmasogarofani
+DATE: 2026-08-27 09:21:09 +0200
+MESSAGE:
+conflict resolve
+
+---
+COMMIT: b9d93972bf7a5f827aba353fbdac083828e1c39b
+AUTHOR: David Cardinali
+DATE: 2026-08-26 23:14:13 +0300
+MESSAGE:
+Merge pull request #8 from tommasogarofani/develop/rifinitura-f.end
+
+correzioni alla documentazione e alla logica e implementazione del lato client
+---
+COMMIT: bb43ebc7853b53692f8a9dc40a20649f300e1ffd
+AUTHOR: Dyved33
+DATE: 2026-08-26 22:12:18 +0200
+MESSAGE:
+correzione dei file di documentazione
+
+---
+COMMIT: b1e4405bb18f1495472927c122485553c489c91f
+AUTHOR: Dyved33
+DATE: 2026-08-26 18:23:03 +0200
+MESSAGE:
+formattazione e arricchimento documentazione
+
+---
+COMMIT: d95b9a809e5c93238c8fa4cb97f6c5980c99868a
+AUTHOR: tommmasogarofani
+DATE: 2026-08-26 17:50:14 +0200
+MESSAGE:
+aggiornamento test per ordini
+
+---
+COMMIT: 3c393ac362b057897f9e4c5bdc32c0a99307b439
+AUTHOR: tommmasogarofani
+DATE: 2026-08-26 17:40:00 +0200
+MESSAGE:
+inserimento eliminazione elementi
+
+---
+COMMIT: e3c07949c5da2d0fc03b33547eff703419b3ede2
+AUTHOR: tommmasogarofani
+DATE: 2026-08-26 17:26:05 +0200
+MESSAGE:
+aggiunta api per la rimozione dei resi
+
+---
+COMMIT: e025c40b3d3833dc95d4651aa5892282ef923d12
+AUTHOR: Dyved33
+DATE: 2026-08-26 17:35:55 +0200
+MESSAGE:
+aggiunta della possibilità di modificare un ordine in uscita e un reso
+
+---
+COMMIT: 637f2081f2295cab8a1dff686933a146fa4cb433
+AUTHOR: tommmasogarofani
+DATE: 2026-08-26 16:24:54 +0200
+MESSAGE:
+aggiunta api per l'eliminazione degli ordini (entrata ed uscita)
+
+---
+COMMIT: ffbb57d7d4fd042d46a2cc7522f514565ee54d1a
+AUTHOR: Dyved33
+DATE: 2026-08-26 16:13:07 +0200
+MESSAGE:
+aggiunta dei metodi per l'eliminazione di resi e la rispettiva rotta
+
+---
+COMMIT: b09575a1747afbbd55fdc3fee6a3e1ae1892cb7d
+AUTHOR: tommmasogarofani
+DATE: 2026-08-26 16:02:16 +0200
+MESSAGE:
+aggiunta rotte per l'eliminazione di ordini
+
+---
+COMMIT: 740e19fdab47f820fb116ccf6d7fe2e4c9525883
+AUTHOR: tommmasogarofani
+DATE: 2026-08-26 13:19:26 +0200
+MESSAGE:
+aggiunta form reso
+
+---
+COMMIT: 75ab43183e306067f8367509027cdbd8076dc7b9
+AUTHOR: tommmasogarofani
+DATE: 2026-08-26 11:19:42 +0200
+MESSAGE:
+aggiunta api per la creazione del reso
+
+---
+COMMIT: 56fc81abc71200a46405acd59a3853518fcc36fc
+AUTHOR: tommmasogarofani
+DATE: 2026-08-26 11:04:02 +0200
+MESSAGE:
+sistemazione commenti godoc
+
+---
+COMMIT: cab8369caa4e3ac2575fa64427c29268d37bf785
+AUTHOR: tommmasogarofani
+DATE: 2026-08-26 10:57:01 +0200
+MESSAGE:
+separazione in file di responsabilità diversa del package.
+
+`model.go`: Definizione delle strutture dati, stati del form, enum e costruttore New().
+
+`update.go`: Logica di dispatch degli eventi di input del terminale e messaggi asincroni.
+
+`view.go`: Resa grafica e formattazione.
+
+`commands.go`: Logica delle chiamate asincrone I/O verso l'API backend.
+
+`form.go`: Logica dedicata al form (parsing, azzeramento, gestione focus e validazione).
+
+`helpers.go`: Utility di ausilio (paginazione, troncatura, badge di stato, navigazione cursore).
+
+`ordini_test.go`: Suite di unit test
+
+---
+COMMIT: 93eb8612d4d1ef51af46e3bbbda37ea12809d0a2
+AUTHOR: tommmasogarofani
+DATE: 2026-08-25 19:22:39 +0200
+MESSAGE:
+sistemazione pagian ordini e aggiunta form creazione o. entrata-uscita
+
+---
+COMMIT: 9997bf3d9008dd404e832754f5d4ab9c63fbd18f
+AUTHOR: Dyved33
+DATE: 2026-08-26 12:18:30 +0200
+MESSAGE:
+modifiche per permettere il collegamento remoto
+
+---
+COMMIT: 237c4611f4eade3325fc1d8337f974d215148997
+AUTHOR: Dyved33
+DATE: 2026-08-26 11:35:45 +0200
+MESSAGE:
+adattamento del design document e controllo di coerenza
+
+---
+COMMIT: 5c392ba7023cfbbc0fba011262a01de5736385e2
+AUTHOR: Dyved33
+DATE: 2026-08-26 11:04:07 +0200
+MESSAGE:
+correzione e attualizzazione della documentazione
+
+---
 COMMIT: 028420b25c299353519b8a1e0167607cc3f14cb4
 AUTHOR: Dyved33
 DATE: 2026-08-25 20:11:03 +0200

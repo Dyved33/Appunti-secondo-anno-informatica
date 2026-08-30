@@ -8,16 +8,18 @@ import (
 	"time"
 )
 
+// ProductRepository fornisce l'accesso persistente (SQL) ai prodotti e alle loro giacenze.
 type ProductRepository struct {
 	DB *sql.DB
 }
 
-
+// NewProductRepository crea un nuovo ProductRepository legato al database specificato.
 func NewProductRepository(database *sql.DB) *ProductRepository {
 	return &ProductRepository{DB: database}
 }
 
-// GetAll recupera tutti i prodotti dal database con i dati delle categorie associate via LEFT JOIN.
+// ProductRepository_GetAllProducts recupera tutti i prodotti dal database con i dati delle
+// categorie associate via LEFT JOIN.
 func (r *ProductRepository) ProductRepository_GetAllProducts(ctx context.Context) ([]domain.Prodotto, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id, p.prezzo_acquisto, p.prezzo_vendita, p.soglia_minima,
@@ -30,18 +32,18 @@ func (r *ProductRepository) ProductRepository_GetAllProducts(ctx context.Context
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()// la presenza di defer indica che viene ritardata la chiusura delle righe in attesa della terminazione della funzione 
+	defer rows.Close() // la presenza di defer indica che viene ritardata la chiusura delle righe in attesa della terminazione della funzione
 
 	// questo codice serve a leggere tutte le righe restituira dalla query e trasformarle in una slice di oggetti Prodotto
-	var products []domain.Prodotto// vettore vuoto di prodotti
-	for rows.Next() {// passa alla riga successiva e se questa esiste restituisce true, altrimenti false
+	var products []domain.Prodotto // vettore vuoto di prodotti
+	for rows.Next() {              // passa alla riga successiva e se questa esiste restituisce true, altrimenti false
 		var p domain.Prodotto
 
 		//tipi speciali quando una colonna SQL può contenere NULL
 		var catID sql.NullInt64
 		var catNome, catDesc sql.NullString
 
-		err := rows.Scan(// scan copia i valori della riga corrente nelle variabili passate 
+		err := rows.Scan( // scan copia i valori della riga corrente nelle variabili passate
 			&p.ID, &p.Codice, &p.Barcode, &p.Nome, &p.Descrizione, &catID, &p.PrezzoAcq, &p.PrezzoVend, &p.SogliaMin,
 			&catNome, &catDesc,
 		)
@@ -51,9 +53,9 @@ func (r *ProductRepository) ProductRepository_GetAllProducts(ctx context.Context
 
 		// Popola i dati della categoria se presenti
 		if catID.Valid {
-			p.CategoriaID = int(catID.Int64)// int64 -> int
+			p.CategoriaID = int(catID.Int64) // int64 -> int
 
-			p.Categoria = &domain.Categoria{// crea un nuovo oggetto Categoria e lo assegna al campo Categoria del prodotto
+			p.Categoria = &domain.Categoria{ // crea un nuovo oggetto Categoria e lo assegna al campo Categoria del prodotto
 				ID:          p.CategoriaID,
 				Nome:        catNome.String,
 				Descrizione: catDesc.String,
@@ -62,12 +64,12 @@ func (r *ProductRepository) ProductRepository_GetAllProducts(ctx context.Context
 		products = append(products, p)
 	}
 	if err := rows.Err(); err != nil {
- 		return nil, err
- 	}
+		return nil, err
+	}
 	return products, nil
 }
 
-// GetByID recupera un singolo prodotto dal database usando il suo ID.
+// ProductRepository_GetByID recupera un singolo prodotto dal database usando il suo ID.
 func (r *ProductRepository) ProductRepository_GetByID(ctx context.Context, id int) (*domain.Prodotto, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id, p.prezzo_acquisto, p.prezzo_vendita, p.soglia_minima,
@@ -104,7 +106,7 @@ func (r *ProductRepository) ProductRepository_GetByID(ctx context.Context, id in
 	return &p, nil
 }
 
-// GetByBarcode recupera un prodotto dal database usando il suo barcode (EAN-13).
+// ProductRepository_GetByBarcode recupera un prodotto dal database usando il suo barcode (EAN-13).
 func (r *ProductRepository) ProductRepository_GetByBarcode(ctx context.Context, barcode string) (*domain.Prodotto, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT p.id, p.codice, p.barcode, p.nome, p.descrizione, p.categoria_id, p.prezzo_acquisto, p.prezzo_vendita, p.soglia_minima
@@ -123,7 +125,8 @@ func (r *ProductRepository) ProductRepository_GetByBarcode(ctx context.Context, 
 	return &p, nil
 }
 
-// Create inserisce un nuovo prodotto nel database e inizializza la giacenza a zero.
+// ProductRepository_Create inserisce un nuovo prodotto nel database, ne recupera l'ID
+// auto-generato e inizializza la relativa giacenza a zero.
 func (r *ProductRepository) ProductRepository_Create(ctx context.Context, p *domain.Prodotto) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Prodotti (codice, barcode, nome, descrizione, categoria_id, prezzo_acquisto, prezzo_vendita, soglia_minima)
@@ -143,7 +146,7 @@ func (r *ProductRepository) ProductRepository_Create(ctx context.Context, p *dom
 	return err
 }
 
-// Update modifica i dati di un prodotto esistente nel database.
+// ProductRepository_Update modifica i dati di un prodotto esistente nel database.
 func (r *ProductRepository) ProductRepository_Update(ctx context.Context, p *domain.Prodotto) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `UPDATE Prodotti SET codice = ?, barcode = ?, nome = ?, descrizione = ?, categoria_id = ?, prezzo_acquisto = ?, prezzo_vendita = ?, soglia_minima = ?
@@ -152,19 +155,20 @@ func (r *ProductRepository) ProductRepository_Update(ctx context.Context, p *dom
 	return err
 }
 
-// Delete rimuove un prodotto dal database e elimina anche la sua giacenza.
+// ProductRepository_Delete rimuove un prodotto dal database e elimina anche la sua giacenza.
 func (r *ProductRepository) ProductRepository_Delete(ctx context.Context, id int) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	// Elimina prima la giacenza associata
 	if _, err := exec.ExecContext(ctx, "DELETE FROM Giacenze WHERE prodotto_id = ?", id); err != nil {
- 		return err
- 	}
+		return err
+	}
 	query := `DELETE FROM Prodotti WHERE id = ?`
 	_, err := exec.ExecContext(ctx, query, id)
 	return err
 }
 
-// GetGiacenza recupera la giacenza di un prodotto dal database. Se la giacenza non esiste, restituisce una giacenza vuota (quantità 0).
+// ProductRepository_GetGiacenzaById recupera la giacenza di un prodotto dal database.
+// Se la giacenza non esiste, restituisce una giacenza vuota (quantità 0).
 func (r *ProductRepository) ProductRepository_GetGiacenzaById(ctx context.Context, prodID int) (*domain.Giacenza, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, prodotto_id, quantita, updated_at FROM Giacenze WHERE prodotto_id = ?`
@@ -179,7 +183,8 @@ func (r *ProductRepository) ProductRepository_GetGiacenzaById(ctx context.Contex
 	return &g, nil
 }
 
-// UpdateGiacenza modifica la giacenza di un prodotto aggiungendo o sottraendo una quantità 
+// ProductRepository_UpdateGiacenza aggiunge o sottrae una quantità alla giacenza di un
+// prodotto, aggiornandone la data di modifica.
 func (r *ProductRepository) ProductRepository_UpdateGiacenza(ctx context.Context, g *domain.Giacenza) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Giacenze (prodotto_id, quantita, updated_at) VALUES (?, ?, ?)
@@ -188,7 +193,8 @@ func (r *ProductRepository) ProductRepository_UpdateGiacenza(ctx context.Context
 	return err
 }
 
-// GetAllGiacenze recupera tutte le giacenze dal database insieme al nome e alla soglia minima del prodotto.
+// ProductRepository_GetAllGiacenze recupera tutte le giacenze dal database insieme al
+// nome e alla soglia minima del prodotto associato.
 func (r *ProductRepository) ProductRepository_GetAllGiacenze(ctx context.Context) ([]domain.Giacenza, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT g.id, g.prodotto_id, g.quantita, g.updated_at,
@@ -214,7 +220,7 @@ func (r *ProductRepository) ProductRepository_GetAllGiacenze(ctx context.Context
 		list = append(list, g)
 	}
 	if err := rows.Err(); err != nil {
- 		return nil, err
- 	}
+		return nil, err
+	}
 	return list, nil
 }

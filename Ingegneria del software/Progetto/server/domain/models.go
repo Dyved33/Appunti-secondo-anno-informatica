@@ -95,14 +95,14 @@ type RigaOrdineEntrata struct {
 
 // OrdineUscita rappresenta una spedizione o consegna di merce dal magazzino.
 type OrdineUscita struct {
-	ID          int         `db:"id"`
-	Numero      string      `db:"numero"` // es. "USC-2026-0017"
-	Cliente     string      `db:"cliente"`
-	Data        time.Time   `db:"data"`
+	ID          int               `db:"id"`
+	Numero      string            `db:"numero"` // es. "USC-2026-0017"
+	Cliente     string            `db:"cliente"`
+	Data        time.Time         `db:"data"`
 	Stato       StatoOrdineUscita `db:"stato"` // RF-09: Confermato | Evaso | Annullato
-	Note        string      `db:"note"`
-	CreatedByID int         `db:"created_by"`
-	DDTID       *int        `db:"ddt_id"` // FK al DDT generato (RF-08)
+	Note        string            `db:"note"`
+	CreatedByID int               `db:"created_by"`
+	DDTID       *int              `db:"ddt_id"` // FK al DDT generato (RF-08)
 	Righe       []RigaOrdineUscita
 }
 
@@ -170,6 +170,8 @@ type Reso struct {
 // SESSIONE — Stateful JWT / Whitelist
 // ─────────────────────────────────────────────
 
+// Sessione rappresenta una sessione utente attiva, usata per tracciare
+// il token (salvato come hash) e la sua scadenza nello stato lato server.
 type Sessione struct {
 	ID        int       `db:"id"`
 	UserID    int       `db:"user_id"`

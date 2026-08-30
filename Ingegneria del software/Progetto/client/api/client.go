@@ -10,12 +10,12 @@ import (
 	"strings"
 )
 
-// getter del token di ApiClient
+// Token restituisce il token di autenticazione attualmente memorizzato nel client.
 func (c *APIClient) Token() string {
 	return c.token
 }
 
-// getter del ruolo autenticato
+// Role restituisce il ruolo dell'utente attualmente autenticato.
 func (c *APIClient) Role() string {
 	return c.role
 }

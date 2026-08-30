@@ -1,8 +1,10 @@
 package app
 
 import (
+	"strings"
 	"testing"
 
+	"github.com/charmbracelet/x/ansi"
 	"github.com/tommasogarofani/ingsw_25-26_group-11/client/api"
 	"github.com/tommasogarofani/ingsw_25-26_group-11/client/ui/pages/login"
 	style "github.com/tommasogarofani/ingsw_25-26_group-11/client/ui/styles"
@@ -10,7 +12,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-// helper per creare una FinestraPrincipale pronta all'uso nei test.
+// Helper per creare una mainLayout pronta all'uso nei test.
 func nuovaFinestraTest() mainLayout {
 	client := &api.APIClient{}
 	f := New(client)
@@ -21,11 +23,11 @@ func nuovaFinestraTest() mainLayout {
 }
 
 // ---------------------------------------------------------------------------
-// Costruttore
+// Costruttore - New
 // ---------------------------------------------------------------------------
 
-// TestNew verifica che il costruttore New() restituisca una FinestraPrincipale
-// con la pagina iniziale impostata a LOGIN (non a MENUPRINCIPALE).
+// TestNew verifica che il costruttore New() restituisca una mainLayout
+// con la pagina iniziale impostata a LOGIN.
 func TestNew(t *testing.T) {
 	client := &api.APIClient{}
 	f := New(client)
@@ -61,6 +63,35 @@ func TestInit(t *testing.T) {
 
 	if cmd == nil {
 		t.Error("Init() dovrebbe restituire un Cmd non-nil (focus sul primo input di login)")
+	}
+}
+
+// ---------------------------------------------------------------------------
+// parseUserRole
+// ---------------------------------------------------------------------------
+
+// TestParseUserRole verifica la conversione da stringa a tipo enum userRole,
+// inclusa la gestione del caso di default per ruoli non riconosciuti o vuoti.
+func TestParseUserRole(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected userRole
+	}{
+		{"Magazziniere", "magazziniere", MAGAZZINIERE},
+		{"Contabile", "contabile", CONTABILE},
+		{"Admin", "admin", ADMIN},
+		{"Ruolo non valido (fallback)", "sconosciuto", MAGAZZINIERE},
+		{"Stringa vuota (fallback)", "", MAGAZZINIERE},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := parseUserRole(tt.input)
+			if got != tt.expected {
+				t.Errorf("parseUserRole(%q) = %v, atteso %v", tt.input, got, tt.expected)
+			}
+		})
 	}
 }
 
@@ -108,7 +139,7 @@ func TestUpdate_WindowSizeMsg_PaginaNonCambia(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 // TestUpdate_LoginSubmitMsg verifica che alla ricezione di un LoginSubmitMsg
-// la pagina corrente passi da LOGIN al menu corrispondente il ruolo dell'utente.
+// la pagina corrente passi da LOGIN al menu corrispondente al ruolo dell'utente.
 func TestUpdate_LoginSubmitMsg(t *testing.T) {
 	f := nuovaFinestraTest()
 
@@ -143,7 +174,44 @@ func TestUpdate_LoginSubmitMsg(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// Update – propagazione messaggi alla schermata Login
+// Update – Shortcut Keyboard (ctrl+l / Logout)
+// ---------------------------------------------------------------------------
+
+// TestUpdate_ShortcutCtrlL_ResetToLogin verifica che la combinazione ctrl+l
+// quando l'utente è autenticato resetti lo stato e riporti alla schermata LOGIN.
+func TestUpdate_ShortcutCtrlL_ResetToLogin(t *testing.T) {
+	f := nuovaFinestraTest()
+	f.currentPage = MAGMENU
+
+	msg := tea.KeyPressMsg{Text: "ctrl+l"}
+	res, cmd := f.Update(msg)
+	fRes := res.(mainLayout)
+
+	if fRes.currentPage != LOGIN {
+		t.Errorf("dopo ctrl+l la pagina attesa è LOGIN (%d), ottenuta %d", LOGIN, fRes.currentPage)
+	}
+	if cmd == nil {
+		t.Error("ctrl+l dovrebbe restituire il Cmd di Init() per re-inizializzare il sotto-modello Login")
+	}
+}
+
+// TestUpdate_ShortcutCtrlL_IgnoratoInLogin verifica che ctrl+l non scatti
+// se l'utente si trova già nella schermata di LOGIN.
+func TestUpdate_ShortcutCtrlL_IgnoratoInLogin(t *testing.T) {
+	f := nuovaFinestraTest()
+	f.currentPage = LOGIN
+
+	msg := tea.KeyPressMsg{Text: "ctrl+l"}
+	res, _ := f.Update(msg)
+	fRes := res.(mainLayout)
+
+	if fRes.currentPage != LOGIN {
+		t.Errorf("pagina corrente attesa LOGIN, ottenuta %d", fRes.currentPage)
+	}
+}
+
+// ---------------------------------------------------------------------------
+// Update – Propagazione messaggi
 // ---------------------------------------------------------------------------
 
 // TestUpdate_PropagaMessaggiALogin verifica che i messaggi di tastiera
@@ -152,22 +220,16 @@ func TestUpdate_PropagaMessaggiALogin(t *testing.T) {
 	f := nuovaFinestraTest()
 	f.currentPage = LOGIN
 
-	// Simula la pressione di un tasto qualsiasi.
 	msg := tea.KeyPressMsg{Text: "a"}
 	res, _ := f.Update(msg)
 	fRes := res.(mainLayout)
 
-	// Verifica che il modello restituito sia ancora nella pagina LOGIN.
 	if fRes.currentPage != LOGIN {
 		t.Errorf("pagina corrente attesa LOGIN, ottenuta %d", fRes.currentPage)
 	}
 }
 
-// ---------------------------------------------------------------------------
-// Update – propagazione messaggi alla schermata MenuPrincipale
-// ---------------------------------------------------------------------------
-
-// TestUpdate_PropagaMessaggiAMenuPrincipale verifica che i messaggi
+// TestUpdate_PropagaMessaggiAMenu verifica che i messaggi
 // di tastiera vengano inoltrati al sotto-modello di menu specifico quando la
 // pagina corrente è ...MENU.
 func TestUpdate_PropagaMessaggiAMenu(t *testing.T) {
@@ -183,10 +245,6 @@ func TestUpdate_PropagaMessaggiAMenu(t *testing.T) {
 	}
 }
 
-// ---------------------------------------------------------------------------
-// Update – messaggio sconosciuto senza pagina valida
-// ---------------------------------------------------------------------------
-
 // TestUpdate_PaginaNonGestita verifica che un messaggio generico con una
 // pagina non gestita restituisca il modello invariato e cmd nil.
 func TestUpdate_PaginaNonGestita(t *testing.T) {
@@ -201,6 +259,67 @@ func TestUpdate_PaginaNonGestita(t *testing.T) {
 	}
 	if cmd != nil {
 		t.Error("cmd atteso nil per pagina non gestita")
+	}
+}
+
+// ---------------------------------------------------------------------------
+// Update – MouseClickMsg / Tab Navigation
+// ---------------------------------------------------------------------------
+
+// TestClickTabDopoLogin_SenzaResizeIntermedio (Test di regressione):
+// Verifica che dopo il login le dimensioni del terminale vengano propagate ai layout
+// e che le hitbox dei tab cliccabili rispondano correttamente ai click del mouse.
+func TestClickTabDopoLogin_SenzaResizeIntermedio(t *testing.T) {
+	const termW, termH = 150, 45
+
+	f := nuovaFinestraTest()
+
+	// 1. All'avvio bubbletea invia le dimensioni del terminale...
+	res, _ := f.Update(tea.WindowSizeMsg{Width: termW, Height: termH})
+	f = res.(mainLayout)
+
+	// 2. ...poi l'utente effettua il login (nessun resize nel mezzo).
+	res, _ = f.Update(login.LoginSubmitMsg{})
+	f = res.(mainLayout)
+	if f.currentPage != MAGMENU {
+		t.Fatalf("attesa pagina MAGMENU, ottenuta %v", f.currentPage)
+	}
+
+	// 3. Il layout deve conoscere le dimensioni REALI del terminale.
+	if w, h := f.MagMenu.Size(); w != termW || h != termH {
+		t.Fatalf("layout con dimensioni (%d,%d), attese (%d,%d): dimensioni non propagate al login", w, h, termW, termH)
+	}
+
+	// 4/5. Per ogni tab: leggi la posizione dell'etichetta dalla View CORRENTE
+	// e cliccaci con coordinate reali del terminale.
+	casi := []struct {
+		label string
+		want  int // indice focus atteso in magazzino
+	}{
+		{"Resi", 3},
+		{"Ordini In Entrata", 1},
+		{"Scanner", 4},
+		{"Giacenze", 0},
+	}
+	for _, c := range casi {
+		lines := strings.Split(ansi.Strip(f.View().Content), "\n")
+		x, y := -1, -1
+		for ly, line := range lines {
+			if idx := strings.Index(line, c.label); idx >= 0 && ly < 40 {
+				x, y = ansi.StringWidth(line[:idx]), ly
+				break
+			}
+		}
+		if x < 0 {
+			t.Fatalf("etichetta %q non trovata nella view", c.label)
+		}
+
+		msg := tea.MouseClickMsg{X: x + 1, Y: y, Button: tea.MouseLeft}
+		res, _ := f.Update(msg)
+		f = res.(mainLayout)
+		if got := f.MagMenu.Attiva(); got != c.want {
+			t.Errorf("click su %q a (%d,%d): attesa sotto-pagina %d, ottenuta %d", c.label, x, y, c.want, got)
+		}
 	}
 }
 

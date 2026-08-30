@@ -1,3 +1,6 @@
+// Package admin implementa il layout contenitore e router del modulo amministrativo.
+// Raggruppa le sotto-pagine (dashboard, utenti, magazzino, contabilità) in una
+// barra di tab navigabile e gestisce lo smistamento degli eventi alla pagina attiva.
 package admin
 
 import (

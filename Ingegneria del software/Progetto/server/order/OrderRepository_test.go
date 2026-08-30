@@ -168,7 +168,7 @@ func TestOrderRepository_GetOrdineUscita(t *testing.T) {
 	assert.Equal(t, 21, *list[1].DDTID)
 	require.NoError(t, mock.ExpectationsWereMet())
 }
- 
+
 func TestOrderRepository_GetOrdineUscitaByID(t *testing.T) {
 	repo, mock, closeDB := newMockOrderRepo(t)
 	defer closeDB()

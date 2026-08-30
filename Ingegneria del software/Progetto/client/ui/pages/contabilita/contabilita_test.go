@@ -5,10 +5,16 @@ import (
 	"testing"
 
 	tea "charm.land/bubbletea/v2"
+	"github.com/tommasogarofani/ingsw_25-26_group-11/client/api"
 )
 
+// TestNew_StatoIniziale verifica che New inizializzi la sezione attiva su SezioneOrdini
+// e che le dimensioni iniziali siano impostate a (0, 0).
 func TestNew_StatoIniziale(t *testing.T) {
-	c := New(nil)
+	t.Parallel()
+
+	client := api.New("http://localhost:8080")
+	c := New(client)
 
 	if got := c.Attiva(); got != int(SezioneOrdini) {
 		t.Errorf("attesa sezione iniziale SezioneOrdini (%d), ottenuta %d", SezioneOrdini, got)
@@ -20,7 +26,10 @@ func TestNew_StatoIniziale(t *testing.T) {
 	}
 }
 
+// TestInit verifica che Init() deleghi l'avvio alla sotto-pagina attiva ordini.
 func TestInit(t *testing.T) {
+	t.Parallel()
+
 	c := New(nil)
 	cmd := c.Init()
 
@@ -29,7 +38,11 @@ func TestInit(t *testing.T) {
 	}
 }
 
+// TestDimUpdate verifica che DimUpdate aggiorni le dimensioni del terminale
+// e le propaghi a tutte le 4 sotto-pagine di contabilità.
 func TestDimUpdate(t *testing.T) {
+	t.Parallel()
+
 	c := New(nil)
 	c.DimUpdate(tea.WindowSizeMsg{Width: 100, Height: 40})
 
@@ -39,7 +52,11 @@ func TestDimUpdate(t *testing.T) {
 	}
 }
 
+// TestSwitchTo_E_Routing verifica che switchTo cambi correttamente la sezione attiva
+// per ciascuna delle 4 sezioni e gestisca eventuali indici non validi.
 func TestSwitchTo_E_Routing(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		dest     focus
 		expected focus
@@ -62,41 +79,83 @@ func TestSwitchTo_E_Routing(t *testing.T) {
 			t.Errorf("switchTo(%v): atteso Cmd non nil per l'init della sotto-pagina", tt.dest)
 		}
 	}
-}
 
-func TestUpdate_InoltroMessaggi(t *testing.T) {
+	// Caso indice non valido
 	c := New(nil)
-	c.attiva = SezioneOrdini
-
-	// Un evento tastiera standard deve essere inoltrato al sotto-modello attivo
-	res, _ := c.Update(tea.KeyPressMsg{Text: "tab"})
-	m := res.(ContLayout)
-
-	if m.attiva != SezioneOrdini {
-		t.Errorf("l'update non doveva cambiare la sezione attiva del layout padre, ottenuta %v", m.attiva)
+	m, cmd := c.switchTo(focus(999))
+	updated := m.(ContLayout)
+	if updated.attiva != focus(999) {
+		t.Errorf("attesa attiva=999, ottenuta %v", updated.attiva)
+	}
+	if cmd != nil {
+		t.Errorf("atteso cmd nil per focus non valido, ottenuto %v", cmd)
 	}
 }
 
-func TestView_E_Cursor(t *testing.T) {
-	c := New(nil)
-	c.DimUpdate(tea.WindowSizeMsg{Width: 120, Height: 30})
+// TestUpdate_InoltroMessaggi verifica l'inoltro dei messaggi alla sotto-pagina attiva per tutte le sezioni.
+func TestUpdate_InoltroMessaggi(t *testing.T) {
+	t.Parallel()
 
-	v := c.View()
+	for att := SezioneOrdini; att <= SezioneReport; att++ {
+		c := New(nil)
+		c.attiva = att
 
-	// Verifica che le etichette dei tab siano incluse nella vista
-	for _, label := range labels {
-		if !strings.Contains(v.Content, label) {
-			t.Errorf("View() non contiene l'etichetta del tab %q", label)
+		res, _ := c.Update(tea.KeyPressMsg{Text: "x"})
+		m := res.(ContLayout)
+
+		if m.attiva != att {
+			t.Errorf("Update non doveva cambiare la sezione attiva del layout padre, ottenuta %v", m.attiva)
 		}
 	}
+}
 
-	// In assenza di form con focus attivo, il cursore deve essere nil
-	if c.activeCursor() != nil {
-		t.Error("activeCursor() atteso nil nella vista predefinita")
+// TestView_E_Cursor verifica il rendering della vista e la propagazione del cursore.
+func TestView_E_Cursor(t *testing.T) {
+	t.Parallel()
+
+	for att := SezioneOrdini; att <= SezioneReport; att++ {
+		c := New(nil)
+		c.DimUpdate(tea.WindowSizeMsg{Width: 120, Height: 30})
+		c.attiva = att
+
+		v := c.View()
+		if v.Content == "" {
+			t.Errorf("View() con attiva=%v ha prodotto contenuto vuoto", att)
+		}
+
+		// Verifica che l'etichetta del tab sia inclusa
+		if !strings.Contains(v.Content, labels[att]) {
+			t.Errorf("View() non contiene l'etichetta del tab %q", labels[att])
+		}
+
+		_ = c.activeCursor()
+	}
+
+	// Caso attiva non valida per activeCursor
+	cInvalid := New(nil)
+	cInvalid.attiva = focus(999)
+	if cursor := cInvalid.activeCursor(); cursor != nil {
+		t.Errorf("activeCursor() con indice non valido atteso nil, ottenuto %+v", cursor)
 	}
 }
 
+// TestHitboxes verifica il getter Hitboxes.
+func TestHitboxes(t *testing.T) {
+	t.Parallel()
+
+	c := New(nil)
+	c.DimUpdate(tea.WindowSizeMsg{Width: 120, Height: 40})
+
+	hitboxes := c.Hitboxes()
+	if len(hitboxes) != len(labels) {
+		t.Errorf("Hitboxes() attese %d, ottenute %d", len(labels), len(hitboxes))
+	}
+}
+
+// TestJoinWithSpacing verifica la funzione joinWithSpacing con input vuoto, singolo e multiplo.
 func TestJoinWithSpacing(t *testing.T) {
+	t.Parallel()
+
 	if got := joinWithSpacing([]string{}, " "); got != nil {
 		t.Errorf("atteso nil per slice vuota, ottenuto %v", got)
 	}
@@ -118,7 +177,11 @@ func TestJoinWithSpacing(t *testing.T) {
 	}
 }
 
+// TestHitboxTab_ClickSempreCorretto verifica che per tutte le risoluzioni terminale
+// e per ciascuna sezione attiva, il click al centro di ciascun tab cambi correttamente sezione.
 func TestHitboxTab_ClickSempreCorretto(t *testing.T) {
+	t.Parallel()
+
 	sizes := []struct{ w, h int }{{80, 24}, {100, 30}, {120, 40}, {160, 50}}
 
 	for _, s := range sizes {

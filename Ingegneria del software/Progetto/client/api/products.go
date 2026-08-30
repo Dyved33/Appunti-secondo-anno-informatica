@@ -6,6 +6,9 @@ import (
 	"strconv"
 )
 
+// GetCatalogo recupera dal backend tutti i prodotti con le rispettive categorie.
+// Restituisce la lista dei prodotti, la lista dei nomi delle categorie e un
+// eventuale errore di comunicazione.
 func (c *APIClient) GetCatalogo() ([]Prodotto, []string, error) {
 	var prodottiServer []serverProductDTO
 	if err := c.doJSON(http.MethodGet, "/api/v1/products", nil, &prodottiServer); err != nil {
@@ -35,6 +38,8 @@ func (c *APIClient) GetCatalogo() ([]Prodotto, []string, error) {
 	return prodotti, categorie, nil
 }
 
+// AggiornaPrezzo aggiorna il prezzo di vendita del prodotto identificato da
+// prodottoID, inviando al server il nuovo prezzo.
 func (c *APIClient) AggiornaPrezzo(prodottoID int, nuovoPrezzo float64) error {
 	return c.doJSON(http.MethodPut, "/api/v1/products/"+strconv.Itoa(prodottoID)+"/price", map[string]float64{
 		"prezzo_vendita": nuovoPrezzo,

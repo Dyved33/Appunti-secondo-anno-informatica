@@ -49,6 +49,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case ErroreMsg:
 		m.loading = false
 		m.err = msg.Err
+		m.prodottoTrovato = nil
 		return m, nil
 
 	case tea.WindowSizeMsg:
@@ -160,6 +161,7 @@ func (m Model) View() tea.View {
 	}
 
 	// ── Footer ───────────────────────────────────────────────────────────────
+	sb.WriteString("\n\n")
 	sb.WriteString(style.FooterStile.Render("[Digita Codice]  |  [enter] Scansiona / Cerca  |  [esc] Pulisci Field  |  [ctrl+l] Logout"))
 
 	return tea.NewView(sb.String())

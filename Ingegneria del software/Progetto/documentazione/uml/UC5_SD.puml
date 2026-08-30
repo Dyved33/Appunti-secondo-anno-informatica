@@ -1,0 +1,67 @@
+@startuml UC5_SD
+
+skinparam sequence {
+  ArrowColor      #555555
+  ParticipantBackgroundColor #FAFAFA
+  ParticipantBorderColor #333333
+  ActorBackgroundColor #E8F4FD
+  ActorBorderColor #2980B9
+}
+
+actor    "Contabile"             as Cont
+actor    "Magazziniere"          as Mag
+boundary "ui:UI"                 as UI
+control  "svc:OrdineService"     as OrdSvc
+
+' ── 1. Contabile: registra il reso ───────────────────
+group Registrazione Reso (Contabile)
+  Cont -> UI : nuovoReso(ordineUscitaEvaso)
+  activate UI
+  UI -> OrdSvc : creaReso(ordineUscita)
+  activate OrdSvc
+  OrdSvc --> UI : resoCreato
+  note right : stato = da_verificare
+  deactivate OrdSvc
+  UI --> Cont : mostraConfermaCreazione()
+  deactivate UI
+end
+
+' ── 2. Magazziniere: visualizza e verifica il reso ───
+group Verifica Reso (Magazziniere)
+  Mag -> UI : apriElencoResi()
+  activate UI
+  UI -> OrdSvc : getResi()
+  activate OrdSvc
+  OrdSvc --> UI : listaResi
+  deactivate OrdSvc
+  UI --> Mag : mostraElencoResi(listaResi)
+
+  Mag -> UI : selezionaReso(reso)
+  UI -> OrdSvc : getResi()
+  activate OrdSvc
+  OrdSvc --> UI : dettaglioReso
+  deactivate OrdSvc
+  UI --> Mag : mostraDettaglioReso(dettaglioReso)
+
+  Mag -> UI : verificaFisicamente(reso)
+  UI -> OrdSvc : updateStatoReso(reso.id, "accettato")
+  activate OrdSvc
+  OrdSvc --> UI : resoAccettato
+  note right : incrementa giacenza,\nstato = accettato
+  deactivate OrdSvc
+  UI --> Mag : mostraConfermaVerifica()
+
+  opt [merce non conforme — rifiuto del reso già accettato]
+    Mag -> UI : rifiutaReso(reso)
+    UI -> OrdSvc : updateStatoReso(reso.id, "rifiutato")
+    activate OrdSvc
+    OrdSvc --> UI : resoRifiutato
+    note right : decrementa giacenza,\nstato = rifiutato
+    deactivate OrdSvc
+    UI --> Mag : mostraConfermaVerifica()
+  end
+  deactivate UI
+end
+
+@enduml
+

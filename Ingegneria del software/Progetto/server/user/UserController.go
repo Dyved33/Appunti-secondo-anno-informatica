@@ -11,7 +11,8 @@ type userService interface {
 	UserService_Login(ctx context.Context, username, password string) (*domain.Utente, error)
 }
 
-// Trasla le richieste in ingresso (DTO) alle chiamate al Service e formatta le risposte.
+// UserController trasla le richieste in ingresso (DTO) alle chiamate al
+// Service e formatta le risposte.
 type UserController struct {
 	Service userService
 }
@@ -21,7 +22,9 @@ func NewUserController(svc userService) *UserController {
 	return &UserController{Service: svc}
 }
 
-// Serve per l'autenticazione di un utente, accetta una richiesta di login, chiama il Service e restituisce la risposta formattata.
+// UserController_Login gestisce l'autenticazione di un utente: accetta una
+// richiesta di login, chiama il Service e restituisce la risposta formattata,
+// indicando successo/fallimento ed eventuale messaggio di errore.
 func (c *UserController) UserController_Login(ctx context.Context, req LoginRequestDTO) LoginResponseDTO {
 	u, err := c.Service.UserService_Login(ctx, req.Username, req.Password)
 	if err != nil {

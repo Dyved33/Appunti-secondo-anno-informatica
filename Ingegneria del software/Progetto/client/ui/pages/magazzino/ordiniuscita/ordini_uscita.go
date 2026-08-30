@@ -299,11 +299,11 @@ func (m *Model) mostraCursore() {
 // View genera ed impagina l'interfaccia utente stilizzata per gli ordini in uscita.
 //
 // Come è stato scritto il codice:
-// 1. In caso di attesa o errori visualizza lo stato corrente tramite componenti stilizzati.
-// 2. Calcola i 4 KPI riassuntivi (Totale, Confermati, Evasi, Con DDT associato).
-// 3. Mostra solo la finestra di righe che entra nello schermo (`scrollOffset` + `righeVisibili`),
-//    rendendo raggiungibili anche gli ordini oltre la capacità del terminale.
-// 4. Se un ordine è espanso (`dettagliEspansi[id] == true`), include la sotto-tabella prodotti.
+//  1. In caso di attesa o errori visualizza lo stato corrente tramite componenti stilizzati.
+//  2. Calcola i 4 KPI riassuntivi (Totale, Confermati, Evasi, Con DDT associato).
+//  3. Mostra solo la finestra di righe che entra nello schermo (`scrollOffset` + `righeVisibili`),
+//     rendendo raggiungibili anche gli ordini oltre la capacità del terminale.
+//  4. Se un ordine è espanso (`dettagliEspansi[id] == true`), include la sotto-tabella prodotti.
 func (m Model) View() tea.View {
 	var sb strings.Builder
 
@@ -343,6 +343,7 @@ func (m Model) View() tea.View {
 
 	if len(righe) == 0 {
 		sb.WriteString("Nessun ordine in uscita registrato.\n")
+		sb.WriteString("\n\n")
 		sb.WriteString(m.renderFooter(-1, -1))
 		return tea.NewView(sb.String())
 	}
@@ -454,6 +455,8 @@ func estremiVisibili(righe []lineaLista, inizio, fine int) (primo, ultimo int) {
 	return primo, ultimo
 }
 
+// renderDDT compone la vista del documento di trasporto (DDT) mostrandone
+// i dati principali (numero, data, mittente, destinatario e percorso PDF).
 func (m Model) renderDDT() tea.View {
 	var sb strings.Builder
 
@@ -586,6 +589,8 @@ func truncaStringa(s string, maxLen int) string {
 	return s
 }
 
+// showDettagliDDT crea un comando asincrono che recupera il DDT dell'ordine
+// selezionato dal backend, emettendo DDTCreatedMsg in caso di successo o ErroreMsg.
 func (m Model) showDettagliDDT() tea.Cmd {
 	return func() tea.Msg {
 		if len(m.ordini) == 0 {
@@ -605,6 +610,8 @@ func (m Model) showDettagliDDT() tea.Cmd {
 	}
 }
 
+// handleEditInput gestisce gli eventi tastiera in modalità di modifica,
+// spostando il focus tra i campi, selezionando lo stato e confermando il salvataggio.
 func (m Model) handleEditInput(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 	switch msg.String() {
 	case "esc":
@@ -658,6 +665,8 @@ func (m Model) handleEditInput(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
+// renderEditForm impagina il form di modifica dell'ordine in uscita,
+// evidenziando con lo stile di focus il campo attualmente selezionato.
 func (m Model) renderEditForm() string {
 	numeroStr := m.formNumero.View()
 	clienteStr := m.formCliente.View()
@@ -691,6 +700,8 @@ func (m Model) renderEditForm() string {
 		style.FooterStile.Render("[tab] Campo successivo  |  [←/→] Stato  |  [enter] Salva  |  [esc] Annulla")
 }
 
+// salvaOrdineUscita raccoglie i valori del form ed invia l'aggiornamento dell'ordine
+// selezionato al backend tramite un comando asincrono.
 func (m Model) salvaOrdineUscita() (tea.Model, tea.Cmd) {
 	if len(m.ordini) == 0 || m.cursore >= len(m.ordini) {
 		return m, nil
@@ -722,6 +733,8 @@ func (m Model) salvaOrdineUscita() (tea.Model, tea.Cmd) {
 	})
 }
 
+// aggiornaOrdineUscitaCmd crea un comando asincrono che aggiorna l'ordine in uscita,
+// emettendo OrdineAggiornatoMsg in caso di successo o ErroreMsg in caso di errore.
 func (m Model) aggiornaOrdineUscitaCmd(id int, input api.ClientOrderDTO) tea.Cmd {
 	return func() tea.Msg {
 		if err := m.Client.AggiornaOrdineUscita(id, input); err != nil {

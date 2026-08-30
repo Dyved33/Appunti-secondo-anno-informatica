@@ -11,38 +11,16 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-// Init inizializza il componente Login al momento dell'avvio della vista Bubble Tea.
-//
-// Come è stato scritto il codice:
-// La funzione rispetta l'interfaccia tea.Model e restituisce il comando textinput.Blink,
-// il quale attiva l'animazione di lampeggio del cursore per il campo di testo correntemente focalizzato.
+// Init inizializza il componente Login all'avvio della vista, restituendo il
+// comando che attiva il lampeggio del cursore sul campo focalizzato.
 func (l Login) Init() tea.Cmd {
 	return textinput.Blink
 }
 
-// Update elabora i messaggi e gli eventi in ingresso aggiornando lo stato del modello Login.
-//
-// Come è stato scritto il codice:
-// 1. Intercetta i messaggi di risposta di sottomissione (SubmitErrorMsg e LoginSubmitMsg):
-//   - Su SubmitErrorMsg registra l'errore in `l.err`, imposta `l.loading = false` e `l.success = false`.
-//   - Su LoginSubmitMsg resetta l'errore, imposta `l.loading = false` e `l.success = true`.
-//
-// 2. Intercetta i messaggi di pressione dei tasti (`tea.KeyPressMsg`).
-// 3. Se viene premuto "esc", restituisce il modello e il comando `tea.Quit` per chiudere l'applicazione.
-// 4. Se vengono premuti i tasti "up" o "down":
-//   - Incrementa o decrementa l'indice di focus (`focusIndex`).
-//   - Gestisce la navigazione circolare tra i campi (0 e 1).
-//   - Invoca l'helper `updateFocus` per impostare `Focus()` sul campo selezionato e `Blur()` sugli altri.
-//
-// 5. Se viene premuto "enter" (tasto Invio):
-//   - Se il cursore è su un campo precedente all'ultimo (`l.focusIndex < len(l.inputs)-1`),
-//     sposta il focus al campo successivo (da Username a Password) chiamando `updateFocus(l.focusIndex + 1)`.
-//   - Se il cursore si trova sull'ultimo campo (Password) e non c'è una richiesta in corso (`!l.loading`):
-//     imposta `l.loading = true`, azzera gli errori precedenti e raccoglie le credenziali immesse (Username e Password).
-//     Se è presente un client API (`l.Client`), invoca il comando asincrono `doSubmitCmd`;
-//     altrimenti emette un messaggio `LoginSubmitMsg` con i dati raccolti.
-//
-// 6. Infine, delega l'aggiornamento dello stato interno di ciascun campo di testo al metodo `updateInputs(msg)`.
+// Update elabora i messaggi ed eventi in ingresso aggiornando lo stato del
+// modello Login: gestisce i risultati della sottomissione (errore o successo),
+// la pressione dei tasti per navigare tra i campi o inviare il form, ed
+// eventualmente chiude l'applicazione con il tasto "esc".
 func (l Login) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
@@ -132,15 +110,9 @@ func (l Login) isBlocked() bool {
 	return l.err != nil && strings.Contains(strings.ToLower(l.err.Error()), "bloccato")
 }
 
-// View costruisce ed esegue il rendering dell'interfaccia utente (UI) per la schermata di login.
-//
-// Come è stato scritto il codice:
-//  1. Inserisce l'intestazione stilizzata "AUTENTICAZIONE UTENTE" mediante `style.TitleStile`.
-//  2. Scorre i campi di input concatenando le loro viste. Se il cursore è visibile sul campo attivo,
-//     calcola la coordinata verticale offset.
-//  3. Se l'autenticazione è in corso, aggiunge la stringa di caricamento; se vi è un errore,
-//     applica `style.ErrorStile`; in caso di successo, applica `style.SuccessStile`.
-//  4. Avvolge l'intero blocco testuale nella cornice stilizzata `style.LoginBoxStile` di Lipgloss e restituisce `tea.View`.
+// View costruisce il rendering dell'interfaccia utente della schermata di login:
+// mostra titolo, campi di input, il feedback di caricamento/errore/successo e la
+// barra dei comandi, il tutto racchiuso nella cornice stilizzata del login.
 func (l Login) View() tea.View {
 	var b strings.Builder
 	var c *tea.Cursor

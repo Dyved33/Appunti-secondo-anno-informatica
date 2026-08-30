@@ -32,8 +32,8 @@ func TestRuolo_IsAdmin(t *testing.T) {
 
 func TestRuolo_Label(t *testing.T) {
 	tests := []struct {
-		ruolo  Ruolo
-		label  string
+		ruolo Ruolo
+		label string
 	}{
 		{RuoloMagazziniere, "Magazziniere"},
 		{RuoloContabile, "Contabile"},

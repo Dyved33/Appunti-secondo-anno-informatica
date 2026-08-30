@@ -45,7 +45,6 @@ CREATE TABLE IF NOT EXISTS OrdiniEntrata (
     numero VARCHAR(50) NOT NULL UNIQUE,
     fornitore VARCHAR(150) NOT NULL,
     data DATETIME NOT NULL,
-    stato VARCHAR(30) NOT NULL,
     note TEXT NULL,
     created_by INT NOT NULL,
     CONSTRAINT fk_ordine_entrata_created_by FOREIGN KEY (created_by) REFERENCES Utenti (id) ON UPDATE CASCADE ON DELETE RESTRICT

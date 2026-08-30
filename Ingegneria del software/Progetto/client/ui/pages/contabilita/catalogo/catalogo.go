@@ -14,6 +14,68 @@ import (
 	style "github.com/tommasogarofani/ingsw_25-26_group-11/client/ui/styles"
 )
 
+// passoRotellina è il numero di righe di cui la lista scorre ad ogni evento della rotellina del mouse.
+const passoRotellina = 3
+
+// overheadChrome è il numero di righe fisse occupate ATTORNO al corpo della pagina
+// (logo, intestazione, barra dei tab, bordi della finestra e riga vuota interna).
+const overheadChrome = 21
+
+// righeFallback è il numero di righe visibili usato finché non arriva il primo WindowSizeMsg.
+const righeFallback = 20
+
+// righeVisibili calcola quante righe di tabella entrano nello spazio residuo dello schermo.
+func (m Model) righeVisibili() int {
+	if m.winH <= 0 {
+		return righeFallback
+	}
+	// Titolo (4) + etichetta categoria (3) + testata tabella (2) + footer (2).
+	disponibili := m.winH - overheadChrome - 11
+	if disponibili < 1 {
+		disponibili = 1
+	}
+	return disponibili
+}
+
+// clampScroll riporta l'offset nell'intervallo valido rispetto alla lista e allo schermo.
+func (m *Model) clampScroll() {
+	prodotti := m.prodottiFiltrati()
+	maxOffset := len(prodotti) - m.righeVisibili()
+	if maxOffset < 0 {
+		maxOffset = 0
+	}
+	if m.offset > maxOffset {
+		m.offset = maxOffset
+	}
+	if m.offset < 0 {
+		m.offset = 0
+	}
+}
+
+// mostraCursore aggiorna lo scorrimento così che la riga puntata dal cursore resti visibile.
+func (m *Model) mostraCursore() {
+	vis := m.righeVisibili()
+	if m.cursore < m.offset {
+		m.offset = m.cursore
+	} else if m.cursore >= m.offset+vis {
+		m.offset = m.cursore - vis + 1
+	}
+	m.clampScroll()
+}
+
+// scorri avanza la finestra di visualizzazione di `n` righe, mantenendo il cursore visibile.
+func (m *Model) scorri(n int) {
+	prodotti := m.prodottiFiltrati()
+	m.cursore += n
+	if m.cursore < 0 {
+		m.cursore = 0
+	}
+	if max := len(prodotti) - 1; m.cursore > max {
+		m.cursore = max
+	}
+	m.mostraCursore()
+}
+
 // Init avvia il caricamento di prodotti e categorie.
 func (m Model) Init() tea.Cmd {
 	return m.loadCatalogoCmd()
@@ -70,6 +132,20 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, m.loadCatalogoCmd()
 
 	case tea.WindowSizeMsg:
+		m.winW = msg.Width
+		m.winH = msg.Height
+		m.clampScroll()
+		return m, nil
+
+	case tea.MouseWheelMsg:
+		if m.mode == modeView {
+			switch msg.Button {
+			case tea.MouseWheelUp:
+				m.scorri(-passoRotellina)
+			case tea.MouseWheelDown:
+				m.scorri(passoRotellina)
+			}
+		}
 		return m, nil
 
 	case tea.KeyPressMsg:
@@ -90,6 +166,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // ── View ──────────────────────────────────────────────────────────────────
 
+// View disegna lo stato attuale della pagina Catalogo: mostra un indicatore di
+// caricamento o l'errore se presente, altrimenti rende in base alla modalità
+// attiva (tabella prodotti, form creazione prodotto/categoria o conferma
+// eliminazione), chiudendo con un eventuale messaggio di successo.
 func (m Model) View() tea.View {
 	var sb strings.Builder
 
@@ -102,7 +182,9 @@ func (m Model) View() tea.View {
 	}
 	if m.err != nil {
 		sb.WriteString(style.ErrorStile.Render("Errore: " + m.err.Error()))
-		sb.WriteString("\n")
+		sb.WriteString("\n\n")
+		sb.WriteString(style.ErrorStile.Render("[esc] Indietro"))
+
 		return tea.NewView(sb.String())
 	}
 
@@ -155,8 +237,9 @@ func (m Model) renderProductTable() string {
 		sb.WriteString(strings.Repeat("─", 80))
 		sb.WriteString("\n")
 
+		m.clampScroll()
 		inizio := m.offset
-		fine := inizio + style.RighePerPagina
+		fine := inizio + m.righeVisibili()
 		if fine > len(prodotti) {
 			fine = len(prodotti)
 		}
@@ -185,15 +268,21 @@ func (m Model) renderProductTable() string {
 			}
 			sb.WriteString("\n")
 		}
+	}
 
-		pagine := (len(prodotti) + style.RighePerPagina - 1) / style.RighePerPagina
-		paginaCorr := m.offset/style.RighePerPagina + 1
-		sb.WriteString(fmt.Sprintf("\nPagina %d/%d", paginaCorr, pagine))
+	// Indicatore di scorrimento (se la lista eccede lo schermo)
+	if len(prodotti) > m.righeVisibili() {
+		vis := m.righeVisibili()
+		ultimo := m.offset + vis
+		if ultimo > len(prodotti) {
+			ultimo = len(prodotti)
+		}
+		sb.WriteString(fmt.Sprintf("\nProdotti %d–%d di %d  (pgup/pgdown o rotellina per scorrere)", m.offset+1, ultimo, len(prodotti)))
 	}
 
 	sb.WriteString("\n")
 	sb.WriteString(style.FooterStile.Render(
-		"[↑/↓ o k/j] Naviga  |  [tab] Cambia categoria  |  [ctrl+n] Nuovo prodotto  |  [ctrl+k] Nuova categoria  |  [ctrl+d] Elimina prodotto  |  [ctrl+x] Elimina categoria  |  [r] Ricarica"))
+		"[↑/↓ o k/j] Naviga  |  [pgup/pgdown o rotellina] Scorri  |  [tab] Cambia categoria  |  [ctrl+n] Nuovo prodotto  |  [ctrl+k] Nuova categoria  |  [ctrl+d] Elimina prodotto  |  [ctrl+x] Elimina categoria  |  [r] Ricarica"))
 
 	return sb.String()
 }
@@ -246,31 +335,36 @@ func (m Model) renderCreateCategoryForm() string {
 
 func (m Model) handleViewInput(msg tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 	switch msg.String() {
+	case "esc":
+		m.err = nil
+		m.success = ""
+		return m, nil
 	case "up", "k":
 		if m.cursore > 0 {
 			m.cursore--
-			m.offset = style.PaginaCalcola(m.cursore, m.offset, len(m.prodottiFiltrati()))
+			m.mostraCursore()
 		}
 	case "down", "j":
 		if m.cursore < len(m.prodottiFiltrati())-1 {
 			m.cursore++
-			m.offset = style.PaginaCalcola(m.cursore, m.offset, len(m.prodottiFiltrati()))
+			m.mostraCursore()
 		}
 	case "pgup":
-		m.cursore -= style.RighePerPagina
-		if m.cursore < 0 {
-			m.cursore = 0
+		if m.cursore > 0 {
+			m.cursore -= m.righeVisibili()
+			if m.cursore < 0 {
+				m.cursore = 0
+			}
+			m.mostraCursore()
 		}
-		m.offset = style.PaginaCalcola(m.cursore, m.offset, len(m.prodottiFiltrati()))
 	case "pgdown":
-		m.cursore += style.RighePerPagina
-		if max := len(m.prodottiFiltrati()) - 1; m.cursore > max {
-			m.cursore = max
+		if m.cursore < len(m.prodottiFiltrati())-1 {
+			m.cursore += m.righeVisibili()
+			if max := len(m.prodottiFiltrati()) - 1; m.cursore > max {
+				m.cursore = max
+			}
+			m.mostraCursore()
 		}
-		if m.cursore < 0 {
-			m.cursore = 0
-		}
-		m.offset = style.PaginaCalcola(m.cursore, m.offset, len(m.prodottiFiltrati()))
 	case "tab":
 		m.filtroCategoria++
 		if m.filtroCategoria >= len(m.categorie) {
@@ -336,6 +430,7 @@ func (m Model) handleCreateProductInput(msg tea.KeyPressMsg) (tea.Model, tea.Cmd
 	switch msg.String() {
 	case "esc":
 		m.mode = modeView
+		m.err = nil // Reset dell'errore
 		m.resetCreateProductForm()
 		return m, nil
 	case "tab", "down":

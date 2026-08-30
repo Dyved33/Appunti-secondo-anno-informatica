@@ -238,7 +238,7 @@ func (m Model) View() tea.View {
 
 	var sb strings.Builder
 	sb.WriteString(strings.Join(righe[inizio:fine], "\n"))
-	sb.WriteString("\n")
+	sb.WriteString("\n\n")
 	sb.WriteString(style.FooterStile.Render(fmt.Sprintf(
 		"Righe %d–%d di %d — rotellina o PgSu/PgGiù per scorrere",
 		inizio+1, fine, len(righe),

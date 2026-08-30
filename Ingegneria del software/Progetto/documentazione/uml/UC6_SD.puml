@@ -1,0 +1,73 @@
+@startuml UC6_SD
+
+skinparam sequence {
+  ArrowColor      #555555
+  ParticipantBackgroundColor #FAFAFA
+  ParticipantBorderColor #333333
+  ActorBackgroundColor #E8F4FD
+  ActorBorderColor #2980B9
+}
+
+actor    "Contabile"           as Cont
+boundary "ui:UI"               as UI
+control  "svc:OrdineService"   as OrdSvc
+
+' ── 1. Visualizza elenco ordini uscita ───────────────
+Cont -> UI : apriOrdiniUscita()
+activate UI
+UI -> OrdSvc : getOrdiniUscita()
+activate OrdSvc
+OrdSvc --> UI : listaOrdini
+deactivate OrdSvc
+UI --> Cont : mostraElencoOrdini(listaOrdini)
+
+' ── 2. Filtro opzionale per stato ────────────────────
+opt [Contabile applica filtro per stato]
+  Cont -> UI : filtraPerStato(stato)
+  UI -> OrdSvc : getOrdiniUscitaByStato(stato)
+  activate OrdSvc
+  OrdSvc --> UI : listaFiltrata
+  deactivate OrdSvc
+  UI --> Cont : mostraElencoFiltrato(listaFiltrata)
+end
+
+' ── 3. Dettaglio ordine ──────────────────────────────
+Cont -> UI : selezionaOrdine(ordine)
+UI -> OrdSvc : getDettaglioOrdine(ordine.id)
+activate OrdSvc
+OrdSvc --> UI : dettaglioOrdine
+deactivate OrdSvc
+UI --> Cont : mostraDettaglioOrdine(dettaglioOrdine)
+
+' ── 4. Generazione fattura ───────────────────────────
+Cont -> UI : generaFattura(ordine)
+UI -> OrdSvc : generaFattura(ordine.id)
+activate OrdSvc
+
+alt [ordine è evaso]
+  OrdSvc --> UI : fattura
+  UI --> Cont : mostraFattura(fattura)
+else [ordine NON evaso]
+  OrdSvc --> UI : errore("Ordine non ancora evaso")
+  UI --> Cont : mostraErrore()
+end
+
+deactivate OrdSvc
+
+' ── 5. Generazione nota di credito ───────────────────
+Cont -> UI : generaNotaCredito(ordine)
+UI -> OrdSvc : generaNotaCredito(ordine.id)
+activate OrdSvc
+
+alt [ordine è evaso]
+  OrdSvc --> UI : notaCredito
+  UI --> Cont : mostraNotaCredito(notaCredito)
+else [ordine NON evaso]
+  OrdSvc --> UI : errore("Ordine non ancora evaso")
+  UI --> Cont : mostraErrore()
+end
+
+deactivate OrdSvc
+deactivate UI
+
+@enduml

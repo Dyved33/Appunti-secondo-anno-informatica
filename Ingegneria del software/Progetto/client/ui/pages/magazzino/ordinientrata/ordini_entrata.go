@@ -281,6 +281,7 @@ func (m Model) View() tea.View {
 
 	if len(righe) == 0 {
 		sb.WriteString("Nessun ordine in entrata registrato.\n")
+		sb.WriteString("\n\n")
 		sb.WriteString(m.renderFooter(-1, -1))
 		return tea.NewView(sb.String())
 	}

@@ -67,7 +67,7 @@ func (m Model) creaResoCmd(ordineID, prodottoID, quantita int, motivo string) te
 			ProdottoID:     prodottoID,
 			Quantita:       quantita,
 			Motivo:         motivo,
-			Stato:          "In attesa",
+			Stato:          "da_verificare",
 		}
 		err := m.Client.CreaReso(dto)
 		if err != nil {

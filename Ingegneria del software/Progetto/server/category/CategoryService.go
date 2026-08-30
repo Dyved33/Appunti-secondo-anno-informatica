@@ -3,8 +3,8 @@ package category
 import (
 	"context"
 	"errors"
-	"strings"
 	"github.com/tommasogarofani/ingsw_25-26_group-11/server/domain"
+	"strings"
 )
 
 type categoryRepository interface {
@@ -19,11 +19,14 @@ type transactionRunner interface {
 	WithinTransaction(ctx context.Context, fn func(ctx context.Context) error) error
 }
 
+// CategoryService implementa la logica di business per la gestione delle categorie,
+// validando i dati e orchestrando le operazioni sul repository all'interno di transazioni.
 type CategoryService struct {
 	Repo categoryRepository
 	Tx   transactionRunner
 }
 
+// NewCategoryService crea un nuovo CategoryService con le dipendenze specificate.
 func NewCategoryService(repo categoryRepository, tx transactionRunner) *CategoryService {
 	return &CategoryService{Repo: repo, Tx: tx}
 }

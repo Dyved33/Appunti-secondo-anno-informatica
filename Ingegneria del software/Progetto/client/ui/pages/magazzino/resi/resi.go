@@ -102,7 +102,7 @@ func (m Model) View() tea.View {
 
 	// ── Gestione Caricamento ed Errori ──────────────────────────────────────
 	if m.loading {
-		sb.WriteString("Caricamento registro resi in corso...\n")
+		sb.WriteString("Caricamento registro resi in corso...\n\n")
 		return tea.NewView(sb.String())
 	}
 	if m.err != nil {

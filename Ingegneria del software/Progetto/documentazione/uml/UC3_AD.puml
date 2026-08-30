@@ -1,0 +1,83 @@
+@startuml UC3_AD
+
+scale 3
+
+skinparam activity {
+  BackgroundColor #FAFAFA
+  BorderColor #333333
+  ArrowColor #555555
+  DiamondBackgroundColor #FFF9E6
+  DiamondBorderColor #B8860B
+}
+
+|Contabile|
+start
+:Sceglie sezione da gestire;
+
+if (Ordini & Listini?) then (sì)
+  if (Crea Ordine Entrata?) then (sì)
+    :Crea nuovo Ordine Entrata;
+
+    repeat
+      :Aggiunge riga (prodotto, quantità);
+    repeat while (altri prodotti?) is (sì)
+    ->no;
+
+    :Conferma ordine;
+
+    |Sistema|
+    :Registra Ordine Entrata;
+
+    |Contabile|
+    :Visualizza conferma;
+  else (no)
+    if (Crea Ordine Uscita?) then (sì)
+      :Crea nuovo Ordine Uscita;
+
+      repeat
+        :Aggiunge riga (prodotto, quantità);
+      repeat while (altri prodotti?) is (sì)
+      ->no;
+
+      :Conferma ordine;
+
+      |Sistema|
+      :Registra Ordine Uscita;
+
+      |Contabile|
+      :Visualizza conferma;
+    else (no — Aggiorna Listino Prezzi)
+      |Sistema|
+      :Carica e mostra catalogo prodotti (listino);
+
+      |Contabile|
+      :Seleziona prodotto;
+      :Inserisce nuovo prezzo;
+
+      |Sistema|
+      :Aggiorna prezzo prodotto;
+
+      |Contabile|
+      :Visualizza conferma;
+    endif
+  endif
+
+else (no)
+  if (Fatture?) then (sì)
+    |Sistema|
+    :Carica e mostra elenco fatture;
+
+    |Contabile|
+    :Visualizza fatture;
+  else (no — Catalogo)
+    |Sistema|
+    :Carica e mostra catalogo prodotti;
+
+    |Contabile|
+    :Visualizza catalogo;
+  endif
+endif
+
+stop
+
+@enduml

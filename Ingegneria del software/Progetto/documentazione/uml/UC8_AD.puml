@@ -1,0 +1,111 @@
+@startuml UC8_AD
+
+scale 3
+
+skinparam activity {
+  BackgroundColor #FAFAFA
+  BorderColor #333333
+  ArrowColor #555555
+  DiamondBackgroundColor #FFF9E6
+  DiamondBorderColor #B8860B
+}
+
+|Admin|
+start
+:Sceglie sezione da gestire;
+
+if (Merci?) then (sì)
+  |Sistema|
+  :Carica e mostra merci con valore totale;
+
+  |Admin|
+  if (vuole agire su un prodotto?) then (sì)
+    :Seleziona prodotto;
+
+    if (Modifica?) then (sì)
+      :Inserisce nuovi dati;
+
+      |Sistema|
+      :Aggiorna prodotto;
+
+    else (no — Elimina)
+      |Sistema|
+      :Elimina prodotto;
+    endif
+
+    |Admin|
+    :Visualizza conferma;
+  endif
+
+else (no)
+  if (Fatture?) then (sì)
+    |Sistema|
+    :Carica e mostra elenco fatture;
+
+    |Admin|
+    if (vuole eliminare una fattura?) then (sì)
+      :Seleziona fattura;
+
+      |Sistema|
+      :Elimina fattura;
+
+      |Admin|
+      :Visualizza conferma;
+    endif
+
+  else (no)
+    if (Ordini?) then (sì)
+      |Sistema|
+      :Carica e mostra elenco ordini di uscita;
+
+      |Admin|
+      if (vuole agire su un ordine?) then (sì)
+        :Seleziona un ordine non ancora evaso;
+
+        if (Generare DDT?) then (sì)
+          |Sistema|
+          :Genera DDT;
+          :Imposta stato ordine = evaso;
+
+          |Admin|
+          :Visualizza DDT;
+        else (no — Aggiornare stato/dettagli)
+          |Sistema|
+          :Aggiorna ordine di uscita;
+
+          |Admin|
+          :Visualizza conferma;
+        endif
+      endif
+
+    else (no — Resi)
+      |Sistema|
+      :Carica e mostra elenco resi;
+
+      |Admin|
+      :Seleziona un reso;
+      :Verifica fisicamente la merce;
+
+      |Sistema|
+      :Incrementa giacenze per ogni riga del reso;
+      :Imposta stato Reso = accettato;
+
+      |Admin|
+      if (merce risolta conforme?) then (sì)
+        :Visualizza conferma;
+      else (no — rifiuto del reso già accettato)
+        |Sistema|
+        :Decrementa (ripristina) giacenze\nper ogni riga del reso;
+        :Imposta stato Reso = rifiutato;
+
+        |Admin|
+        :Visualizza conferma rifiuto;
+      endif
+    endif
+  endif
+endif
+
+stop
+
+@enduml
+

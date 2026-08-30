@@ -4697,7 +4697,8 @@ In pratica, ciò avviene tipicamente quando una modifica viene condivisa nel rep
 
 L'intero processo avviene in modo automatico: 
 - l'esecuzione segue sempre le stesse regole; 
-- i risultati sono ripetibili e indipendenti dalle persone.   
+- i risultati sono ripetibili e indipendenti dalle persone.  
+
 **Collegamento con Git:** Nel flusso di lavoro visto con Git, una modifica diventa “parte della storia” quando viene registrata con un commit. In un contesto collaborativo, i commit vengono poi condivisi su un repository remoto, rendendo la modifica visibile anche ad altri. La CI si inserisce esattamente in questo passaggio: 
 - ogni modifica condivisa può attivare automaticamente una verifica; 
 - build e test vengono eseguiti con regole sempre uguali per tutti; 

@@ -13,11 +13,7 @@ compile:
 	@mkdir -p $(BIN_DIR)
 	cd server && go build -o ../$(BIN_DIR)/$(BINARY_NAME) ./cmd/gialosai
 	@echo "Compilazione completata! Eseguibile generato in: $(BIN_DIR)/$(BINARY_NAME)"
-
-run: compile
-	@echo "Avvio dell'applicazione..."
-	$(BIN_DIR)/$(BINARY_NAME)
-
+	
 test:
 	@echo "Esecuzione dei Test di Unità..."
 	cd client && go test -v ./...
@@ -29,4 +25,4 @@ clean:
 	rm -rf $(BIN_DIR)
 	@echo "Pulizia completata!"
 
-.PHONY: all compile run test clean
+.PHONY: all compile test clean

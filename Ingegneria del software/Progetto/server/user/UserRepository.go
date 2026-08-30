@@ -7,7 +7,7 @@ import (
 	"github.com/tommasogarofani/ingsw_25-26_group-11/server/domain"
 )
 
-// questa struct serve per accedere al database e gestire le operazioni CRUD sugli utenti.
+// UserRepository accede al database e gestisce le operazioni CRUD sugli utenti.
 type UserRepository struct {
 	DB *sql.DB
 }
@@ -17,8 +17,9 @@ func NewUserRepository(database *sql.DB) *UserRepository {
 	return &UserRepository{DB: database}
 }
 
-// GetByUsername recupera un utente dal database usando il suo username come chiave. Restituisce l'oggetto Utente se trovato, altrimenti un errore di credenziali errate.
-// è l'equivalente di Read in un CRUD convenzionale
+// UserRepository_GetByUsername recupera un utente dal database usando il suo
+// username come chiave (equivalente del Read in un CRUD convenzionale).
+// Restituisce l'oggetto Utente se trovato, altrimenti un errore.
 func (r *UserRepository) UserRepository_GetByUsername(ctx context.Context, username string) (*domain.Utente, error) {
 	exec := domain.GetExecutor(ctx, r.DB) // serve per ottenere il corretto executor (DB o transazione) dal contesto
 	query := `SELECT id, username, password_hash, ruolo, tentativi_falliti, bloccato, created_at 
@@ -41,7 +42,7 @@ func (r *UserRepository) UserRepository_GetByUsername(ctx context.Context, usern
 	return &u, nil
 }
 
-// Update modifica i dati di un utente esistente nel database
+// UserRepository_Update modifica i dati di un utente esistente nel database.
 func (r *UserRepository) UserRepository_Update(ctx context.Context, u *domain.Utente) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `UPDATE Utenti SET username = ?, password_hash = ?, ruolo = ?, tentativi_falliti = ?, bloccato = ? WHERE id = ?`
@@ -49,7 +50,8 @@ func (r *UserRepository) UserRepository_Update(ctx context.Context, u *domain.Ut
 	return err
 }
 
-// Create inserisce un nuovo utente nel database (assegna automaticamente l'ID generato dal database all'oggetto Utente passato)
+// UserRepository_Create inserisce un nuovo utente nel database e assegna
+// all'oggetto Utente l'ID auto-generato dal database.
 func (r *UserRepository) UserRepository_Create(ctx context.Context, u *domain.Utente) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Utenti (username, password_hash, ruolo, tentativi_falliti, bloccato, created_at)
@@ -66,7 +68,9 @@ func (r *UserRepository) UserRepository_Create(ctx context.Context, u *domain.Ut
 	return nil
 }
 
-func(r *UserRepository) UserRepository_Delete(ctx context.Context, u *domain.Utente) error{
+// UserRepository_Delete elimina dal database l'utente fornito, identificandolo
+// tramite il suo ID.
+func (r *UserRepository) UserRepository_Delete(ctx context.Context, u *domain.Utente) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `DELETE FROM Utenti WHERE id = ?`
 	_, err := exec.ExecContext(ctx, query, u.ID)

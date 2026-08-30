@@ -15,7 +15,10 @@ type Model struct {
 	report            *api.InventoryReport
 	filtroSottoSoglia bool
 	cursore           int
-	offset            int // pagina corrente nella tabella
+	offset            int // prima riga visibile nella finestra di scorrimento
+
+	winW int
+	winH int
 
 	loading bool
 	err     error

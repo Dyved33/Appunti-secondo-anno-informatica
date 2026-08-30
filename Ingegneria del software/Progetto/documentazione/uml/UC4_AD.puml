@@ -1,0 +1,32 @@
+@startuml UC4_AD
+
+skinparam activity {
+  BackgroundColor #FAFAFA
+  BorderColor #333333
+  ArrowColor #555555
+  DiamondBackgroundColor #FFF9E6
+  DiamondBorderColor #B8860B
+}
+
+|Magazziniere|
+start
+:Apre la sezione Ordini di Uscita;
+
+|Sistema|
+:Carica e mostra l'elenco degli ordini di uscita\ncon il relativo stato;
+
+|Magazziniere|
+:Seleziona un ordine non ancora evaso\n(confermato, senza DDT associato);
+:Visualizza dettaglio ordine;
+:Richiede generazione DDT;
+
+|Sistema|
+:Genera documento DDT;
+:Imposta stato OrdineUscita = evaso;
+
+|Magazziniere|
+:Visualizza DDT generato;
+
+stop
+
+@enduml

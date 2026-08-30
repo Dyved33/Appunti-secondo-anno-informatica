@@ -72,6 +72,7 @@ type FatturaDTO struct {
 	PathPDF        string    `json:"path_pdf"`
 }
 
+// ResoDTO rappresenta i dati di un reso (restituzione merce) nelle richieste e risposte.
 type ResoDTO struct {
 	ID             int       `json:"id"`
 	OrdineUscitaID int       `json:"ordine_uscita_id"`

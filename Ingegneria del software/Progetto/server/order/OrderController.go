@@ -38,10 +38,13 @@ type orderService interface {
 	OrderService_DeleteFattura(ctx context.Context, fatturaID int) error
 }
 
+// OrderController espone i metodi di gestione di ordini (entrata e uscita),
+// DDT, resi e fatture, delegando la logica di business al service iniettato.
 type OrderController struct {
 	Service orderService
 }
 
+// NewOrderController crea un nuovo OrderController con il service specificato.
 func NewOrderController(svc orderService) *OrderController {
 	return &OrderController{Service: svc}
 }
@@ -99,6 +102,11 @@ func (c *OrderController) OrderController_GetOrdiniEntrata(ctx context.Context) 
 
 	var dtoList []OrdineUscitaDTO
 	for _, o := range orders {
+		detail, err := c.Service.OrderService_GetOrdiniEntrataById(ctx, o.ID)
+		if err != nil {
+			return nil, err
+		}
+
 		dto := OrdineUscitaDTO{
 			ID:          o.ID,
 			Numero:      o.Numero,
@@ -107,12 +115,23 @@ func (c *OrderController) OrderController_GetOrdiniEntrata(ctx context.Context) 
 			Note:        o.Note,
 			CreatedByID: o.CreatedByID,
 		}
+		if detail != nil {
+			dto.Righe = make([]RigaOrdineUscitaDTO, 0, len(detail.Righe))
+			for _, r := range detail.Righe {
+				dto.Righe = append(dto.Righe, RigaOrdineUscitaDTO{
+					ID:             r.ID,
+					ProdottoID:     r.ProdottoID,
+					Quantita:       r.Quantita,
+					PrezzoUnitario: r.PrezzoUnitario,
+				})
+			}
+		}
 		dtoList = append(dtoList, dto)
 	}
 	return dtoList, nil
 }
 
-// recupera tutti gli ordini di entrata in base all'ID dell'ordine.
+// OrderController_GetOrdiniEntrataById recupera un ordine di entrata in base al suo ID.
 func (c *OrderController) OrderController_GetOrdiniEntrataById(ctx context.Context, id int) (*OrdineUscitaDTO, error) {
 	order, err := c.Service.OrderService_GetOrdiniEntrataById(ctx, id)
 	if err != nil {
@@ -130,6 +149,7 @@ func (c *OrderController) OrderController_GetOrdiniEntrataById(ctx context.Conte
 	return &dto, nil
 }
 
+// OrderController_DeleteOrdineEntrata elimina un ordine di entrata in base al suo ID.
 func (c *OrderController) OrderController_DeleteOrdineEntrata(ctx context.Context, id int) error {
 	order, err := c.Service.OrderService_GetOrdiniEntrataById(ctx, id)
 	if err != nil {
@@ -204,6 +224,8 @@ func (c *OrderController) OrderController_GetOrdersByStatus(ctx context.Context,
 	return dtoList, nil
 }
 
+// OrderController_UpdateOrdineUscita aggiorna i dati e lo stato di un ordine di uscita,
+// inclusa la sostituzione delle relative righe.
 func (c *OrderController) OrderController_UpdateOrdineUscita(ctx context.Context, id int, input OrdineUscitaDTO) error {
 	order, err := c.Service.OrderService_GetOrdiniUscitaById(ctx, id)
 	if err != nil {
@@ -230,6 +252,7 @@ func (c *OrderController) OrderController_UpdateOrdineUscita(ctx context.Context
 	return c.Service.OrderService_UpdateOrdineUscita(ctx, order)
 }
 
+// OrderController_DeleteOrdineUscita elimina un ordine di uscita in base al suo ID.
 func (c *OrderController) OrderController_DeleteOrdineUscita(ctx context.Context, id int) error {
 	order, err := c.Service.OrderService_GetOrdiniUscitaById(ctx, id)
 	if err != nil {
@@ -265,12 +288,16 @@ func (c *OrderController) OrderController_CreateReturn(ctx context.Context, req 
 		OrdineUscitaID: req.OrdineUscitaID,
 		ProdottoID:     req.ProdottoID,
 		Quantita:       req.Quantita,
+		Stato:          domain.StatoReso(req.Stato),
 		Motivo:         req.Motivo,
 		CreatedByID:    req.CreatedByID,
 	}
 	return c.Service.OrderService_CreateReso(ctx, r)
 }
 
+// OrderController_UpdateStatoReso aggiorna lo stato di un reso in base al nuovo stato
+// accettato ("da_verificare", "approvato", "rifiutato"). Se lo stato non è tra questi,
+// non esegue alcuna operazione.
 func (c *OrderController) OrderController_UpdateStatoReso(ctx context.Context, resoID int, newStato string) error {
 	switch newStato {
 	case "da_verificare":
@@ -289,6 +316,7 @@ func (c *OrderController) OrderController_GetReturns(ctx context.Context) ([]Res
 	return c.Service.OrderService_GetAllResi(ctx)
 }
 
+// OrderController_DeleteReso elimina un reso in base al suo ID.
 func (c *OrderController) OrderController_DeleteReso(ctx context.Context, resoID int) error {
 	return c.Service.OrderService_DeleteReso(ctx, resoID)
 }
@@ -303,9 +331,10 @@ func (c *OrderController) OrderController_GeneraFattura(ctx context.Context, ord
 	return c.OrderController_FatturaToDTO(*f), nil
 }
 
+// OrderController_DeleteFattura elimina una fattura in base al suo ID.
 func (c *OrderController) OrderController_DeleteFattura(ctx context.Context, fatturaID int) error {
 	return c.Service.OrderService_DeleteFattura(ctx, fatturaID)
-}	
+}
 
 // GeneraNotaCredito genera una nota di credito per un ordine evaso o stornato.
 func (c *OrderController) OrderController_GeneraNotaCredito(ctx context.Context, orderID int) (FatturaDTO, error) {
@@ -345,6 +374,7 @@ func (c *OrderController) OrderController_GetCreditNotes(ctx context.Context) ([
 	return result, nil
 }
 
+// OrderController_FatturaToDTO converte una Fattura del dominio nel corrispondente DTO.
 func (c *OrderController) OrderController_FatturaToDTO(f domain.Fattura) FatturaDTO {
 	return FatturaDTO{
 		ID:             f.ID,

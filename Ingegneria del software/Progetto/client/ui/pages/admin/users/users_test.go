@@ -2,6 +2,7 @@
 package users
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -525,3 +526,186 @@ func TestUsersDeleteErrorKeepsUser(t *testing.T) {
 		t.Fatalf("errore inatteso: %v", model.err)
 	}
 }
+
+// TestUsers_Init verifica che Init restituisca il comando di focus per searchUsername.
+func TestUsers_Init(t *testing.T) {
+	t.Parallel()
+
+	m := New(&api.APIClient{})
+	cmd := m.Init()
+	if cmd == nil {
+		t.Error("Init() dovrebbe restituire un tea.Cmd di focus non nil")
+	}
+}
+
+// TestUsers_ResetPasswordFlow verifica il flusso completo di reset password (ctrl+p, validazioni, submit e annullamento).
+func TestUsers_ResetPasswordFlow(t *testing.T) {
+	t.Parallel()
+
+	var updatedPwd string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var input api.UserUpdateInput
+		_ = json.NewDecoder(r.Body).Decode(&input)
+		updatedPwd = input.Password
+		_ = json.NewEncoder(w).Encode(api.User{Username: "mario"})
+	}))
+	defer srv.Close()
+
+	m := New(api.New(srv.URL))
+	m.user = &api.User{ID: 1, Username: "mario"}
+
+	// Entra in reset password con ctrl+p
+	res, _ := m.Update(tea.KeyPressMsg{Code: 'p', Mod: tea.ModCtrl})
+	model := unwrapModel(t, res)
+	if model.mode != modeResetPassword {
+		t.Fatal("attesa modalità modeResetPassword dopo ctrl+p")
+	}
+
+	// Validazione campi vuoti
+	res, _ = model.Update(tea.KeyPressMsg{Code: tea.KeyEnter})
+	model = unwrapModel(t, res)
+	if model.err == nil || !strings.Contains(model.err.Error(), "obbligatori") {
+		t.Errorf("atteso errore campi obbligatori, ottenuto: %v", model.err)
+	}
+
+	// Password mismatch
+	model.resetPassword.SetValue("pass123")
+	model.resetConferma.SetValue("pass456")
+	res, _ = model.Update(tea.KeyPressMsg{Code: tea.KeyEnter})
+	model = unwrapModel(t, res)
+	if model.err == nil || !strings.Contains(model.err.Error(), "coincidono") {
+		t.Errorf("atteso errore password non coincidenti, ottenuto: %v", model.err)
+	}
+
+	// Navigazione campi con tab, down, up, shift+tab
+	res, _ = model.Update(tea.KeyPressMsg{Code: tea.KeyTab})
+	model = unwrapModel(t, res)
+	if model.resetFocus != 1 {
+		t.Errorf("atteso focus a 1 dopo tab, ottenuto %d", model.resetFocus)
+	}
+	res, _ = model.Update(tea.KeyPressMsg{Code: tea.KeyUp})
+	model = unwrapModel(t, res)
+	if model.resetFocus != 0 {
+		t.Errorf("atteso focus a 0 dopo up, ottenuto %d", model.resetFocus)
+	}
+
+	// Submit valido
+	model.resetPassword.SetValue("nuovapass")
+	model.resetConferma.SetValue("nuovapass")
+	res, cmd := model.Update(tea.KeyPressMsg{Code: tea.KeyEnter})
+	model = unwrapModel(t, res)
+	if cmd == nil {
+		t.Fatal("atteso cmd di reset password")
+	}
+
+	msg := cmd()
+	resetMsg, ok := msg.(userPasswordResetMsg)
+	if !ok {
+		t.Fatalf("atteso userPasswordResetMsg, ottenuto %T", msg)
+	}
+
+	res, _ = model.Update(resetMsg)
+	model = unwrapModel(t, res)
+	if model.mode != modeSearch || !strings.Contains(model.success, "reimpostata") {
+		t.Errorf("stato o messaggio inatteso dopo reset password: %s", model.success)
+	}
+	if updatedPwd != "nuovapass" {
+		t.Errorf("password inviata al server errata: %s", updatedPwd)
+	}
+
+	// Annullamento con esc
+	m.user = &api.User{ID: 1, Username: "mario"}
+	res, _ = m.Update(tea.KeyPressMsg{Code: 'p', Mod: tea.ModCtrl})
+	model = unwrapModel(t, res)
+	res, _ = model.Update(tea.KeyPressMsg{Code: tea.KeyEscape})
+	model = unwrapModel(t, res)
+	if model.mode != modeSearch {
+		t.Error("esc deve riportare a modeSearch")
+	}
+}
+
+// TestUsers_NullUserShortcuts verifica che le shortcut ctrl+e, ctrl+b, ctrl+p, ctrl+d e ctrl+r non facciano nulla se user == nil.
+func TestUsers_NullUserShortcuts(t *testing.T) {
+	t.Parallel()
+
+	m := New(&api.APIClient{})
+	m.user = nil
+
+	for _, key := range []rune{'e', 'b', 'p', 'd', 'r'} {
+		res, cmd := m.Update(tea.KeyPressMsg{Code: key, Mod: tea.ModCtrl})
+		model := unwrapModel(t, res)
+		if cmd != nil || model.mode != modeSearch {
+			t.Errorf("ctrl+%c con user nil non doveva produrre azioni", key)
+		}
+	}
+}
+
+// TestUsers_ReloadUser verifica ctrl+r per ricaricare un utente esistente.
+func TestUsers_ReloadUser(t *testing.T) {
+	t.Parallel()
+
+	m := New(&api.APIClient{})
+	m.user = &api.User{ID: 1, Username: "mario"}
+
+	res, cmd := m.Update(tea.KeyPressMsg{Code: 'r', Mod: tea.ModCtrl})
+	model := unwrapModel(t, res)
+	if cmd == nil || !model.loading {
+		t.Error("ctrl+r con user esistente deve avviare il caricamento")
+	}
+}
+
+// TestUsers_EditValidation verifica l'errore di validazione nel form di modifica se username è vuoto.
+func TestUsers_EditValidation(t *testing.T) {
+	t.Parallel()
+
+	m := New(&api.APIClient{})
+	m.user = &api.User{ID: 1, Username: "mario", Ruolo: "admin"}
+
+	res, _ := m.Update(tea.KeyPressMsg{Code: 'e', Mod: tea.ModCtrl})
+	model := unwrapModel(t, res)
+	model.editUsername.SetValue("")
+
+	res, _ = model.Update(tea.KeyPressMsg{Code: tea.KeyEnter})
+	model = unwrapModel(t, res)
+	if model.err == nil || !strings.Contains(model.err.Error(), "non valido") {
+		t.Errorf("atteso errore username non valido, ottenuto %v", model.err)
+	}
+}
+
+// TestUsers_HelpersAndCursors verifica le funzioni ausiliarie indexRuolo, tronca e i cursori.
+func TestUsers_HelpersAndCursors(t *testing.T) {
+	t.Parallel()
+
+	// indexRuolo
+	if idx := indexRuolo("admin"); idx < 0 || ruoliDisponibili[idx] != "admin" {
+		t.Errorf("indexRuolo('admin') errato: %d", idx)
+	}
+	if idx := indexRuolo("ruolo_inesistente"); idx != 0 {
+		t.Errorf("indexRuolo per ruolo inesistente atteso 0, ottenuto %d", idx)
+	}
+
+	// tronca
+	if got := tronca("Corto", 10); got != "Corto" {
+		t.Errorf("tronca('Corto', 10) = %q", got)
+	}
+	if got := tronca("StringaMoltoLunga", 8); got != "Strin..." {
+		t.Errorf("tronca('StringaMoltoLunga', 8) = %q", got)
+	}
+	if got := tronca("ABCDEF", 2); got != "AB" {
+		t.Errorf("tronca('ABCDEF', 2) = %q", got)
+	}
+
+	// Cursori
+	m := New(&api.APIClient{})
+	_ = m.currentCreateCursor()
+	_ = m.currentEditCursor()
+	_ = m.currentResetCursor()
+
+	// WindowSizeMsg
+	res, cmd := m.Update(tea.WindowSizeMsg{Width: 100, Height: 40})
+	if cmd != nil {
+		t.Error("cmd atteso nil su WindowSizeMsg")
+	}
+	_ = res
+}
+

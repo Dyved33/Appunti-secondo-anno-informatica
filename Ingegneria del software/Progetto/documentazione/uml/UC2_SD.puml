@@ -1,0 +1,38 @@
+@startuml UC2_SD
+
+skinparam sequence {
+  ArrowColor      #555555
+  ParticipantBackgroundColor #FAFAFA
+  ParticipantBorderColor #333333
+  ActorBackgroundColor #E8F4FD
+  ActorBorderColor #2980B9
+}
+
+actor    "Magazziniere"      as Mag
+boundary "ui:UI"             as UI
+control  "svc:OrdineService" as OrdSvc
+
+' ── Visualizzazione elenco ───────────────────────────
+Mag -> UI : apriSezioneOrdini()
+activate UI
+
+UI -> OrdSvc : getOrdini()
+activate OrdSvc
+OrdSvc --> UI : listaOrdini
+deactivate OrdSvc
+
+UI --> Mag : mostraElencoOrdini(listaOrdini)
+
+' ── Visualizzazione dettaglio ────────────────────────
+Mag -> UI : selezionaOrdine(ordine)
+
+UI -> OrdSvc : getDettaglioOrdine(ordine.id)
+activate OrdSvc
+OrdSvc --> UI : dettaglioOrdine
+deactivate OrdSvc
+
+UI --> Mag : mostraDettaglioOrdine(dettaglioOrdine)
+deactivate UI
+
+@enduml
+

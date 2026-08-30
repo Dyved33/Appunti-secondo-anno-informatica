@@ -4,18 +4,20 @@
 
 \begin{document}
 
-\gialosaiTitlePage{Decision Log}{25 Agosto 2026}{v2.0.0}
+\gialosaiTitlePage{Decision Log}{v2.0.0}
 
 \section*{Convenzione}
-Ogni decisione \`{e} documentata con: contesto, alternativa scelta, alternative considerate (con confronto tecnico), motivazione della scelta e conseguenze sull'implementazione. Le alternative sono ordinate per vicinanza alla scelta effettiva.
+Ogni decisione \`{e} documentata con: ID e data, contesto, alternativa scelta, alternative considerate (con confronto tecnico), motivazione della scelta e conseguenze sull'implementazione. Le alternative sono ordinate per vicinanza alla scelta effettiva. La data \`{e} ricavata dalla cronologia Git dei commit che hanno introdotto o aggiornato la decisione nel presente documento; per decisioni scritte nella stessa sessione di lavoro corrisponde quindi al commit di aggiornamento del file, non necessariamente al momento esatto della scelta tecnica sottostante.
 
 \newpage
 
+% ============================================================
 % ============================================================
 % DC-001
 % ============================================================
 \begin{decisionbox}
 \section*{DC-001 --- Framework per l'interfaccia testuale (TUI)}
+\textbf{Data:} 29 Maggio 2026\\
 \textbf{Decisione.} Il client \`{e} una TUI Go basata su \textbf{Bubble Tea v2} (Model--View--Update) con \textbf{Lipgloss v2} per lo stile.
 \end{decisionbox}
 
@@ -26,7 +28,7 @@ Il progetto richiede un'interfaccia utente eseguibile da terminale, senza dipend
 
 \subsection*{Alternative considerate}
 
-\begin{longtable}{p{0.18\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\begin{longtable}{@{} L{0.24\textwidth} L{0.35\textwidth} L{0.35\textwidth} @{}}
 \toprule
 \tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
 \midrule
@@ -36,7 +38,7 @@ Il progetto richiede un'interfaccia utente eseguibile da terminale, senza dipend
 \midrule
 \endhead
 
-Bubble Tea (scelta) & Architettura MVU ben definita; ecosistema Charm ricco (Lipgloss, Bubbles, Bubbles/Table); comunit\`{a} attiva; supporto nativo a mouse, AltScreen e window resize; v2 con API stabilizzata; heatingcooling con modello funzionale puro. & Learning curve iniziale per il paradigm MVU; dipendenza dall'ecosistema Charm; v2 ancora recente (possibili breaking change). \\
+Bubble Tea (scelta) & Architettura MVU ben definita; ecosistema Charm ricco (Lipgloss, Bubbles, Bubbles/Table); comunit\`{a} attiva; supporto nativo a mouse, AltScreen e window resize; v2 con API stabilizzata; modello funzionale puro. & Learning curve iniziale per il paradigma MVU; dipendenza dall'ecosistema Charm; v2 ancora recente (possibili breaking change). \\
 \midrule
 
 tview & Interfaccia a widget pronti (table, list, form, modal); supporto scroll e mouse; simile ad Android View; documentazione semplice. & Architettura ad oggetti con mutabilit\`{a} diffusa; meno flessibile per layout personalizzati; stile visivo pi\`{u} datato; comunit\`{a} pi\`{u} piccola; nessun sistema di styling separato. \\
@@ -45,7 +47,7 @@ tview & Interfaccia a widget pronti (table, list, form, modal); supporto scroll 
 termui & Leggero, senza dipendenze esterne; API minimale; buono per dashboard semplici. & Nessun sistema di layout dichiarativo; gestione manuale dello stato; nessun supporto a widget complessi (tabelle, form); manutenzione ridotta. \\
 \midrule
 
-\texttt{os/exec} + input raw & Nessuna dipendenza; controllo totale su byte-level del terminale. & Implementazione manuale di ANSI escape codes; nessuna astrazione di layout; testabilit\`{a} quasi nulla; codice non manutenibile. \\
+{\small\texttt{os/exec}} +\allowbreak input raw & Nessuna dipendenza; controllo totale su byte-level del terminale. & Implementazione manuale di ANSI escape codes; nessuna astrazione di layout; testabilit\`{a} quasi nulla; codice non manutenibile. \\
 \bottomrule
 \end{longtable}
 
@@ -60,8 +62,10 @@ Tutte le pagine seguono il pattern \texttt{Init/Update/View}. Lo stile \`{e} cen
 % ============================================================
 % DC-002
 % ============================================================
+\newpage
 \begin{decisionbox}
 \section*{DC-002 --- Router HTTP per il server}
+\textbf{Data:} 29 Maggio 2026\\
 \textbf{Decisione.} Il server usa \textbf{chi} (v5.3.0) come router HTTP.
 \end{decisionbox}
 
@@ -72,7 +76,7 @@ Il backend Go deve esporre un insieme di rotte REST organizzate per area di domi
 
 \subsection*{Alternative considerate}
 
-\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\begin{longtable}{@{} L{0.24\textwidth} L{0.35\textwidth} L{0.35\textwidth} @{}}
 \toprule
 \tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
 \midrule
@@ -91,7 +95,7 @@ gin-gonic & Performance estremamente alte (radix tree); binding JSON integrato; 
 echo & Performance alte; middleware chain; routing con group; validazione; OpenAPI automatico. & \texttt{*echo.Context} wrapper proprietario; meno trasparente di chi per il passaggio di contesto; community leggermente pi\`{u} piccola di gin/chi. \\
 \midrule
 
-\texttt{net/http} puro & Nessuna dipendenza; controllo totale; stdlib. & Routing manuale con \texttt{ServeMux} (limitato prima di Go 1.22); nessun supporto a parametri URL nativo; codice boilerplate elevato; nessun middleware chain organizzato. \\
+{\small\texttt{net/http}} puro & Nessuna dipendenza; controllo totale; stdlib. & Routing manuale con \texttt{ServeMux} (limitato prima di Go 1.22); nessun supporto a parametri URL nativo; codice boilerplate elevato; nessun middleware chain organizzato. \\
 \bottomrule
 \end{longtable}
 
@@ -101,13 +105,14 @@ chi \`{e} un wrapper leggero di \texttt{net/http}: le rotte sono handler standar
 \gialosaiNote{Il pattern di chi \`{e} lo stesso utilizzato da \texttt{docker} (che usa \texttt{mux} di stdlib) e \texttt{kubectl} (che usa \texttt{cobra} per CLI e \texttt{net/http} per API). La scelta di chi rappresenta un compromesso ottimale tra semplicit\`{a} e funzionalit\`{a}.}
 
 \subsection*{Conseguenze}
-Il router \`{e} composto in \texttt{router.NewRouter} dove vengono creati tutti i repository, service e controller. Le rotte protette usano \texttt{r.Group()} con \texttt{middleware.NewAuthMiddleware(sessionRepo)}. I parametri URL (es. \texttt{\{username\}}, \texttt{\{order\_id\}}) vengono estratti con \texttt{chi.URLParam}.
+Il router \`{e} composto in \texttt{router.NewRouter} dove vengono creati tutti i repository, service e controller. Le rotte protette usano \texttt{r.Group()} con \texttt{middleware.}\allowbreak\texttt{NewAuthMiddleware}\allowbreak\texttt{(sessionRepo)}. I parametri URL (es. \texttt{\{username\}}, \texttt{\{order\_id\}}) vengono estratti con \texttt{chi.URLParam}.
 
 % ============================================================
 % DC-003
 % ============================================================
 \begin{decisionbox}
 \section*{DC-003 --- Database relazionale}
+\textbf{Data:} 29 Maggio 2026\\
 \textbf{Decisione.} Il sistema usa \textbf{MySQL 8.0} eseguito tramite Docker Compose, con driver \texttt{go-sql-driver/mysql}.
 \end{decisionbox}
 
@@ -118,7 +123,7 @@ Il sistema richiede un database relazionale condiviso multiutente, vincoli di in
 
 \subsection*{Alternative considerate}
 
-\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\begin{longtable}{@{} L{0.24\textwidth} L{0.35\textwidth} L{0.35\textwidth} @{}}
 \toprule
 \tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
 \midrule
@@ -145,13 +150,14 @@ MongoDB & Schema flessibile; scalabilit\`{a} orizzontale; JSON nativo. & Nessuna
 MySQL 8 con InnoDB \`{e} il compromesso ottimale: fornisce ACID, chiavi esterne, transazioni e \texttt{utf8mb4} con un'immagine Docker leggera e ben supportata. SQLite non supporta concorrenza multi-writer; PostgreSQL avrebbe aggiunto complessit\`{a} non necessaria; MongoDB \`{e} inadatto a un dominio relazionale con vincoli di integrit\`{a} forti (ogni prodotto ha una giacenza, le righe dipendono dagli ordini).
 
 \subsection*{Conseguenze}
-Lo schema \`{e} definito in \texttt{docker/mysql/init.sql} con InnoDB e \texttt{utf8mb4}. Docker Compose avvia MySQL sulla porta host 3307 con healthcheck. I repository usano \texttt{database/sql} con query parametrizzate. Le transazioni sono gestite da \texttt{TransactionHelper} che propagates nel contesto.
+Lo schema \`{e} definito in \texttt{docker/mysql/init.sql} con InnoDB e \texttt{utf8mb4}. Docker Compose avvia MySQL sulla porta host 3307 con healthcheck. I repository usano \texttt{database/sql} con query parametrizzate. Le transazioni sono gestite da \texttt{TransactionHelper} che le propaga nel contesto.
 
 % ============================================================
 % DC-004
 % ============================================================
 \begin{decisionbox}
 \section*{DC-004 --- Architettura a layer con Repository pattern}
+\textbf{Data:} 29 Maggio 2026\\
 \textbf{Decisione.} Il server \`{e} organizzato in layer: \textbf{router $\to$ controller $\to$ service $\to$ repository $\to$ domain}, con \textbf{Repository pattern} per l'accesso ai dati e dipendenze iniettate via interfacce.
 \end{decisionbox}
 
@@ -162,7 +168,7 @@ Le responsabilit\`{a} di trasporto HTTP, logica applicativa e persistenza SQL de
 
 \subsection*{Alternative considerate}
 
-\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\begin{longtable}{@{} L{0.24\textwidth} L{0.35\textwidth} L{0.35\textwidth} @{}}
 \toprule
 \tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
 \midrule
@@ -172,7 +178,7 @@ Le responsabilit\`{a} di trasporto HTTP, logica applicativa e persistenza SQL de
 \midrule
 \endhead
 
-Layer + Repository (scelta) & Separazione chiara delle responsabilit\`{a}; testabilit\`{a} con mock; coerenza con Dependency Inversion; ogni layer \`{e} sostituibile; modello standard per backend Go. & Pi\`{u} boilerplate (interfacce, iniezione); crescita del numero di file; rischio di ``service anemici'' se la logica si disperde. \\
+Layer +\allowbreak Repository (scelta) & Separazione chiara delle responsabilit\`{a}; testabilit\`{a} con mock; coerenza con Dependency Inversion; ogni layer \`{e} sostituibile; modello standard per backend Go. & Pi\`{u} boilerplate (interfacce, iniezione); crescita del numero di file; rischio di ``service anemici'' se la logica si disperde. \\
 \midrule
 
 MVC classico & Pattern noto; separazione model/view/controller. & La view \`{e} nel client separato; il controller HTTP non \`{e} un MVC; il pattern non si adatta alla separazione client/server. \\
@@ -196,8 +202,10 @@ Ogni area di dominio (\texttt{auth}, \texttt{user}, \texttt{product}, \texttt{ca
 % ============================================================
 % DC-005
 % ============================================================
+\newpage
 \begin{decisionbox}
-\section*{DC-005 --- Autenticazione JWT con sessione persistita}
+\section*{DC-005 --- Autenticazione JWT con sessione \\ persistita}
+\textbf{Data:} 29 Maggio 2026\\
 \textbf{Decisione.} Il server usa \textbf{JWT} (HS256, \texttt{golang-jwt/jwt/v5}) con una \textbf{whitelist di sessioni} nel database (\texttt{Sessioni}). Il token viene memorizzato come hash SHA-256, mai in chiaro.
 \end{decisionbox}
 
@@ -208,7 +216,7 @@ Il sistema deve autenticare le richieste HTTP, supportare logout, gestire la sca
 
 \subsection*{Alternative considerate}
 
-\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\begin{longtable}{@{} L{0.24\textwidth} L{0.35\textwidth} L{0.35\textwidth} @{}}
 \toprule
 \tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
 \midrule
@@ -227,7 +235,7 @@ JWT stateless (senza DB) & Nessuna query per richiesta; performance migliori; sc
 Sessioni classiche (cookie + DB) & Standard web; revoca semplice; non serve gestire JWT. & Dipendenza dai cookie; non \`{e} lo standard per API REST; problemi di CSRF; il client TUI deve gestire cookie manualmente. \\
 \midrule
 
-OAuth2 / OpenID Connect & Standard industriale; federazione; SSO. & Overkill per un sistema locale con 3 ruoli; infrastruttura complessa; dipendenza da provider esterno. \\
+OAuth2 /\allowbreak OpenID Connect & Standard industriale; federazione; SSO. & Overkill per un sistema locale con 3 ruoli; infrastruttura complessa; dipendenza da provider esterno. \\
 \bottomrule
 \end{longtable}
 
@@ -244,6 +252,7 @@ Il login genera un JWT con claim \texttt{user\_id}, \texttt{username}, \texttt{r
 % ============================================================
 \begin{decisionbox}
 \section*{DC-006 --- Password hashing con bcrypt}
+\textbf{Data:} 29 Maggio 2026\\
 \textbf{Decisione.} Le password sono hashate con \textbf{bcrypt} (\texttt{golang.org/x/crypto/bcrypt}, costo di default 10).
 \end{decisionbox}
 
@@ -254,7 +263,7 @@ Le password devono essere memorizzate in modo sicuro, senza testo in chiaro, res
 
 \subsection*{Alternative considerate}
 
-\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\begin{longtable}{@{} L{0.24\textwidth} L{0.35\textwidth} L{0.35\textwidth} @{}}
 \toprule
 \tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
 \midrule
@@ -270,7 +279,7 @@ bcrypt (scelta) & Lento per design (costo configurabile); resistente a rainbow t
 scrypt & Parametri configurabili (N, r, p); resistente a GPU/ASIC; usato in cryptocurrencies. & Parametri da calibrare; meno maturo di bcrypt;implementazioni Go meno note. \\
 \midrule
 
-argon2id & State-of-the-art ( Winner Password Hashing Competition); resistente a side-channel; parametri configurabili. & Pi\`{u} recente; meno supportato in librerie esterne; parametri da calibrare; ecosistema Go meno maturo. \\
+argon2id & State-of-the-art (Winner of the Password Hashing Competition); resistente a side-channel; parametri configurabili. & Pi\`{u} recente; meno supportato in librerie esterne; parametri da calibrare; ecosistema Go meno maturo. \\
 \midrule
 
 SHA-256 (nonsicuro) & Velocissimo; libreria stdlib. & Vulnerabile a rainbow table; nessun salt; non \`{e} un password hasher; reversibile con dictionary attack. \\
@@ -286,9 +295,11 @@ bcrypt \`{e} lo standard consolidato per il hashing delle password. Il costo di 
 % ============================================================
 % DC-007
 % ============================================================
+\newpage
 \begin{decisionbox}
 \section*{DC-007 --- TransactionHelper con contesto}
-\textbf{Decisione.} \texttt{domain.TransactionHelper} inserisce una transazione SQL nel \texttt{context.Context} della richiesta; i repository la estraggono e la usano quando disponibile, altrimenti aprono una connessione diretta tramite l'interfaccia \texttt{QueryExecutor}.
+\textbf{Data:} 14 Luglio 2026\\
+\textbf{Decisione.} \texttt{domain.TransactionHelper} inserisce una transazione SQL nel \texttt{context.Context} della richiesta; i repository la estraggono e la usano quando disponibile, altrimenti aprono una connessione diretta tramite l'interfaccia \\ \texttt{QueryExecutor}.
 \end{decisionbox}
 
 \subsection*{Contesto}
@@ -298,7 +309,7 @@ Operazioni come registrazione ordini, aggiornamento giacenze e generazione DDT r
 
 \subsection*{Alternative considerate}
 
-\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\begin{longtable}{@{} L{0.24\textwidth} L{0.35\textwidth} L{0.35\textwidth} @{}}
 \toprule
 \tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
 \midrule
@@ -308,10 +319,10 @@ Operazioni come registrazione ordini, aggiornamento giacenze e generazione DDT r
 \midrule
 \endhead
 
-Transaction-in-context (scelta) & Trasparente ai repository; rollback automatico; supporta nesting; i service non gestiscono \texttt{BEGIN/COMMIT} manualmente; testabile. & Uso di \texttt{context.WithValue} (type-safe only at boundary); debugging pi\`{u} complesso; invisibilit\`{a} implicita della transazione. \\
+Transaction-in-\allowbreak context (scelta) & Trasparente ai repository; rollback automatico; supporta nesting; i service non gestiscono \texttt{BEGIN/COMMIT} manualmente; testabile. & Uso di \texttt{context.WithValue} (type-safe only at boundary); debugging pi\`{u} complesso; invisibilit\`{a} implicita della transazione. \\
 \midrule
 
-Manuale (\texttt{tx, err := db.Begin()}) & Esplicito; facile da capire; debugging semplice. & Boilerplate in ogni service; rischio di dimenticare rollback; codice duplicato; difficile nesting. \\
+Manuale\newline({\small\texttt{tx, err := db.Begin()}}) & Esplicito; facile da capire; debugging semplice. & Boilerplate in ogni service; rischio di dimenticare rollback; codice duplicato; difficile nesting. \\
 \midrule
 
 ORM (GORM) & API ad alto livello; migration; callback pre/post. & Abstraction leak; SQL meno controllabile; dipendenza pesante; overhead per un progetto con schema noto. \\
@@ -329,17 +340,18 @@ Il pattern transaction-in-context \`{e} il pi\`{u} idoneo per un backend Go con 
 % ============================================================
 \begin{decisionbox}
 \section*{DC-008 --- Nomi delle pagine con iota}
+\textbf{Data:} 14 Luglio 2026\\
 \textbf{Decisione.} I nomi delle pagine della TUI sono definiti come costanti \texttt{iota} in un enum Go, anzich\'{e} come stringhe o interi manuali.
 \end{decisionbox}
 
 \subsection*{Contesto}
 Il router del client deve commutare tra decine di viste (login, magazzino, contabilit\`{a}, admin e sottopagine) in base al valore dello stato. La navigazione avviene tramite \texttt{switch} nel metodo \texttt{Update} e \texttt{View} del modello principale.
 
-\gialosaiNote{Il pattern di enum con \`{e} lo stesso utilizzato da \texttt{lazygit}, \texttt{k9s} e \texttt{btop} per la navigazione. Il sistema di navigazione a enum garantisce che il compilatore Go possa rilevare switch incompleti, aiutando a identificare pagine non gestite.}
+\gialosaiNote{Il pattern di enum con \texttt{iota}, \`{e} lo stesso utilizzato da \texttt{lazygit}, \texttt{k9s} e \texttt{btop} per la navigazione. Il sistema di navigazione a enum garantisce che il compilatore Go possa rilevare switch incompleti, aiutando a identificare pagine non gestite.}
 
 \subsection*{Alternative considerate}
 
-\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\begin{longtable}{@{} L{0.24\textwidth} L{0.35\textwidth} L{0.35\textwidth} @{}}
 \toprule
 \tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
 \midrule
@@ -373,6 +385,7 @@ L'enum \texttt{paginaAttiva} definisce \texttt{LOGIN}, \texttt{MAGMENU}, \texttt
 % ============================================================
 \begin{decisionbox}
 \section*{DC-009 --- Containerizzazione con Docker Compose}
+\textbf{Data:} 14 Luglio 2026\\
 \textbf{Decisione.} Il sistema \`{e} containerizzato con \textbf{Docker Compose} (due servizi: \texttt{db} per MySQL e \texttt{app} per il backend). Il Dockerfile del server usa un \textbf{multi-stage build} con builder Alpine e runtime distroless nonroot.
 \end{decisionbox}
 
@@ -383,7 +396,7 @@ Il server richiede MySQL e deve essere avviabile in modo riproducibile. Il datab
 
 \subsection*{Alternative considerate}
 
-\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\begin{longtable}{@{} L{0.24\textwidth} L{0.35\textwidth} L{0.35\textwidth} @{}}
 \toprule
 \tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
 \midrule
@@ -402,7 +415,7 @@ Avvio manuale (host) & Zero overhead; debugging diretto. & Installazione MySQL m
 Kubernetes & Orchestrazione scalabile; self-healing; rollbacks. & Complessit\`{a} enorme per un progetto universitario; necessita di cluster; overkill. \\
 \midrule
 
-Podman + Podman Compose & Alternativa rootless a Docker; compatibilit\`{a} Docker. & Community pi\`{u} piccola; meno tooling; meno supporto da parte delle CI/CD. \\
+Podman +\allowbreak Podman Compose & Alternativa rootless a Docker; compatibilit\`{a} Docker. & Community pi\`{u} piccola; meno tooling; meno supporto da parte delle CI/CD. \\
 \bottomrule
 \end{longtable}
 
@@ -415,8 +428,10 @@ Il \texttt{docker-compose.yml} definisce i servizi \texttt{db} (MySQL 8, porta 3
 % ============================================================
 % DC-010
 % ============================================================
+\newpage
 \begin{decisionbox}
 \section*{DC-010 --- Scanner come emulazione tastiera}
+\textbf{Data:} 14 Luglio 2026\\
 \textbf{Decisione.} Il lettore codici a barre EAN-13 \`{e} integrato come emulazione di tastiera: il terminale riceve la stringa come input sequenziale di caratteri, senza API dedicate o driver specifici.
 \end{decisionbox}
 
@@ -427,7 +442,7 @@ La TUI non pu\`{o} accedere a dispositivi USB direttamente. Il lettore fisico op
 
 \subsection*{Alternative considerate}
 
-\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\begin{longtable}{@{} L{0.24\textwidth} L{0.35\textwidth} L{0.35\textwidth} @{}}
 \toprule
 \tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
 \midrule
@@ -437,16 +452,13 @@ La TUI non pu\`{o} accedere a dispositivi USB direttamente. Il lettore fisico op
 \midrule
 \endhead
 
-Emulazione tastiera (scelta) & Nessun driver; trasparente alla TUI; funziona con qualsiasi lettore compatibile; zero configurazione. & Dipende dalla velocit\`{a} del lettore; rischio di input parziali se il terminale \`{e} lento; nessun feedback acustico/visivo integrato. \\
+Emulazione\allowbreak tastiera (scelta) & Nessun driver; trasparente alla TUI; funziona con qualsiasi lettore compatibile; zero configurazione. & Dipende dalla velocit\`{a} del lettore; rischio di input parziali se il terminale \`{e} lento; nessun feedback acustico/visivo integrato. \\
 \midrule
 
 API USB (libusb) & Controllo diretto del dispositivo; indipendente dal terminale. & Necessita di permessi USB; dipende dal modello di lettore; complessit\`{a} elevata; non portable. \\
 \midrule
 
 Protocollo seriale & Comunicazione diretta; feedack immediato. & Configurazione porta seriale; dipendenza dal modello; driver specifici. \\
-\midrule
-
-Input manuale da tastiera & Zero dipendenze. & Errore umano elevato; lento; non automatizzabile. \\
 \bottomrule
 \end{longtable}
 
@@ -461,17 +473,18 @@ La pagina scanner in \texttt{client/ui/pages/magazzino/scanner/} riceve l'input 
 % ============================================================
 \begin{decisionbox}
 \section*{DC-011 --- Blocco account dopo 3 tentativi}
+\textbf{Data:} 14 Luglio 2026\\
 \textbf{Decisione.} Il servizio utenti blocca automaticamente l'account dopo \textbf{3 tentativi di login falliti} consecutivi. L'account con username \texttt{admin} \`{e} esente dal blocco. Il ripristino avviene solo tramite un altro admin.
 \end{decisionbox}
 
 \subsection*{Contesto}
 Il sistema deve proteggersi da attacchi brute-force su una rete locale dove i tentativi di accesso non autorizzati sono un rischio concreto.
 
-\gialosaiNote{Il blocco dopo tentativi falliti \`{e} lo stesso approccio utilizzato da \texttt{ssh} (con \texttt{fail2ban}), \texttt{docker} (con rate limiting) e \texttt{github} (con blocco account). Il pattern \`{e} standard per sistemi che richiedono sicurezza su rete locale.}
+\gialosaiNote{Il blocco dopo 3 tentativi falliti \`{e} lo stesso approccio utilizzato da \texttt{ssh} (con \texttt{fail2ban}), \texttt{docker} (con rate limiting) e \texttt{github} (con blocco account). Il pattern \`{e} standard per sistemi che richiedono sicurezza su rete locale.}
 
 \subsection*{Alternative considerate}
 
-\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\begin{longtable}{@{} L{0.24\textwidth} L{0.35\textwidth} L{0.35\textwidth} @{}}
 \toprule
 \tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
 \midrule
@@ -505,7 +518,8 @@ La costante \texttt{MaxTentativiLogin = 3} \`{e} definita in \texttt{domain/cons
 % ============================================================
 \begin{decisionbox}
 \section*{DC-012 --- UML come sorgente unico delle immagini}
-\textbf{Decisione.} I diagrammi UML sono mantenuti come sorgenti PlantUML in \texttt{documentazione/uml/}; le immagini PNG in \texttt{documentazione/img/} sono esportazioni generate da questi sorgenti.
+\textbf{Data:} 14 Luglio 2026\\
+\textbf{Decisione.} I diagrammi UML sono mantenuti come sorgenti PlantUML in \texttt{documentazione/uml/}; le immagini PNG in \texttt{documentazione/img/} sono esporta- \\ zioni generate da questi sorgenti.
 \end{decisionbox}
 
 \subsection*{Contesto}
@@ -515,7 +529,7 @@ Le figure dei documenti LaTeX devono restare allineate ai sorgenti e al codice e
 
 \subsection*{Alternative considerate}
 
-\begin{longtable}{p{0.16\textwidth}p{0.35\textwidth}p{0.35\textwidth}}
+\begin{longtable}{@{} L{0.24\textwidth} L{0.35\textwidth} L{0.35\textwidth} @{}}
 \toprule
 \tableHeader \textbf{Alternativa} & \textbf{Vantaggi} & \textbf{Svantaggi} \\
 \midrule
@@ -525,16 +539,16 @@ Le figure dei documenti LaTeX devono restare allineate ai sorgenti e al codice e
 \midrule
 \endhead
 
-PlantUML (scelta) & Notazione testuale; versionabile con Git; rigenerabile; extention VS Code; standard per diagrammi UML. & Rendering lento per diagrammi complessi; sintassi non intuitive per principianti; dipendenza da Java runtime. \\
+PlantUML (scelta) & Notazione testuale; versionabile con Git; rigenerabile; estensione VS Code; standard per diagrammi UML. & Rendering lento per diagrammi complessi; sintassi non intuitive per principianti; dipendenza da Java runtime. \\
 \midrule
 
 Draw.io / Lucidchart & GUI visuale; collaborazione in tempo reale; export PNG/SVG. & File binari non versionabili facilmente; diff impossibile; dipendenza da piattaforma cloud. \\
 \midrule
 
-Mermaid & Sintasse markdown-friendly; rendering nel browser; integrato in GitHub. & Supporto UML limitato; nessun class diagram completo; meno PlantUML per diagrammi complessi. \\
+Mermaid & Sintassi markdown-friendly; rendering nel browser; integrato in GitHub. & Supporto UML limitato; nessun class diagram completo; meno PlantUML per diagrammi complessi. \\
 \midrule
 
-Hand-drawn (disegno manuale) & Massima flessibilit\`{a} visiva. & Non versionabile; non rigenerabile; impossibile da mantenere; non standard. \\
+Hand-drawn\newline(disegno manuale) & Massima flessibilit\`{a} visiva. & Non versionabile; non rigenerabile; impossibile da mantenere; non standard. \\
 \bottomrule
 \end{longtable}
 

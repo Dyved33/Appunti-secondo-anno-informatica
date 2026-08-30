@@ -40,7 +40,10 @@ type Model struct {
 
 	filtroCategoria int // indice in categorie; nessunFiltro = mostra tutto
 	cursore         int
-	offset          int // pagina corrente nella tabella
+	offset          int // prima riga visibile nella finestra di scorrimento
+
+	winW int
+	winH int
 
 	loading bool
 	err     error

@@ -272,6 +272,7 @@ func (c *APIClient) GetOrdiniUscita() ([]OrdineUscita, error) {
 	return ordiniUscita, nil
 }
 
+// GetResi recupera tutti i resi dal server API e li mappa in una slice di Reso.
 func (c *APIClient) GetResi() ([]Reso, error) {
 	var ordiniDTO []serverResoDTO
 	if err := c.doJSON(http.MethodGet, "/api/v1/orders/resi", nil, &ordiniDTO); err != nil {
@@ -296,6 +297,9 @@ func (c *APIClient) GetResi() ([]Reso, error) {
 	return resi, nil
 }
 
+// GetDDT richiede al server la generazione di un DDT (Documento di Trasporto)
+// per l'ordine di uscita con l'ID specificato, usando i dati mittente e
+// destinatario forniti, e restituisce il DDT generato.
 func (c *APIClient) GetDDT(ID int, dett ClientDDTDTO) (DDT, error) {
 	var ddtDTO serverDDTDTO
 	path := fmt.Sprintf("/api/v1/orders/%d/create-ddt", ID)
@@ -357,7 +361,7 @@ func (c *APIClient) GetOrdiniEvasiLeggero() ([]OrdineUscita, error) {
 	return evasi, nil
 }
 
-// Invia la richiesta di registrazione di un reso al server
+// CreaReso invia al server la richiesta di registrazione di un reso.
 func (c *APIClient) CreaReso(reso ClientResoDTO) error {
 	return c.doJSON(http.MethodPost, "/api/v1/orders/crea-reso", reso, nil)
 }

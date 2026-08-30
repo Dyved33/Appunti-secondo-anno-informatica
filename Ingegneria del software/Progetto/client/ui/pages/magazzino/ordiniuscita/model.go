@@ -7,10 +7,13 @@ import (
 	"github.com/tommasogarofani/ingsw_25-26_group-11/client/api"
 )
 
+// VistaStato identifica la vista attualmente mostrata dalla pagina Ordini in Uscita.
 type VistaStato int
 
 const (
+	// MAIN è la vista principale con l'elenco degli ordini in uscita.
 	MAIN VistaStato = iota
+	// DDT è la vista che mostra il dettaglio del documento di trasporto generato.
 	DDT
 )
 
@@ -32,6 +35,10 @@ const (
 	focusStato
 )
 
+// Model rappresenta lo stato della pagina Ordini in Uscita.
+// Mantiene l'elenco degli ordini, il cursore di navigazione, la mappa delle righe
+// espanse, il DDT generato, la vista e modalità correnti, i campi del form di modifica
+// ed i dati di scorrimento e stato (caricamento/errore).
 type Model struct {
 	Client *api.APIClient
 
@@ -49,28 +56,35 @@ type Model struct {
 	formNote    textinput.Model
 	idxStato    int
 
-	winW        int
-	winH        int
+	winW         int
+	winH         int
 	scrollOffset int
 
 	loading bool
 	err     error
 }
 
+// OrdiniUscitaLoadedMsg viene emesso al termine del caricamento degli ordini in uscita dal backend.
 type OrdiniUscitaLoadedMsg struct {
 	Ordini []api.OrdineUscita
 }
 
+// ErroreMsg è il messaggio di errore condiviso dalle operazioni asincrone della pagina Ordini in Uscita.
 type ErroreMsg struct {
 	Err error
 }
 
+// DDTCreatedMsg viene emesso al termine della generazione del documento di trasporto.
 type DDTCreatedMsg struct {
 	DDT api.DDT
 }
 
+// OrdineAggiornatoMsg viene emesso a seguito del corretto aggiornamento di un ordine in uscita.
 type OrdineAggiornatoMsg struct{}
 
+// New costruisce ed inizializza un nuovo modello Ordini in Uscita.
+// Inizializza la mappa `dettagliEspansi`, un DDT vuoto, `loading = true`, la vista MAIN
+// e la modalità lista, memorizzando il riferimento al client API.
 func New(client *api.APIClient) Model {
 	return Model{
 		Client:          client,
@@ -82,6 +96,8 @@ func New(client *api.APIClient) Model {
 	}
 }
 
+// preparaFormModifica inizializza i campi del form di modifica con i dati
+// dell'ordine sottolineato ed imposta il focus sul campo numero.
 func (m *Model) preparaFormModifica() {
 	if len(m.ordini) == 0 || m.cursore >= len(m.ordini) {
 		return

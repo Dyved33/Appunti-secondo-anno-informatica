@@ -1,0 +1,107 @@
+@startuml UC3_SD
+
+skinparam sequence {
+  ArrowColor      #555555
+  ParticipantBackgroundColor #FAFAFA
+  ParticipantBorderColor #333333
+  ActorBackgroundColor #E8F4FD
+  ActorBorderColor #2980B9
+}
+
+actor    "Contabile"          as Con
+boundary "ui:UI"                 as UI
+control  "svc:OrdineService"     as OrdSvc
+control  "svc:ProductService"    as ProSvc
+
+' ── 1. Gestione Ordini & Listini ─────────────────────
+group Gestione Ordini & Listini
+  alt [Crea Ordine Entrata]
+    Con -> UI : nuovoOrdineEntrata()
+    activate UI
+    UI -> OrdSvc : creaOrdineEntrata(fornitore, note)
+    activate OrdSvc
+    OrdSvc --> UI : ordineCreato
+    deactivate OrdSvc
+
+    loop [per ogni prodotto da aggiungere]
+      Con -> UI : aggiungiRiga(prodotto, quantità)
+      UI -> OrdSvc : aggiungiRiga(ordine, prodotto, quantità)
+      activate OrdSvc
+      OrdSvc --> UI : rigaAggiunta
+      deactivate OrdSvc
+    end
+
+    Con -> UI : confermaOrdine()
+    UI -> OrdSvc : confermaOrdineEntrata(ordine)
+    activate OrdSvc
+    OrdSvc --> UI : ordineConfermato
+    deactivate OrdSvc
+    UI --> Con : mostraConferma()
+    deactivate UI
+  else [Crea Ordine Uscita]
+    Con -> UI : nuovoOrdineUscita()
+    activate UI
+    UI -> OrdSvc : creaOrdineUscita(cliente, note)
+    activate OrdSvc
+    OrdSvc --> UI : ordineCreato
+    deactivate OrdSvc
+
+    loop [per ogni prodotto da aggiungere]
+      Con -> UI : aggiungiRiga(prodotto, quantità)
+      UI -> OrdSvc : aggiungiRiga(ordine, prodotto, quantità)
+      activate OrdSvc
+      OrdSvc --> UI : rigaAggiunta
+      deactivate OrdSvc
+    end
+
+    Con -> UI : confermaOrdine()
+    UI -> OrdSvc : confermaOrdineUscita(ordine)
+    activate OrdSvc
+    OrdSvc --> UI : ordineConfermato
+    deactivate OrdSvc
+    UI --> Con : mostraConferma()
+    deactivate UI
+  else [Aggiorna Listino Prezzi]
+    Con -> UI : apriCatalogoListino()
+    activate UI
+    UI -> ProSvc : getCatalogo()
+    activate ProSvc
+    ProSvc --> UI : listaProdotti
+    deactivate ProSvc
+    UI --> Con : mostraCatalogo(listaProdotti)
+
+    Con -> UI : modificaPrezzo(prodotto, prezzo)
+    UI -> ProSvc : updateProdotto(prodotto, prezzo)
+    activate ProSvc
+    ProSvc --> UI : prodottoAggiornato
+    deactivate ProSvc
+    UI --> Con : mostraConferma()
+    deactivate UI
+  end
+end
+
+' ── 2. Visualizzare Fatture ─────────────────────────
+group Visualizzare Fatture
+  Con -> UI : apriFatture()
+  activate UI
+  UI -> OrdSvc : getFatture()
+  activate OrdSvc
+  OrdSvc --> UI : listaFatture
+  deactivate OrdSvc
+  UI --> Con : mostraElencoFatture(listaFatture)
+  deactivate UI
+end
+
+' ── 3. Visualizzare Catalogo ────────────────────────
+group Visualizzare Catalogo
+  Con -> UI : apriCatalogo()
+  activate UI
+  UI -> ProSvc : getCatalogo()
+  activate ProSvc
+  ProSvc --> UI : listaProdotti
+  deactivate ProSvc
+  UI --> Con : mostraCatalogo(listaProdotti)
+  deactivate UI
+end
+
+@enduml

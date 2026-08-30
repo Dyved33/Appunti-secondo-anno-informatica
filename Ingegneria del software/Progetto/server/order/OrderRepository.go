@@ -8,10 +8,13 @@ import (
 	"github.com/tommasogarofani/ingsw_25-26_group-11/server/domain"
 )
 
+// OrderRepository fornisce l'accesso persistente (SQL) alle entità degli ordini:
+// ordini di entrata e uscita, relativi DDT, fatture e resi.
 type OrderRepository struct {
 	DB *sql.DB
 }
 
+// NewOrderRepository crea un nuovo OrderRepository legato al database specificato.
 func NewOrderRepository(db *sql.DB) *OrderRepository {
 	return &OrderRepository{DB: db}
 }
@@ -20,6 +23,8 @@ func NewOrderRepository(db *sql.DB) *OrderRepository {
 // ORDINI DI ENTRATA
 // ─────────────────────────────────────────────
 
+// OrderRepository_CreateOrdineEntrata inserisce un ordine di entrata e le sue righe
+// nel database, assegnando gli ID auto-generati all'ordine e alle righe.
 func (r *OrderRepository) OrderRepository_CreateOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO OrdiniEntrata (numero, fornitore, data, note, created_by)
@@ -49,6 +54,8 @@ func (r *OrderRepository) OrderRepository_CreateOrdineEntrata(ctx context.Contex
 	return nil
 }
 
+// OrderRepository_GetOrdineEntrataByID recupera un ordine di entrata e le sue righe
+// in base all'ID. Restituisce un errore "ordine non trovato" se l'ordine non esiste.
 func (r *OrderRepository) OrderRepository_GetOrdineEntrataByID(ctx context.Context, id int) (*domain.OrdineEntrata, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, fornitore, data, note, created_by FROM OrdiniEntrata WHERE id = ?`
@@ -80,6 +87,7 @@ func (r *OrderRepository) OrderRepository_GetOrdineEntrataByID(ctx context.Conte
 	return &o, nil
 }
 
+// OrderRepository_GetOrdiniEntrata recupera tutti gli ordini di entrata presenti nel database.
 func (r *OrderRepository) OrderRepository_GetOrdiniEntrata(ctx context.Context) ([]domain.OrdineEntrata, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, fornitore, data, note, created_by FROM OrdiniEntrata`
@@ -107,6 +115,7 @@ func (r *OrderRepository) OrderRepository_GetOrdiniEntrata(ctx context.Context) 
 	return list, nil
 }
 
+// OrderRepository_DeleteOrdineEntrata rimuove un ordine di entrata dal database in base al suo ID.
 func (r *OrderRepository) OrderRepository_DeleteOrdineEntrata(ctx context.Context, o *domain.OrdineEntrata) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `DELETE FROM OrdiniEntrata WHERE id = ?`
@@ -118,6 +127,8 @@ func (r *OrderRepository) OrderRepository_DeleteOrdineEntrata(ctx context.Contex
 // ORDINI DI USCITA
 // ─────────────────────────────────────────────
 
+// OrderRepository_CreateOrdineUscita inserisce un ordine di uscita e le sue righe
+// nel database, assegnando gli ID auto-generati all'ordine e alle righe.
 func (r *OrderRepository) OrderRepository_CreateOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO OrdiniUscita (numero, cliente, data, stato, note, created_by, ddt_id)
@@ -147,6 +158,8 @@ func (r *OrderRepository) OrderRepository_CreateOrdineUscita(ctx context.Context
 	return nil
 }
 
+// OrderRepository_GetOrdineUscitaByID recupera un ordine di uscita e le sue righe
+// in base all'ID. Restituisce un errore "ordine non trovato" se l'ordine non esiste.
 func (r *OrderRepository) OrderRepository_GetOrdineUscitaByID(ctx context.Context, id int) (*domain.OrdineUscita, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, cliente, data, stato, note, created_by, ddt_id FROM OrdiniUscita WHERE id = ?`
@@ -183,6 +196,7 @@ func (r *OrderRepository) OrderRepository_GetOrdineUscitaByID(ctx context.Contex
 	return &o, nil
 }
 
+// OrderRepository_GetOrdiniUscita recupera tutti gli ordini di uscita presenti nel database.
 func (r *OrderRepository) OrderRepository_GetOrdiniUscita(ctx context.Context) ([]domain.OrdineUscita, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, cliente, data, stato, note, created_by, ddt_id FROM OrdiniUscita`
@@ -209,6 +223,7 @@ func (r *OrderRepository) OrderRepository_GetOrdiniUscita(ctx context.Context) (
 	return list, nil
 }
 
+// OrderRepository_GetOrdiniUscitaByStato recupera gli ordini di uscita filtrati per stato.
 func (r *OrderRepository) OrderRepository_GetOrdiniUscitaByStato(ctx context.Context, stato domain.StatoOrdineUscita) ([]domain.OrdineUscita, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, cliente, data, stato, note, created_by, ddt_id FROM OrdiniUscita WHERE stato = ?`
@@ -235,7 +250,7 @@ func (r *OrderRepository) OrderRepository_GetOrdiniUscitaByStato(ctx context.Con
 	return list, nil
 }
 
-//aggiorna lo stato e l'id del ddt di un ordine di uscita
+// OrderRepository_UpdateOrdineUscita aggiorna lo stato e l'ID del DDT associato a un ordine di uscita.
 func (r *OrderRepository) OrderRepository_UpdateOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `UPDATE OrdiniUscita SET stato = ?, ddt_id = ? WHERE id = ?`
@@ -243,6 +258,7 @@ func (r *OrderRepository) OrderRepository_UpdateOrdineUscita(ctx context.Context
 	return err
 }
 
+// OrderRepository_DeleteOrdineUscita rimuove un ordine di uscita dal database in base al suo ID.
 func (r *OrderRepository) OrderRepository_DeleteOrdineUscita(ctx context.Context, o *domain.OrdineUscita) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `DELETE FROM OrdiniUscita WHERE id = ?`
@@ -254,6 +270,8 @@ func (r *OrderRepository) OrderRepository_DeleteOrdineUscita(ctx context.Context
 // DDT
 // ─────────────────────────────────────────────
 
+// OrderRepository_CreateDDT inserisce un nuovo DDT nel database, assegnando l'ID
+// auto-generato al DDT passato.
 func (r *OrderRepository) OrderRepository_CreateDDT(ctx context.Context, d *domain.DDT) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO DDT (numero, ordine_uscita_id, data, mittente, destinatario, path_pdf)
@@ -269,6 +287,8 @@ func (r *OrderRepository) OrderRepository_CreateDDT(ctx context.Context, d *doma
 	return nil
 }
 
+// OrderRepository_GetDDTByYear recupera tutti i DDT il cui numero progressivo
+// appartiene all'anno indicato.
 func (r *OrderRepository) OrderRepository_GetDDTByYear(ctx context.Context, year int) ([]domain.DDT, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 
@@ -314,6 +334,8 @@ func (r *OrderRepository) OrderRepository_GetDDTByYear(ctx context.Context, year
 	return ddtList, nil
 }
 
+// OrderRepository_GetDDTByOrdineUscita recupera il DDT associato a un ordine di uscita.
+// Restituisce (nil, nil) se l'ordine non ha un DDT associato.
 func (r *OrderRepository) OrderRepository_GetDDTByOrdineUscita(ctx context.Context, orderID int) (*domain.DDT, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, ordine_uscita_id, data, mittente, destinatario, path_pdf
@@ -341,6 +363,8 @@ func (r *OrderRepository) OrderRepository_GetDDTByOrdineUscita(ctx context.Conte
 // FATTURE
 // ─────────────────────────────────────────────
 
+// OrderRepository_CreateFattura inserisce una nuova fattura nel database, assegnando
+// l'ID auto-generato alla fattura passata.
 func (r *OrderRepository) OrderRepository_CreateFattura(ctx context.Context, f *domain.Fattura) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Fatture (numero, anno, tipo, ordine_uscita_id, imponibile, iva, totale, data, path_pdf)
@@ -356,6 +380,8 @@ func (r *OrderRepository) OrderRepository_CreateFattura(ctx context.Context, f *
 	return nil
 }
 
+// OrderRepository_CountFattureByYearAndType conta le fatture di un determinato anno e tipo,
+// utile per calcolare la numerazione progressiva.
 func (r *OrderRepository) OrderRepository_CountFattureByYearAndType(ctx context.Context, year int, tipo domain.TipoFattura) (int, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	var count int
@@ -365,6 +391,7 @@ func (r *OrderRepository) OrderRepository_CountFattureByYearAndType(ctx context.
 	return count, nil
 }
 
+// OrderRepository_GetAllFatture recupera tutte le fatture presenti nel database.
 func (r *OrderRepository) OrderRepository_GetAllFatture(ctx context.Context) ([]domain.Fattura, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `SELECT id, numero, anno, tipo, ordine_uscita_id, imponibile, iva, totale, data, path_pdf FROM Fatture`
@@ -388,6 +415,7 @@ func (r *OrderRepository) OrderRepository_GetAllFatture(ctx context.Context) ([]
 	return list, nil
 }
 
+// OrderRepository_DeleteFattura rimuove una fattura dal database in base al suo ID.
 func (r *OrderRepository) OrderRepository_DeleteFattura(ctx context.Context, id int) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	_, err := exec.ExecContext(ctx, `DELETE FROM Fatture WHERE id = ?`, id)
@@ -398,6 +426,8 @@ func (r *OrderRepository) OrderRepository_DeleteFattura(ctx context.Context, id 
 // RESI
 // ─────────────────────────────────────────────
 
+// OrderRepository_CreateReso inserisce un nuovo reso nel database, assegnando l'ID
+// auto-generato al reso passato.
 func (r *OrderRepository) OrderRepository_CreateReso(ctx context.Context, re *domain.Reso) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `INSERT INTO Resi (ordine_uscita_id, prodotto_id, quantita, motivo, stato, data, created_by)
@@ -413,34 +443,37 @@ func (r *OrderRepository) OrderRepository_CreateReso(ctx context.Context, re *do
 	return nil
 }
 
+// OrderRepository_GetResoByID recupera un reso in base al suo ID e ne restituisce anche
+// lo stato corrente come stringa.
 func (r *OrderRepository) OrderRepository_GetResoByID(ctx context.Context, id int) (*domain.Reso, string, error) {
-    exec := domain.GetExecutor(ctx, r.DB)
+	exec := domain.GetExecutor(ctx, r.DB)
 
-    query := `SELECT id, ordine_uscita_id, prodotto_id, quantita, motivo, stato, data, created_by
+	query := `SELECT id, ordine_uscita_id, prodotto_id, quantita, motivo, stato, data, created_by
               FROM Resi WHERE id = ?`
 
-    var re domain.Reso
+	var re domain.Reso
 
-    err := exec.QueryRowContext(ctx, query, id).Scan(
-        &re.ID,
-        &re.OrdineUscitaID,
-        &re.ProdottoID,
-        &re.Quantita,
-        &re.Motivo,
-        &re.Stato,
-        &re.Data,
-        &re.CreatedByID,
-    )
+	err := exec.QueryRowContext(ctx, query, id).Scan(
+		&re.ID,
+		&re.OrdineUscitaID,
+		&re.ProdottoID,
+		&re.Quantita,
+		&re.Motivo,
+		&re.Stato,
+		&re.Data,
+		&re.CreatedByID,
+	)
 
-    if err != nil {
-        return nil, "", err
-    }
+	if err != nil {
+		return nil, "", err
+	}
 
 	//fmt.Printf("DEBUG RESO: %+v, stato=%s\n", re, re.Stato)
 
-    return &re, string(re.Stato), nil
+	return &re, string(re.Stato), nil
 }
 
+// OrderRepository_UpdateResoStato aggiorna lo stato di un reso nel database.
 func (r *OrderRepository) OrderRepository_UpdateResoStato(ctx context.Context, id int, stato string) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `UPDATE Resi SET stato = ? WHERE id = ?`
@@ -448,6 +481,7 @@ func (r *OrderRepository) OrderRepository_UpdateResoStato(ctx context.Context, i
 	return err
 }
 
+// OrderRepository_GetAllResi recupera tutti i resi presenti nel database.
 func (r *OrderRepository) OrderRepository_GetAllResi(ctx context.Context) ([]domain.Reso, error) {
 	exec := domain.GetExecutor(ctx, r.DB)
 
@@ -488,6 +522,7 @@ func (r *OrderRepository) OrderRepository_GetAllResi(ctx context.Context) ([]dom
 	return list, nil
 }
 
+// OrderRepository_DeleteReso rimuove un reso dal database in base al suo ID.
 func (r *OrderRepository) OrderRepository_DeleteReso(ctx context.Context, id int) error {
 	exec := domain.GetExecutor(ctx, r.DB)
 	query := `DELETE FROM Resi WHERE id = ?`

@@ -11,11 +11,16 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
+// Init inizializza il modello Bubble Tea, delegando l'inizializzazione al
+// sottomodello di login.
 func (f mainLayout) Init() tea.Cmd {
 	// Inizializza anche il sottomodello di login
 	return f.Login.Init()
 }
 
+// Update elabora i messaggi Bubble Tea in ingresso, gestendo la navigazione tra
+// le pagine, il resize della finestra e la scelta della schermata in base al
+// ruolo dopo il login, e aggiorna il modello e il relativo comando.
 func (f mainLayout) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 
@@ -124,6 +129,9 @@ func (f mainLayout) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return f, nil
 }
 
+// View compone e restituisce la vista finale dell'applicazione, collocando il
+// contenuto della pagina attiva nel layout condiviso (definito in tabnav) e
+// impostando la modalità schermo alternativo e gli eventi mouse.
 func (f mainLayout) View() tea.View {
 	// Contenuto pagina attiva
 	var contentBlock string
@@ -162,6 +170,8 @@ func (f mainLayout) View() tea.View {
 	return altscreen
 }
 
+// parseUserRole converte la stringa del ruolo restituito dal server nel valore
+// enum userRole corrispondente, ripiegando su MAGAZZINIERE per valori ignoti.
 func parseUserRole(role string) userRole {
 	switch role {
 	case "magazziniere":

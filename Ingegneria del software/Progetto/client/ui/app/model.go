@@ -12,9 +12,13 @@ import (
 type paginaAttiva int
 
 const (
+	// LOGIN identifica la pagina di login.
 	LOGIN paginaAttiva = iota
+	// MAGMENU identifica la pagina del menu magazzino.
 	MAGMENU
+	// CONTMENU identifica la pagina del menu contabilità.
 	CONTMENU
+	// ADMINMENU identifica la pagina del menu admin.
 	ADMINMENU
 )
 
@@ -40,6 +44,8 @@ type mainLayout struct {
 	AdminMenu admin.AdminLayout
 }
 
+// New crea e restituisce il modello principale (mainLayout) dell'applicazione,
+// inizializzato sulla pagina di login e collegato al client API fornito.
 func New(client *api.APIClient) mainLayout {
 	loginModel := login.New()
 	loginModel.Client = client

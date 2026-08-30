@@ -2,11 +2,12 @@
 % gialosai-style.sty — Stile condiviso per la documentazione GiaLoSai
 % ============================================================
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{gialosai-style}[2026/08/25 v1.0 Stile documentazione GiaLoSai]
+\ProvidesPackage{gialosai-style}[v1.0 Stile documentazione GiaLoSai]
 
 % --- Pacchetti base ---
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[T1]{fontenc}
+\RequirePackage{lmodern}
 \RequirePackage{babel}
 \RequirePackage{geometry}
 \RequirePackage{graphicx}
@@ -18,6 +19,9 @@
 \RequirePackage{booktabs}
 \RequirePackage{longtable}
 \RequirePackage{array}
+\RequirePackage{ragged2e}
+\RequirePackage{tabularx}
+\RequirePackage{microtype}
 \RequirePackage{mdframed}
 \RequirePackage{etoolbox}
 
@@ -48,7 +52,6 @@
   citecolor=gialosaiBlue,
   pdftitle={GiaLoSai},
   pdfauthor={Gruppo 11},
-  bookmarks=true,
   bookmarksopen=true,
 }
 
@@ -87,6 +90,10 @@
 % --- Tabelle ---
 \renewcommand{\arraystretch}{1.3}
 \newcommand{\tableHeader}{\rowcolor{gialosaiBlue}\color{white}\bfseries}
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\Centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\RaggedLeft\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
 
 % --- Elenchi ---
 \setlist[itemize]{leftmargin=1.5em, itemsep=2pt, parsep=0pt}
@@ -118,7 +125,7 @@
 ]{decisionbox}
 
 % --- Title page ---
-\newcommand{\gialosaiTitlePage}[3]{%
+\newcommand{\gialosaiTitlePage}[2]{%
   \begin{titlepage}
     \centering
     \vspace*{1cm}
@@ -156,15 +163,10 @@
 
     \vspace{1.5cm}
 
-    % Data
-    {\large\color{gialosaiGray} #2\par}
-
-    \vspace{2cm}
-
     % Badge versione (opzionale)
-    \ifstrempty{#3}{}{%
+    \ifstrempty{#2}{}{%
       {\small\color{gialosaiGray}
-        \texttt{Versione #3}\par
+        \texttt{Versione #2}\par
       }
     }
 
@@ -174,15 +176,19 @@
     {\color{gialosaiAccent}\rule{\textwidth}{2pt}}
 
     \vspace{0.5cm}
-    {\small\color{gialosaiGray} Universit\`{a} di Bologna --- Scuola di Ingegneria e Architettura}
+    {\small\color{gialosaiGray} Universit\`{a} Degli Studi Di Perugia --- Dipartimento Di Matematica E Informatica\par}
   \end{titlepage}
 }
 
 % --- Comando per ringraziamenti / nota ---
 \newcommand{\gialosaiNote}[1]{%
-  \begin{notebox}
-    \textbf{Nota:} #1
-  \end{notebox}
+  \begin{center}
+    \begin{minipage}{\textwidth}
+      \begin{notebox}
+        \textbf{Nota:} #1
+      \end{notebox}
+    \end{minipage}
+  \end{center}
 }
 
 % --- Comando per citazione di programmi CLI ---

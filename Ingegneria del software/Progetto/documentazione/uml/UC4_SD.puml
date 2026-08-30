@@ -1,0 +1,38 @@
+@startuml UC4_SD
+
+skinparam sequence {
+  ArrowColor      #555555
+  ParticipantBackgroundColor #FAFAFA
+  ParticipantBorderColor #333333
+  ActorBackgroundColor #E8F4FD
+  ActorBorderColor #2980B9
+}
+
+actor    "Magazziniere"      as Mag
+boundary "ui:UI"             as UI
+control  "svc:OrdineService" as OrdSvc
+
+' ── Selezione ordine di uscita non ancora evaso ─────
+Mag -> UI : apriSezioneOrdiniUscita()
+activate UI
+UI -> OrdSvc : getOrdiniUscita()
+activate OrdSvc
+OrdSvc --> UI : listaOrdini
+deactivate OrdSvc
+UI --> Mag : mostraElencoOrdiniUscita(listaOrdini)
+
+Mag -> UI : selezionaOrdineNonEvaso(ordine)
+UI --> Mag : mostraDettaglioOrdine(ordine)
+
+' ── Generazione DDT e cambio stato ───────────────────
+Mag -> UI : generaDDT()
+UI -> OrdSvc : generaDDT(ordine)
+activate OrdSvc
+
+OrdSvc --> UI : ddt
+deactivate OrdSvc
+
+UI --> Mag : mostraDDT(ddt)
+deactivate UI
+
+@enduml

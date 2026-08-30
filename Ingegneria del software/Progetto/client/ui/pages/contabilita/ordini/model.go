@@ -65,6 +65,9 @@ type Model struct {
 	espansiUscita  map[int]bool // ID ordine -> true se il dettaglio righe è espanso
 	espansiResi    map[int]bool // ID reso -> true se il dettaglio è espanso
 
+	winW int
+	winH int
+
 	// Stato del form di creazione
 	creazioneEntrata bool
 	creazioneUscita  bool

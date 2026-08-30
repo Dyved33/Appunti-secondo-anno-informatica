@@ -24,11 +24,15 @@ type transactionRunner interface {
 	WithinTransaction(ctx context.Context, fn func(ctx context.Context) error) error
 }
 
+// ProductService implementa la logica di business per la gestione dei prodotti e delle
+// giacenze, validando i dati (ad esempio il barcode) e orchestrando le operazioni sul
+// repository all'interno di transazioni.
 type ProductService struct {
 	Repo productRepository
 	Tx   transactionRunner
 }
 
+// NewProductService crea un nuovo ProductService con le dipendenze specificate.
 func NewProductService(repo productRepository, tx transactionRunner) *ProductService {
 	return &ProductService{Repo: repo, Tx: tx}
 }
@@ -179,6 +183,7 @@ func (s *ProductService) ProductService_GetValoreMagazzino(ctx context.Context) 
 	return report.TotaleQuantita, report.ValoreTotale, nil
 }
 
+// ProductService_GetGiacenzaByID recupera la giacenza di un prodotto in base al suo ID.
 func (s *ProductService) ProductService_GetGiacenzaByID(ctx context.Context, productID int) (*domain.Giacenza, error) {
 	return s.Repo.ProductRepository_GetGiacenzaById(ctx, productID)
 }

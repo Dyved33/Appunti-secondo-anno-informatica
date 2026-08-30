@@ -239,12 +239,21 @@ func TestOrderController_GetOrdiniEntrata(t *testing.T) {
 	svc.On("OrderService_GetOrdiniEntrata", mock.Anything).Return([]domain.OrdineEntrata{
 		{ID: 1, Numero: "OE-001", Fornitore: "ACME Srl"},
 	}, nil)
+	svc.On("OrderService_GetOrdiniEntrataById", mock.Anything, 1).Return(&domain.OrdineEntrata{
+		ID:     1,
+		Numero: "OE-001",
+		Righe:  []domain.RigaOrdineEntrata{{ID: 10, ProdottoID: 5, Quantita: 100, PrezzoUnitario: 0.5}},
+	}, nil)
 
 	c := NewOrderController(svc)
 	out, err := c.OrderController_GetOrdiniEntrata(context.Background())
 
 	require.NoError(t, err)
 	require.Len(t, out, 1)
+	require.Len(t, out[0].Righe, 1)
+	assert.Equal(t, 5, out[0].Righe[0].ProdottoID)
+	assert.Equal(t, 100, out[0].Righe[0].Quantita)
+	assert.Equal(t, 0.5, out[0].Righe[0].PrezzoUnitario)
 }
 
 func TestOrderController_GetOrdiniEntrataById(t *testing.T) {

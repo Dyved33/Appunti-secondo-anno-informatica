@@ -1,25 +1,32 @@
+// Package middleware contiene middleware HTTP usati dal server.
+// In particolare AuthMiddleware protegge le rotte verificate l'autenticazione
+// tramite token JWT e la validità della sessione lato server.
 package middleware
 
-// Il middleware serve a controllare se l'utente è autenticato prima di accedere alle rotte protette. 
-// Se l'utente non è autenticato, viene restituito un errore 401 Unauthorized. 
-// Se l'utente è autenticato, il middleware aggiunge l'ID dell'utente al contesto della richiesta e passa la richiesta al prossimo handler.
-
 import (
-    "context"
-    "net/http"
-    "strings"
+	"context"
+	"net/http"
+	"strings"
 
-    "github.com/tommasogarofani/ingsw_25-26_group-11/server/auth"
+	"github.com/tommasogarofani/ingsw_25-26_group-11/server/auth"
 )
 
 type contextKey string
 
+// UserIDKey è la chiave usata per salvare l'ID dell'utente autenticato
+// nel contesto della richiesta.
 const UserIDKey contextKey = "userID"
 
+// SessionValidator verifica che una sessione (token hash) sia ancora valida
+// nel repository delle sessioni persistente.
 type SessionValidator interface {
 	SessionRepository_IsValid(ctx context.Context, tokenHash string) (bool, error)
 }
 
+// NewAuthMiddleware costruisce un middleware di autenticazione. Se viene
+// fornito un SessionValidator non nil, oltre alla validità del token JWT
+// viene verificata anche la sessione lato server; in caso di token o sessione
+// non validi restituisce 401 Unauthorized.
 func NewAuthMiddleware(sv SessionValidator) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -51,6 +58,8 @@ func NewAuthMiddleware(sv SessionValidator) func(http.Handler) http.Handler {
 	}
 }
 
+// AuthMiddleware applica l'autenticazione basata solo sul token JWT,
+// senza verifica della sessione lato server.
 func AuthMiddleware(next http.Handler) http.Handler { // L'http.Handler rappresenta il prossimo handler da chiamare se l'utente è autenticato
 	return NewAuthMiddleware(nil)(next)
 }

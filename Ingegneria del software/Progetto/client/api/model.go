@@ -24,7 +24,7 @@ type StatoReso string
 
 const (
 	// StatoInAttesa: reso registrato ma non ancora accettato o rifiutato.
-	StatoInAttesa StatoReso = "in attesa"
+	StatoInAttesa StatoReso = "da_verificare"
 	// StatoAccettato: reso accettato, merce restituita e giacenza aggiornata.
 	StatoAccettato StatoReso = "accettato"
 	// StatoRifiutato: reso rifiutato, merce non restituita.
@@ -41,9 +41,8 @@ type APIClient struct {
 	httpClient      *http.Client
 }
 
-// funzione per inizializzare il client
-// prende una stringa che contien l'url del server
-// restituisce il puntatore al client
+// New inizializza e restituisce un nuovo APIClient che comunica con il server
+// all'URL specificato.
 func New(url string) *APIClient {
 	return &APIClient{
 		indirizzoServer: url,
@@ -53,7 +52,7 @@ func New(url string) *APIClient {
 
 /* DTO SERVER */
 
-// OrderOutputDTO rappresenta la struttura dei dati di un prodotto restituito dal server.
+// serverProductDTO rappresenta la struttura dei dati di un prodotto restituito dal server.
 type serverProductDTO struct {
 	ID          int     `json:"id"`
 	Codice      string  `json:"codice"`
@@ -73,7 +72,7 @@ type serverCategoryDTO struct {
 	Descrizione string `json:"descrizione"`
 }
 
-// OrderOutputDTO rappresenta la struttura dei dati di una fattura restituita dal server.
+// serverFatturaDTO rappresenta la struttura dei dati di una fattura restituita dal server.
 type serverFatturaDTO struct {
 	ID             int       `json:"id"`
 	Numero         string    `json:"numero"`
@@ -86,7 +85,7 @@ type serverFatturaDTO struct {
 	PathPDF        string    `json:"path_pdf"`
 }
 
-// OrderLineOutputDTO rappresenta una singola riga di ordine nella risposta.
+// serverOrderLineDTO rappresenta una singola riga di ordine nella risposta.
 type serverOrderLineDTO struct {
 	ID             int     `json:"id"`
 	ProdottoID     int     `json:"prodotto_id"`
@@ -94,7 +93,7 @@ type serverOrderLineDTO struct {
 	PrezzoUnitario float64 `json:"prezzo_unitario"`
 }
 
-// OrderOutputDTO rappresenta i dati di un ordine restituito dal server.
+// serverOrderDTO rappresenta i dati di un ordine restituito dal server.
 type serverOrderDTO struct {
 	ID          int                  `json:"id"`
 	Numero      string               `json:"numero"`
@@ -162,7 +161,7 @@ type ClientOrderLineDTO struct {
 	PrezzoUnitario float64 `json:"prezzo_unitario"`
 }
 
-// ClientOrderEntryDTO rappresenta la richiesta di creazione di un ordine di entrata.
+// ClientOrderDTO rappresenta la richiesta di creazione di un ordine di entrata o uscita.
 // Contiene i dati dell'ordine e l'elenco delle righe (prodotti con quantità e prezzi).
 type ClientOrderDTO struct {
 	Numero      string               `json:"numero"`
@@ -279,7 +278,7 @@ type RigaOrdineEntrata struct {
 	Prodotto        *Prodotto
 }
 
-// rappresenta una spedizione o consegna di merce dal magazzino.
+// OrdineUscita rappresenta una spedizione o consegna di merce dal magazzino.
 type OrdineUscita struct {
 	ID          int
 	Numero      string

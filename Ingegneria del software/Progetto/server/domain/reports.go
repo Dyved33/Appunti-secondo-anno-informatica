@@ -17,7 +17,7 @@ type InventoryItem struct {
 
 // InventoryReport riassume lo stato del magazzino con dati semplici da leggere.
 type InventoryReport struct {
-	GeneratoIl         time.Time       `json:"generato_il"`
+	GeneratoIl          time.Time       `json:"generato_il"`
 	TotaleQuantita      int             `json:"totale_quantita"`
 	ValoreTotale        float64         `json:"valore_totale"`
 	Articoli            []InventoryItem `json:"articoli"`

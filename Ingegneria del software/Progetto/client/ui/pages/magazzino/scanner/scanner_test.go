@@ -2,6 +2,8 @@ package scanner
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -120,5 +122,85 @@ func TestScanner_RicercaBarcodeConFallback(t *testing.T) {
 	msg = m.scansionaCmd("INESISTENTE")()
 	if _, ok := msg.(ErroreMsg); !ok {
 		t.Fatalf("atteso ErroreMsg, ottenuto %T", msg)
+	}
+}
+
+func TestScanner_TastiControlloESvuotamento(t *testing.T) {
+	client := &api.APIClient{}
+	m := New(client)
+
+	// Digitazione iniziale
+	m.input = "PRD-12"
+	m.prodottoTrovato = &api.Prodotto{Codice: "PRD-12", Nome: "Test"}
+
+	// Test Backspace
+	resBack, _ := m.Update(tea.KeyPressMsg{Text: "backspace"})
+	mBack := resBack.(Model)
+	if mBack.input != "PRD-1" {
+		t.Errorf("Input atteso 'PRD-1' dopo backspace, ottenuto: '%s'", mBack.input)
+	}
+
+	// Test Esc (Reset totale)
+	resEsc, _ := mBack.Update(tea.KeyPressMsg{Text: "esc"})
+	mEsc := resEsc.(Model)
+	if mEsc.input != "" {
+		t.Errorf("Input atteso vuoto dopo esc, ottenuto: '%s'", mEsc.input)
+	}
+	if mEsc.prodottoTrovato != nil {
+		t.Error("prodottoTrovato dovrebbe essere nil dopo esc")
+	}
+}
+
+func TestScanner_InnescoEnterELimitestorico(t *testing.T) {
+	client := &api.APIClient{}
+	m := New(client)
+
+	// Innesco con enter
+	m.input = "BAR-001"
+	resEnter, cmd := m.Update(tea.KeyPressMsg{Text: "enter"})
+	mEnter := resEnter.(Model)
+
+	if !mEnter.loading {
+		t.Error("loading deve essere true dopo enter con input non vuoto")
+	}
+	if cmd == nil {
+		t.Error("enter deve restituire un Cmd di scansione non nil")
+	}
+
+	// Test saturazione storico (massimo 10 elementi)
+	var mStorico tea.Model = New(client)
+	for i := 1; i <= 15; i++ {
+		p := api.Prodotto{ID: i, Codice: fmt.Sprintf("PRD-%d", i), Nome: "Oggetto"}
+		mStorico, _ = mStorico.Update(ProdottoScansionatoMsg{Prodotto: p})
+	}
+
+	mResStorico := mStorico.(Model)
+	if len(mResStorico.storicoScansioni) != 10 {
+		t.Errorf("Storico scansioni deve contenere al massimo 10 elementi, trovati: %d", len(mResStorico.storicoScansioni))
+	}
+	if mResStorico.storicoScansioni[0].Codice != "PRD-15" {
+		t.Errorf("L'elemento in testa allo storico deve essere l'ultimo inserito (PRD-15), trovato: %s", mResStorico.storicoScansioni[0].Codice)
+	}
+}
+
+func TestScanner_GestioneErrore(t *testing.T) {
+	client := &api.APIClient{}
+	m := New(client)
+	m.prodottoTrovato = &api.Prodotto{Codice: "PRD-TEMP"}
+
+	errTest := errors.New("prodotto non trovato")
+	resErr, _ := m.Update(ErroreMsg{Err: errTest})
+	mErr := resErr.(Model)
+
+	if mErr.loading {
+		t.Error("loading deve essere false dopo ErroreMsg")
+	}
+	if mErr.prodottoTrovato != nil {
+		t.Error("prodottoTrovato deve essere resettato a nil dopo ErroreMsg")
+	}
+
+	view := mErr.View()
+	if !strings.Contains(view.Content, "prodotto non trovato") {
+		t.Error("View() deve renderizzare il messaggio d'errore")
 	}
 }

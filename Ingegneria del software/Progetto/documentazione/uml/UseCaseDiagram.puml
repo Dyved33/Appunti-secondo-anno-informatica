@@ -1,0 +1,138 @@
+@startuml UseCaseDiagram
+hide circle
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #F1D5F5
+  BorderColor #333333
+  ArrowColor #555555
+}
+skinparam actor {
+  BackgroundColor #E8F4FD
+  BorderColor #2980B9
+}
+
+left to right direction
+
+actor Magazziniere
+actor Admin
+actor Contabile
+
+rectangle "Gestionale Magazzino" {
+
+  rectangle "Gestione Ordini" {
+    usecase "Registrare Ordine Entrata" as RegistrareOrdineEntrata
+    usecase "Registrare Ordine Uscita" as RegistrareOrdineUscita
+    usecase "Visualizzare Ordini" as VisualizzareOrdini
+    usecase "Generare Report Ordini" as GenerareReportOrdini
+    usecase "Generare DDT" as GenerareDDT
+  }
+
+  rectangle "Gestione Documenti Fiscali" {
+    usecase "Generare Fattura" as GenerareFattura
+    usecase "Generare Nota di Credito" as GenerareNotaCredito
+    usecase "Visualizzare Fatture e Note di Credito" as VisualizzareFatture
+  }
+
+  rectangle "Gestione Resi" {
+    usecase "Registrare Reso" as RegistrareReso
+    usecase "Verificare Reso" as VerificareReso
+  }
+
+  rectangle "Gestione Inventario" {
+    usecase "Aggiornare Giacenze" as AggiornareGiacenze
+    usecase "Eseguire Inventario Fisico" as EseguireInventarioFisico
+    usecase "Visualizzare Giacenze" as VisualizzareGiacenze
+    usecase "Esportare Report Giacenze" as EsportareReportGiacenze
+    usecase "Visualizzare Valore Magazzino" as VisualizzareValoreMagazzino
+    usecase "Ricevere Notifica Sotto Soglia" as NotificaSottoSoglia
+  }
+
+  rectangle "Gestione Prodotti e Prezzi" {
+    usecase "Visualizzare Catalogo" as VisualizzareCatalogo
+    usecase "Eliminare Prodotto" as EliminareProdotto
+    usecase "Aggiungere Prodotto" as AggiungeProdotto
+    usecase "Modificare Prodotto" as ModificareProdotto
+    usecase "Gestire Categorie" as GestireCategorie
+    usecase "Ricercare Prodotto" as RicercareProdotto
+    usecase "Validare Dati Prodotto" as ValidareDatiProdotto
+    usecase "Aggiornare Prezzo di Vendita" as AggiornarePrezzoVendita
+    usecase "Aggiornare Prezzo di Acquisto" as AggiornarePrezzoAcquisto
+  }
+
+  rectangle "Gestione Utenti" {
+    usecase "Creare Utente" as CreareUtente
+    usecase "Visualizzare Utenti" as VisualizzareUtenti
+    usecase "Modificare Utente" as ModificareUtente
+    usecase "Eliminare Utente" as EliminareUtente
+  }
+
+  rectangle "Autenticazione" {
+    usecase "Effettuare Login" as EffettuareLogin
+    usecase "Validare Credenziali" as ValidareCredenziali
+    usecase "Recuperare Password" as RecuperarePassword
+  }
+}
+
+' --- Associazioni Magazziniere ---
+Magazziniere --> RegistrareOrdineEntrata
+Magazziniere --> RegistrareOrdineUscita
+Magazziniere --> VisualizzareOrdini
+Magazziniere --> GenerareReportOrdini
+Magazziniere --> GenerareDDT
+Magazziniere --> VisualizzareGiacenze
+Magazziniere --> EsportareReportGiacenze
+Magazziniere --> NotificaSottoSoglia
+Magazziniere --> VerificareReso
+Magazziniere --> VisualizzareCatalogo
+Magazziniere --> EffettuareLogin
+
+' --- Associazioni Admin ---
+Admin --> VisualizzareCatalogo
+Admin --> EliminareProdotto
+Admin --> AggiungeProdotto
+Admin --> ModificareProdotto
+Admin --> GestireCategorie
+Admin --> VisualizzareFatture
+Admin --> VerificareReso
+Admin --> CreareUtente
+Admin --> VisualizzareUtenti
+Admin --> ModificareUtente
+Admin --> EliminareUtente
+Admin --> NotificaSottoSoglia
+Admin --> EffettuareLogin
+
+' --- Associazioni Contabile ---
+Contabile --> VisualizzareCatalogo
+Contabile --> AggiornarePrezzoVendita
+Contabile --> AggiornarePrezzoAcquisto
+Contabile --> VisualizzareValoreMagazzino
+Contabile --> VisualizzareOrdini
+Contabile --> GenerareFattura
+Contabile --> GenerareNotaCredito
+Contabile --> VisualizzareFatture
+Contabile --> RegistrareReso
+Contabile --> EffettuareLogin
+
+' --- Relazioni «include» ---
+RegistrareOrdineEntrata ..> AggiornareGiacenze : «include»
+VisualizzareCatalogo ..> RicercareProdotto : «include»
+EliminareProdotto ..> RicercareProdotto : «include»
+AggiungeProdotto ..> ValidareDatiProdotto : «include»
+ModificareProdotto ..> ValidareDatiProdotto : «include»
+AggiornarePrezzoVendita ..> VisualizzareCatalogo : «include»
+AggiornarePrezzoAcquisto ..> VisualizzareCatalogo : «include»
+VisualizzareValoreMagazzino ..> VisualizzareGiacenze : «include»
+GenerareFattura ..> VisualizzareOrdini : «include»
+GenerareNotaCredito ..> VisualizzareOrdini : «include»
+RegistrareReso ..> VisualizzareOrdini : «include»
+EffettuareLogin ..> ValidareCredenziali : «include»
+
+' --- Relazioni «extend» ---
+AggiornareGiacenze ..> EseguireInventarioFisico : «extend»
+VisualizzareGiacenze ..> NotificaSottoSoglia : «extend»
+EffettuareLogin ..> RecuperarePassword : «extend»
+
+@enduml

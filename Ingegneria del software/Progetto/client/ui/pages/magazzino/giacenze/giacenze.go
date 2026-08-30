@@ -12,6 +12,22 @@ import (
 	"charm.land/lipgloss/v2"
 )
 
+// passoRotellina è il numero di righe di cui la lista scorre ad ogni evento della rotellina del mouse.
+const passoRotellina = 3
+
+// overheadChrome è il numero di righe fisse occupate ATTORNO al corpo della pagina
+// (logo, intestazione, barra dei tab, bordi della finestra e riga vuota interna).
+// È stato misurato sul layout reale composto da tabnav.PlacePage: sommandolo alle
+// dimensioni del terminale si ricava quante righe di lista possono essere mostrate.
+const overheadChrome = 21
+
+// righeFallback è il numero di righe visibili usato finché non arriva il primo WindowSizeMsg.
+const righeFallback = 14
+
+// minRigheConKPI è il numero minimo di righe di lista richiesto per mostrare i blocchi KPI:
+// nei terminali troppo bassi i KPI vengono nascosti per lasciare spazio alla tabella e al footer.
+const minRigheConKPI = 3
+
 // Init avvia l'inizializzazione del modello Giacenze ed il caricamento del report dal backend.
 //
 // Come è stato scritto il codice:
@@ -25,9 +41,12 @@ func (m Model) Init() tea.Cmd {
 // Come è stato scritto il codice:
 // 1. Intercetta `GiacenzeLoadedMsg` impostando `loading = false`, azzerando l'errore e salvando il report ricevuto.
 // 2. Intercetta `ErroreMsg` salvando l'errore ed arrestando l'indicatore di caricamento.
-// 3. Gestisce le pressioni dei tasti (`tea.KeyPressMsg`):
+// 3. Intercetta `tea.WindowSizeMsg` conservando le nuove dimensioni e ricalibrando la finestra visibile.
+// 4. Intercetta `tea.MouseWheelMsg` scorrendo la lista nella direzione della rotellina.
+// 5. Gestisce le pressioni dei tasti (`tea.KeyPressMsg`):
 //   - "up" / "k": sposta il cursore verso l'alto senza superare l'indice 0.
 //   - "down" / "j": sposta il cursore verso il basso senza superare il numero di articoli visibili.
+//   - "pgup" / "pgdown": scorrono la lista di una pagina; "home" / "end": tornano all'inizio/fine.
 //   - "s": inverte il flag `filtroSottoSoglia` e resetta il cursore a 0.
 //   - "r": imposta `loading = true` e lancia nuovamente il comando di ricaricamento `loadGiacenzeCmd()`.
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -46,6 +65,18 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 
 	case tea.WindowSizeMsg:
+		m.winW = msg.Width
+		m.winH = msg.Height
+		m.clampScroll()
+		return m, nil
+
+	case tea.MouseWheelMsg:
+		switch msg.Button {
+		case tea.MouseWheelUp:
+			m.scorri(-passoRotellina)
+		case tea.MouseWheelDown:
+			m.scorri(passoRotellina)
+		}
 		return m, nil
 
 	case tea.KeyPressMsg:
@@ -54,28 +85,37 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "up", "k":
 			if m.cursore > 0 {
 				m.cursore--
-				m.offset = style.PaginaCalcola(m.cursore, m.offset, len(articoli))
+				m.mostraCursore()
 			}
 		case "down", "j":
 			if m.cursore < len(articoli)-1 {
 				m.cursore++
-				m.offset = style.PaginaCalcola(m.cursore, m.offset, len(articoli))
+				m.mostraCursore()
 			}
 		case "pgup":
-			m.cursore -= style.RighePerPagina
-			if m.cursore < 0 {
-				m.cursore = 0
+			if m.cursore > 0 {
+				m.cursore -= m.righeVisibili()
+				if m.cursore < 0 {
+					m.cursore = 0
+				}
+				m.mostraCursore()
 			}
-			m.offset = style.PaginaCalcola(m.cursore, m.offset, len(articoli))
 		case "pgdown":
-			m.cursore += style.RighePerPagina
-			if max := len(articoli) - 1; m.cursore > max {
-				m.cursore = max
+			if m.cursore < len(articoli)-1 {
+				m.cursore += m.righeVisibili()
+				if max := len(articoli) - 1; m.cursore > max {
+					m.cursore = max
+				}
+				m.mostraCursore()
 			}
-			if m.cursore < 0 {
-				m.cursore = 0
+		case "home":
+			m.cursore = 0
+			m.mostraCursore()
+		case "end":
+			if len(articoli) > 0 {
+				m.cursore = len(articoli) - 1
 			}
-			m.offset = style.PaginaCalcola(m.cursore, m.offset, len(articoli))
+			m.mostraCursore()
 		case "s":
 			m.filtroSottoSoglia = !m.filtroSottoSoglia
 			m.cursore = 0
@@ -87,6 +127,79 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	return m, nil
+}
+
+// ── Scorrimento della lista ──────────────────────────────────────────────────
+
+// righeVisibili calcola quante righe di tabella entrano nello spazio residuo dello schermo.
+//
+// Come è stato scritto il codice:
+// Al termine `winH` vengono sottratte le righe fisse esterne al corpo (overheadChrome)
+// e quelle dell'intestazione e del footer della pagina, misurate sul rendering effettivo:
+// così il risultato resta corretto anche se il layout cambierà in futuro.
+func (m Model) righeVisibili() int {
+	if m.winH <= 0 || m.report == nil {
+		return righeFallback
+	}
+	disponibili := m.winH - overheadChrome -
+		lipgloss.Height(m.renderIntestazione(m.mostraKPI())) -
+		lipgloss.Height(m.renderFooter(""))
+	if disponibili < 1 {
+		disponibili = 1
+	}
+	return disponibili
+}
+
+// mostraKPI indica se i blocchi KPI entrano nello schermo lasciando almeno
+// minRigheConKPI righe di lista: nei terminali bassi vengono nascosti per
+// privilegiare la visibilità della tabella e del footer.
+func (m Model) mostraKPI() bool {
+	if m.winH <= 0 || m.report == nil {
+		return true
+	}
+	disponibili := m.winH - overheadChrome -
+		lipgloss.Height(m.renderIntestazione(true)) -
+		lipgloss.Height(m.renderFooter(""))
+	return disponibili >= minRigheConKPI
+}
+
+// scorri avanza la finestra di visualizzazione di `n` righe, mantenendo il cursore visibile.
+func (m *Model) scorri(n int) {
+	m.cursore += n
+	articoli := m.articoliFiltrati()
+	if m.cursore < 0 {
+		m.cursore = 0
+	}
+	if max := len(articoli) - 1; m.cursore > max {
+		m.cursore = max
+	}
+	m.mostraCursore()
+}
+
+// clampScroll riporta l'offset nell'intervallo valido rispetto alla lista e allo schermo.
+func (m *Model) clampScroll() {
+	articoli := m.articoliFiltrati()
+	maxOffset := len(articoli) - m.righeVisibili()
+	if maxOffset < 0 {
+		maxOffset = 0
+	}
+	if m.offset > maxOffset {
+		m.offset = maxOffset
+	}
+	if m.offset < 0 {
+		m.offset = 0
+	}
+}
+
+// mostraCursore aggiorna lo scorrimento così che la riga puntata dal cursore resti visibile.
+func (m *Model) mostraCursore() {
+	vis := m.righeVisibili()
+	if m.cursore < m.offset {
+		m.offset = m.cursore
+	} else if m.cursore >= m.offset+vis {
+		m.offset = m.cursore - vis + 1
+	}
+	m.clampScroll()
 }
 
 // View costruisce ed impagina l'interfaccia utente visibile per la schermata delle Giacenze.
@@ -101,98 +214,145 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Model) View() tea.View {
 	var sb strings.Builder
 
-	// ── Titolo Sezione ──────────────────────────────────────────────────────
-	sb.WriteString(style.TitleStile.Render("MAGAZZINO - GIACENZE & INVENTARIO"))
-	sb.WriteString("\n\n")
-
 	// ── Gestione Caricamento ed Errori ──────────────────────────────────────
 	if m.loading {
+		sb.WriteString(style.TitleStile.Render("MAGAZZINO - GIACENZE & INVENTARIO"))
+		sb.WriteString("\n\n")
 		sb.WriteString("Caricamento report giacenze in corso...\n")
 		return tea.NewView(sb.String())
 	}
 	if m.err != nil {
+		sb.WriteString(style.TitleStile.Render("MAGAZZINO - GIACENZE & INVENTARIO"))
+		sb.WriteString("\n\n")
 		sb.WriteString(style.ErrorStile.Render("Errore: " + m.err.Error()))
 		sb.WriteString("\n")
 		return tea.NewView(sb.String())
 	}
 	if m.report == nil {
+		sb.WriteString(style.TitleStile.Render("MAGAZZINO - GIACENZE & INVENTARIO"))
+		sb.WriteString("\n\n")
 		sb.WriteString("Nessun dato di inventario disponibile.\n")
 		return tea.NewView(sb.String())
 	}
 
-	// ── Blocchi KPI Superiori (Impaginati con Lipgloss) ────────────────────
-	sottoSogliaCount := len(m.report.ArticoliSottoSoglia)
-	kpiTotal := style.BoxStile.Render(fmt.Sprintf("TOTALE PEZZI\n\n%d", m.report.TotaleQuantita))
-	kpiValore := style.BoxStile.Render(fmt.Sprintf("VALORE TOTALE\n\n€ %.2f", m.report.ValoreTotale))
-	kpiSottoSoglia := style.BoxStile.Render(fmt.Sprintf("SOTTO SOGLIA\n\n%d", sottoSogliaCount))
+	// ── Intestazione fissa ───────────────────────────────────────────────────
+	sb.WriteString(m.renderIntestazione(m.mostraKPI()))
 
-	rigaKPI := lipgloss.JoinHorizontal(lipgloss.Top, kpiTotal, "   ", kpiValore, "   ", kpiSottoSoglia)
-	sb.WriteString(rigaKPI)
-	sb.WriteString("\n\n")
+	// ── Finestra visibile della tabella ──────────────────────────────────────
+	articoli := m.articoliFiltrati()
+
+	if len(articoli) == 0 {
+		sb.WriteString("Nessun articolo trovato con i filtri correnti.\n")
+		sb.WriteString("\n\n")
+		sb.WriteString(m.renderFooter(""))
+		return tea.NewView(sb.String())
+	}
+
+	m.clampScroll()
+	inizio := m.offset
+	fine := inizio + m.righeVisibili()
+	if fine > len(articoli) {
+		fine = len(articoli)
+	}
+
+	for i, a := range articoli[inizio:fine] {
+		assoluto := inizio + i
+		giacenzaStr := fmt.Sprintf("%d (min %d)", a.Quantita, a.SogliaMin)
+
+		statoBadge := style.SuccessStile.Render("OK")
+		if a.SottoSoglia {
+			statoBadge = style.ErrorStile.Render("SOTTO SOGLIA")
+		}
+
+		rigaTesto := fmt.Sprintf("%-10s %-30s %-25s %-20s %s",
+			troncaStringa(a.Codice, 10),
+			troncaStringa(a.Nome, 30),
+			troncaStringa(a.Categoria, 25),
+			troncaStringa(giacenzaStr, 20),
+			statoBadge,
+		)
+
+		if assoluto == m.cursore {
+			sb.WriteString(style.SuccessStile.Render("> "))
+			sb.WriteString(rigaTesto)
+			sb.WriteString("\n")
+		} else {
+			sb.WriteString("  ")
+			sb.WriteString(rigaTesto)
+			sb.WriteString("\n")
+		}
+	}
+
+	// ── Footer con indicatore di scorrimento ────────────────────────────────
+	sb.WriteString(m.renderFooter(m.indicatoreArticoli()))
+
+	return tea.NewView(sb.String())
+}
+
+// renderIntestazione compone la parte fissa superiore della pagina: titolo,
+// blocchi KPI aggregati (se `conKPI`, vedi mostraKPI), indicatore del filtro
+// sotto-soglia e testata della tabella.
+func (m Model) renderIntestazione(conKPI bool) string {
+	var sb strings.Builder
+
+	// Il MarginBottom di TitleStile fornisce già la riga vuota sotto il titolo:
+	// qui basta un solo "\n" esplicito per non sprecare righe di terminale.
+	sb.WriteString(style.TitleStile.Render("MAGAZZINO - GIACENZE & INVENTARIO"))
+	sb.WriteString("\n")
+
+	// ── Blocchi KPI Superiori ───────────────────────────────────────────────
+	if conKPI {
+		sottoSogliaCount := len(m.report.ArticoliSottoSoglia)
+		kpiTotal := style.BoxStile.Render(fmt.Sprintf("TOTALE PEZZI\n\n%d", m.report.TotaleQuantita))
+		kpiValore := style.BoxStile.Render(fmt.Sprintf("VALORE TOTALE\n\n€ %.2f", m.report.ValoreTotale))
+		kpiSottoSoglia := style.BoxStile.Render(fmt.Sprintf("SOTTO SOGLIA\n\n%d", sottoSogliaCount))
+
+		rigaKPI := lipgloss.JoinHorizontal(lipgloss.Top, kpiTotal, "   ", kpiValore, "   ", kpiSottoSoglia)
+		sb.WriteString(rigaKPI)
+		sb.WriteString("\n")
+	}
 
 	// ── Indicatore Filtro Sotto Soglia ─────────────────────────────────────
 	statoFiltro := "[s] Filtro Sotto-Soglia: OFF"
 	if m.filtroSottoSoglia {
 		statoFiltro = style.SuccessStile.Render("[s] Filtro Sotto-Soglia: ON")
 	}
-	sb.WriteString(fmt.Sprintf("%s\n\n", statoFiltro))
-
-	// ── Tabella Giacenze ────────────────────────────────────────────────────
-	articoli := m.articoliFiltrati()
-	if len(articoli) == 0 {
-		sb.WriteString("Nessun articolo trovato con i filtri correnti.\n")
-	} else {
-		headerStr := fmt.Sprintf("  %-10s %-30s %-25s %-20s %s",
-			"CODICE", "PRODOTTO", "CATEGORIA", "GIACENZA", "STATO")
-		sb.WriteString(style.FreeHeaderStile.Render(headerStr))
-		sb.WriteString("\n")
-		sb.WriteString(strings.Repeat("─", 100))
-		sb.WriteString("\n")
-
-		inizio := m.offset
-		fine := inizio + style.RighePerPagina
-		if fine > len(articoli) {
-			fine = len(articoli)
-		}
-
-		for i, a := range articoli[inizio:fine] {
-			assoluto := inizio + i
-			giacenzaStr := fmt.Sprintf("%d (min %d)", a.Quantita, a.SogliaMin)
-
-			statoBadge := style.SuccessStile.Render("OK")
-			if a.SottoSoglia {
-				statoBadge = style.ErrorStile.Render("SOTTO SOGLIA")
-			}
-
-			rigaTesto := fmt.Sprintf("%-10s %-30s %-25s %-20s %s",
-				troncaStringa(a.Codice, 10),
-				troncaStringa(a.Nome, 30),
-				troncaStringa(a.Categoria, 25),
-				troncaStringa(giacenzaStr, 20),
-				statoBadge,
-			)
-
-			if assoluto == m.cursore {
-				sb.WriteString(style.SuccessStile.Render("> "))
-				sb.WriteString(rigaTesto)
-				sb.WriteString("\n")
-			} else {
-				sb.WriteString("  ")
-				sb.WriteString(rigaTesto)
-				sb.WriteString("\n")
-			}
-		}
-
-		pagine := (len(articoli) + style.RighePerPagina - 1) / style.RighePerPagina
-		paginaCorr := m.offset/style.RighePerPagina + 1
-		sb.WriteString(fmt.Sprintf("\nPagina %d/%d", paginaCorr, pagine))
-	}
-
-	// ── Footer ───────────────────────────────────────────────────────────────
+	sb.WriteString(fmt.Sprintf("%s", statoFiltro))
 	sb.WriteString("\n")
-	sb.WriteString(style.FooterStile.Render("[↑/↓ o k/j] Naviga  |  [pgup/pgdown] Pagina  |  [s] Filtra Sotto Soglia  |  [r] Ricarica  |  [ctrl+l] Logout"))
 
-	return tea.NewView(sb.String())
+	// ── Testata Tabella ─────────────────────────────────────────────────────
+	headerStr := fmt.Sprintf("  %-10s %-30s %-25s %-20s %s",
+		"CODICE", "PRODOTTO", "CATEGORIA", "GIACENZA", "STATO")
+	sb.WriteString(style.FreeHeaderStile.Render(headerStr))
+	sb.WriteString("\n")
+	sb.WriteString(strings.Repeat("─", 100))
+	sb.WriteString("\n")
+
+	return sb.String()
+}
+
+// renderFooter compone le istruzioni di tastiera e, se la lista eccede lo schermo,
+// l'indicatore delle righe correntemente visibili. Il blocco ha SEMPRE due righe
+// (scorciatoie + indicatore anche vuoto): così il calcolo delle righe visibili è
+// stabile e l'ultima riga di lista non viene mai spinta fuori schermo.
+func (m Model) renderFooter(indicatore string) string {
+	scorciatoie := "[↑/↓ o k/j] Naviga  |  [pgup/pgdown o rotellina] Scorri  |  [s] Filtra Sotto Soglia  |  [r] Ricarica  |  [ctrl+l] Logout"
+	return style.FooterStile.Render(scorciatoie + "\n" + indicatore)
+}
+
+// indicatoreArticoli descrive, se la lista eccede lo schermo, le righe correntemente visibili.
+func (m Model) indicatoreArticoli() string {
+	articoli := m.articoliFiltrati()
+	vis := m.righeVisibili()
+	if len(articoli) <= vis {
+		return ""
+	}
+	primo := m.offset + 1
+	ultimo := m.offset + vis
+	if ultimo > len(articoli) {
+		ultimo = len(articoli)
+	}
+	return fmt.Sprintf("Articoli %d–%d di %d  (pgup/pgdown o rotellina per scorrere)", primo, ultimo, len(articoli))
 }
 
 // articoliFiltrati restituisce la lista degli articoli applicando l'eventuale filtro sotto-soglia.

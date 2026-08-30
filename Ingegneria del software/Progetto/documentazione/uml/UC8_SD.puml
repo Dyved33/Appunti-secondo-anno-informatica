@@ -1,0 +1,126 @@
+@startuml UC8_SD
+
+skinparam sequence {
+  ArrowColor      #555555
+  ParticipantBackgroundColor #FAFAFA
+  ParticipantBorderColor #333333
+  ActorBackgroundColor #E8F4FD
+  ActorBorderColor #2980B9
+}
+
+actor    "Admin"      as Admin
+boundary "ui:UI"               as UI
+control  "svc:ProdottoService" as ProdSvc
+control  "svc:OrdineService"   as OrdSvc
+
+' ── 1. Gestione Merci ────────────────────────────────
+group Gestione Merci
+  Admin -> UI : apriMerci()
+  activate UI
+  UI -> ProdSvc : getProdottiConValore()
+  activate ProdSvc
+  ProdSvc --> UI : listaProdottiConValore
+  deactivate ProdSvc
+  UI --> Admin : mostraMerciConValoreTotale()
+
+  alt [Admin modifica un prodotto]
+    Admin -> UI : modificaProdotto(prodotto, dati)
+    UI -> ProdSvc : aggiornaProdotto(prodotto.id, dati)
+    activate ProdSvc
+    ProdSvc --> UI : prodottoAggiornato
+    deactivate ProdSvc
+    UI --> Admin : mostraConferma()
+  else [Admin elimina un prodotto]
+    Admin -> UI : eliminaProdotto(prodotto)
+    UI -> ProdSvc : eliminaProdotto(prodotto.id)
+    activate ProdSvc
+    ProdSvc --> UI : prodottoEliminato
+    deactivate ProdSvc
+    UI --> Admin : mostraConferma()
+  end
+  deactivate UI
+end
+
+' ── 2. Gestione Ordini ──────────────────────────────
+group Gestione Ordini
+  Admin -> UI : apriElencoOrdini()
+  activate UI
+  UI -> OrdSvc : getOrdiniUscita()
+  activate OrdSvc
+  OrdSvc --> UI : listaOrdini
+  deactivate OrdSvc
+  UI --> Admin : mostraElencoOrdini(listaOrdini)
+
+  Admin -> UI : selezionaOrdine(ordine)
+  UI --> Admin : mostraDettaglioOrdine(ordine)
+
+  alt [Admin aggiorna ordine in uscita]
+    Admin -> UI : modificaOrdine(ordine, dati)
+    UI -> OrdSvc : updateOrdineUscita(ordine.id, dati)
+    activate OrdSvc
+    OrdSvc --> UI : ordineAggiornato
+    deactivate OrdSvc
+    UI --> Admin : mostraConferma()
+  else [Admin genera DDT]
+    Admin -> UI : generaDDT(ordine)
+    UI -> OrdSvc : generaDDT(ordine.id)
+    activate OrdSvc
+    OrdSvc --> UI : ddt
+    deactivate OrdSvc
+    UI --> Admin : mostraDDT(ddt)
+  end
+  deactivate UI
+end
+
+' ── 3. Gestione Fatture ──────────────────────────────
+group Gestione Fatture
+  Admin -> UI : apriElencoFatture()
+  activate UI
+  UI -> OrdSvc : getFatture()
+  activate OrdSvc
+  OrdSvc --> UI : listaFatture
+  deactivate OrdSvc
+  UI --> Admin : mostraElencoFatture()
+
+  Admin -> UI : eliminaFattura(fattura)
+  UI -> OrdSvc : deleteFattura(fattura.id)
+  activate OrdSvc
+  OrdSvc --> UI : fatturaEliminata
+  deactivate OrdSvc
+  UI --> Admin : mostraConferma()
+  deactivate UI
+end
+
+' ── 4. Gestione Resi ─────────────────────────────────
+group Gestione Resi
+  Admin -> UI : apriElencoResi()
+  activate UI
+  UI -> OrdSvc : getResi()
+  activate OrdSvc
+  OrdSvc --> UI : listaResi
+  deactivate OrdSvc
+  UI --> Admin : mostraElencoResi()
+
+  Admin -> UI : selezionaReso(reso)
+
+  Admin -> UI : verificaReso(reso)
+  UI -> OrdSvc : updateStatoReso(reso.id, "accettato")
+  activate OrdSvc
+  OrdSvc --> UI : resoAccettato
+  note right : incrementa giacenza,\nstato = accettato
+  deactivate OrdSvc
+  UI --> Admin : mostraConferma()
+
+  opt [Admin rifiuta il reso già accettato]
+    Admin -> UI : rifiutaReso(reso)
+    UI -> OrdSvc : updateStatoReso(reso.id, "rifiutato")
+    activate OrdSvc
+    OrdSvc --> UI : resoRifiutato
+    note right : decrementa giacenza,\nstato = rifiutato
+    deactivate OrdSvc
+    UI --> Admin : mostraConferma()
+  end
+  deactivate UI
+end
+
+@enduml

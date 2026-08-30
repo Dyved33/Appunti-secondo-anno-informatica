@@ -32,16 +32,9 @@ type SubmitErrorMsg struct {
 	Err error
 }
 
-// New inizializza e restituisce un nuovo modello Login con i campi di testo preconfigurati.
-//
-// Come è stato scritto il codice:
-// 1. Alloca una slice di 2 componenti textinput.Model per gestire l'input di Username (indice 0) e Password (indice 1).
-// 2. Cicla sugli elementi impostando un limite di 12 caratteri per ciascun campo.
-// 3. Tramite uno switch sull'indice:
-//   - Indice 0 (Username): viene impostato il testo placeholder "Username" e riceve il focus iniziale tramite Focus().
-//   - Indice 1 (Password): viene impostato il placeholder "Password" e la modalità EchoPassword con il carattere speciale '🞽'.
-//
-// 4. Assegna ciascuna istanza configurata al relativo indice della slice e restituisce la struttura Login.
+// New inizializza e restituisce un nuovo modello Login con i due campi di testo
+// preconfigurati: Username (indice 0, con focus iniziale) e Password (indice 1,
+// in modalità mascheramento), entrambi con limite di 12 caratteri.
 func New() Login {
 
 	l := Login{
@@ -72,10 +65,7 @@ func New() Login {
 	return l
 }
 
-// Username restituisce il testo correntemente inserito nel campo Username (indice 0).
-//
-// Come è stato scritto il codice:
-// Verifica che la slice degli input contenga almeno un elemento ed ne estrae il valore corrente.
+// Username restituisce il testo correntemente inserito nel campo Username.
 func (l Login) Username() string {
 	if len(l.inputs) > 0 {
 		return l.inputs[0].Value()
@@ -83,10 +73,7 @@ func (l Login) Username() string {
 	return ""
 }
 
-// Password restituisce il testo correntemente inserito nel campo Password (indice 1).
-//
-// Come è stato scritto il codice:
-// Verifica che la slice degli input contenga almeno due elementi ed ne estrae il valore corrente.
+// Password restituisce il testo correntemente inserito nel campo Password.
 func (l Login) Password() string {
 	if len(l.inputs) > 1 {
 		return l.inputs[1].Value()
@@ -95,17 +82,11 @@ func (l Login) Password() string {
 }
 
 // IsAuthenticated restituisce true se il login è stato completato con successo.
-//
-// Come è stato scritto il codice:
-// Controlla il flag bool interno success.
 func (l Login) IsAuthenticated() bool {
 	return l.success
 }
 
 // Error restituisce l'eventuale errore riscontrato durante la fase di login.
-//
-// Come è stato scritto il codice:
-// Restituisce l'interfaccia error memorizzata nella struttura Login.
 func (l Login) Error() error {
 	return l.err
 }

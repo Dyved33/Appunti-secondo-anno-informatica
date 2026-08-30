@@ -21,10 +21,13 @@ type productService interface {
 	ProductService_GetProdottiSottoSoglia(ctx context.Context) ([]domain.InventoryItem, error)
 }
 
+// ProductController espone i metodi di gestione dei prodotti e delle giacenze,
+// delegando la logica di business al service iniettato.
 type ProductController struct {
 	Service productService
 }
 
+// NewProductController crea un nuovo ProductController con il service specificato.
 func NewProductController(svc productService) *ProductController {
 	return &ProductController{Service: svc}
 }
@@ -91,18 +94,18 @@ func (c *ProductController) ProductController_GetProductsById(ctx context.Contex
 		return nil, err
 	}
 
-	var dtoList []ProductOutputDTO	
+	var dtoList []ProductOutputDTO
 	dtoList = append(dtoList, ProductOutputDTO{
-			ID:          p.ID,
-			Codice:      p.Codice,
-			Barcode:     p.Barcode,
-			Nome:        p.Nome,
-			Descrizione: p.Descrizione,
-			CategoriaID: p.CategoriaID,
-			PrezzoAcq:   p.PrezzoAcq,
-			PrezzoVend:  p.PrezzoVend,
-			SogliaMin:   p.SogliaMin,
-		})	
+		ID:          p.ID,
+		Codice:      p.Codice,
+		Barcode:     p.Barcode,
+		Nome:        p.Nome,
+		Descrizione: p.Descrizione,
+		CategoriaID: p.CategoriaID,
+		PrezzoAcq:   p.PrezzoAcq,
+		PrezzoVend:  p.PrezzoVend,
+		SogliaMin:   p.SogliaMin,
+	})
 	return dtoList, nil
 }
 

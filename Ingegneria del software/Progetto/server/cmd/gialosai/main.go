@@ -1,3 +1,6 @@
+// Command gialosai avvia il server HTTP dell'applicativo GialloSai.
+// Legge la configurazione del database (tramite la variabile d'ambiente DB_DSN),
+// verifica la connessione e mette in ascolto il router sulla porta 8080.
 package main
 
 import (
@@ -10,6 +13,8 @@ import (
 	"github.com/tommasogarofani/ingsw_25-26_group-11/server/router"
 )
 
+// main è il punto di ingresso del server: apre il database MySQL,
+// inizializza il router ed espone le rotte HTTP sulla porta 8080.
 func main() {
 	dsn := os.Getenv("DB_DSN") // Recupera la variabile d'ambiente DB_DSN per ottenere il Data Source Name (DSN) del database MySQL
 	if dsn == "" {

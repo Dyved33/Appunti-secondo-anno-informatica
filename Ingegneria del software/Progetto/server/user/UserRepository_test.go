@@ -165,10 +165,10 @@ func TestUserRepository_Create(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(7, 1))
 
 	u := &domain.Utente{
-		Username:         "giulia",
-		PasswordHash:     "hash",
-		Ruolo:            domain.Ruolo("contabile"),
-		CreatedAt:        time.Now(),
+		Username:     "giulia",
+		PasswordHash: "hash",
+		Ruolo:        domain.Ruolo("contabile"),
+		CreatedAt:    time.Now(),
 	}
 
 	err = repo.UserRepository_Create(context.Background(), u)

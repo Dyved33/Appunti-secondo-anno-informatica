@@ -13,10 +13,13 @@ type categoryService interface {
 	CategoryService_Delete(ctx context.Context, id int) error
 }
 
+// CategoryController espone i metodi di gestione delle categorie di prodotti,
+// delegando la logica di business al service iniettato.
 type CategoryController struct {
 	Service categoryService
 }
 
+// NewCategoryController crea un nuovo CategoryController con il service specificato.
 func NewCategoryController(svc categoryService) *CategoryController {
 	return &CategoryController{Service: svc}
 }

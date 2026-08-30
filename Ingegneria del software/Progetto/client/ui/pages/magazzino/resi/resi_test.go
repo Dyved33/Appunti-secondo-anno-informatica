@@ -1,6 +1,7 @@
 package resi
 
 import (
+	"errors"
 	"strings"
 	"testing"
 	"time"
@@ -179,5 +180,122 @@ func TestResi_EscModificaStato(t *testing.T) {
 
 	if mEsc.modo != modoLista {
 		t.Error("Dopo esc il modo dovrebbe tornare a modoLista")
+	}
+}
+
+// Test che simula il salvataggio dello stato del reso e il successivo recupero dello stato aggiornato
+func TestResi_SalvataggioERecuperoStato(t *testing.T) {
+	client := &api.APIClient{}
+	m := New(client)
+
+	resiMock := []api.Reso{
+		{
+			ID: 1, OrdineUscitaID: 10, ProdottoID: 101, Quantita: 1,
+			Motivo: "Difetto imballo", Data: time.Now(), Stato: "da_verificare",
+		},
+	}
+
+	res, _ := m.Update(ResiLoadedMsg{Resi: resiMock})
+	mRes := res.(Model)
+
+	// Apri il form di modifica
+	resEdit, _ := mRes.Update(tea.KeyPressMsg{Text: "ctrl+e"})
+	mEdit := resEdit.(Model)
+
+	// Premi Enter per salvare lo stato
+	resSave, cmdSave := mEdit.Update(tea.KeyPressMsg{Text: "enter"})
+	mSave := resSave.(Model)
+
+	if !mSave.loading {
+		t.Error("Dopo enter nel form di modifica, loading deve essere true")
+	}
+	if cmdSave == nil {
+		t.Error("Dopo enter deve essere restituito il comando per aggiornare lo stato del reso")
+	}
+
+	// Simula il messaggio di avvenuto aggiornamento dal server
+	resUpdated, cmdReload := mSave.Update(ResoAggiornatoMsg{})
+	mUpdated := resUpdated.(Model)
+
+	if mUpdated.modo != modoLista {
+		t.Error("Dopo ResoAggiornatoMsg il modo deve tornare a modoLista")
+	}
+	if mUpdated.loading {
+		t.Error("loading deve essere false dopo ResoAggiornatoMsg")
+	}
+	if cmdReload == nil {
+		t.Error("Dopo ResoAggiornatoMsg deve essere emesso il Cmd di ricaricamento resi")
+	}
+}
+
+// Test che simula la paginazione e la navigazione tra i resi
+func TestResi_PaginazioneENavigazione(t *testing.T) {
+	client := &api.APIClient{}
+	m := New(client)
+
+	// Crea un insieme di resi superiore a una singola pagina
+	var resiMock []api.Reso
+	for i := 1; i <= 15; i++ {
+		resiMock = append(resiMock, api.Reso{
+			ID: i, OrdineUscitaID: 100 + i, ProdottoID: 50, Quantita: 1,
+			Motivo: "Reso test", Data: time.Now(),
+		})
+	}
+
+	res, _ := m.Update(ResiLoadedMsg{Resi: resiMock})
+	mRes := res.(Model)
+
+	// Test spostamento con tasto down
+	resDown, _ := mRes.Update(tea.KeyPressMsg{Text: "down"})
+	mDown := resDown.(Model)
+	if mDown.cursore != 1 {
+		t.Errorf("Cursore atteso 1 dopo down, ottenuto: %d", mDown.cursore)
+	}
+
+	// Test spostamento con pgdown
+	resPgDown, _ := mDown.Update(tea.KeyPressMsg{Text: "pgdown"})
+	mPgDown := resPgDown.(Model)
+	if mPgDown.cursore <= 1 {
+		t.Errorf("Cursore dopo pgdown dovrebbe essere avanzato, ottenuto: %d", mPgDown.cursore)
+	}
+
+	// Test ritorno a inizio con pgup
+	resPgUp, _ := mPgDown.Update(tea.KeyPressMsg{Text: "pgup"})
+	mPgUp := resPgUp.(Model)
+	if mPgUp.cursore != 0 {
+		t.Errorf("Cursore atteso 0 dopo pgup, ottenuto: %d", mPgUp.cursore)
+	}
+}
+
+// Test gestione errore e ricaricamento dei resi
+func TestResi_GestioneErroreERicaricamento(t *testing.T) {
+	client := &api.APIClient{}
+	m := New(client)
+
+	// Test ricezione ErroreMsg
+	errTest := errors.New("errore recupero resi")
+	resErr, cmdErr := m.Update(ErroreMsg{Err: errTest})
+	mErr := resErr.(Model)
+
+	if cmdErr != nil {
+		t.Errorf("Update(ErroreMsg) non deve restituire comandi, ottenuto: %v", cmdErr)
+	}
+	if mErr.loading {
+		t.Error("loading deve essere false dopo ErroreMsg")
+	}
+	if !strings.Contains(mErr.View().Content, "errore recupero resi") {
+		t.Error("View() deve renderizzare il testo dell'errore")
+	}
+
+	// Test ricaricamento con tasto 'r'
+	mErr.loading = false
+	resR, cmdR := mErr.Update(tea.KeyPressMsg{Code: 'r', Text: "r"})
+	mR := resR.(Model)
+
+	if !mR.loading {
+		t.Error("Premendo 'r' lo stato loading deve tornare a true")
+	}
+	if cmdR == nil {
+		t.Error("Premendo 'r' deve essere emesso il comando per ricaricare i resi")
 	}
 }

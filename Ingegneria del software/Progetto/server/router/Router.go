@@ -1,3 +1,4 @@
+// Package router definisce le rotte HTTP dell'API REST del server.
 package router
 
 import (
@@ -19,6 +20,13 @@ import (
 	"github.com/tommasogarofani/ingsw_25-26_group-11/server/user"
 )
 
+// NewRouter costruisce il router HTTP dell'applicazione, iniettando
+// repository, service e controller per i moduli user/auth, product, order
+// e category a partire dal DB fornito.
+//
+// Espone una rotta pubblica di login (/api/v1/login) e un gruppo di rotte
+// protette da autenticazione (products, orders, categories, users). Restituisce
+// il router chi configurato e pronto per essere montato sul server.
 func NewRouter(db *sql.DB) chi.Router {
 	r := chi.NewRouter()
 
